@@ -4,7 +4,10 @@ import net.java.games.input.Component;
 import net.java.games.input.Controller;
 
 import org.ini4j.*;
+import org.newdawn.slick.AngelCodeFont;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.KeyListener;
 
@@ -16,7 +19,8 @@ public class Player implements KeyListener {
 	boolean inputOn;
 
 	int playerNum;
-
+	float PLAYERSIZE;
+	
 	int[] controls;//up down left right kick
 	Controller c; //gamepad controller
 	boolean cExist; //gamepad exist boolean
@@ -41,7 +45,7 @@ public class Player implements KeyListener {
 	float POWERCOOLDOWN;// = 2000;//How long cooldown is on slomo
 	float NORMALKICK;// = .5f;//Ball velocity mag after kicking
 	float POWERKICK;// = 2f;//Ball velocity mag after powerkicking
-	float KICKRANGE;
+	float KICKRANGE;//Diameter of kicking circle
 	
 	float[] lastKickPos;
 	float[] lastKickBallPos;
@@ -59,7 +63,8 @@ public class Player implements KeyListener {
 	public Player(int n, float[] consts, int f[], int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Player op){
 
 		playerNum = n;
-
+		PLAYERSIZE = 20;
+		
 		VELMAG = consts[0];
 		POWERVELMAG = consts[1];
 		KICKCOOLDOWN = consts[2];
@@ -78,7 +83,7 @@ public class Player implements KeyListener {
 			lStickY = this.c.getComponent(Component.Identifier.Axis.Y);
 			rStickY = this.c.getComponent(Component.Identifier.Axis.RY);
 			rStickX = this.c.getComponent(Component.Identifier.Axis.RX);
-			actionButton = this.c.getComponent(Component.Identifier.Button._0);
+			actionButton = this.c.getComponent(Component.Identifier.Button._5);
 		}
 		pos = p;
 		xyLimit = xyL;
@@ -120,12 +125,65 @@ public class Player implements KeyListener {
 	public void activatePower(){
 		//Each player has a different one of these
 	}
+	
+	//Most players might have a basic version of this and some modifications as necessary\
+	//If we want to do this it can be less ugly
+	public void render(Graphics g, Image triangle, float BALLSIZE, AngelCodeFont font_small){
+		g.setColor(getColor5());
+		g.setLineWidth(100f);
+//		tempTrailArr = p.getTrailArr();//{bx, by, px, py}
+		float dx = getTrailArr()[2]-getTrailArr()[0];
+		float dy = getTrailArr()[3]-getTrailArr()[1];
+		float thetaTemp = (float)Math.atan2((double)dy, (double)dx);
+		g.rotate(getTrailArr()[2], getTrailArr()[3], 360f/2f/(float)Math.PI*thetaTemp);
+		//g.drawLine(getTrailArr()[0]-2*FIELDWIDTH,getTrailArr()[1], getTrailArr()[0]+2*FIELDWIDTH, getTrailArr()[1]);
+		g.drawLine(getTrailArr()[0]-2*1600,getTrailArr()[1], getTrailArr()[0]+2*1600, getTrailArr()[1]);
+		g.rotate(getTrailArr()[2], getTrailArr()[3], -360f/2f/(float)Math.PI*thetaTemp);
+		g.setLineWidth(5f);
+
+		//Draw the flash for when your power kick is recharged
+		if(getPowerCoolDown()>-500 && getPowerCoolDown()<0){
+			g.setColor(getColor4().brighter());
+			g.fillOval(getX()-getKickRange()/2f, getY()-getKickRange()/2f, getKickRange(), getKickRange());
+		}
+		
+		//Draw kicking circle
+		g.setColor(getColor(.5f).darker());
+		g.drawOval(getX()-getKickRange()/2, getY()-getKickRange()/2, getKickRange(), getKickRange());
+		
+		//Kicking circle flash when kick happens
+		g.setColor(getColor2().brighter());
+		g.drawOval(getX()-getKickRange()/2f, getY()-getKickRange()/2f, getKickRange(), getKickRange());
+		
+		g.setColor(getColor());
+		g.rotate(getX(), getY(), getTheta());
+		g.drawRect(getX()-PLAYERSIZE/2, getY()-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
+		g.rotate(getX(), getY(), -getTheta());
+		//g.drawOval(getX()-getKickRange()/2f+BALLSIZE/2f, getY()-getKickRange()/2f+BALLSIZE/2f, getKickRange()-BALLSIZE, getKickRange()-BALLSIZE);//Draw kicking circle;
+
+		//Draw power circle
+		if(isPower()){
+			g.setColor(getColor3());
+			g.drawOval(getX()-getKickRange()/2f-getPower()/2f, getY()-getKickRange()/2f-getPower()/2f, getKickRange()+getPower(), getKickRange()+getPower());
+			g.setColor(Color.white);
+		}
+		
+		g.drawImage(triangle, getX()-triangle.getWidth()/2, getY()-getKickRange()/2-25, getColor());
+		g.setColor(getColor());
+		g.setFont(font_small);
+		g.drawString("P"+(getPlayerNum()+1), getX()-font_small.getWidth("P"+(getPlayerNum()+1))/2+1, getY()-font_small.getHeight("P")-getKickRange()/2-30);
+		
+	}
 	////////////////////////////////////////////////////
 	
 	public int getPlayerNum(){
 		return playerNum;
 	}
 
+	public float getPlayerSize(){
+		return PLAYERSIZE;
+	}
+	
 	public float getX(){
 		return pos[0];
 	}
@@ -177,9 +235,7 @@ public class Player implements KeyListener {
 	}
 
 	public boolean isKicking(){
-		if(kickingCoolDown<=0)
-			return true;
-		return false;
+		return true;
 	}
 
 	public void setKicking(int a){
@@ -193,8 +249,8 @@ public class Player implements KeyListener {
 			return NORMALKICK;
 		}
 	}
-
-	public float getKICKRANGE(){
+	
+	public float getKickRange(){
 		return KICKRANGE;
 	}
 	

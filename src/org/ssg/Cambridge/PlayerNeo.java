@@ -32,12 +32,13 @@ public class PlayerNeo extends Player {
 			if(Math.abs(curve[1]) < 0.2)
 				curve[1] = 0;
 			
-			if (actionButton.getPollData() == 1.0)
+			if (actionButton.getPollData() == 1.0){
 				if(powerCoolDown <= 0){
 					activatePower();
 				}else{
 					//play whiff animation
 				}
+			}
 		}
 
 		lastKickAlpha -= (float)(delta)/2400f;
@@ -45,11 +46,11 @@ public class PlayerNeo extends Player {
 			lastKickAlpha = 0f;
 		}
 		temp = (int)(pos[0]+vel[0]*velMag*(float)delta);
-		if(temp>xyLimit[0] && temp<xyLimit[1] && dist(temp,pos[1],otherPlayer.getX(),otherPlayer.getY())>=28)
+		if(temp-KICKRANGE/2>xyLimit[0] && temp+KICKRANGE/2<xyLimit[1] && dist(temp,pos[1],otherPlayer.getX(),otherPlayer.getY())>=(KICKRANGE+otherPlayer.getKickRange())/2)
 			pos[0]=temp;
 
 		temp = (int)(pos[1]+vel[1]*velMag*(float)delta);
-		if(temp>xyLimit[2] && temp<xyLimit[3] && dist(pos[0],temp,otherPlayer.getX(),otherPlayer.getY())>=28)
+		if(temp-KICKRANGE/2>xyLimit[2] && temp+KICKRANGE/2<xyLimit[3] && dist(pos[0],temp,otherPlayer.getX(),otherPlayer.getY())>=(KICKRANGE+otherPlayer.getKickRange())/2)
 			pos[1]=temp;
 
 		kickingCoolDown -= (float)delta;

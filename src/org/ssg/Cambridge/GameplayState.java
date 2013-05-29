@@ -17,6 +17,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.AngelCodeFont;
+import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -30,6 +31,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	final String TENNIS = "TENNIS";
 	final String SQUASH = "SQUASH";
 	final String SOCCER = "SOCCER";
+	final String HOCKEY = "HOCKEY";
 	
 	public int stateID = 1;
 	
@@ -61,7 +63,8 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	private float scaleFactor;
 	private int boundingWidth = 100;
 	
-	AngelCodeFont font, font_white;
+	AngelCodeFont font, font_white, font_small;
+	Image triangle;
 	Image goalScroll1, goalScroll2, goalScroll1v, goalScroll2v, goalScroll;
 	int scrollX;//For the "GOAL" scroll
 	int scrollY;
@@ -106,6 +109,8 @@ public class GameplayState extends BasicGameState implements KeyListener{
 
 		font = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0.png"));
 		font_white = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0_white.png"));
+		font_small = new AngelCodeFont(RESDIR + "8bitoperator_small.fnt", new Image(RESDIR + "8bitoperator_small_0.png"));
+		triangle = new Image(RESDIR + "triangle.png");
 		goalScroll1 = new Image(RESDIR + "goal.png");
 		goalScroll2 = new Image(RESDIR + "goal_own.png");
 		goalScroll1v = new Image(RESDIR + "goal_v.png");
@@ -118,7 +123,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		Ini ini;
 		
 		float[] playerConsts = new float[8];
-		float[] ballConsts = new float[2];
+		float[] ballConsts = new float[3];
 		
 		try {
 			ini = new Ini(new File(RESDIR + "config.cfg"));
@@ -152,6 +157,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 			
 			ballConsts[0] = section.get("ACCSCALE", float.class);
 			ballConsts[1] = section.get("BOUNCEDAMP", float.class);
+			ballConsts[2] = section.get("FLOORFRICTION", float.class);
 			
 		} catch (InvalidFileFormatException e) {
 			e.printStackTrace();
@@ -174,7 +180,6 @@ public class GameplayState extends BasicGameState implements KeyListener{
 			}
 		}
 		
-		
 		int randomNum = (int)(Math.random()*2);
 
 		initGoals(randomNum);
@@ -185,9 +190,9 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		float[] p1Start = {FIELDWIDTH/2-250, FIELDHEIGHT/2};
 		float[] p2Start = {FIELDWIDTH/2+250, FIELDHEIGHT/2};
 		if(NAME.equals(TENNIS)){
-			p1Start = new float[]{50, FIELDHEIGHT/2};
-			p2Start = new float[]{FIELDWIDTH-50, FIELDHEIGHT/2};
-			ball.setPos(150+randomNum*(FIELDWIDTH-300), FIELDHEIGHT/2+150-300*randomNum);
+			p1Start = new float[]{120, FIELDHEIGHT/2};
+			p2Start = new float[]{FIELDWIDTH-120, FIELDHEIGHT/2};
+			ball.setPos(350+randomNum*(FIELDWIDTH-700), FIELDHEIGHT/2+150-300*randomNum);
 		}else if(NAME.equals(SQUASH)){
 			p1Start = new float[]{100, FIELDHEIGHT/2-300};
 			p2Start = new float[]{100, FIELDHEIGHT/2+300};
@@ -203,9 +208,11 @@ public class GameplayState extends BasicGameState implements KeyListener{
 			p1lim = new int[]{0,FIELDWIDTH/2, 0, FIELDHEIGHT};
 			p2lim = new int[]{FIELDWIDTH/2, FIELDWIDTH, 0, FIELDHEIGHT};
 		}
-		p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", p2);
-		p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", p1);
+		p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", p2);
+		//p1 = new PlayerPuffer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_E, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", p2);
 		//p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", p1);
+		p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", p1);
+		
 		p1.setOtherPlayer(p2);
 		players = new Player[]{p1,p2};
 		
@@ -248,12 +255,16 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		}else if(GOALTYPE == -1){//Horizontal Squash Goals
 			goals = new Goal[1];
 			goals[0] = new Goal(0,0, FIELDWIDTH, -25, 0, -1, 0);
-		}else if(GOALTYPE == 2){//All sides goals
-			goals = new Goal[4];
-			goals[0] = new Goal(0,0,FIELDWIDTH,-25,0,-1,randomNum);
-			goals[1] = new Goal(0,FIELDHEIGHT,FIELDWIDTH,25,0,1,randomNum);
-			goals[2] = new Goal(0,0,-25,FIELDHEIGHT,-1,0,randomNum);
-			goals[3] = new Goal(FIELDWIDTH,0,25,FIELDHEIGHT,1,0,randomNum);
+		}else if(GOALTYPE == 2){//FOURSQUARE STYLE GOALS
+			goals = new Goal[4];//= new Goal[8]
+			goals[0] = new Goal(0,0,FIELDWIDTH/2,-25,0,-1,0);
+			goals[1] = new Goal(0,0,-25,FIELDHEIGHT/2,-1,0,0);
+			goals[2] = new Goal(FIELDWIDTH/2,0,FIELDWIDTH/2,-25,0,-1,1);
+			goals[3] = new Goal(FIELDWIDTH,0,25,FIELDHEIGHT/2,1,0,1);
+/**			goals[4] = new Goal(FIELDWIDTH,FIELDHEIGHT/2,25,FIELDHEIGHT/2,1,0,2);
+			goals[5] = new Goal(FIELDWIDTH/2,FIELDHEIGHT,FIELDWIDTH/2,25,0,1,2);
+			goals[6] = new Goal(0,FIELDHEIGHT/2,-25,FIELDHEIGHT/2,-1,0,3);
+			goals[7] = new Goal(0,FIELDHEIGHT,FIELDWIDTH/2,25,0,1,3); */
 		}
 	}
 	
@@ -289,35 +300,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 
 		//Draw Players
 		for(Player p: players){
-			
-			g.setColor(p.getColor5());
-			g.setLineWidth(100f);
-			tempTrailArr = p.getTrailArr();//{bx, by, px, py}
-			float dx = tempTrailArr[2]-tempTrailArr[0];
-			float dy = tempTrailArr[3]-tempTrailArr[1];
-			float thetaTemp = (float)Math.atan2((double)dy, (double)dx);
-			g.rotate(tempTrailArr[2], tempTrailArr[3], 360f/2f/(float)Math.PI*thetaTemp);
-			g.drawLine(tempTrailArr[0]-2*FIELDWIDTH,tempTrailArr[1], tempTrailArr[0]+2*FIELDWIDTH, tempTrailArr[1]);
-			g.rotate(tempTrailArr[2], tempTrailArr[3], -360f/2f/(float)Math.PI*thetaTemp);
-			g.setLineWidth(5f);
-		
-			if(p.getPowerCoolDown()>-500 && p.getPowerCoolDown()<0){//Draw the flash for when your power kick is recharged
-				g.setColor(p.getColor4().brighter());
-				g.fillOval(p.getX()-p.getKICKRANGE()/2f+BALLSIZE/2f, p.getY()-p.getKICKRANGE()/2f+BALLSIZE/2f, p.getKICKRANGE()-BALLSIZE, p.getKICKRANGE()-BALLSIZE);
-			}
-			
-			g.setColor(p.getColor());
-			g.rotate(p.getX(), p.getY(), p.getTheta());
-			g.drawRect(p.getX()-10, p.getY()-10, 20, 20);
-			g.rotate(p.getX(), p.getY(), -p.getTheta());
-			g.setColor(p.getColor2());
-			g.drawOval(p.getX()-p.getKICKRANGE()/2f+BALLSIZE/2f, p.getY()-p.getKICKRANGE()/2f+BALLSIZE/2f, p.getKICKRANGE()-BALLSIZE, p.getKICKRANGE()-BALLSIZE);//Draw kicking circle;
-			
-			if(p.isPower()){
-				g.setColor(p.getColor3());
-				g.drawOval(p.getX()-p.getKICKRANGE()/2f-p.getPower()/2f, p.getY()-p.getKICKRANGE()/2f-p.getPower()/2f, p.getKICKRANGE()+p.getPower(), p.getKICKRANGE()+p.getPower());//Draw power circle
-				g.setColor(Color.white);
-			}
+			p.render( g, triangle, BALLSIZE, font_small);
 		}
 		
 //		g.drawLine(p1.getX(), p1.getY(), p1.getX()+spinFloat[0]*100, p1.getY()+spinFloat[1]*100);
@@ -398,6 +381,29 @@ public class GameplayState extends BasicGameState implements KeyListener{
 			g.drawRect(FIELDWIDTH, FIELDHEIGHT/2-postWidth/2-100,-250,postWidth+200);
 			g.drawRect(0,FIELDHEIGHT/2-postWidth/2,100,postWidth);
 			g.drawRect(FIELDWIDTH, FIELDHEIGHT/2-postWidth/2,-100,postWidth);
+		}else if (NAME.equals(HOCKEY)){
+			g.drawLine(FIELDWIDTH/2,0,FIELDWIDTH/2,FIELDHEIGHT);
+			g.drawRect(FIELDWIDTH/3, 0, FIELDWIDTH/3, FIELDHEIGHT);
+			g.drawOval(-40,FIELDHEIGHT/2-GOALSIZE/2,80,GOALSIZE);
+			g.drawOval(FIELDWIDTH+40, FIELDHEIGHT/2-GOALSIZE/2,-80,GOALSIZE);
+			g.fillOval(80+FIELDWIDTH/12-10, 80+FIELDWIDTH/12-10, 20, 20);
+			g.fillOval(80+FIELDWIDTH/12-10, FIELDHEIGHT-80-FIELDWIDTH/12-10, 20, 20);
+			g.fillOval(FIELDWIDTH-80-FIELDWIDTH/12-10,80+FIELDWIDTH/12-10,20,20);
+			g.fillOval(FIELDWIDTH-80-FIELDWIDTH/12-10,FIELDHEIGHT-80-FIELDWIDTH/12-10,20,20);
+			g.fillOval(FIELDWIDTH/2-200, 80+FIELDWIDTH/12-10, 20, 20);
+			g.fillOval(FIELDWIDTH/2-200, FIELDHEIGHT-80-FIELDWIDTH/12-10, 20, 20);
+			g.fillOval(FIELDWIDTH/2+200,80+FIELDWIDTH/12-10,-20,20);
+			g.fillOval(FIELDWIDTH/2+200,FIELDHEIGHT-80-FIELDWIDTH/12-10,-20,20);
+			g.setLineWidth(3);
+			g.setColor(Color.black);
+			g.fillOval(FIELDWIDTH/2-FIELDWIDTH/12, FIELDHEIGHT/2-FIELDWIDTH/12, FIELDWIDTH/6, FIELDWIDTH/6);
+			g.setColor(Color.white);
+			g.drawOval(FIELDWIDTH/2-FIELDWIDTH/12, FIELDHEIGHT/2-FIELDWIDTH/12, FIELDWIDTH/6, FIELDWIDTH/6);
+			g.drawOval(80,80,FIELDWIDTH/6,FIELDWIDTH/6);
+			g.drawOval(80,FIELDHEIGHT-80,FIELDWIDTH/6,-FIELDWIDTH/6);
+			g.drawOval(FIELDWIDTH-80,80,-FIELDWIDTH/6,FIELDWIDTH/6);
+			g.drawOval(FIELDWIDTH-80,FIELDHEIGHT-80,-FIELDWIDTH/6,-FIELDWIDTH/6);
+			g.setLineWidth(5);
 		}else if(NAME.equals(TENNIS)){
 			g.drawRect(150,150,FIELDWIDTH-300,FIELDHEIGHT-300);
 			g.drawLine(FIELDWIDTH/2, 150, FIELDWIDTH/2, FIELDHEIGHT-150);
@@ -409,13 +415,9 @@ public class GameplayState extends BasicGameState implements KeyListener{
 			g.drawLine(0, FIELDHEIGHT/2, FIELDWIDTH/2-100, FIELDHEIGHT/2);
 			g.drawRect(FIELDWIDTH/2-100, 0, -200, 200);
 			g.drawRect(FIELDWIDTH/2-100,FIELDHEIGHT,-200,-200);
-		}else if(NAME.equals("ONESQUARE")){
+		}else if(NAME.equals("FOURSQUARE")){
 			g.drawLine(0, FIELDHEIGHT/2, FIELDWIDTH, FIELDHEIGHT/2);
 			g.drawLine(FIELDWIDTH/2, 0, FIELDWIDTH/2, FIELDHEIGHT);
-			g.setColor(Color.black);
-			g.fillOval(FIELDWIDTH/2-250, FIELDHEIGHT/2-250, 500, 500);
-			g.setColor(Color.white);
-			g.drawOval(FIELDWIDTH/2-250, FIELDHEIGHT/2-250, 500, 500);
 		}
 	}
 
@@ -491,7 +493,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		//Put ball back in play
 		if(scored){
 			if(Math.abs(ball.getX()-targetX)<15f){
-				if(dist(p1)>KICKRANGE && dist(p2)>KICKRANGE){
+				if(dist(p1)>p1.getKickRange()/2 && dist(p2)>p2.getKickRange()/2){
 					ball.setVel(resetVelocity, .5f);
 					ball.setPos(targetX, ball.getY());
 					ball.setScored(false);
@@ -592,7 +594,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		for(Player p: players){
 			p.update(delta);
 			if(p.isKicking() && !scored){//Has kick cooldown reset, can't kick if ball is being reset
-				if(dist(p)<p.getKICKRANGE()/2){//Perform a kick
+				if(dist(p)<p.getKickRange()/2){//Perform a kick
 					//Take the ball a step back, to prevent going through the player
 					kickFloat[0] = (ball.getPrevX()-p.getX());
 					kickFloat[1] = (ball.getPrevY()-p.getY());

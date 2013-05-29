@@ -1,33 +1,38 @@
+/**
+TODO:
+slowmo version of activation sound
+ */
+
 package org.ssg.Cambridge;
 
 import net.java.games.input.Controller;
 import org.newdawn.slick.Color;
 import paulscode.sound.SoundSystem;
+import paulscode.sound.SoundSystemConfig;
 
 public class PlayerTwoTouch extends Player{
 	//Power kicks are super weak
 	//Normal kicks slightly stronger
 	//First kick after coming out of power is a little stronger
-	//TODO: Should forfeit the stronger kick if ball leaves radius
-	//TODO: Fix sounds playing
 	
 	float DEFAULTKICK;
 	float EXTRAKICK;
 	int EXTRAKICKTIME = 50;
 	int extraKickTimer;
 	
-	boolean buttonPressed;
+	boolean buttonPressed;//The power button, that is
 	
 	public PlayerTwoTouch(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Player op) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, op);
 		
+		MAXPOWER = 15;
 		DEFAULTKICK = NORMALKICK*1.2f;
 		EXTRAKICK = DEFAULTKICK*2f;
 		KICKRANGE *= 1.5f;
 		
 		NORMALKICK = DEFAULTKICK;
 
-		POWERKICK = VELMAG/4f;
+		POWERKICK = VELMAG/3f;
 		POWERCOOLDOWN = 100;
 		extraKickTimer = EXTRAKICKTIME;
 		
@@ -53,16 +58,17 @@ public class PlayerTwoTouch extends Player{
 			if(Math.abs(curve[1]) < 0.2)
 				curve[1] = 0;
 
-			if (actionButton.getPollData() == 1.0)
-				if(powerCoolDown <= 0){
+			if (actionButton.getPollData() == 1.0){
+				if(!buttonPressed){
 					activatePower();
 					buttonPressed = true;
-				}else{
-					if(buttonPressed){
-						powerKeyReleased();
-						buttonPressed = false;
-					}
 				}
+			}else if(buttonPressed){
+					powerKeyReleased();
+					buttonPressed = false;
+			}
+		
+				
 		}
 		
 		lastKickAlpha -= (float)(delta)/2400f;
@@ -78,12 +84,13 @@ public class PlayerTwoTouch extends Player{
 		}
 		
 		temp = (int)(pos[0]+vel[0]*velMag*(float)delta);
-		if(temp>xyLimit[0] && temp<xyLimit[1] && dist(temp,pos[1],otherPlayer.getX(),otherPlayer.getY())>=28)
+		if(temp-KICKRANGE/2>xyLimit[0] && temp+KICKRANGE/2<xyLimit[1] && dist(temp,pos[1],otherPlayer.getX(),otherPlayer.getY())>=(KICKRANGE+otherPlayer.getKickRange())/2)
 			pos[0]=temp;
 
 		temp = (int)(pos[1]+vel[1]*velMag*(float)delta);
-		if(temp>xyLimit[2] && temp<xyLimit[3] && dist(pos[0],temp,otherPlayer.getX(),otherPlayer.getY())>=28)
+		if(temp-KICKRANGE/2>xyLimit[2] && temp+KICKRANGE/2<xyLimit[3] && dist(pos[0],temp,otherPlayer.getX(),otherPlayer.getY())>=(KICKRANGE+otherPlayer.getKickRange())/2)
 			pos[1]=temp;
+
 
 		kickingCoolDown -= (float)delta;
 		if(kickingCoolDown<0)
@@ -95,7 +102,8 @@ public class PlayerTwoTouch extends Player{
 
 	@Override
 	public void activatePower(){
-		power = 1f;
+		power = 15f;
+		mySoundSystem.quickPlay( true, "TwoTouchActivate.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 	}
 	
 	@Override
@@ -113,6 +121,17 @@ public class PlayerTwoTouch extends Player{
 			lastKickAlpha = 1.0f;
 		}
 	}
+	
+	//Most other players get to kick instantly, but this makes TwoTouch have a dribble effect
+	@Override
+	public boolean isKicking(){
+		if(power==0)
+			return true;
+		if(kickingCoolDown<=0)
+			return true;
+		return false;
+	}
+
 	
 	//Return if the kick should flash and make the power kick sound
 	@Override

@@ -95,6 +95,7 @@ public class Cambridge extends StateBasedGame {
 		mySoundSystem.loadSound("thud.wav");
 		mySoundSystem.loadSound("whoosh2.wav");
 		mySoundSystem.loadSound("whoosh2r.wav");
+		mySoundSystem.loadSound("TwoTouchActivate.wav");
 		mySoundSystem.newStreamingSource(false, "slow1", "rumble.wav", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);
 		mySoundSystem.newStreamingSource(false, "slow2", "rumble.wav", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);
 	}

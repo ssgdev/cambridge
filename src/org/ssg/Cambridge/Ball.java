@@ -13,10 +13,11 @@ public class Ball {
 	float vDelta;//delta used for calculating collision
 	float[] acc;
 	float accMag;
-	float ACCSCALE;// = .0005f;
+	float ACCSCALE;// = .0005f; Curve acc scaling factor
 	float velMag;//velocity magnitude
 	float theta;
 	float BOUNCEDAMP;// = .5f;//How much speed is lost on ricochet
+	float FLOORFRICTION;//How much speed is lost by the ball traveling
 	int[] field;
 	Goal[] goals;
 	int GOALWIDTH;
@@ -34,6 +35,7 @@ public class Ball {
 
 		ACCSCALE = consts[0];
 		BOUNCEDAMP = consts[1];
+		FLOORFRICTION = consts[2];
 
 		field = f;
 		goals = g;
@@ -185,7 +187,7 @@ public class Ball {
 		vel[1]+=acc[1]*(float)delta*accMag*ACCSCALE;
 		unit(vel);
 
-		if(velMag>0) velMag -= velMag*(float)delta / 8000f;
+		if(velMag>0) velMag -= velMag*(float)delta * FLOORFRICTION;
 
 		theta+=velMag*delta;
 	}
