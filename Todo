@@ -1,0 +1,67 @@
+TODO:
+
+Strange bug: can't go in corner in squash for puffer
+slowmo versions of all sounds
+Don't create variables in update
+Xbox Controller Support
+Menus and stuff
+	Play to certain time or certain score, have winner screen
+	Controller Select
+	Character Select
+	intro screen
+	help/controls screen
+Draw arena differently based on gameMode? – DONE
+More game modes
+	FOURSQUARE
+Squash mode – DONE
+Have config variables: goal layout, player x and y halves – DONE
+Neon Neon Particles
+Slow-mo + effects – DONE
+Spinning indicates charge level – DONE
+Power coolDown Indicator – DONE
+Have velocity of player affect ball trajectory? (not just position)? Spin – orthogonal vel becomes acc? – DONE. Not sure how efficable in regular gameplay
+ball trail?
+Load configs: Air hockey, soccer – DONE
+Have slowdown factor be part of config?
+Make PlayerInterface
+Player On Player Collision handling
+Make KickCoolDown only a visual effect, and have kicking basically be instant – DONE
+make setPlayer set the whole array of players, for case of 4P
+Less shitty sound names
+round over screen – winners, score, time etc, menu options
+
+bug: ball misses midpoint line
+	SOLVED: increase threshold for ball detection and teleport ball SLIGHTLY
+bug: ball re-enters arena from not side
+	SOLVED: weird out-of-arena bouncing physics, fixed by smarts
+bug: ball goes offscreen
+	SOLVED: wasn't turning off ball collision while it was being reset to center
+bug: if ball is too slow, doing a slowmo will make it freeze. Slowmo will also change ball's velocity (makes it axial)?
+	SOLVED: Made ball's pos[] a float[]
+bug: ball lurches near walls?
+	SOLVED?: made collision code account for rebound (instead of just teleporting)
+bug: ball get stuck in walls? ball disappears
+	SOLVEDPARTIALLY: turn off acceleration on goal as well
+bug: power flash isn't correctly aligned for orange
+	SOLVED: Slick2d's graphics uses degrees, not radians
+bug: blue power kick goes through orange sometimes (certain distance, not too close, not too far) Probably collision bug
+	SOLVEDPARTIALLY: Made the kick vector check the ball's previous position 
+	STILLNOTESOLVED: If kick is fast enough and kickrange is small enough, occasionally goes through
+bug: If you can move as fast as the ball and run into it repeatedly you'll kick it backward
+
+different players:?
+regular – DONE
+sucks ball in
+tornado
+cannon?
+two touch – DONE
+joke character
+slingshot
+bat
+lightbike dash
+twins
+Okami
+
+pau gazul
+shaquille o'teal
+Foger Rederer
