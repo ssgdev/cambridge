@@ -17,42 +17,22 @@ public class PlayerNeo extends Player {
 	public void update(int delta){
 
 		if (cExist) {
-			vel[0] = lStickX.getPollData();
-			vel[1] = lStickY.getPollData();
-			if (Math.abs(vel[0]) < 0.2)
-				vel[0] = 0f;
-			if (Math.abs(vel[1]) < 0.2)
-				vel[1] = 0f;
-			
-			//TODO: Curve
-			curve[0] = rStickX.getPollData();
-			curve[1] = rStickY.getPollData();
-			if(Math.abs(curve[0]) < 0.2)
-				curve[0] = 0;
-			if(Math.abs(curve[1]) < 0.2)
-				curve[1] = 0;
+			pollController(delta);
 			
 			if (actionButton.getPollData() == 1.0){
 				if(powerCoolDown <= 0){
 					activatePower();
-				}else{
-					//play whiff animation
 				}
 			}
 		}
+
+		updatePos(delta);
 
 		lastKickAlpha -= (float)(delta)/2400f;
 		if(lastKickAlpha<0){
 			lastKickAlpha = 0f;
 		}
-		temp = (int)(pos[0]+vel[0]*velMag*(float)delta);
-		if(temp-KICKRANGE/2>xyLimit[0] && temp+KICKRANGE/2<xyLimit[1] && dist(temp,pos[1],otherPlayer.getX(),otherPlayer.getY())>=(KICKRANGE+otherPlayer.getKickRange())/2)
-			pos[0]=temp;
-
-		temp = (int)(pos[1]+vel[1]*velMag*(float)delta);
-		if(temp-KICKRANGE/2>xyLimit[2] && temp+KICKRANGE/2<xyLimit[3] && dist(pos[0],temp,otherPlayer.getX(),otherPlayer.getY())>=(KICKRANGE+otherPlayer.getKickRange())/2)
-			pos[1]=temp;
-
+		
 		kickingCoolDown -= (float)delta;
 		if(kickingCoolDown<0)
 			kickingCoolDown = 0;
@@ -96,6 +76,14 @@ public class PlayerNeo extends Player {
 		mySoundSystem.play(slowName);
 	}
 	
+	@Override
+	public void setPower(){
+		power = 0;//
+		velMag = VELMAG;
+		if(mySoundSystem.playing(slowName))
+			mySoundSystem.pause(slowName);
+	}
+
 	@Override
 	public boolean isSlowMoPower(){
 		return isPower() && true;

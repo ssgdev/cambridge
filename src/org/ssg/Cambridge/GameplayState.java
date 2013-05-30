@@ -17,6 +17,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.AngelCodeFont;
+import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -208,8 +209,8 @@ public class GameplayState extends BasicGameState implements KeyListener{
 			p1lim = new int[]{0,FIELDWIDTH/2, 0, FIELDHEIGHT};
 			p2lim = new int[]{FIELDWIDTH/2, FIELDWIDTH, 0, FIELDHEIGHT};
 		}
-		p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", p2);
-		//p1 = new PlayerPuffer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_E, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", p2);
+		//p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", p2);
+		p1 = new PlayerPuffer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_E, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", p2);
 		//p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", p1);
 		p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", p1);
 		
@@ -300,7 +301,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 
 		//Draw Players
 		for(Player p: players){
-			p.render( g, triangle, BALLSIZE, font_small);
+			p.render( g, BALLSIZE, triangle, font_small);
 		}
 		
 //		g.drawLine(p1.getX(), p1.getY(), p1.getX()+spinFloat[0]*100, p1.getY()+spinFloat[1]*100);
@@ -584,8 +585,11 @@ public class GameplayState extends BasicGameState implements KeyListener{
 				}
 				ball.setVel(new float[]{(targetX-ball.getX()),(targetY-ball.getY())}, 1f);
 				ball.setAcc(new float[]{0f,0f}, 0f);
-				p1.setPower();
-				p2.setPower();
+				//Scoring a goal pulls out of slowmo
+				for(Player p: players){
+					if(p.isSlowMoPower())
+						p.setPower();
+				}
 				ball.setScored(true);//just long enough for it to reach reset
 			}
 		}
@@ -593,8 +597,8 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		//Kicking the ball
 		for(Player p: players){
 			p.update(delta);
-			if(p.isKicking() && !scored){//Has kick cooldown reset, can't kick if ball is being reset
-				if(dist(p)<p.getKickRange()/2){//Perform a kick
+			if(p.isKicking() && !scored ){
+				if(dist(p)<p.getKickRange()/2 && ball.canBeKicked(p.getPlayerNum())) {//Perform a kick
 					//Take the ball a step back, to prevent going through the player
 					kickFloat[0] = (ball.getPrevX()-p.getX());
 					kickFloat[1] = (ball.getPrevY()-p.getY());
@@ -607,6 +611,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 					
 					if(p.flashKick()){//If you want the kick flash and sound effect
 						p.setLastKick((int)ball.getPrevX(), (int)ball.getPrevY(), p.getX(), p.getY(), 1f);//player stores coordinates of itself and ball at last kicking event;
+						p.setPower();
 						mySoundSystem.quickPlay( true, "pow2.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 					}else{
 						if(p1.isSlowMoPower() || p2.isSlowMoPower()){
@@ -615,8 +620,8 @@ public class GameplayState extends BasicGameState implements KeyListener{
 							mySoundSystem.quickPlay( true, "bump.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						}
 					}
-					p.setKicking(0);//really this does resetKicking()
-					p.setPower();//Kicking pulls out of slomo
+					
+					p.setKicking(ball);//really this does resetKicking()
 					
 					if(GOALTYPE == 1 || GOALTYPE == -1){//Squash
 						for(Goal goal: goals)
@@ -628,6 +633,9 @@ public class GameplayState extends BasicGameState implements KeyListener{
 							goal.changeSides();//Hacky ass way to set goal to opposite side as whoever kicked
 						}
 					}
+				}else{
+					if(dist(p) > p.getKickRange()/2)
+						ball.setCanBeKicked(p.getPlayerNum(), true);
 				}
 			}
 		}
@@ -716,15 +724,6 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	
 	public float mag(float[] a){
 		return (float)Math.sqrt(a[0]*a[0]+a[1]*a[1]);
-	}
-	
-	public float[] unit(float[] f){
-		float mag=0;
-		for(float a: f){
-			mag+= a*a;
-		}
-		mag = (float)Math.sqrt(mag);
-		return new float[]{f[0]/mag,f[1]/mag};
 	}
 	
 	public float[] normalNeg(float[] v, float[] w){//orthogonal proj v on w, negative

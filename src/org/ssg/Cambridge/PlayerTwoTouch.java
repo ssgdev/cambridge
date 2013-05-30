@@ -16,6 +16,7 @@ public class PlayerTwoTouch extends Player{
 	//First kick after coming out of power is a little stronger
 	
 	float DEFAULTKICK;
+	float DEFAULTKICKCOOLDOWN;
 	float EXTRAKICK;
 	int EXTRAKICKTIME = 50;
 	int extraKickTimer;
@@ -27,12 +28,13 @@ public class PlayerTwoTouch extends Player{
 		
 		MAXPOWER = 15;
 		DEFAULTKICK = NORMALKICK*1.2f;
+		DEFAULTKICKCOOLDOWN = KICKCOOLDOWN;
 		EXTRAKICK = DEFAULTKICK*2f;
 		KICKRANGE *= 1.5f;
 		
 		NORMALKICK = DEFAULTKICK;
 
-		POWERKICK = VELMAG/3f;
+		POWERKICK = VELMAG/4f;
 		POWERCOOLDOWN = 100;
 		extraKickTimer = EXTRAKICKTIME;
 		
@@ -42,22 +44,12 @@ public class PlayerTwoTouch extends Player{
 	@Override
 	public void update(int delta){
 		
-		//Controller untested on this character
+		super.update(delta);
+		
 		if (cExist) {
-			vel[0] = lStickX.getPollData();
-			vel[1] = lStickY.getPollData();
-			if (Math.abs(vel[0]) < 0.2)
-				vel[0] = 0f;
-			if (Math.abs(vel[1]) < 0.2)
-				vel[1] = 0f;
 			
-			curve[0] = rStickX.getPollData();
-			curve[1] = rStickY.getPollData();
-			if(Math.abs(curve[0]) < 0.2)
-				curve[0] = 0;
-			if(Math.abs(curve[1]) < 0.2)
-				curve[1] = 0;
-
+			pollController(delta);
+			
 			if (actionButton.getPollData() == 1.0){
 				if(!buttonPressed){
 					activatePower();
@@ -71,10 +63,18 @@ public class PlayerTwoTouch extends Player{
 				
 		}
 		
+		updatePos(delta);
+		
 		lastKickAlpha -= (float)(delta)/2400f;
 		if(lastKickAlpha<0){
 			lastKickAlpha = 0f;
 		}
+
+		kickingCoolDown -= (float)delta;
+		if(kickingCoolDown<0)
+			kickingCoolDown = 0;
+
+		theta+= (1f-(power*.8f))*(float)delta;
 		
 		if(extraKickTimer > 0)
 			extraKickTimer -= delta;
@@ -83,26 +83,12 @@ public class PlayerTwoTouch extends Player{
 			NORMALKICK = DEFAULTKICK;
 		}
 		
-		temp = (int)(pos[0]+vel[0]*velMag*(float)delta);
-		if(temp-KICKRANGE/2>xyLimit[0] && temp+KICKRANGE/2<xyLimit[1] && dist(temp,pos[1],otherPlayer.getX(),otherPlayer.getY())>=(KICKRANGE+otherPlayer.getKickRange())/2)
-			pos[0]=temp;
-
-		temp = (int)(pos[1]+vel[1]*velMag*(float)delta);
-		if(temp-KICKRANGE/2>xyLimit[2] && temp+KICKRANGE/2<xyLimit[3] && dist(pos[0],temp,otherPlayer.getX(),otherPlayer.getY())>=(KICKRANGE+otherPlayer.getKickRange())/2)
-			pos[1]=temp;
-
-
-		kickingCoolDown -= (float)delta;
-		if(kickingCoolDown<0)
-			kickingCoolDown = 0;
-
-		theta+= (1f-(power*.8f))*(float)delta;
-		
 	}
 
 	@Override
 	public void activatePower(){
 		power = 15f;
+		KICKCOOLDOWN = 500;
 		mySoundSystem.quickPlay( true, "TwoTouchActivate.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 	}
 	
@@ -112,6 +98,7 @@ public class PlayerTwoTouch extends Player{
 		kickingCoolDown = 0;
 		NORMALKICK = EXTRAKICK;
 		extraKickTimer = EXTRAKICKTIME;
+		KICKCOOLDOWN = DEFAULTKICKCOOLDOWN;
 	}
 	
 	@Override
@@ -121,12 +108,20 @@ public class PlayerTwoTouch extends Player{
 			lastKickAlpha = 1.0f;
 		}
 	}
-	
+
+	//I just kicked (power or regular kick) the ball now what
+	@Override
+	public void setKicking(Ball b){
+		if(power == 0)
+			b.setCanBeKicked(playerNum, false);
+		kickingCoolDown = KICKCOOLDOWN;
+	}
+
 	//Most other players get to kick instantly, but this makes TwoTouch have a dribble effect
 	@Override
 	public boolean isKicking(){
 		if(power==0)
-			return true;
+			return super.isKicking();
 		if(kickingCoolDown<=0)
 			return true;
 		return false;

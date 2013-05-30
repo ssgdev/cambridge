@@ -28,8 +28,11 @@ public class Ball {
 
 	boolean scored;//Used to control playing of sounds
 	int soundCoolDown;
-
+	boolean[] canBeKicked;//by player n. Hopefully prevents double tapping
+	
 	boolean slowOn;
+	
+	float tempf;
 
 	public Ball(float[] consts, int[] f, Goal[] g, float[] p, int gw, SoundSystem ss){
 
@@ -53,6 +56,7 @@ public class Ball {
 
 		vDelta = 0;
 
+		canBeKicked = new boolean[2];//Number of players
 		lastKicker = -1;
 
 		mySoundSystem = ss;
@@ -69,6 +73,16 @@ public class Ball {
 		return lastKicker;
 	}
 
+	//Can this ball be kicked by player n
+	public boolean canBeKicked(int n){
+		return canBeKicked[n];
+	}
+	
+	//Sets if the ball can be kicked by player n
+	public void setCanBeKicked(int n, boolean b){
+		canBeKicked[n] = b;
+	}
+	
 	public float getX(){
 		return pos[0];
 	}
@@ -210,13 +224,9 @@ public class Ball {
 		}else if( f[0]!=0 && f[1]==0){
 			f[0]=f[0]/Math.abs(f[0]);
 		}else{
-			float mag=0;
-			for(float a: f){
-				mag+= a*a;
-			}
-			mag = (float)Math.sqrt(mag);
-			f[0]/=mag;
-			f[1]/=mag;
+			tempf = (float)Math.sqrt(f[0]*f[0]+f[1]*f[1]); 
+			f[0]/= tempf;
+			f[1]/= tempf;
 		}
 	}
 

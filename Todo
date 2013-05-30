@@ -24,7 +24,7 @@ ball trail?
 Load configs: Air hockey, soccer – DONE
 Have slowdown factor be part of config?
 Make PlayerInterface
-Player On Player Collision handling
+Player On Player Collision handling – DONE
 Make KickCoolDown only a visual effect, and have kicking basically be instant – DONE
 make setPlayer set the whole array of players, for case of 4P
 Less shitty sound names

@@ -10,6 +10,8 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.KeyListener;
+import org.newdawn.slick.geom.Polygon;
+import org.newdawn.slick.geom.Shape;
 
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
@@ -59,7 +61,9 @@ public class Player implements KeyListener {
 	Player otherPlayer;
 	
 	int temp;//Used whenever an int is needed temporarily
-
+	float tempf;
+	float[] tempArr;
+	
 	public Player(int n, float[] consts, int f[], int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Player op){
 
 		playerNum = n;
@@ -115,38 +119,144 @@ public class Player implements KeyListener {
 		otherPlayer = op;
 		
 		temp = 0;
+		tempArr = new float[2];
 	}
 
 	/////////////////////////////////////////////////////
 	public void update(int delta){
 		//Each player has a different one of these
+		//But call the basic two methods below
 	}
+	
+	public void pollController(int delta){
+		vel[0] = lStickX.getPollData();
+		vel[1] = lStickY.getPollData();
+		if (Math.abs(vel[0]) < 0.2)
+			vel[0] = 0f;
+		if (Math.abs(vel[1]) < 0.2)
+			vel[1] = 0f;
+		
+		//TODO: Curve
+		curve[0] = rStickX.getPollData();
+		curve[1] = rStickY.getPollData();
+		if(Math.abs(curve[0]) < 0.2)
+			curve[0] = 0;
+		if(Math.abs(curve[1]) < 0.2)
+			curve[1] = 0;
+	}
+	
+	public void updatePos(int delta){
+		temp = (int)(pos[0]+vel[0]*velMag*(float)delta);
+		if(temp-KICKRANGE/2>=xyLimit[0] && temp+KICKRANGE/2<=xyLimit[1])
+			pos[0]=temp;
+
+		temp = (int)(pos[1]+vel[1]*velMag*(float)delta);
+		if(temp-KICKRANGE/2>=xyLimit[2] && temp+KICKRANGE/2<=xyLimit[3])
+			pos[1]=temp;
+		
+		//player on player collision handling
+		//TODO: modify for 4P
+		tempf = dist(pos[0], pos[1], otherPlayer.getX(), otherPlayer.getY());
+		if(tempf < (KICKRANGE + otherPlayer.getKickRange())/2){
+			tempArr[0] = otherPlayer.getX()-pos[0];
+			tempArr[1] = otherPlayer.getY()-pos[1];
+			unit(tempArr);
+			tempArr[0]*= (KICKRANGE + otherPlayer.getKickRange())/2 - tempf;
+			tempArr[1]*= (KICKRANGE + otherPlayer.getKickRange())/2 - tempf;
+			
+			//////X AXIS
+			//Get pushed, weighted based on size
+			tempf = KICKRANGE / ( KICKRANGE+ otherPlayer.getKickRange());
+			shiftX(-tempArr[0]*(1-tempf));
+			otherPlayer.shiftX(tempArr[0]*tempf);
+			
+			//Then if anyone got pushed into a wall, pop out
+			if(pos[0]-KICKRANGE/2 <= xyLimit[0]){
+				tempf = xyLimit[0] - pos[0] + KICKRANGE/2;
+			}else if(otherPlayer.getX()-otherPlayer.getKickRange()/2 <= xyLimit[0]){
+				tempf = xyLimit[0] - otherPlayer.getX()+otherPlayer.getKickRange()/2;
+			}else if(pos[0]+KICKRANGE/2 >= xyLimit[1]){
+				tempf = xyLimit[1] - pos[0] - KICKRANGE/2;
+			}else if(otherPlayer.getX() + otherPlayer.getKickRange()/2 >= xyLimit[1]){
+				tempf = xyLimit[1] - otherPlayer.getX() - otherPlayer.getKickRange()/2;
+			}else{
+				tempf = 0;
+			}
+			shiftX(tempf);
+			otherPlayer.shiftX(tempf);
+			
+			//////Y AXIS
+			tempf = KICKRANGE / ( KICKRANGE+ otherPlayer.getKickRange());
+			shiftY(-tempArr[1]*(1-tempf));
+			otherPlayer.shiftY(tempArr[1]*tempf);
+			
+			//Then if anyone got pushed into a wall, pop out
+			if(pos[1]-KICKRANGE/2 <= xyLimit[2]){
+				tempf = xyLimit[2] - pos[1] + KICKRANGE/2;
+			}else if(otherPlayer.getY()-otherPlayer.getKickRange()/2 <= xyLimit[2]){
+				tempf = xyLimit[2] - otherPlayer.getY()+otherPlayer.getKickRange()/2;
+			}else if(pos[1]+KICKRANGE/2 >= xyLimit[3]){
+				tempf = xyLimit[3] - pos[1] - KICKRANGE/2;
+			}else if(otherPlayer.getY() + otherPlayer.getKickRange()/2 >= xyLimit[3]){
+				tempf = xyLimit[3] - otherPlayer.getY() - otherPlayer.getKickRange()/2;
+			}else{
+				tempf = 0;
+			}
+			shiftY(tempf);
+			otherPlayer.shiftY(tempf);
+
+		}
+
+		
+	}
+	
+	//////////////////////////////////////////////////////////
 	
 	public void activatePower(){
 		//Each player has a different one of these
 	}
 	
-	//Most players might have a basic version of this and some modifications as necessary\
-	//If we want to do this it can be less ugly
-	public void render(Graphics g, Image triangle, float BALLSIZE, AngelCodeFont font_small){
+	/////////////////////////////////////////////////////////
+	
+	//If players have custom effects they can override individual methods
+	public void render(Graphics g, float BALLSIZE, Image triangle, AngelCodeFont font_small){
+		
+		drawKickTrail(g);
+		
+		drawRechargeFlash(g);
+		
+		drawKickCircle(g);
+		
+		drawPlayer(g);
+		
+		drawPowerCircle(g);
+		
+		drawNameTag(g, triangle, font_small);		
+	}
+	
+	public void drawKickTrail(Graphics g){
 		g.setColor(getColor5());
 		g.setLineWidth(100f);
 //		tempTrailArr = p.getTrailArr();//{bx, by, px, py}
 		float dx = getTrailArr()[2]-getTrailArr()[0];
 		float dy = getTrailArr()[3]-getTrailArr()[1];
 		float thetaTemp = (float)Math.atan2((double)dy, (double)dx);
-		g.rotate(getTrailArr()[2], getTrailArr()[3], 360f/2f/(float)Math.PI*thetaTemp);
+		g.rotate(getTrailArr()[0], getTrailArr()[1], 360f/2f/(float)Math.PI*thetaTemp);
 		//g.drawLine(getTrailArr()[0]-2*FIELDWIDTH,getTrailArr()[1], getTrailArr()[0]+2*FIELDWIDTH, getTrailArr()[1]);
 		g.drawLine(getTrailArr()[0]-2*1600,getTrailArr()[1], getTrailArr()[0]+2*1600, getTrailArr()[1]);
-		g.rotate(getTrailArr()[2], getTrailArr()[3], -360f/2f/(float)Math.PI*thetaTemp);
+		g.rotate(getTrailArr()[0], getTrailArr()[1], -360f/2f/(float)Math.PI*thetaTemp);
 		g.setLineWidth(5f);
-
+	}
+	
+	public void drawRechargeFlash(Graphics g){
 		//Draw the flash for when your power kick is recharged
 		if(getPowerCoolDown()>-500 && getPowerCoolDown()<0){
 			g.setColor(getColor4().brighter());
 			g.fillOval(getX()-getKickRange()/2f, getY()-getKickRange()/2f, getKickRange(), getKickRange());
 		}
-		
+	}
+	
+	public void drawKickCircle(Graphics g){
 		//Draw kicking circle
 		g.setColor(getColor(.5f).darker());
 		g.drawOval(getX()-getKickRange()/2, getY()-getKickRange()/2, getKickRange(), getKickRange());
@@ -154,26 +264,33 @@ public class Player implements KeyListener {
 		//Kicking circle flash when kick happens
 		g.setColor(getColor2().brighter());
 		g.drawOval(getX()-getKickRange()/2f, getY()-getKickRange()/2f, getKickRange(), getKickRange());
-		
+	}
+	
+	public void drawPlayer(Graphics g){
 		g.setColor(getColor());
 		g.rotate(getX(), getY(), getTheta());
 		g.drawRect(getX()-PLAYERSIZE/2, getY()-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
 		g.rotate(getX(), getY(), -getTheta());
 		//g.drawOval(getX()-getKickRange()/2f+BALLSIZE/2f, getY()-getKickRange()/2f+BALLSIZE/2f, getKickRange()-BALLSIZE, getKickRange()-BALLSIZE);//Draw kicking circle;
-
+	}
+	
+	public void drawPowerCircle(Graphics g){
 		//Draw power circle
 		if(isPower()){
 			g.setColor(getColor3());
 			g.drawOval(getX()-getKickRange()/2f-getPower()/2f, getY()-getKickRange()/2f-getPower()/2f, getKickRange()+getPower(), getKickRange()+getPower());
 			g.setColor(Color.white);
 		}
-		
+	}
+	
+	public void drawNameTag(Graphics g, Image triangle, AngelCodeFont font_small){
 		g.drawImage(triangle, getX()-triangle.getWidth()/2, getY()-getKickRange()/2-25, getColor());
 		g.setColor(getColor());
 		g.setFont(font_small);
 		g.drawString("P"+(getPlayerNum()+1), getX()-font_small.getWidth("P"+(getPlayerNum()+1))/2+1, getY()-font_small.getHeight("P")-getKickRange()/2-30);
-		
+
 	}
+	
 	////////////////////////////////////////////////////
 	
 	public int getPlayerNum(){
@@ -192,6 +309,14 @@ public class Player implements KeyListener {
 		return pos[1];
 	}
 
+	public void shiftX(float f){
+		pos[0]+=f;
+	}
+	
+	public void shiftY(float f){
+		pos[1]+=f;
+	}
+	
 	public float[] getVel(){
 		return vel;
 	}
@@ -235,10 +360,13 @@ public class Player implements KeyListener {
 	}
 
 	public boolean isKicking(){
+		//return kickingCoolDown <= 0;
 		return true;
 	}
 
-	public void setKicking(int a){
+	//I just kicked (any kick) the ball now what
+	public void setKicking(Ball b){
+		b.setCanBeKicked(playerNum, false);
 		kickingCoolDown = KICKCOOLDOWN;
 	}
 
@@ -264,6 +392,7 @@ public class Player implements KeyListener {
 		return false;
 	}
 	
+	//Is this kick a flash kick
 	public boolean flashKick(){
 		return isPower();
 	}
@@ -272,18 +401,16 @@ public class Player implements KeyListener {
 		return power;
 	}
 
+	//I just performed a flash kick now what
 	public void setPower(){
-		power = 0;//
-		velMag = VELMAG;
-		if(mySoundSystem.playing(slowName))
-			mySoundSystem.pause(slowName);
+		
 	}
-
+	
 	public float getPowerCoolDown(){
 		return powerCoolDown;
 	}
 
-	public void setLastKick(float bx, float by, float px, float py, float lka){//ball pos, player pos, was it a power kick
+	public void setLastKick(float bx, float by, float px, float py, float lka){//ball pos, player pos, was it a flash kick
 		lastKickBallPos[0] = bx;
 		lastKickBallPos[1] = by;
 		lastKickPos[0] = px;
@@ -389,5 +516,18 @@ public class Player implements KeyListener {
 		return (float)Math.sqrt((x-a)*(x-a)+(y-b)*(y-b));
 	}
 	
+	public void unit(float[] f){
+		if(f[0]==0 && f[1]==0){
+			return;
+		}else if (f[0]==0 && f[1]!=0 ){
+			f[1]=f[1]/Math.abs(f[1]);
+		}else if( f[0]!=0 && f[1]==0){
+			f[0]=f[0]/Math.abs(f[0]);
+		}else{
+			tempf = (float)Math.sqrt(f[0]*f[0]+f[1]*f[1]); 
+			f[0]/= tempf;
+			f[1]/= tempf;
+		}
+	}
 	
 }

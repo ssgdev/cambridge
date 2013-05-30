@@ -1,8 +1,8 @@
 /**
 TODO:
 Expanding into walls gets you stuck, where as it should push you away from the wall – DONE
-expanding into players is bad too
-expanding into the ball should kick it away from you?
+expanding into players is bad too – DONE
+expanding into the ball should kick it away from you? – DONE
 expanding and deflating sounds
 */
 package org.ssg.Cambridge;
@@ -18,7 +18,7 @@ import paulscode.sound.SoundSystemConfig;
 public class PlayerPuffer extends Player{
 	
 	Component actionButton2;
-	float MAXSIZE = 400;
+	float MAXSIZE = 300;
 	float MINSIZE = 20;
 	float DEFAULTNORMALKICK;
 	float DEFAULTPOWERKICK;
@@ -46,20 +46,7 @@ public class PlayerPuffer extends Player{
 	@Override
 	public void update(int delta){
 		if (cExist) {
-			vel[0] = lStickX.getPollData();
-			vel[1] = lStickY.getPollData();
-			if (Math.abs(vel[0]) < 0.2)
-				vel[0] = 0f;
-			if (Math.abs(vel[1]) < 0.2)
-				vel[1] = 0f;
-			
-			//TODO: Curve
-			curve[0] = rStickX.getPollData();
-			curve[1] = rStickY.getPollData();
-			if(Math.abs(curve[0]) < 0.2)
-				curve[0] = 0;
-			if(Math.abs(curve[1]) < 0.2)
-				curve[1] = 0;
+			pollController(delta);
 			
 			if (actionButton.getPollData() == 1.0){
 				activatePower();//inflate
@@ -74,19 +61,13 @@ public class PlayerPuffer extends Player{
 			}
 		}
 
+		updatePos(delta);
+		
 		lastKickAlpha -= (float)(delta)/2400f;
 		if(lastKickAlpha<0){
 			lastKickAlpha = 0f;
 		}
 		
-		temp = (int)(pos[0]+vel[0]*velMag*(float)delta);
-		if(temp-KICKRANGE/2>xyLimit[0] && temp+KICKRANGE/2<xyLimit[1] && dist(temp,pos[1],otherPlayer.getX(),otherPlayer.getY())>=(KICKRANGE+otherPlayer.getKickRange())/2)
-			pos[0]=temp;
-
-		temp = (int)(pos[1]+vel[1]*velMag*(float)delta);
-		if(temp-KICKRANGE/2>xyLimit[2] && temp+KICKRANGE/2<xyLimit[3] && dist(pos[0],temp,otherPlayer.getX(),otherPlayer.getY())>=(KICKRANGE+otherPlayer.getKickRange())/2)
-			pos[1]=temp;
-
 		kickingCoolDown -= (float)delta;
 		if(kickingCoolDown<0)
 			kickingCoolDown = 0;
@@ -94,8 +75,12 @@ public class PlayerPuffer extends Player{
 		theta+= (1f-(powerCoolDown/POWERCOOLDOWN))*(float)delta;
 		
 		if(puffup && !puffdown){
-			if(PLAYERSIZE+(float)(delta) <= MAXSIZE)
+			if(PLAYERSIZE+(float)(delta) > MAXSIZE){
+				PLAYERSIZE = MAXSIZE;
+				powerKeyReleased();
+			}else{
 				PLAYERSIZE+=(float)(delta);
+			}
 			KICKRANGE = PLAYERSIZE*1.42f;
 			
 			if(pos[0]-KICKRANGE/2 < xyLimit[0]){
@@ -117,25 +102,52 @@ public class PlayerPuffer extends Player{
 		}
 		
 		velMag = VELMAG * (100f/PLAYERSIZE > 2f ? 2f : 100f/PLAYERSIZE);
-		NORMALKICK = DEFAULTNORMALKICK * (150f/PLAYERSIZE > 2f ? 2f : 150f/PLAYERSIZE);		
+		NORMALKICK = DEFAULTNORMALKICK * (150f/PLAYERSIZE > 2f ? 2f : 150f/PLAYERSIZE);
+		POWERKICK = DEFAULTPOWERKICK * (1.8f - PLAYERSIZE/MAXSIZE);		
 	}
 	
 	@Override
 	public void activatePower(){
-		puffup = true;
+		if(PLAYERSIZE < MAXSIZE && !puffup){
+			puffup = true;
+			power = 1;
+		}
 	}
 	
 	@Override
 	public void powerKeyReleased(){
 		puffup = false;
+		power = 0;
+		kickingCoolDown = 0;
 	}
 	
 	public void activateAntiPower(){
-		puffdown = true;
+		if(PLAYERSIZE > MINSIZE && !puffdown)
+			puffdown = true;
 	}
 	
 	public void antiPowerKeyReleased(){
 		puffdown = false;
+	}
+	
+	//Once you get that powerkick you can't kick no more until you stop inflating
+	@Override
+	public void setPower(){
+		kickingCoolDown = 1000;//This is basically a flag value
+		power = 0;
+	}
+	
+	@Override
+	//Only care about kickingCoolDown if we're puffing up, otherwise instant kicks like normal
+	public boolean isKicking(){
+		if(puffup)
+			return kickingCoolDown <= 0;
+		return super.isKicking();//which for now is just true;
+	}
+	
+	@Override
+	public boolean flashKick(){
+		return puffup;
 	}
 	
 	@Override
