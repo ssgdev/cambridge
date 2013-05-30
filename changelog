@@ -1,0 +1,18 @@
+Changelog:
+
+5.30.13:
+Added player on player collision sliding in Player.updatePos()
+Made PlayerPuffer smaller (300 from 400)
+Touching the ball while inflating as Puffer will be a flash kick
+	BUG: Possible double tapping, makes ball slower than should be
+		MAYBE RESOLVED: Added get and set canBeKicked() methods to Ball, so it can't be kicked by the same player after it's been kicked until it leaves kickrange
+						However this might not be a solution. Bug is hard to reproduce sometimes
+		NOPE NOT RESOLVED
+		ACTUALLY RESOLVED: kickingCoolDown is now a more general purpose flag/variable. PlayerPuffer's is increased when the flash kick goes off.
+				However, this cooldown is only paid attention to when puffing up
+	BUG: Holding down inflate key allows power kick at max inflation even if not in the inflating state
+		RESOLVED:Reaching maximum inflation forces powerKeyReleased()
+Prevented double taps by requiring ball to leave kickrange before being able to be kicked by that player again
+	BUG: Preventing double taps breaks TwoTouch, who is all about double tapping
+		RESOLVED: Added Ball argument to setKick(ball), so player objects can tell the ball if it should respond to their kicks or not. Specifically,
+			all players except PlayerTwoTouch prevent double tapping.
