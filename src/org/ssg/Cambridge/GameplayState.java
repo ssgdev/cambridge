@@ -56,7 +56,6 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	public int postWidth;//Is actually the size of goalie box
 	public Goal[] goals;
 	
-	
 	private int minX, minY;//The top left bounds of active objects
 	private int maxX, maxY;// bottom right bounds
 	float tempX, tempY;//Width and height of camera 'box'
@@ -72,10 +71,12 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	int scrollXDir, scrollYDir;
 	float resetVelocity[], targetX, targetY;
 	
-	Ball ball;//temporary, just for testing purposes
+	Ball ball;
 	Player p1;
 	Player p2;
 	Player[] players;
+	
+	boolean slowMo;
 	
 	float[] kickFloat;//Unit vector to set ball velocity after kicking
 	float[] spinFloat;//vector used to store orthogonal projection of player's v on kickFloat
@@ -90,6 +91,8 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	SoundSystem mySoundSystem;
 	Controller c1, c2;
 	boolean c1Exist, c2Exist;
+	
+	boolean temp;
 	
 	public GameplayState(int i, boolean renderoff, int gt){
 		stateID = i;
@@ -209,19 +212,21 @@ public class GameplayState extends BasicGameState implements KeyListener{
 			p1lim = new int[]{0,FIELDWIDTH/2, 0, FIELDHEIGHT};
 			p2lim = new int[]{FIELDWIDTH/2, FIELDWIDTH, 0, FIELDHEIGHT};
 		}
-		//p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", p2);
-		p1 = new PlayerPuffer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_E, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
-		//p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", p1);
+		//p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
+		//p1 = new PlayerPuffer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_E, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
+		//p1 = new PlayerTwinL(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
+		p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
+		//p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2");
 		p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2");
 
 		players = new Player[]{p1,p2};
-		p1.setPlayers(players);
-		p2.setPlayers(players);
+		for(Player p: players)
+			p.setPlayers(players);
 		
 		Input input = gc.getInput();
 		//input.addKeyListener(ball);
-		input.addKeyListener(p1);
-		input.addKeyListener(p2);
+		for(Player p: players)
+			input.addKeyListener(p);
 		//ball.inputStarted();
 		//p1.inputStarted();
 		//p2.inputStarted();
@@ -243,6 +248,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		targetX = FIELDWIDTH/2;
 		targetY = 0;
 		
+		slowMo = false;
 //		gc.getGraphics().setAntiAlias(true);
 	}
 	
@@ -426,8 +432,16 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		
-		if(p1.isSlowMoPower() || p2.isSlowMoPower()){
-			delta = delta/4;
+		slowMo = false;
+		for(Player p: players){
+			if(p.isSlowMoPower()){
+				slowMo = true;
+				break;
+			}
+		}
+		
+		if(slowMo){
+			delta=delta/4;
 			ball.setSlowOn(true);
 		}else{
 			ball.setSlowOn(false);
@@ -494,8 +508,10 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		
 		//Put ball back in play
 		if(scored){
-			if(Math.abs(ball.getX()-targetX)<15f){
-				if(dist(p1)>p1.getKickRange()/2 && dist(p2)>p2.getKickRange()/2){
+			if(Math.abs(ball.getX()-targetX)<10f){
+				temp = true;
+				for(Player p: players){if(dist(p) < p.getKickRange()/2){temp = false;}}
+				if(temp){
 					ball.setVel(resetVelocity, .5f);
 					ball.setPos(targetX, ball.getY());
 					ball.setScored(false);
@@ -615,7 +631,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 						p.setPower();
 						mySoundSystem.quickPlay( true, "pow2.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 					}else{
-						if(p1.isSlowMoPower() || p2.isSlowMoPower()){
+						if(slowMo){
 							mySoundSystem.quickPlay( true, "bumpslow.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						}else{
 							mySoundSystem.quickPlay( true, "bump.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
@@ -642,15 +658,29 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		}
 		
 		//Camera code
-		minX = (int)Math.min((int)ball.getX(), Math.min( p1.getX(), p2.getX()));//
-		minY = (int)Math.min((int)ball.getY(), Math.min( p1.getY(), p2.getY()));//
-		maxX = (int)Math.max((int)ball.getX(), Math.max( p1.getX(), p2.getX()));//
-		maxY = (int)Math.max((int)ball.getY(), Math.max( p1.getY(), p2.getY()));//
+		tempX = ball.getX();
+		tempY = ball.getY();
+		for(Player p: players){
+			tempX = Math.min(tempX, p.getX());
+			tempY = Math.min(tempY, p.getY());
+		}
+		minX = (int)tempX;
+		minY = (int)tempY;
+		
+		tempX = ball.getX();
+		tempY = ball.getY();
+		for(Player p: players){
+			tempX = Math.max(tempX, p.getX());
+			tempY = Math.max(tempY, p.getY());
+		}		
+		maxX = (int)tempX;
+		maxY = (int)tempY;
 		
 		tempX = maxX - minX;//dimensions of the camera's viewing "box"
 		tempY = maxY - minY;
+		//Scale the box so it's in the ratio of the window
 		if(tempX/tempY > SCREENWIDTH/SCREENHEIGHT){
-			tempY = (SCREENHEIGHT/SCREENWIDTH * tempX);//Scale the box so it's in the ratio of the window
+			tempY = (SCREENHEIGHT/SCREENWIDTH * tempX);
 		}else{
 			tempX = (SCREENWIDTH/SCREENHEIGHT * tempY);
 		}

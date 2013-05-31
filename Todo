@@ -30,6 +30,7 @@ round over screen – winners, score, time etc, menu options
 TwoTouch has a gravitational well? 
 slowmo versions of all sounds
 Possibly edit config usage to reflect that neo is not the only player
+Maybe have players be arraylist?
 
 BUG: can't go in corner in squash for puffer
 bug: ball misses midpoint line
