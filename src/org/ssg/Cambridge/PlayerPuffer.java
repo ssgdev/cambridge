@@ -25,8 +25,8 @@ public class PlayerPuffer extends Player{
 	boolean puffup;
 	boolean puffdown;
 	
-	public PlayerPuffer(int n, float[]  consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Player op) {
-		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, op);
+	public PlayerPuffer(int n, float[]  consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn) {
+		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn);
 		
 		DEFAULTNORMALKICK = NORMALKICK;
 		DEFAULTPOWERKICK = POWERKICK;		

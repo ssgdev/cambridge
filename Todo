@@ -67,6 +67,9 @@ lightbike dash
 	shape is triangle, points at charging direction (determined by rightstick) 
 		if angle != rightstickangle theta += omega*etc else no rotating
 twins
+	left twin pushing rbumper brings right twin to life
+	left twin pushing rbumper again draws right twin in
+	right twin has special nametag
 Okami
 
 pau gazul

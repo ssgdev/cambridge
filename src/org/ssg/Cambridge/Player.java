@@ -58,13 +58,14 @@ public abstract class Player implements KeyListener {
 	SoundSystem mySoundSystem;
 	String slowName;//The name of the rumbling sound channel (slow1 or slow2)
 
-	Player otherPlayer;
+	Player[] players;
+	boolean slowMo;
 	
 	int temp;//Used whenever an int is needed temporarily
 	float tempf;
 	float[] tempArr;
 	
-	public Player(int n, float[] consts, int f[], int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Player op){
+	public Player(int n, float[] consts, int f[], int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn){
 
 		playerNum = n;
 		PLAYERSIZE = 20;
@@ -116,7 +117,8 @@ public abstract class Player implements KeyListener {
 		mySoundSystem = ss;
 		slowName = sn;
 
-		otherPlayer = op;
+		players = null;
+		slowMo = false;
 		
 		temp = 0;
 		tempArr = new float[2];
@@ -147,7 +149,7 @@ public abstract class Player implements KeyListener {
 
 	////////////////////////////////////////////////////
 	
-	//Two methods called in every update
+	//Two methods called in most updates
 	
 	public void pollController(int delta){
 		vel[0] = lStickX.getPollData();
@@ -157,7 +159,6 @@ public abstract class Player implements KeyListener {
 		if (Math.abs(vel[1]) < 0.2)
 			vel[1] = 0f;
 		
-		//TODO: Curve
 		curve[0] = rStickX.getPollData();
 		curve[1] = rStickY.getPollData();
 		if(Math.abs(curve[0]) < 0.2)
@@ -177,58 +178,60 @@ public abstract class Player implements KeyListener {
 		
 		//player on player collision handling
 		//TODO: modify for 4P
-		tempf = dist(pos[0], pos[1], otherPlayer.getX(), otherPlayer.getY());
-		if(tempf < (KICKRANGE + otherPlayer.getKickRange())/2){
-			tempArr[0] = otherPlayer.getX()-pos[0];
-			tempArr[1] = otherPlayer.getY()-pos[1];
-			unit(tempArr);
-			tempArr[0]*= (KICKRANGE + otherPlayer.getKickRange())/2 - tempf;
-			tempArr[1]*= (KICKRANGE + otherPlayer.getKickRange())/2 - tempf;
-			
-			//////X AXIS
-			//Get pushed, weighted based on size
-			tempf = KICKRANGE / ( KICKRANGE+ otherPlayer.getKickRange());
-			shiftX(-tempArr[0]*(1-tempf));
-			otherPlayer.shiftX(tempArr[0]*tempf);
-			
-			//Then if anyone got pushed into a wall, pop out
-			if(pos[0]-KICKRANGE/2 <= xyLimit[0]){
-				tempf = xyLimit[0] - pos[0] + KICKRANGE/2;
-			}else if(otherPlayer.getX()-otherPlayer.getKickRange()/2 <= xyLimit[0]){
-				tempf = xyLimit[0] - otherPlayer.getX()+otherPlayer.getKickRange()/2;
-			}else if(pos[0]+KICKRANGE/2 >= xyLimit[1]){
-				tempf = xyLimit[1] - pos[0] - KICKRANGE/2;
-			}else if(otherPlayer.getX() + otherPlayer.getKickRange()/2 >= xyLimit[1]){
-				tempf = xyLimit[1] - otherPlayer.getX() - otherPlayer.getKickRange()/2;
-			}else{
-				tempf = 0;
-			}
-			shiftX(tempf);
-			otherPlayer.shiftX(tempf);
-			
-			//////Y AXIS
-			tempf = KICKRANGE / ( KICKRANGE+ otherPlayer.getKickRange());
-			shiftY(-tempArr[1]*(1-tempf));
-			otherPlayer.shiftY(tempArr[1]*tempf);
-			
-			//Then if anyone got pushed into a wall, pop out
-			if(pos[1]-KICKRANGE/2 <= xyLimit[2]){
-				tempf = xyLimit[2] - pos[1] + KICKRANGE/2;
-			}else if(otherPlayer.getY()-otherPlayer.getKickRange()/2 <= xyLimit[2]){
-				tempf = xyLimit[2] - otherPlayer.getY()+otherPlayer.getKickRange()/2;
-			}else if(pos[1]+KICKRANGE/2 >= xyLimit[3]){
-				tempf = xyLimit[3] - pos[1] - KICKRANGE/2;
-			}else if(otherPlayer.getY() + otherPlayer.getKickRange()/2 >= xyLimit[3]){
-				tempf = xyLimit[3] - otherPlayer.getY() - otherPlayer.getKickRange()/2;
-			}else{
-				tempf = 0;
-			}
-			shiftY(tempf);
-			otherPlayer.shiftY(tempf);
-
-		}
-
+		for(Player otherPlayer: players){
+			if(otherPlayer.getPlayerNum() != playerNum){//If he's not you
+				tempf = dist(pos[0], pos[1], otherPlayer.getX(), otherPlayer.getY());
+				if(tempf < (KICKRANGE + otherPlayer.getKickRange())/2){
+					tempArr[0] = otherPlayer.getX()-pos[0];
+					tempArr[1] = otherPlayer.getY()-pos[1];
+					unit(tempArr);
+					tempArr[0]*= (KICKRANGE + otherPlayer.getKickRange())/2 - tempf;
+					tempArr[1]*= (KICKRANGE + otherPlayer.getKickRange())/2 - tempf;
+					
+					//////X AXIS
+					//Get pushed, weighted based on size
+					tempf = KICKRANGE / ( KICKRANGE+ otherPlayer.getKickRange());
+					shiftX(-tempArr[0]*(1-tempf));
+					otherPlayer.shiftX(tempArr[0]*tempf);
+					
+					//Then if anyone got pushed into a wall, pop out
+					if(pos[0]-KICKRANGE/2 <= xyLimit[0]){
+						tempf = xyLimit[0] - pos[0] + KICKRANGE/2;
+					}else if(otherPlayer.getX()-otherPlayer.getKickRange()/2 <= xyLimit[0]){
+						tempf = xyLimit[0] - otherPlayer.getX()+otherPlayer.getKickRange()/2;
+					}else if(pos[0]+KICKRANGE/2 >= xyLimit[1]){
+						tempf = xyLimit[1] - pos[0] - KICKRANGE/2;
+					}else if(otherPlayer.getX() + otherPlayer.getKickRange()/2 >= xyLimit[1]){
+						tempf = xyLimit[1] - otherPlayer.getX() - otherPlayer.getKickRange()/2;
+					}else{
+						tempf = 0;
+					}
+					shiftX(tempf);
+					otherPlayer.shiftX(tempf);
+					
+					//////Y AXIS
+					tempf = KICKRANGE / ( KICKRANGE+ otherPlayer.getKickRange());
+					shiftY(-tempArr[1]*(1-tempf));
+					otherPlayer.shiftY(tempArr[1]*tempf);
+					
+					//Then if anyone got pushed into a wall, pop out
+					if(pos[1]-KICKRANGE/2 <= xyLimit[2]){
+						tempf = xyLimit[2] - pos[1] + KICKRANGE/2;
+					}else if(otherPlayer.getY()-otherPlayer.getKickRange()/2 <= xyLimit[2]){
+						tempf = xyLimit[2] - otherPlayer.getY()+otherPlayer.getKickRange()/2;
+					}else if(pos[1]+KICKRANGE/2 >= xyLimit[3]){
+						tempf = xyLimit[3] - pos[1] - KICKRANGE/2;
+					}else if(otherPlayer.getY() + otherPlayer.getKickRange()/2 >= xyLimit[3]){
+						tempf = xyLimit[3] - otherPlayer.getY() - otherPlayer.getKickRange()/2;
+					}else{
+						tempf = 0;
+					}
+					shiftY(tempf);
+					otherPlayer.shiftY(tempf);
 		
+				}
+			}
+		}
 	}
 	
 	/////////////////////////////////////////////////////////
@@ -307,6 +310,10 @@ public abstract class Player implements KeyListener {
 	}
 	
 	////////////////////////////////////////////////////
+	
+	public void setPlayers(Player[] p){
+		players = p;
+	}
 	
 	public int getPlayerNum(){
 		return playerNum;
@@ -404,6 +411,10 @@ public abstract class Player implements KeyListener {
 		return powerCoolDown;
 	}
 
+	public void setSlowMo(boolean b){
+		slowMo = b;
+	}
+	
 	public void setLastKick(float bx, float by, float px, float py, float lka){//ball pos, player pos, was it a flash kick
 		lastKickBallPos[0] = bx;
 		lastKickBallPos[1] = by;
@@ -414,10 +425,6 @@ public abstract class Player implements KeyListener {
 
 	public float[] getTrailArr(){
 		return new float[]{lastKickBallPos[0], lastKickBallPos[1], lastKickPos[0], lastKickPos[1]};
-	}
-
-	public void setOtherPlayer(Player p){
-		otherPlayer = p;
 	}
 
 	@Override

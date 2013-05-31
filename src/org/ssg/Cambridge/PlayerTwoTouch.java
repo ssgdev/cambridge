@@ -23,8 +23,8 @@ public class PlayerTwoTouch extends Player{
 	
 	boolean buttonPressed;//The power button, that is
 	
-	public PlayerTwoTouch(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Player op) {
-		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, op);
+	public PlayerTwoTouch(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn) {
+		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn);
 		
 		MAXPOWER = 15;
 		DEFAULTKICK = NORMALKICK*1.2f;
@@ -58,7 +58,6 @@ public class PlayerTwoTouch extends Player{
 					buttonPressed = false;
 			}
 		
-				
 		}
 		
 		updatePos(delta);
