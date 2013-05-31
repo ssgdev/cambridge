@@ -2,6 +2,7 @@ Changelog:
 
 5.31.13
 Made Player abstract, made methods update(), isKicking(), setPower(), flashKick(), activatePower() and powerKeyReleased() abstract.
+Gave PlayerTwoTouch more stationary dribble effect in setKicking()
 
 5.30.13:
 Added player on player collision sliding in Player.updatePos()

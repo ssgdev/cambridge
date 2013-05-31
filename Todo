@@ -29,6 +29,7 @@ Less shitty sound names
 round over screen – winners, score, time etc, menu options
 TwoTouch has a gravitational well? 
 slowmo versions of all sounds
+Possibly edit config usage to reflect that neo is not the only player
 
 BUG: can't go in corner in squash for puffer
 bug: ball misses midpoint line
@@ -60,6 +61,11 @@ joke character
 slingshot
 bat
 lightbike dash
+	must dash all the way to a wall
+	hold charge until it pops, if released, charge fizzles. More charge the further the wall.
+	dash speed faster than neo's slowmo speed
+	shape is triangle, points at charging direction (determined by rightstick) 
+		if angle != rightstickangle theta += omega*etc else no rotating
 twins
 Okami
 

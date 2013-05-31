@@ -110,8 +110,11 @@ public class PlayerTwoTouch extends Player{
 	//I just kicked (power or regular kick) the ball now what
 	@Override
 	public void setKicking(Ball b){
-		if(power == 0)
+		if(power == 0){
 			b.setCanBeKicked(playerNum, false);
+		}else{
+			b.setAcc(new float[]{-b.getVelX(), -b.getVelY()}, 40f*(mag(b.getX()-pos[0],b.getY()-pos[1])/KICKRANGE/2+.6f));
+		}
 		kickingCoolDown = KICKCOOLDOWN;
 	}
 
@@ -145,5 +148,8 @@ public class PlayerTwoTouch extends Player{
 	public Color getColor3(){//return color of powercircle
 		return new Color(color.getRed(), color.getGreen(), color.getBlue(), ((150/MAXPOWER)));
 	}
-
+	
+	public float mag(float a, float b){
+		return (float)Math.sqrt(a*a+b*b);
+	}
 }

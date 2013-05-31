@@ -198,7 +198,7 @@ public class Ball {
 
 //		velMag -= (float)delta / 1000f;//uncomment this because it's funny
 		vel[0]+=acc[0]*(float)delta*accMag*ACCSCALE;
-		vel[1]+=acc[1]*(float)delta*accMag*ACCSCALE;
+		vel[1]+=acc[1]*(float)delta*accMag*ACCSCALE; 
 		unit(vel);
 
 		if(velMag>0) velMag -= velMag*(float)delta * FLOORFRICTION;
