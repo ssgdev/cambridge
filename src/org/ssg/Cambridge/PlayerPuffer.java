@@ -24,6 +24,8 @@ public class PlayerPuffer extends Player{
 	float DEFAULTPOWERKICK;
 	boolean puffup;
 	boolean puffdown;
+	boolean buttonPressed1;
+	boolean buttonPressed2;
 	
 	public PlayerPuffer(int n, float[]  consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn);
@@ -41,6 +43,9 @@ public class PlayerPuffer extends Player{
 		if (cExist) {
 			actionButton2 = this.c.getComponent(Component.Identifier.Button._4); 
 		}
+		
+		buttonPressed1 = false;
+		buttonPressed2 = false;
 	}
 	
 	@Override
@@ -48,15 +53,19 @@ public class PlayerPuffer extends Player{
 		if (cExist) {
 			pollController(delta);
 			
-			if (actionButton.getPollData() == 1.0){
+			if (actionButton.getPollData() == 1.0 && !buttonPressed1){
+				buttonPressed1 = true;
 				activatePower();//inflate
-			}else{
+			}else if(buttonPressed1){
+				buttonPressed1 = false;
 				powerKeyReleased();
 			}
 			
-			if (actionButton2.getPollData() == 1.0){
+			if (actionButton2.getPollData() == 1.0 && !buttonPressed2){
+				buttonPressed2 = true;
 				activateAntiPower();//deflate
-			}else{
+			}else if(buttonPressed2){
+				buttonPressed2 = false;
 				antiPowerKeyReleased();
 			}
 		}

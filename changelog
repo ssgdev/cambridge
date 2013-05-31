@@ -6,6 +6,7 @@ Gave PlayerTwoTouch more stationary dribble effect in setKicking()
 Prep for Twins: Players now contain an array of all players instead of just otherPlayer
 				Players have variable slowMo which is set by PlayerNeo when he goes in and out of slowmo
 				GameplayState does things by iterating through players array instead of referencing p1 and p2
+Added PlayerTwin.
 
 5.30.13:
 Added player on player collision sliding in Player.updatePos()
