@@ -72,6 +72,7 @@ public class PlayerTwoTouch extends Player{
 			kickingCoolDown = 0;
 
 		theta+= (1f-(power*.8f))*omega*(float)delta;
+		if(theta>360) theta-=360;
 		
 		if(extraKickTimer > 0)
 			extraKickTimer -= delta;

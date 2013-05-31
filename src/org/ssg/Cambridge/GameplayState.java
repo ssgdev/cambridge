@@ -65,6 +65,8 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	
 	AngelCodeFont font, font_white, font_small;
 	Image triangle;
+	Image hemicircleL;
+	Image hemicircleR;
 	Image goalScroll1, goalScroll2, goalScroll1v, goalScroll2v, goalScroll;
 	int scrollX;//For the "GOAL" scroll
 	int scrollY;
@@ -114,6 +116,8 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		font_white = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0_white.png"));
 		font_small = new AngelCodeFont(RESDIR + "8bitoperator_small.fnt", new Image(RESDIR + "8bitoperator_small_0.png"));
 		triangle = new Image(RESDIR + "triangle.png");
+		hemicircleL = new Image("res/hemicircleL.png");
+		hemicircleR = new Image("res/hemicircleR.png");
 		goalScroll1 = new Image(RESDIR + "goal.png");
 		goalScroll2 = new Image(RESDIR + "goal_own.png");
 		goalScroll1v = new Image(RESDIR + "goal_v.png");
@@ -121,7 +125,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		goalScroll = goalScroll1;
 	}
 
-	public void initFields(GameContainer gc){
+	public void initFields(GameContainer gc) throws SlickException{
 		
 		Ini ini;
 		
@@ -213,8 +217,8 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		}
 		//p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
 		//p1 = new PlayerPuffer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_E, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
-		PlayerTwin p1L = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", 0);
-		PlayerTwin p1R = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, new float[]{p1L.getX(),p1L.getY()+1}, p1lim, Color.orange, mySoundSystem, "slow1", 1);
+		PlayerTwin p1L = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", 0, hemicircleL);
+		PlayerTwin p1R = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, new float[]{p1L.getX(),p1L.getY()+1}, p1lim, Color.orange, mySoundSystem, "slow1", 1, hemicircleR);
 		p1L.setTwin(p1R);
 		p1R.setTwin(p1L);
 		//p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
@@ -725,7 +729,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		
 	}
 	
-	public void reset(GameContainer gc){
+	public void reset(GameContainer gc) throws SlickException{
 		if(mySoundSystem.playing("slow1"))
 			mySoundSystem.pause("slow1");
 		if(mySoundSystem.playing("slow2"))

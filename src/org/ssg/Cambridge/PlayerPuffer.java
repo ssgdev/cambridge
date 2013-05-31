@@ -73,6 +73,7 @@ public class PlayerPuffer extends Player{
 			kickingCoolDown = 0;
 
 		theta+= (1f-(PLAYERSIZE/(MAXSIZE+100)))*omega*(float)delta;
+		if(theta>360) theta-=360;
 		
 		if(puffup && !puffdown){
 			if(PLAYERSIZE+(float)(delta) > MAXSIZE){

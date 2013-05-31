@@ -38,7 +38,8 @@ public class PlayerNeo extends Player {
 			kickingCoolDown = 0;
 
 		theta+= (1f-(powerCoolDown/POWERCOOLDOWN))*omega*(float)delta;
-
+		if(theta>360) theta-=360;
+		
 		if(power>0){
 			power-=(float)delta;
 			if(power<=0){

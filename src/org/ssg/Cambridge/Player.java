@@ -305,7 +305,7 @@ public abstract class Player implements KeyListener {
 		g.drawImage(triangle, getX()-triangle.getWidth()/2, getY()-getKickRange()/2-25, getColor());
 		g.setColor(getColor());
 		g.setFont(font_small);
-		g.drawString("P"+(getPlayerNum()+1), getX()-font_small.getWidth("P"+(getPlayerNum()+1))/2+1, getY()-font_small.getHeight("P")-getKickRange()/2-30);
+		g.drawString("P"+(getPlayerNum()+1), getX()-font_small.getWidth("P"+(getPlayerNum()+1))/2, getY()-font_small.getHeight("P")-getKickRange()/2-30);
 
 	}
 	
