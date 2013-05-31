@@ -179,7 +179,7 @@ public abstract class Player implements KeyListener {
 		//player on player collision handling
 		//TODO: modify for 4P
 		for(Player otherPlayer: players){
-			if(otherPlayer.getPlayerNum() != playerNum){//If he's not you
+			if(otherPlayer != this){//If he's not you, collide with him
 				tempf = dist(pos[0], pos[1], otherPlayer.getX(), otherPlayer.getY());
 				if(tempf < (KICKRANGE + otherPlayer.getKickRange())/2){
 					tempArr[0] = otherPlayer.getX()-pos[0];
