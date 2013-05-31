@@ -72,7 +72,7 @@ public class PlayerPuffer extends Player{
 		if(kickingCoolDown<0)
 			kickingCoolDown = 0;
 
-		theta+= (1f-(powerCoolDown/POWERCOOLDOWN))*(float)delta;
+		theta+= (1f-(PLAYERSIZE/(MAXSIZE+100)))*omega*(float)delta;
 		
 		if(puffup && !puffdown){
 			if(PLAYERSIZE+(float)(delta) > MAXSIZE){
@@ -137,12 +137,12 @@ public class PlayerPuffer extends Player{
 		power = 0;
 	}
 	
-	@Override
 	//Only care about kickingCoolDown if we're puffing up, otherwise instant kicks like normal
+	@Override
 	public boolean isKicking(){
 		if(puffup)
 			return kickingCoolDown <= 0;
-		return super.isKicking();//which for now is just true;
+		return true;//which for now is just true;
 	}
 	
 	@Override

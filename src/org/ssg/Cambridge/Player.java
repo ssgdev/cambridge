@@ -16,7 +16,7 @@ import org.newdawn.slick.geom.Shape;
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
 
-public class Player implements KeyListener {
+public abstract class Player implements KeyListener {
 
 	boolean inputOn;
 
@@ -96,7 +96,7 @@ public class Player implements KeyListener {
 		curve = new float[]{0,0};
 		velMag = VELMAG;
 		theta = 0;
-		omega = 1f;
+		omega = .5f;
 
 		up = false;
 		down = false;
@@ -123,10 +123,31 @@ public class Player implements KeyListener {
 	}
 
 	/////////////////////////////////////////////////////
-	public void update(int delta){
-		//Each player has a different one of these
-		//But call the basic two methods below
+	public abstract void update(int delta);
+	
+	public abstract void activatePower();
+	
+	public abstract void powerKeyReleased();
+	
+	//Am I able to kick?
+	public abstract boolean isKicking();
+	
+	//Is this kick a flash kick?
+	public abstract boolean flashKick();
+	
+	//I just performed a flash kick now what?
+	public abstract void setPower();
+	
+	//Not an abstract method, but put here for organization purposes
+	//I just kicked (any kick) the ball now what
+	public void setKicking(Ball b){
+		b.setCanBeKicked(playerNum, false);
+		kickingCoolDown = KICKCOOLDOWN;
 	}
+
+	////////////////////////////////////////////////////
+	
+	//Two methods called in every update
 	
 	public void pollController(int delta){
 		vel[0] = lStickX.getPollData();
@@ -208,12 +229,6 @@ public class Player implements KeyListener {
 		}
 
 		
-	}
-	
-	//////////////////////////////////////////////////////////
-	
-	public void activatePower(){
-		//Each player has a different one of these
 	}
 	
 	/////////////////////////////////////////////////////////
@@ -359,17 +374,6 @@ public class Player implements KeyListener {
 		return new Color(color.getRed(), color.getGreen(), color.getBlue(), lastKickAlpha);
 	}
 
-	public boolean isKicking(){
-		//return kickingCoolDown <= 0;
-		return true;
-	}
-
-	//I just kicked (any kick) the ball now what
-	public void setKicking(Ball b){
-		b.setCanBeKicked(playerNum, false);
-		kickingCoolDown = KICKCOOLDOWN;
-	}
-
 	public float kickStrength(){
 		if(power>0){
 			return POWERKICK;
@@ -392,18 +396,8 @@ public class Player implements KeyListener {
 		return false;
 	}
 	
-	//Is this kick a flash kick
-	public boolean flashKick(){
-		return isPower();
-	}
-	
 	public float getPower(){
 		return power;
-	}
-
-	//I just performed a flash kick now what
-	public void setPower(){
-		
 	}
 	
 	public float getPowerCoolDown(){
@@ -488,10 +482,6 @@ public class Player implements KeyListener {
 		}
 	}
 
-	public void powerKeyReleased(){
-		//Not always used
-	}
-	
 	@Override
 	public void inputEnded() {
 		inputOn = false;

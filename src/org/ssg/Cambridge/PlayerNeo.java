@@ -37,7 +37,7 @@ public class PlayerNeo extends Player {
 		if(kickingCoolDown<0)
 			kickingCoolDown = 0;
 
-		theta+= (1f-(powerCoolDown/POWERCOOLDOWN))*(float)delta;
+		theta+= (1f-(powerCoolDown/POWERCOOLDOWN))*omega*(float)delta;
 
 		if(power>0){
 			power-=(float)delta;
@@ -77,6 +77,11 @@ public class PlayerNeo extends Player {
 	}
 	
 	@Override
+	public void powerKeyReleased() {
+		//Does nothing
+	}
+	
+	@Override
 	public void setPower(){
 		power = 0;//
 		velMag = VELMAG;
@@ -87,6 +92,17 @@ public class PlayerNeo extends Player {
 	@Override
 	public boolean isSlowMoPower(){
 		return isPower() && true;
+	}
+	
+	@Override
+	public boolean isKicking(){
+		return true;
+	}
+	
+	//Is this kick a flash kick
+	@Override
+	public boolean flashKick(){
+		return isPower();
 	}
 	
 }

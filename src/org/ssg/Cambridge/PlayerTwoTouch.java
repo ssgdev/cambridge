@@ -44,8 +44,6 @@ public class PlayerTwoTouch extends Player{
 	@Override
 	public void update(int delta){
 		
-		super.update(delta);
-		
 		if (cExist) {
 			
 			pollController(delta);
@@ -74,7 +72,7 @@ public class PlayerTwoTouch extends Player{
 		if(kickingCoolDown<0)
 			kickingCoolDown = 0;
 
-		theta+= (1f-(power*.8f))*(float)delta;
+		theta+= (1f-(power*.8f))*omega*(float)delta;
 		
 		if(extraKickTimer > 0)
 			extraKickTimer -= delta;
@@ -121,7 +119,7 @@ public class PlayerTwoTouch extends Player{
 	@Override
 	public boolean isKicking(){
 		if(power==0)
-			return super.isKicking();
+			return true;
 		if(kickingCoolDown<=0)
 			return true;
 		return false;
@@ -140,7 +138,7 @@ public class PlayerTwoTouch extends Player{
 		lastKickBallPos[1] = by;
 		lastKickPos[0] = px;
 		lastKickPos[1] = py;
-		
+		//TwoTouch doesn't have the last kick alpha
 	}
 	
 	@Override
