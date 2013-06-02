@@ -168,13 +168,22 @@ public abstract class Player implements KeyListener {
 	}
 	
 	public void updatePos(int delta){
-		temp = (int)(pos[0]+vel[0]*velMag*(float)delta);
-		if(temp-KICKRANGE/2>=xyLimit[0] && temp+KICKRANGE/2<=xyLimit[1])
-			pos[0]=temp;
+		pos[0] = (int)(pos[0]+vel[0]*velMag*(float)delta);
+		if(pos[0]<xyLimit[0]+KICKRANGE/2)
+			pos[0]=xyLimit[0]+KICKRANGE/2;
+		if(pos[0]>xyLimit[1]-KICKRANGE/2)
+			pos[0]=xyLimit[1]-KICKRANGE/2;
+		pos[1]= (int)(pos[1]+vel[1]*velMag*(float)delta);
+		if(pos[1]<xyLimit[2]+KICKRANGE/2)
+			pos[1]=xyLimit[2]+KICKRANGE/2;
+		if(pos[1]>xyLimit[3]-KICKRANGE/2)
+			pos[1]=xyLimit[3]-KICKRANGE/2;
+		
+//		if(temp-KICKRANGE/2>=xyLimit[0] && temp+KICKRANGE/2<=xyLimit[1])
+//			pos[0]=temp;
 
-		temp = (int)(pos[1]+vel[1]*velMag*(float)delta);
-		if(temp-KICKRANGE/2>=xyLimit[2] && temp+KICKRANGE/2<=xyLimit[3])
-			pos[1]=temp;
+//		temp = 
+//		if(temp-KICKRANGE/2>=xyLimit[2] && temp+KICKRANGE/2<=xyLimit[3])
 		
 		//player on player collision handling
 		//TODO: modify for 4P

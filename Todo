@@ -24,16 +24,23 @@ Have slowdown factor be part of config?
 Make Player abstract – DONE
 Player On Player Collision handling – DONE
 Make KickCoolDown only a visual effect, and have kicking basically be instant – DONE
-make setPlayer set the whole array of players, for case of 4P
+make setPlayer set the whole array of players, for case of 4P – DONE
 Less shitty sound names
 round over screen – winners, score, time etc, menu options
 TwoTouch has a gravitational well? 
-slowmo versions of all sounds
+Sounds + slowmo versions of all sounds
 Possibly edit config usage to reflect that neo is not the only player
 Maybe have players be arraylist?
-Something to help get ball out of corners/away from walls, prevent rapid bounceback
+Something to help get ball out of corners/away from walls, prevent rapid bounceback or getting stuck in a corner
+Make actioncam less intense
+	Have targets for pos and scale but ease into them much more gradually
+	Maybe delay the camera transforms a bit so if the ball comes right back the camera doesn't jerk
+	Anchor to wall if near wall, so camera doesn't jerk when bouncing off the wall repeatedly? (Set min and max for the camera positions) – DONE
+		Only prevents judder if you're all inside the minimum sized box already
 
-BUG: can't go in corner in squash for puffer
+BUG: ball gets stuck in wall sometimes
+BUG: can't go in corner in squash for puffer sometimes (Maybe it's that next step would take him into the wall?)
+	SOLVED: Changed from "if not out of bounds, move" to "move, if out of bounds, put back in bounds"
 bug: ball misses midpoint line
 	SOLVED: increase threshold for ball detection and teleport ball SLIGHTLY
 bug: ball re-enters arena from not side

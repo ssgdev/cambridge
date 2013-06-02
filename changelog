@@ -1,5 +1,9 @@
 Changelog:
 
+6.2.13
+Changed player collision with wall code so that players can get flush with wall
+Actioncam has x and y limits of translation.
+
 5.31.13
 Made Player abstract, made methods update(), isKicking(), setPower(), flashKick(), activatePower() and powerKeyReleased() abstract.
 Gave PlayerTwoTouch more stationary dribble effect in setKicking()
@@ -7,6 +11,7 @@ Prep for Twins: Players now contain an array of all players instead of just othe
 				Players have variable slowMo which is set by PlayerNeo when he goes in and out of slowmo
 				GameplayState does things by iterating through players array instead of referencing p1 and p2
 Added PlayerTwin.
+Added Actioncam == 0 functionality
 
 5.30.13:
 Added player on player collision sliding in Player.updatePos()

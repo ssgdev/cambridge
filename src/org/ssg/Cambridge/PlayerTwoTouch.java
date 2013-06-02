@@ -1,5 +1,6 @@
 /**
 TODO:
+gravity well
 slowmo version of activation sound
  */
 
@@ -18,7 +19,7 @@ public class PlayerTwoTouch extends Player{
 	float DEFAULTKICK;
 	float DEFAULTKICKCOOLDOWN;
 	float EXTRAKICK;
-	int EXTRAKICKTIME = 50;
+	int EXTRAKICKTIME = 100;
 	int extraKickTimer;
 	
 	boolean buttonPressed;//The power button, that is
@@ -28,7 +29,7 @@ public class PlayerTwoTouch extends Player{
 		
 		MAXPOWER = 15;
 		DEFAULTKICK = NORMALKICK*1.2f;
-		DEFAULTKICKCOOLDOWN = KICKCOOLDOWN;
+		DEFAULTKICKCOOLDOWN = KICKCOOLDOWN*2;
 		EXTRAKICK = DEFAULTKICK*2f;
 		KICKRANGE *= 1.5f;
 		

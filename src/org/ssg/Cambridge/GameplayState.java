@@ -59,8 +59,11 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	private int minX, minY;//The top left bounds of active objects
 	private int maxX, maxY;// bottom right bounds
 	float tempX, tempY;//Width and height of camera 'box'
-	private int viewX, viewY;//Top left corner of the camera
-	private float scaleFactor;
+	private float targetViewX, targetViewY;
+	private float[] viewVel;
+	private float[] viewAcc;
+	private float viewX, viewY;//Top left corner of the camera
+	private float scaleFactor, targetScaleFactor;
 	private int boundingWidth = 100;
 	
 	AngelCodeFont font, font_white, font_small;
@@ -94,6 +97,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	boolean c1Exist, c2Exist;
 	
 	boolean temp;
+	float tempf;
 	
 	public GameplayState(int i, boolean renderoff, int gt){
 		stateID = i;
@@ -178,7 +182,13 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		maxY = FIELDHEIGHT/2+(int)SCREENHEIGHT/2;
 		viewX = minX;
 		viewY = minX;
+		targetViewX = viewX;
+		targetViewY = viewY;
+		viewVel = new float[2];
+		viewAcc = new float[2];
 		scaleFactor = 1;
+		
+		
 		if(maxZoom == 0){
 			if(GOALTYPE == 0){
 				maxZoom = 2;
@@ -222,8 +232,8 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		//p1L.setTwin(p1R);
 		//p1R.setTwin(p1L);
 		//p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
-		PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2");
-		//PlayerNeo p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2");
+		//PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2");
+		PlayerNeo p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2");
 
 		players = new Player[]{p1 ,p2};
 		for(Player p: players)
@@ -514,7 +524,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		
 		//Put ball back in play
 		if(scored){
-			if(Math.abs(ball.getX()-targetX)<10f){
+			if(Math.abs(ball.getX()-targetX)<15f){
 				temp = true;
 				for(Player p: players){if(dist(p) < p.getKickRange()/2){temp = false;}}
 				if(temp){
@@ -720,10 +730,18 @@ public class GameplayState extends BasicGameState implements KeyListener{
 //		viewY = FIELDHEIGHT +10 - (int)tempY;
 
 		if(ACTIONCAM == 1){
-			viewX = minX - (((int)tempX - (maxX - minX))/2);
-			viewY = minY - (((int)tempY - (maxY - minY))/2);
+			targetViewX = minX - (((int)tempX - (maxX - minX))/2);
+			targetViewY = minY - (((int)tempY - (maxY - minY))/2);
 			
-			scaleFactor = SCREENWIDTH/tempX;
+			if(viewX != targetViewX)
+				viewX += (targetViewX-viewX)/50f;
+			if(viewY != targetViewY)
+				viewY += (targetViewY-viewY)/50f;
+			
+			targetScaleFactor = SCREENWIDTH/tempX;
+			
+			if(scaleFactor != targetScaleFactor)
+				scaleFactor += (targetScaleFactor - scaleFactor)/50f;
 		}else{
 			viewX = -(int)(tempX-FIELDWIDTH)/2;
 			viewY = -(int)(tempY-FIELDHEIGHT)/2;
@@ -778,6 +796,19 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		return vx/Math.abs(vx) == (float)dir;
 	}
 	
+	public void unit(float[] f){
+		if(f[0]==0 && f[1]==0){
+			return;
+		}else if (f[0]==0 && f[1]!=0 ){
+			f[1]=f[1]/Math.abs(f[1]);
+		}else if( f[0]!=0 && f[1]==0){
+			f[0]=f[0]/Math.abs(f[0]);
+		}else{
+			tempf = (float)Math.sqrt(f[0]*f[0]+f[1]*f[1]); 
+			f[0]/= tempf;
+			f[1]/= tempf;
+		}
+	}
 	public void setSoundSystem(SoundSystem ss){
 		mySoundSystem=ss;
 	}

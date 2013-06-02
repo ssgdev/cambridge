@@ -51,14 +51,14 @@ public class PlayerTwin extends Player{
 		theta2 = 0;
 		
 		twinNum = tn;
-		if(twinNum== 0){
+		if(twinNum== 0 && cExist){
 			nukes = 1;
 			moveStickX = lStickX;
 			moveStickY = lStickY;
 			otherStickX = rStickX;
 			otherStickY = rStickY;
 			//actionButton = this.c.getComponent(Component.Identifier.Button._5);
-		}else if(twinNum==1){
+		}else if(twinNum==1 && cExist){
 			nukes = 1;
 			actionButton = this.c.getComponent(Component.Identifier.Button._4);
 			moveStickX = rStickX;
@@ -137,7 +137,6 @@ public class PlayerTwin extends Player{
 		}
 		if(KICKRANGE > DESIREDKICKRANGE)
 			KICKRANGE-=2;
-		
 
 		
 		if(nukes==0){
