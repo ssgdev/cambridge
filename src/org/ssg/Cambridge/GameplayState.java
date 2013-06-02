@@ -734,14 +734,14 @@ public class GameplayState extends BasicGameState implements KeyListener{
 			targetViewY = minY - (((int)tempY - (maxY - minY))/2);
 			
 			if(viewX != targetViewX)
-				viewX += (targetViewX-viewX)/50f;
+				viewX += (targetViewX-viewX)*(float)(delta)/100f;
 			if(viewY != targetViewY)
-				viewY += (targetViewY-viewY)/50f;
+				viewY += (targetViewY-viewY)*(float)(delta)/100f;
 			
 			targetScaleFactor = SCREENWIDTH/tempX;
 			
 			if(scaleFactor != targetScaleFactor)
-				scaleFactor += (targetScaleFactor - scaleFactor)/50f;
+				scaleFactor += (targetScaleFactor - scaleFactor)*(float)(delta)/100f;
 		}else{
 			viewX = -(int)(tempX-FIELDWIDTH)/2;
 			viewY = -(int)(tempY-FIELDHEIGHT)/2;

@@ -2,7 +2,7 @@ Changelog:
 
 6.2.13
 Changed player collision with wall code so that players can get flush with wall
-Actioncam has x and y limits of translation.
+Slightly smoothed camera scrolling
 
 5.31.13
 Made Player abstract, made methods update(), isKicking(), setPower(), flashKick(), activatePower() and powerKeyReleased() abstract.
