@@ -60,8 +60,6 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	private int maxX, maxY;// bottom right bounds
 	float tempX, tempY;//Width and height of camera 'box'
 	private float targetViewX, targetViewY;
-	private float[] viewVel;
-	private float[] viewAcc;
 	private float viewX, viewY;//Top left corner of the camera
 	private float scaleFactor, targetScaleFactor;
 	private int boundingWidth = 100;
@@ -184,10 +182,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		viewY = minX;
 		targetViewX = viewX;
 		targetViewY = viewY;
-		viewVel = new float[2];
-		viewAcc = new float[2];
 		scaleFactor = 1;
-		
 		
 		if(maxZoom == 0){
 			if(GOALTYPE == 0){
@@ -225,15 +220,15 @@ public class GameplayState extends BasicGameState implements KeyListener{
 			p1lim = new int[]{0,FIELDWIDTH/2, 0, FIELDHEIGHT};
 			p2lim = new int[]{FIELDWIDTH/2, FIELDWIDTH, 0, FIELDHEIGHT};
 		}
-		//PlayerTwoTouch p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
-		PlayerPuffer p1 = new PlayerPuffer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_E, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
+		PlayerTwoTouch p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", ball);
+		//PlayerPuffer p1 = new PlayerPuffer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_E, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
 		//PlayerTwin p1L = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", 0, hemicircleL);
 		//PlayerTwin p1R = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, new float[]{p1L.getX(),p1L.getY()+1}, p1lim, Color.orange, mySoundSystem, "slow1", 1, hemicircleR);
 		//p1L.setTwin(p1R);
 		//p1R.setTwin(p1L);
 		//p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
-		//PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2");
-		PlayerNeo p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2");
+		PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", ball);
+		//PlayerNeo p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2");
 
 		players = new Player[]{p1 ,p2};
 		for(Player p: players)
@@ -594,7 +589,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 						resetVelocity[1] = 1f;
 					}
 					
-				}else if(NAME.equals(SOCCER)){//If two goals, put in from sides at center
+				}else if(NAME.equals(SOCCER) || NAME.equals(HOCKEY)){//If two goals, put in from sides at center
 					targetX = FIELDWIDTH/2;
 					if(ball.getLastKicker()==0){
 						targetY=0;
@@ -637,7 +632,6 @@ public class GameplayState extends BasicGameState implements KeyListener{
 					kickFloat[1] = (ball.getPrevY()-p.getY());
 					ball.setVel(kickFloat, p.kickStrength());
 					
-					//Curve the ball TODO: put an if statement around spinFloat, for controller and without controller
 					spinFloat = normalNeg(p.getCurve(), kickFloat);
 					ball.setAcc(spinFloat, p.kickStrength());
 					ball.setLastKicker(p.getPlayerNum());
@@ -712,37 +706,26 @@ public class GameplayState extends BasicGameState implements KeyListener{
 			tempY = SCREENHEIGHT/maxZoom;
 		}
 
-		tempX = (tempX*1.2f);
-		tempY = (tempY*1.2f);
-		
-//		if(tempX > FIELDWIDTH){
-//			tempX = FIELDWIDTH;
-//			tempY = FIELDHEIGHT;
-//		}
-
-//		if(viewX<-10)
-//		viewX = -10;
-//	if(viewY<-10)
-//		viewY = -10;
-//	if(viewX+(int)tempX > FIELDWIDTH+10)
-//		viewX = FIELDWIDTH +10 - (int)tempX;
-//	if(viewY+(int)tempY > FIELDHEIGHT+10)
-//		viewY = FIELDHEIGHT +10 - (int)tempY;
-
 		if(ACTIONCAM == 1){
+			tempX = (tempX*1.4f);
+			tempY = (tempY*1.4f);
+			
 			targetViewX = minX - (((int)tempX - (maxX - minX))/2);
 			targetViewY = minY - (((int)tempY - (maxY - minY))/2);
 			
 			if(viewX != targetViewX)
-				viewX += (targetViewX-viewX)*(float)(delta)/100f;
+				viewX += (targetViewX-viewX)*(float)(delta)/300f;
 			if(viewY != targetViewY)
-				viewY += (targetViewY-viewY)*(float)(delta)/100f;
+				viewY += (targetViewY-viewY)*(float)(delta)/300f;
 			
 			targetScaleFactor = SCREENWIDTH/tempX;
 			
 			if(scaleFactor != targetScaleFactor)
-				scaleFactor += (targetScaleFactor - scaleFactor)*(float)(delta)/100f;
+				scaleFactor += (targetScaleFactor - scaleFactor)*(float)(delta)/240f;
 		}else{
+			tempX = tempX * 1.2f;
+			tempY = tempY * 1.2f;
+			
 			viewX = -(int)(tempX-FIELDWIDTH)/2;
 			viewY = -(int)(tempY-FIELDHEIGHT)/2;
 			scaleFactor = SCREENWIDTH/tempX;

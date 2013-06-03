@@ -11,7 +11,7 @@ import org.newdawn.slick.Color;
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
 
-public class PlayerTwoTouch extends Player{
+public class PlayerGravitron extends Player{
 	//Power kicks are super weak
 	//Normal kicks slightly stronger
 	//First kick after coming out of power is a little stronger
@@ -25,7 +25,7 @@ public class PlayerTwoTouch extends Player{
 	
 	boolean buttonPressed;//The power button, that is
 	
-	public PlayerTwoTouch(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Ball b) {
+	public PlayerGravitron(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Ball b) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn);
 		
 		MAXPOWER = 15;

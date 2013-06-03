@@ -125,9 +125,22 @@ public class Ball {
 	public void setAcc(float[] f, float am){
 		acc = f;
 		unit(acc);
-		accMag = am;
+		if(ACCSCALE == 0){
+			accMag = 0;
+		}else{
+			accMag = am * ACCSCALE;
+		}
 	}
 
+	//special setAcc for PlayerTwoTouch to use, so that it can still pull the ball if there's no curving (ACCSCALE = 0)
+	public void setTwoTouchAcc(float[] f, float am){
+		if(!scored){
+			acc = f;
+			unit(acc);
+			accMag = am;
+		}
+	}
+	
 	public void setScored(boolean b){
 		scored = b;
 	}
@@ -197,8 +210,8 @@ public class Ball {
 		}
 
 //		velMag -= (float)delta / 1000f;//uncomment this because it's funny
-		vel[0]+=acc[0]*(float)delta*accMag*ACCSCALE;
-		vel[1]+=acc[1]*(float)delta*accMag*ACCSCALE; 
+		vel[0]+=acc[0]*(float)delta*accMag;
+		vel[1]+=acc[1]*(float)delta*accMag;
 		unit(vel);
 
 		if(velMag>0) velMag -= velMag*(float)delta * FLOORFRICTION;
