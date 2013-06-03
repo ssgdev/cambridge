@@ -159,8 +159,8 @@ public abstract class Player implements KeyListener {
 		if (Math.abs(vel[1]) < 0.2)
 			vel[1] = 0f;
 		
-		curve[0] = rStickX.getPollData();
-		curve[1] = rStickY.getPollData();
+		curve[0] = -rStickX.getPollData();
+		curve[1] = -rStickY.getPollData();
 		if(Math.abs(curve[0]) < 0.2)
 			curve[0] = 0;
 		if(Math.abs(curve[1]) < 0.2)
