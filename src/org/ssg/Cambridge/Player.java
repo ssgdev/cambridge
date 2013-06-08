@@ -154,16 +154,16 @@ public abstract class Player implements KeyListener {
 	public void pollController(int delta){
 		vel[0] = lStickX.getPollData();
 		vel[1] = lStickY.getPollData();
-		if (Math.abs(vel[0]) < 0.2)
+		if (Math.abs(vel[0]) < 0.1)
 			vel[0] = 0f;
-		if (Math.abs(vel[1]) < 0.2)
+		if (Math.abs(vel[1]) < 0.1)
 			vel[1] = 0f;
 		
-		curve[0] = rStickX.getPollData();
-		curve[1] = rStickY.getPollData();
-		if(Math.abs(curve[0]) < 0.2)
+		curve[0] = -rStickX.getPollData();
+		curve[1] = -rStickY.getPollData();
+		if(Math.abs(curve[0]) < 0.1)
 			curve[0] = 0;
-		if(Math.abs(curve[1]) < 0.2)
+		if(Math.abs(curve[1]) < 0.1)
 			curve[1] = 0;
 	}
 	
@@ -352,6 +352,11 @@ public abstract class Player implements KeyListener {
 		return vel;
 	}
 	
+	//Used to add velocity component of player to kick
+	public float[] getKick(){
+		return vel;
+	}
+	
 	public float[] getCurve() {
 		if(cExist)
 			return curve;
@@ -536,4 +541,37 @@ public abstract class Player implements KeyListener {
 		}
 	}
 	
+	public float[] approachTargets(float[] val, float[] targets, float inc){
+
+		for(int i=0; i<val.length;i++){
+			if(val[i]<targets[i]){
+				val[i]+=inc;
+				if(val[i]>targets[i])
+					val[i]=targets[i];
+			}
+			if(val[i]>targets[i]){
+				val[i]-=inc;
+				if(val[i]<targets[i])
+					val[i]=targets[i];
+			}
+		}
+		
+		return val;
+	}
+	
+	public float approachTarget(float val, float target, float inc){
+
+		if(val<target){
+			val+=inc;
+			if(val>target)
+				val=target;
+		}
+		if(val>target){
+			val-=inc;
+			if(val<target)
+				val=target;
+		}
+
+		return val;
+	}
 }

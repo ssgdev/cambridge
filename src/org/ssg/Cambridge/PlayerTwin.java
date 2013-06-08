@@ -84,9 +84,9 @@ public class PlayerTwin extends Player{
 			if(nukes>0){
 				vel[0] = moveStickX.getPollData();
 				vel[1] = moveStickY.getPollData();
-				if (Math.abs(vel[0]) < 0.2)
+				if (Math.abs(vel[0]) < 0.1)
 					vel[0] = 0f;
-				if (Math.abs(vel[1]) < 0.2)
+				if (Math.abs(vel[1]) < 0.1)
 					vel[1] = 0f;
 			}else{
 				vel[0]=0;
@@ -96,9 +96,9 @@ public class PlayerTwin extends Player{
 			if(twin.numNukes()==0){
 				curve[0] = otherStickX.getPollData();
 				curve[1] = otherStickY.getPollData();
-				if(Math.abs(curve[0]) < 0.2)
+				if(Math.abs(curve[0]) < 0.1)
 					curve[0] = 0;
-				if(Math.abs(curve[1]) < 0.2)
+				if(Math.abs(curve[1]) < 0.1)
 					curve[1] = 0;
 			}
 			

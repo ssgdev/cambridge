@@ -1,5 +1,19 @@
 Changelog:
 
+6.7.13
+Revamped TwoTouch
+Fixed bug in ball.getPrevX() : forgot to multiply by velMag
+Fixed Drawing of PowerKick trails to accommodate the new kicking mechanics
+Fixed bug in TwoTouch: He will now choose the direction of shortest rotation when rotating in lock around the ball
+Fixed bug in TwoTouch: Will no longer rotate through walls in a lock
+Added teamColors array so goals will draw correct colour when Twins are on the field
+
+6.6.13
+Changed kicking mechanics to account for movement of player at time of kicking
+
+6.3.13
+Made PlayerTwoTouch attract the ball ('PlayerTwoTouch Revert'/ 'PlayerGravitron' mess) Prototype
+
 6.2.13
 Changed player collision with wall code so that players can get flush with wall
 Slightly smoothed camera scrolling

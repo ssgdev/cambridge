@@ -92,11 +92,11 @@ public class Ball {
 	}
 
 	public float getPrevX(){
-		return pos[0]-12f*vel[0];
+		return pos[0]-12f*vel[0]*velMag;
 	}
 
 	public float getPrevY(){
-		return pos[1]-12f*vel[1];
+		return pos[1]-12f*vel[1]*velMag;
 	}
 
 	public void setPos(float x, float y){

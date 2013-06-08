@@ -55,6 +55,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	public float BALLSIZE = 20f;
 	public int postWidth;//Is actually the size of goalie box
 	public Goal[] goals;
+	public Color[] teamColors;
 	
 	private int minX, minY;//The top left bounds of active objects
 	private int maxX, maxY;// bottom right bounds
@@ -220,19 +221,23 @@ public class GameplayState extends BasicGameState implements KeyListener{
 			p1lim = new int[]{0,FIELDWIDTH/2, 0, FIELDHEIGHT};
 			p2lim = new int[]{FIELDWIDTH/2, FIELDWIDTH, 0, FIELDHEIGHT};
 		}
-		PlayerTwoTouch p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", ball);
+		//PlayerTwoTouch p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", ball);
 		//PlayerPuffer p1 = new PlayerPuffer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_E, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
-		//PlayerTwin p1L = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", 0, hemicircleL);
-		//PlayerTwin p1R = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, new float[]{p1L.getX(),p1L.getY()+1}, p1lim, Color.orange, mySoundSystem, "slow1", 1, hemicircleR);
-		//p1L.setTwin(p1R);
-		//p1R.setTwin(p1L);
-		//p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
-		PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", ball);
-		//PlayerNeo p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2");
+		PlayerTwin p1L = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", 0, hemicircleL);
+		PlayerTwin p1R = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, new float[]{p1L.getX(),p1L.getY()+1}, p1lim, Color.orange, mySoundSystem, "slow1", 1, hemicircleR);
+		p1L.setTwin(p1R);
+		p1R.setTwin(p1L);
+		//PlayerNeo p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
+		//PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", ball);
+		PlayerNeo p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2");
 
-		players = new Player[]{p1 ,p2};
+		players = new Player[]{p1L, p1R, p2};
 		for(Player p: players)
 			p.setPlayers(players);
+		
+		teamColors = new Color[2];
+		teamColors[0] = players[0].getColor();
+		teamColors[1] = players[players.length-1].getColor();
 		
 		Input input = gc.getInput();
 		//input.addKeyListener(ball);
@@ -312,7 +317,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		
 		//Draw goals
 		for(Goal goal: goals){
-			g.setColor(players[goal.getPlayer()].getColor().darker());
+			g.setColor(teamColors[goal.getPlayer()].darker());
 			g.fillRect(goal.getX(), goal.getMinY(), goal.getWidth(), goal.getHeight());
 		}
 		//g.fillRect(FIELDWIDTH-10, FIELDHEIGHT/2-GOALWIDTH/2, 15, GOALWIDTH);
@@ -630,14 +635,18 @@ public class GameplayState extends BasicGameState implements KeyListener{
 					//Take the ball a step back, to prevent going through the player
 					kickFloat[0] = (ball.getPrevX()-p.getX());
 					kickFloat[1] = (ball.getPrevY()-p.getY());
-					ball.setVel(kickFloat, p.kickStrength());
+					
+					unit(kickFloat);
+					kickFloat[0] += p.getKick()[0];
+					kickFloat[1] += p.getKick()[1];
+					ball.setVel(kickFloat, p.kickStrength()+mag(p.getKick()));
 					
 					spinFloat = normalNeg(p.getCurve(), kickFloat);
 					ball.setAcc(spinFloat, p.kickStrength());
 					ball.setLastKicker(p.getPlayerNum());
 					
 					if(p.flashKick()){//If you want the kick flash and sound effect
-						p.setLastKick((int)ball.getPrevX(), (int)ball.getPrevY(), p.getX(), p.getY(), 1f);//player stores coordinates of itself and ball at last kicking event;
+						p.setLastKick(ball.getPrevX(), ball.getPrevY(), ball.getPrevX()+kickFloat[0], ball.getPrevY()+kickFloat[1], 1f);//player stores coordinates of itself and ball at last kicking event;
 						p.setPower();
 						mySoundSystem.quickPlay( true, "pow2.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 					}else{

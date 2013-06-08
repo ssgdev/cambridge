@@ -1,5 +1,12 @@
 TODO:
 
+Have glancing kicks? Maybe not
+Twins goal colour bug DONE
+Make TwoTouch rotate in the correct direction DONE
+Make TwoTouch not go through walls in lock DONE
+Decide: Should TwoTouch's velocity vector (from the right stick) continue to affect the kick even if the angle is frozen by a wall collision?
+Make TwoTouch velocity sticky in lock mode so if you let go of the stick the kick is still powerful, or just have visual indication of what's going on
+Add TwoTouch powercircle effects
 Don't create variables in update
 Xbox Controller Support
 Menus and stuff
@@ -27,16 +34,13 @@ Make KickCoolDown only a visual effect, and have kicking basically be instant – 
 make setPlayer set the whole array of players, for case of 4P – DONE
 Less shitty sound names
 round over screen – winners, score, time etc, menu options
-TwoTouch has a gravitational well? 
 Sounds + slowmo versions of all sounds
 Possibly edit config usage to reflect that neo is not the only player
 Maybe have players be arraylist?
 Something to help get ball out of corners/away from walls, prevent rapid bounceback or getting stuck in a corner
 Make actioncam less intense
-	Have targets for pos and scale but ease into them much more gradually
-	Maybe delay the camera transforms a bit so if the ball comes right back the camera doesn't jerk
-	Anchor to wall if near wall, so camera doesn't jerk when bouncing off the wall repeatedly? (Set min and max for the camera positions) – DONE
-		Only prevents judder if you're all inside the minimum sized box already
+	Have targets for pos and scale but ease into them much more gradually  – DONE
+	Increase size of bounding box DONE
 
 BUG: ball gets stuck in wall sometimes
 BUG: can't go in corner in squash for puffer sometimes (Maybe it's that next step would take him into the wall?)

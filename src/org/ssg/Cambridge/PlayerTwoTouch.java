@@ -12,40 +12,35 @@ import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
 
 public class PlayerTwoTouch extends Player{
-	//Power kicks are super weak
-	//Normal kicks slightly stronger
-	//First kick after coming out of power is a little stronger
-	Ball ball;
+
+	boolean buttonPressed;//The power button, that is
 	
 	float DEFAULTKICK;
-	float DEFAULTKICKCOOLDOWN;
 	float EXTRAKICK;
-	int EXTRAKICKTIME = 100;
-	int extraKickTimer;
+	float[] ballPos;
 	
-	boolean buttonPressed;//The power button, that is
+	//only used during lock
+	float angle;//Atan2 returns from pi to -pi
+	float angleTarget;
+	float angle2;//Versions of angle and angleTarget respecified from 0 to 2pi
+	float angleTarget2;
+
+	//lock occurs when you touch the ball in power: the ball freezes, and you're limited to circling around it, until power is released
+	boolean lock;
 	
 	public PlayerTwoTouch(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Ball b) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn);
+
+		DEFAULTKICK = NORMALKICK;
+		EXTRAKICK = NORMALKICK * 1.5f;
+		POWERKICK = 0;
 		
-		MAXPOWER = 15;
-		DEFAULTKICK = NORMALKICK*1.2f;
-		DEFAULTKICKCOOLDOWN = KICKCOOLDOWN*2;
-		EXTRAKICK = DEFAULTKICK*2f;
-		KICKRANGE *= 1.5f;
+		lock = false;
+		angleTarget = 0;
+		angleTarget2 = 0;
+		angle = 0;
 		
-		NORMALKICK = DEFAULTKICK;
-		VELMAG *= 1.2f;
-		velMag = VELMAG;
-		
-		//POWERKICK = VELMAG/8f;
-		POWERKICK /= 8f;
-		POWERCOOLDOWN = 100;
-		extraKickTimer = EXTRAKICKTIME;
-		
-		buttonPressed = false;
-		
-		ball = b;
+		ballPos = new float[2];
 	}
 	
 	@Override
@@ -67,7 +62,45 @@ public class PlayerTwoTouch extends Player{
 		
 		}
 		
-		updatePos(delta);
+		if(!lock){
+			updatePos(delta);
+		}else{
+			unit(vel);
+			
+			if(mag(vel)!=0){
+				angleTarget = (float)Math.atan2(vel[1],vel[0]);
+			}		
+			
+			angle2 = angle;
+			if(angle2<0)
+				angle2 += 2f*(float)Math.PI;
+			angleTarget2 = angleTarget;
+			if(angleTarget2<0)
+				angleTarget2 += 2f*(float)Math.PI;
+
+			tempf = angle;//Store the angle in case we need to roll back, in case of the rotation putting you into a wall
+			//Choose the direction of shortest rotation
+			if(Math.abs(angleTarget-angle)-Math.abs(angleTarget2-angle2) >= 0){
+				angle = approachTarget(angle2, angleTarget2, (float)delta/120f);
+			}else{
+				angle = approachTarget(angle, angleTarget, (float)delta/120f);
+			}
+			
+			pos[0] = ballPos[0]-(float)Math.cos(angle)*(KICKRANGE/2-1);
+			pos[1] = ballPos[1]-(float)Math.sin(angle)*(KICKRANGE/2-1);
+			
+			//If that rotation made you out of bounds, roll it back
+			if(pos[0]-KICKRANGE/2<xyLimit[0] || pos[0]+KICKRANGE/2>xyLimit[1] || pos[1]-KICKRANGE/2<xyLimit[2] || pos[1]+KICKRANGE/2>xyLimit[3]){
+				angle = tempf;
+				vel[0] = (float)Math.cos(angle);
+				vel[1] = (float)Math.sin(angle);
+			}
+			
+			//Keeps angle between -pi and pi for next round of calculations
+			if(angle>(float)Math.PI)
+				angle-=(float)Math.PI*2f;
+			
+		}
 		
 		lastKickAlpha -= (float)(delta)/2400f;
 		if(lastKickAlpha<0){
@@ -81,75 +114,65 @@ public class PlayerTwoTouch extends Player{
 		theta+= (1f-(power*.8f))*omega*(float)delta;
 		if(theta>360) theta-=360;
 		
-		if(extraKickTimer > 0)
-			extraKickTimer -= delta;
-		if(extraKickTimer < 0){
-			extraKickTimer = 0;
-			NORMALKICK = DEFAULTKICK;
-		}
-		
-		if(power>0){
-			if(dist(ball.getX(), ball.getY(), pos[0], pos[1]) > KICKRANGE/2)
-				ball.setTwoTouchAcc(new float[]{pos[0]-ball.getX(),  pos[1]-ball.getY()}, .5f / (dist(pos[0],pos[1],ball.getX(),ball.getY() + 1f)));
-			if(dist(ball.getX(), ball.getY(), pos[0], pos[1]) <= KICKRANGE/2)
-				ball.setTwoTouchAcc(new float[]{-ball.getVelX(), -ball.getVelY()},.05f);
-		}
-		
 	}
 
 	@Override
 	public void activatePower(){
-		power = 15f;
-		KICKCOOLDOWN = 5000;
-		mySoundSystem.quickPlay( true, "TwoTouchActivate.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
-		velMag = VELMAG/2f;
+		power = 1;
 	}
 	
 	@Override
 	public void powerKeyReleased(){
 		power = 0;
-		kickingCoolDown = 0;
-		NORMALKICK = EXTRAKICK;
-		extraKickTimer = EXTRAKICKTIME;
-		KICKCOOLDOWN = DEFAULTKICKCOOLDOWN;
-		velMag = VELMAG;
-		ball.setTwoTouchAcc(new float[]{0, 0}, 0);
 	}
 	
 	@Override
 	public void setPower(){
-		if(NORMALKICK != DEFAULTKICK){
-			NORMALKICK = DEFAULTKICK;
-			lastKickAlpha = 1.0f;
-		}
+	
 	}
 
+	//Used to add velocity component of player to kick
+	//In power, TwoTouch will not move the ball
+	@Override
+	public float[] getKick(){
+		if(power>0)
+			return new float[]{0,0};
+		return vel;
+	}
+	
+	@Override
+	public boolean isKicking() {
+		if(lock && power>0)
+			return false;
+		return true;
+	}
+	
 	//I just kicked (power or regular kick) the ball now what
 	@Override
 	public void setKicking(Ball b){
-		if(power == 0){
-			b.setCanBeKicked(playerNum, false);
+		if(power>0 && !lock){
+			lock = true;
+			ballPos = new float[]{b.getX(),b.getY()};
+			//Sets vel to be relative position to ball, so you don't jump on contact
+			tempArr[0] = b.getX()-pos[0];
+			tempArr[1] = b.getY()-pos[1];
+			angle = (float)Math.atan2(tempArr[1], tempArr[0]);
+			NORMALKICK = EXTRAKICK;
 		}else{
-			//b.setAcc(new float[]{-b.getVelX(), -b.getVelY()}, 40f*(float)Math.pow((mag(b.getX()-pos[0],b.getY()-pos[1])/KICKRANGE/2+.6f),2));
+			b.setCanBeKicked(playerNum, false);
+			kickingCoolDown = KICKCOOLDOWN;
+			if(lock){
+				lock = false;
+				NORMALKICK = DEFAULTKICK;
+				lastKickAlpha = 1f;
+			}
 		}
-		kickingCoolDown = KICKCOOLDOWN;
 	}
 
-	//Most other players get to kick instantly, but this makes TwoTouch have a dribble effect
-	@Override
-	public boolean isKicking(){
-		if(power==0)
-			return true;
-		if(kickingCoolDown<=0)
-			return true;
-		return false;
-	}
-
-	
 	//Return if the kick should flash and make the power kick sound
 	@Override
 	public boolean flashKick(){
-		return NORMALKICK == EXTRAKICK;
+		return lock;
 	}
 	
 	@Override
@@ -169,4 +192,9 @@ public class PlayerTwoTouch extends Player{
 	public float mag(float a, float b){
 		return (float)Math.sqrt(a*a+b*b);
 	}
+	
+	public float mag(float[] n){
+		return (float)Math.sqrt(n[0]*n[0]+n[1]*n[1]);
+	}
+
 }
