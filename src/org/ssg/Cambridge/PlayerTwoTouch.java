@@ -8,6 +8,8 @@ package org.ssg.Cambridge;
 
 import net.java.games.input.Controller;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
+
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
 
@@ -41,6 +43,22 @@ public class PlayerTwoTouch extends Player{
 		angle = 0;
 		
 		ballPos = new float[2];
+		
+		MAXPOWER = 10;
+	}
+	
+	@Override
+	public void drawPowerCircle(Graphics g){
+		//Draw power circle
+		if(lock){
+			g.setColor(getColor(mag(vel)/velMag+.5f));
+			g.drawOval(ballPos[0]-KICKRANGE-power, ballPos[1]-KICKRANGE-power, (KICKRANGE+power)*2, (KICKRANGE+power)*2);
+			g.setColor(Color.white);
+		}else if(isPower()){
+			g.setColor(getColor3());
+			g.drawOval(getX()-getKickRange()/2f-getPower()/2f, getY()-getKickRange()/2f-getPower()/2f, getKickRange()+getPower(), getKickRange()+getPower());
+			g.setColor(Color.white);
+		}
 	}
 	
 	@Override
@@ -118,7 +136,7 @@ public class PlayerTwoTouch extends Player{
 
 	@Override
 	public void activatePower(){
-		power = 1;
+		power = MAXPOWER;
 	}
 	
 	@Override
@@ -164,7 +182,8 @@ public class PlayerTwoTouch extends Player{
 			if(lock){
 				lock = false;
 				NORMALKICK = DEFAULTKICK;
-				lastKickAlpha = 1f;
+				if(mag(vel)>0)
+					lastKickAlpha = 1f;
 			}
 		}
 	}
@@ -172,7 +191,7 @@ public class PlayerTwoTouch extends Player{
 	//Return if the kick should flash and make the power kick sound
 	@Override
 	public boolean flashKick(){
-		return lock;
+		return lock && mag(vel)>0;
 	}
 	
 	@Override

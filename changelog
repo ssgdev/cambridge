@@ -1,5 +1,8 @@
 Changelog:
 
+6.10.13
+Added graphical effect for TwoTouch lock/zone
+
 6.7.13
 Revamped TwoTouch
 Fixed bug in ball.getPrevX() : forgot to multiply by velMag
