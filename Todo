@@ -1,12 +1,13 @@
 TODO:
 
-Have glancing kicks? Maybe not
-Twins goal colour bug DONE
-Make TwoTouch rotate in the correct direction DONE
+Make velocity add component only in positive direction – DONE
+Width of kick trail not consistently aesthetic
+Twins goal colour bug – DONE
+Make TwoTouch rotate in the correct direction – DONE
 Make TwoTouch not go through walls in lock DONE
 Decide: Should TwoTouch's velocity vector (from the right stick) continue to affect the kick even if the angle is frozen by a wall collision?
 Make TwoTouch velocity sticky in lock mode so if you let go of the stick the kick is still powerful, or just have visual indication of what's going on
-Add TwoTouch powercircle effects
+Add TwoTouch powercircle effects – DONE
 Don't create variables in update
 Xbox Controller Support
 Menus and stuff
@@ -42,6 +43,8 @@ Make actioncam less intense
 	Have targets for pos and scale but ease into them much more gradually  – DONE
 	Increase size of bounding box DONE
 
+BUG: Thetatargets tend towards pi/2 multiples if stick is neutral
+	Might have something to do with one axis leaves bounding box first?
 BUG: ball gets stuck in wall sometimes
 BUG: can't go in corner in squash for puffer sometimes (Maybe it's that next step would take him into the wall?)
 	SOLVED: Changed from "if not out of bounds, move" to "move, if out of bounds, put back in bounds"

@@ -154,10 +154,12 @@ public abstract class Player implements KeyListener {
 	public void pollController(int delta){
 		vel[0] = lStickX.getPollData();
 		vel[1] = lStickY.getPollData();
+		
 		if (Math.abs(vel[0]) < 0.1)
-			vel[0] = 0f;
+				vel[0] = 0f;
 		if (Math.abs(vel[1]) < 0.1)
-			vel[1] = 0f;
+				vel[1] = 0f;
+
 		
 		curve[0] = -rStickX.getPollData();
 		curve[1] = -rStickY.getPollData();
@@ -542,6 +544,14 @@ public abstract class Player implements KeyListener {
 		}
 	}
 	
+	public float mag(float a, float b){
+		return (float)Math.sqrt(a*a+b*b);
+	}
+	
+	public float mag(float[] n){
+		return (float)Math.sqrt(n[0]*n[0]+n[1]*n[1]);
+	}
+
 	public float[] approachTargets(float[] val, float[] targets, float inc){
 
 		for(int i=0; i<val.length;i++){

@@ -2,6 +2,9 @@ Changelog:
 
 6.10.13
 Added graphical effect for TwoTouch lock/zone
+Figured out drawing a different polygon for each player
+Made velocity add in kicking only in positive direction
+Began PlayerCharge
 
 6.7.13
 Revamped TwoTouch

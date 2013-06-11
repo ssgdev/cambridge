@@ -129,7 +129,7 @@ public class PlayerTwoTouch extends Player{
 		if(kickingCoolDown<0)
 			kickingCoolDown = 0;
 
-		theta+= (1f-(power*.8f))*omega*(float)delta;
+		theta+= (1f-(power/MAXPOWER*.8f))*omega*(float)delta;
 		if(theta>360) theta-=360;
 		
 	}
@@ -201,19 +201,6 @@ public class PlayerTwoTouch extends Player{
 		lastKickPos[0] = px;
 		lastKickPos[1] = py;
 		//TwoTouch doesn't have the last kick alpha
-	}
-	
-	@Override
-	public Color getColor3(){//return color of powercircle
-		return new Color(color.getRed(), color.getGreen(), color.getBlue(), ((150/MAXPOWER)));
-	}
-	
-	public float mag(float a, float b){
-		return (float)Math.sqrt(a*a+b*b);
-	}
-	
-	public float mag(float[] n){
-		return (float)Math.sqrt(n[0]*n[0]+n[1]*n[1]);
 	}
 
 }
