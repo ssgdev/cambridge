@@ -8,6 +8,7 @@ import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Transform;
 
 import paulscode.sound.SoundSystem;
+import paulscode.sound.SoundSystemConfig;
 
 public class PlayerCharge extends Player{
 
@@ -40,6 +41,21 @@ public class PlayerCharge extends Player{
 		ball = b;
 	}
 
+	//Show if stick is being held down during a dash charge
+	@Override
+	public void drawKickCircle(Graphics g){
+		//Draw kicking circle
+		if(power>0){
+			g.setColor(getColor(.2f+mag(vel)/VELMAG/2f));
+		}else{
+			g.setColor(getColor(.5f).darker());
+		}
+		g.drawOval(getX()-getKickRange()/2, getY()-getKickRange()/2, getKickRange(), getKickRange());
+		//Kicking circle flash when kick happens
+		g.setColor(getColor2().brighter());
+		g.drawOval(getX()-getKickRange()/2f, getY()-getKickRange()/2f, getKickRange(), getKickRange());
+	}
+	
 	@Override
 	public void drawPlayer(Graphics g){
 		g.setColor(getColor());
@@ -91,21 +107,44 @@ public class PlayerCharge extends Player{
 			power -= (float)delta/12f;
 			if(power<=0){
 				powerKeyReleased();
-				//In this case commandeered to draw the dash trail
-				setLastKick(pos[0],pos[1],pos[0]+vel[0],pos[1]+vel[1],1f);
 				
-				parallelComponent(new float[] {ball.getX()-pos[0], ball.getY()-pos[1]}, vel, ballParallel);
-				ballOrth[0] = ball.getX()-pos[0]-ballParallel[0];
-				ballOrth[1] = ball.getY()-pos[1]-ballParallel[1];
-				
-				if(mag(ballOrth)<TRAILRANGE/2){
-					if(sameDir(vel[0],ballParallel[0])&&sameDir(vel[1],ballParallel[1])){//If it's behind you, backkick relative to distance
+				if(mag(vel)>0){
+					mySoundSystem.quickPlay( true, "pow2.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+					//In this case commandeered to draw the dash trail
+					setLastKick(pos[0],pos[1],pos[0]+vel[0],pos[1]+vel[1],1f);
 					
-					}else{//Push it aside
-						
+					parallelComponent(new float[] {ball.getX()-pos[0], ball.getY()-pos[1]}, vel, ballParallel);
+					ballOrth[0] = ball.getX()-pos[0]-ballParallel[0];
+					ballOrth[1] = ball.getY()-pos[1]-ballParallel[1];
+					
+					if(mag(ballOrth)<TRAILRANGE/2){
+						if(sameDir(vel,ballParallel)){//Push it aside
+							tempf = mag(ballOrth)/(TRAILRANGE/2);//goes from 0 to 1, small when ball is close to center line
+							ball.setVel(new float[]{2f*ballOrth[0]-tempf*ballParallel[0],2f*ballOrth[1]-tempf*ballParallel[1]}, 1.2f*POWERKICK);
+							ball.setAcc(new float[]{-ballParallel[0],-ballParallel[1]}, 1f-tempf);
+						}else{//If it's behind you, backkick relative to distance
+							ball.setVel(new float[]{ballParallel[0], ballParallel[1]}, 2f*POWERKICK);
+						}
+						ball.setLastKicker(playerNum);
+						ball.setCanBeKicked(playerNum, false);
+						kickingCoolDown = KICKCOOLDOWN;
 					}
+					
+					while(pos[0]-KICKRANGE/2>=xyLimit[0]&&pos[0]+KICKRANGE/2<=xyLimit[1]&&pos[1]-KICKRANGE/2>=xyLimit[2]&&pos[1]+KICKRANGE/2<=xyLimit[3]){
+						pos[0]+=vel[0];
+						pos[1]+=vel[1];
+					}
+					
+					if(pos[0]<xyLimit[0]+KICKRANGE/2)
+						pos[0]=xyLimit[0]+KICKRANGE/2;
+					if(pos[0]>xyLimit[1]-KICKRANGE/2)
+						pos[0]=xyLimit[1]-KICKRANGE/2;
+					if(pos[1]<xyLimit[2]+KICKRANGE/2)
+						pos[1]=xyLimit[2]+KICKRANGE/2;
+					if(pos[1]>xyLimit[3]-KICKRANGE/2)
+						pos[1]=xyLimit[3]-KICKRANGE/2;
+					
 				}
-				
 			}
 		}
 		
@@ -138,11 +177,12 @@ public class PlayerCharge extends Player{
 				theta-=2f*(float)Math.PI;
 		}
 	}
-
+	
 	@Override
 	public void activatePower() {
 		power = MAXPOWER;
 		velMag = 0;
+		mySoundSystem.quickPlay( true, "whoosh2r.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 	}
 
 	@Override
@@ -173,10 +213,15 @@ public class PlayerCharge extends Player{
 		w[1] = v[1]*tempf;		
 	}
 	
-	public boolean sameDir(float vx, float dir){
-		if(vx == 0)
+	//vx is vel, dir is ballParallel
+	public boolean sameDir(float[] vx, float[] dir){
+		if(mag(vx)==0 || mag(dir) == 0)//Unsure about this, should never be called though
 			return false;
-		return vx/Math.abs(vx) == dir/Math.abs(dir);
+		if(vx[0]==0 && vx[1]!=0)
+			return vx[1]/Math.abs(vx[1]) == dir[1]/Math.abs(dir[1]);
+		if(vx[1]==0 && vx[0]!=0)
+			return vx[0]/Math.abs(vx[0]) == dir[0]/Math.abs(dir[0]);
+		return vx[0]/Math.abs(vx[0]) == dir[0]/Math.abs(dir[0]) && vx[1]/Math.abs(vx[1])==dir[1]/Math.abs(dir[1]);
 	}
 	
 }

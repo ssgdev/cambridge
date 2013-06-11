@@ -266,7 +266,7 @@ public abstract class Player implements KeyListener {
 	
 	public void drawKickTrail(Graphics g){
 		g.setColor(getColor5());
-		g.setLineWidth(100f);
+		g.setLineWidth(KICKRANGE*1.5f);
 //		tempTrailArr = p.getTrailArr();//{bx, by, px, py}
 		float dx = getTrailArr()[2]-getTrailArr()[0];
 		float dy = getTrailArr()[3]-getTrailArr()[1];
@@ -552,6 +552,10 @@ public abstract class Player implements KeyListener {
 		return (float)Math.sqrt(n[0]*n[0]+n[1]*n[1]);
 	}
 
+	public float mag(int[] n){
+		return (float)Math.sqrt(n[0]*n[0]+n[1]*n[1]);
+	}
+	
 	public float[] approachTargets(float[] val, float[] targets, float inc){
 
 		for(int i=0; i<val.length;i++){

@@ -1,7 +1,8 @@
 TODO:
 
-Make velocity add component only in positive direction – DONE
+Charge keyboard support
 Width of kick trail not consistently aesthetic
+Make velocity add component only in positive direction – DONE
 Twins goal colour bug – DONE
 Make TwoTouch rotate in the correct direction – DONE
 Make TwoTouch not go through walls in lock DONE
@@ -43,6 +44,7 @@ Make actioncam less intense
 	Have targets for pos and scale but ease into them much more gradually  – DONE
 	Increase size of bounding box DONE
 
+BUG: Game crash on charge trailing ball into goal
 BUG: Thetatargets tend towards pi/2 multiples if stick is neutral
 	Might have something to do with one axis leaves bounding box first?
 BUG: ball gets stuck in wall sometimes

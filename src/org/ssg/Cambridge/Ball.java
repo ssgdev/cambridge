@@ -132,8 +132,8 @@ public class Ball {
 		}
 	}
 
-	//special setAcc for PlayerTwoTouch to use, so that it can still pull the ball if there's no curving (ACCSCALE = 0)
-	public void setTwoTouchAcc(float[] f, float am){
+	//Setting unscaled acceleration
+	public void setAccUnscaled(float[] f, float am){
 		if(!scored){
 			acc = f;
 			unit(acc);
