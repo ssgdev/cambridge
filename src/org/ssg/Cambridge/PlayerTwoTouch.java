@@ -52,7 +52,7 @@ public class PlayerTwoTouch extends Player{
 		//Draw power circle
 		if(lock){
 			g.setColor(getColor(mag(vel)/velMag+.5f));
-			g.drawOval(ballPos[0]-KICKRANGE-power, ballPos[1]-KICKRANGE-power, (KICKRANGE+power)*2, (KICKRANGE+power)*2);
+			g.drawOval(ballPos[0]-KICKRANGE-power/2f, ballPos[1]-KICKRANGE-power/2f, (KICKRANGE+power/2f)*2, (KICKRANGE+power/2f)*2);
 			g.setColor(Color.white);
 		}else if(isPower()){
 			g.setColor(getColor3());

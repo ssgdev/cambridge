@@ -273,7 +273,8 @@ public abstract class Player implements KeyListener {
 		float thetaTemp = (float)Math.atan2((double)dy, (double)dx);
 		g.rotate(getTrailArr()[0], getTrailArr()[1], 360f/2f/(float)Math.PI*thetaTemp);
 		//g.drawLine(getTrailArr()[0]-2*FIELDWIDTH,getTrailArr()[1], getTrailArr()[0]+2*FIELDWIDTH, getTrailArr()[1]);
-		g.drawLine(getTrailArr()[0]-2*1600,getTrailArr()[1], getTrailArr()[0]+2*1600, getTrailArr()[1]);
+		//g.drawLine(getTrailArr()[0]-2*1600,getTrailArr()[1], getTrailArr()[0]+2*1600, getTrailArr()[1]);
+		g.fillRect(getTrailArr()[0]-2*1600, getTrailArr()[1]-KICKRANGE/2-5, 1600*4, KICKRANGE+10);
 		g.rotate(getTrailArr()[0], getTrailArr()[1], -360f/2f/(float)Math.PI*thetaTemp);
 		g.setLineWidth(5f);
 	}

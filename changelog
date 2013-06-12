@@ -1,5 +1,9 @@
 Changelog:
 
+6.11.13
+Added graphical effect for PlayerCharge
+Fixed power kick flash trail drawing to be fillRect instead of drawLine
+
 6.10.13
 Added graphical effect for TwoTouch lock/zone
 Figured out drawing a different polygon for each player

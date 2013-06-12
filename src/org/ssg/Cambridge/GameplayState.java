@@ -113,19 +113,19 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		
-		initFields(gc);
-
 		font = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0.png"));
 		font_white = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0_white.png"));
 		font_small = new AngelCodeFont(RESDIR + "8bitoperator_small.fnt", new Image(RESDIR + "8bitoperator_small_0.png"));
 		triangle = new Image(RESDIR + "triangle.png");
-		hemicircleL = new Image("res/hemicircleL.png");
-		hemicircleR = new Image("res/hemicircleR.png");
+		hemicircleL = new Image(RESDIR + "hemicircleL.png");
+		hemicircleR = new Image(RESDIR + "hemicircleR.png");
 		goalScroll1 = new Image(RESDIR + "goal.png");
 		goalScroll2 = new Image(RESDIR + "goal_own.png");
 		goalScroll1v = new Image(RESDIR + "goal_v.png");
 		goalScroll2v = new Image(RESDIR + "goal_own_v.png");
 		goalScroll = goalScroll1;
+		
+		initFields(gc);
 	}
 
 	public void initFields(GameContainer gc) throws SlickException{
@@ -228,7 +228,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		//p1L.setTwin(p1R);
 		//p1R.setTwin(p1L);
 		//PlayerNeo p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
-		PlayerCharge p1 = new PlayerCharge(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", ball);
+		PlayerCharge p1 = new PlayerCharge(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", ball, hemicircleL);
 		PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", ball);
 		//PlayerNeo p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2");
 

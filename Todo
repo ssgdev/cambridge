@@ -1,7 +1,7 @@
 TODO:
 
 Charge keyboard support
-Width of kick trail not consistently aesthetic
+Width of kick trail not consistently aesthetic – DONE
 Make velocity add component only in positive direction – DONE
 Twins goal colour bug – DONE
 Make TwoTouch rotate in the correct direction – DONE

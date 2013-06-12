@@ -1,9 +1,11 @@
 package org.ssg.Cambridge;
 
+import net.java.games.input.Component;
 import net.java.games.input.Controller;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Transform;
 
@@ -12,22 +14,30 @@ import paulscode.sound.SoundSystemConfig;
 
 public class PlayerCharge extends Player{
 
-	//The vector between Charge and the ball, divided into components || and normal to Charge's velocity
-	float[] ballParallel, ballOrth;
-	float TRAILRANGE;
-	
 	Polygon poly;
 	//Theta is between -pi and pi, theta2 is 0 to 2pi
 	float theta2, thetaTarget, thetaTarget2;
+	float[] prevPostPos;
 	boolean buttonPressed;
+	boolean button2Pressed;
+	Component actionButton2;
+	
+	//The vector between Charge and the ball, divided into components || and normal to Charge's velocity
+	float[] ballParallel, ballOrth;
+	float TRAILRANGE;
+	Image hemicircle;
+
+	float orthDist;
+	float gustCountDown;
+	float GUSTCOUNTDOWN = 500;
 	
 	Ball ball;
 	
-	public PlayerCharge(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Ball b) {
+	public PlayerCharge(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Ball b, Image hc) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn);
 
 		MAXPOWER = 100;
-		TRAILRANGE = KICKRANGE+50;
+		TRAILRANGE = KICKRANGE*1.4f;
 
 		poly = new Polygon(new float[]{0,0,-PLAYERSIZE/3, -PLAYERSIZE/2, PLAYERSIZE*2/3, 0, -PLAYERSIZE/3, PLAYERSIZE/2});
 		ballParallel = new float[2];
@@ -35,8 +45,18 @@ public class PlayerCharge extends Player{
 		theta2 = theta;
 		thetaTarget = theta;
 		thetaTarget2 = theta;
+		prevPostPos = new float[4];
 		
 		buttonPressed = false;
+		if (cExist) {
+			actionButton2 = this.c.getComponent(Component.Identifier.Button._4); 
+		}
+		button2Pressed = false;
+		
+		hemicircle = hc.getScaledCopy(KICKRANGE/hc.getHeight());
+		
+		orthDist = 0;
+		gustCountDown = 0;
 		
 		ball = b;
 	}
@@ -75,6 +95,21 @@ public class PlayerCharge extends Player{
 	}
 	
 	@Override
+	public void drawKickTrail(Graphics g){
+		g.setColor(getColor5());
+		g.setLineWidth(KICKRANGE*1.5f);
+//		tempTrailArr = p.getTrailArr();//{bx, by, px, py}
+		float dx = prevPostPos[2]-prevPostPos[0];
+		float dy = prevPostPos[3]-prevPostPos[1];
+		float thetaTemp = (float)Math.atan2((double)dy, (double)dx);
+		g.rotate(prevPostPos[2], prevPostPos[3], 360f/2f/(float)Math.PI*thetaTemp);
+		g.fillRect(prevPostPos[2], prevPostPos[3]-KICKRANGE/2, -3200, KICKRANGE);
+		g.drawImage(hemicircle.getFlippedCopy(true, false), prevPostPos[2], prevPostPos[3]-KICKRANGE/2, getColor5()); 
+		g.rotate(prevPostPos[2], prevPostPos[3], -360f/2f/(float)Math.PI*thetaTemp);
+		g.setLineWidth(5f);
+	}
+	
+	@Override
 	public void update(int delta) {
 
 		if (cExist) {
@@ -89,12 +124,18 @@ public class PlayerCharge extends Player{
 					powerKeyReleased();
 					buttonPressed = false;
 			}
+			
+			if (actionButton2.getPollData() == 1.0 && !button2Pressed){
+				button2Pressed = true;
+			}else if(actionButton2.getPollData() == 0 && button2Pressed){
+				button2Pressed = false;
+			}
 		
 		}
 
 		updatePos(delta);
 
-		lastKickAlpha -= (float)(delta)/2400f;
+		lastKickAlpha -= (float)(delta)/1200f;
 		if(lastKickAlpha<0){
 			lastKickAlpha = 0f;
 		}
@@ -117,19 +158,24 @@ public class PlayerCharge extends Player{
 					ballOrth[0] = ball.getX()-pos[0]-ballParallel[0];
 					ballOrth[1] = ball.getY()-pos[1]-ballParallel[1];
 					
-					if(mag(ballOrth)<TRAILRANGE/2){
+					if(!ball.scored() && mag(ballOrth)<TRAILRANGE/2f && ball.getX()>=xyLimit[0]&&ball.getX()<=xyLimit[1]&&ball.getY()>=xyLimit[2]&&ball.getY()<=xyLimit[3]){
 						if(sameDir(vel,ballParallel)){//Push it aside
-							tempf = mag(ballOrth)/(TRAILRANGE/2);//goes from 0 to 1, small when ball is close to center line
-							ball.setVel(new float[]{2f*ballOrth[0]-tempf*ballParallel[0],2f*ballOrth[1]-tempf*ballParallel[1]}, 1.2f*POWERKICK);
-							ball.setAcc(new float[]{-ballParallel[0],-ballParallel[1]}, 1f-tempf);
-						}else{//If it's behind you, backkick relative to distance
-							ball.setVel(new float[]{ballParallel[0], ballParallel[1]}, 2f*POWERKICK);
+							orthDist = mag(ballOrth)/(TRAILRANGE/2);//goes from 0 to 1, small when ball is close to center line
+							ball.setVel(new float[]{ball.getVelX(), ball.getVelY()}, ball.getVelMag()/2f);
+							gustCountDown = GUSTCOUNTDOWN;
+							//ball.setVel(new float[]{2f*ballOrth[0]-tempf*ballParallel[0],2f*ballOrth[1]-tempf*ballParallel[1]}, 1.5f*POWERKICK);
+							//ball.setAcc(new float[]{-ballParallel[0],-ballParallel[1]}, 2f*(1f-tempf));
+						}else if(mag(ballOrth)<KICKRANGE/2){//If it's behind you, backkick relative to distance
+							ball.setVel(new float[]{ballParallel[0], ballParallel[1]}, 3f*POWERKICK);
 						}
 						ball.setLastKicker(playerNum);
 						ball.setCanBeKicked(playerNum, false);
 						kickingCoolDown = KICKCOOLDOWN;
 					}
 					
+					//Dash a distance
+					//for(int i=0;i<500;i++){
+					//Dash to wall
 					while(pos[0]-KICKRANGE/2>=xyLimit[0]&&pos[0]+KICKRANGE/2<=xyLimit[1]&&pos[1]-KICKRANGE/2>=xyLimit[2]&&pos[1]+KICKRANGE/2<=xyLimit[3]){
 						pos[0]+=vel[0];
 						pos[1]+=vel[1];
@@ -144,8 +190,24 @@ public class PlayerCharge extends Player{
 					if(pos[1]>xyLimit[3]-KICKRANGE/2)
 						pos[1]=xyLimit[3]-KICKRANGE/2;
 					
+					prevPostPos[2] = pos[0];
+					prevPostPos[3] = pos[1];
+					prevPostPos[0] = pos[0]-vel[0];
+					prevPostPos[1] = pos[1]-vel[1];
+					
 				}
 			}
+		}
+		
+		//Delayed gusting of ball
+		if(gustCountDown>0){
+			gustCountDown -= (float)delta;
+			if(gustCountDown <= 0){
+				if(!ball.scored()){
+					ball.setVel(new float[]{ballParallel[0],  ballParallel[1]}, 2f);
+				}
+			}
+			
 		}
 		
 		//Angle code
@@ -176,6 +238,7 @@ public class PlayerCharge extends Player{
 			if(theta>2f*(float)Math.PI)
 				theta-=2f*(float)Math.PI;
 		}
+		
 	}
 	
 	@Override

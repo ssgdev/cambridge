@@ -112,6 +112,10 @@ public class Ball {
 		return vel[1];
 	}
 
+	public float getVelMag(){
+		return velMag;
+	}
+	
 	public float getTheta(){
 		return theta;
 	}
@@ -143,6 +147,10 @@ public class Ball {
 	
 	public void setScored(boolean b){
 		scored = b;
+	}
+	
+	public boolean scored(){
+		return scored;
 	}
 
 	public void setSoundCoolDown(int i){
