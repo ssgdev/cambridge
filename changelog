@@ -1,8 +1,18 @@
 Changelog:
 
+6.12.13
+Added recoil to PlayerCharge
+Added dash chaining to PlayerCharge (Still needs testing)
+Fixed Dash Trail being drawn incorrectly (pos was erroneously being cast as int in updatePos())
+Adding speedUp() and slowDown() to ball, to allow accelerating the velMag
+	Ball now accelerates into PlayerCharge's gust
+	Ball now decelerates into PlayerTwoTouch's 'lock' (Scaled by velocity so game modes with faster balls don't push him ridiculously far. Maybe they should)
+Locking is now a property of the ball: The ball can be kicked/gusted out of a PlayerTwoTouch's lock
+
 6.11.13
 Added graphical effect for PlayerCharge
 Fixed power kick flash trail drawing to be fillRect instead of drawLine
+Changed PlayerCharge charging behaviour
 
 6.10.13
 Added graphical effect for TwoTouch lock/zone

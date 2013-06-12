@@ -20,15 +20,13 @@ public class PlayerTwoTouch extends Player{
 	float DEFAULTKICK;
 	float EXTRAKICK;
 	float[] ballPos;
+	Ball ball;
 	
 	//only used during lock
 	float angle;//Atan2 returns from pi to -pi
 	float angleTarget;
 	float angle2;//Versions of angle and angleTarget respecified from 0 to 2pi
 	float angleTarget2;
-
-	//lock occurs when you touch the ball in power: the ball freezes, and you're limited to circling around it, until power is released
-	boolean lock;
 	
 	public PlayerTwoTouch(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Ball b) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn);
@@ -36,12 +34,12 @@ public class PlayerTwoTouch extends Player{
 		DEFAULTKICK = NORMALKICK;
 		EXTRAKICK = NORMALKICK * 1.5f;
 		POWERKICK = 0;
-		
-		lock = false;
+
 		angleTarget = 0;
 		angleTarget2 = 0;
 		angle = 0;
 		
+		ball = b;
 		ballPos = new float[2];
 		
 		MAXPOWER = 10;
@@ -50,9 +48,9 @@ public class PlayerTwoTouch extends Player{
 	@Override
 	public void drawPowerCircle(Graphics g){
 		//Draw power circle
-		if(lock){
+		if(ball.locked(playerNum)){
 			g.setColor(getColor(mag(vel)/velMag+.5f));
-			g.drawOval(ballPos[0]-KICKRANGE-power/2f, ballPos[1]-KICKRANGE-power/2f, (KICKRANGE+power/2f)*2, (KICKRANGE+power/2f)*2);
+			g.drawOval(ball.getX()-KICKRANGE-power/2f, ball.getY()-KICKRANGE-power/2f, (KICKRANGE+power/2f)*2, (KICKRANGE+power/2f)*2);
 			g.setColor(Color.white);
 		}else if(isPower()){
 			g.setColor(getColor3());
@@ -80,14 +78,30 @@ public class PlayerTwoTouch extends Player{
 		
 		}
 		
-		if(!lock){
+		//Entering Lock
+		if(power>0 && !ball.locked(playerNum) && dist(pos[0],pos[1],ball.getX(),ball.getY())<KICKRANGE/2f && !ball.scored()){
+			ball.setLocked(playerNum, true);
+			ball.setCanBeKicked(playerNum, true);
+			ball.setLastKicker(playerNum);
+			//ball.setVel(new float[]{0,0}, 0);
+			ball.slowDown(0, 0, ball.getVelMag()/8f);
+			ballPos = new float[]{ball.getX(),ball.getY()};//TODO: Unused
+			//Sets vel to be relative position to ball, so you don't jump on contact
+			tempArr[0] = ball.getX()-pos[0];
+			tempArr[1] = ball.getY()-pos[1];
+			angle = (float)Math.atan2(tempArr[1], tempArr[0]);
+			angleTarget = (float)Math.atan2(tempArr[1], tempArr[0]);
+			NORMALKICK = EXTRAKICK;
+		}
+		
+		if(!ball.locked(playerNum)){
 			updatePos(delta);
 		}else{
-			unit(vel);
 			
 			if(mag(vel)!=0){
+				unit(vel);	
 				angleTarget = (float)Math.atan2(vel[1],vel[0]);
-			}		
+			}
 			
 			angle2 = angle;
 			if(angle2<0)
@@ -104,20 +118,47 @@ public class PlayerTwoTouch extends Player{
 				angle = approachTarget(angle, angleTarget, (float)delta/120f);
 			}
 			
-			pos[0] = ballPos[0]-(float)Math.cos(angle)*(KICKRANGE/2-1);
-			pos[1] = ballPos[1]-(float)Math.sin(angle)*(KICKRANGE/2-1);
+			pos[0] = ball.getX()-(float)Math.cos(angle)*(KICKRANGE/2-1);
+			pos[1] = ball.getY()-(float)Math.sin(angle)*(KICKRANGE/2-1);
 			
-			//If that rotation made you out of bounds, roll it back
-			if(pos[0]-KICKRANGE/2<xyLimit[0] || pos[0]+KICKRANGE/2>xyLimit[1] || pos[1]-KICKRANGE/2<xyLimit[2] || pos[1]+KICKRANGE/2>xyLimit[3]){
-				angle = tempf;
-				vel[0] = (float)Math.cos(angle);
-				vel[1] = (float)Math.sin(angle);
+			if(pos[0]<xyLimit[0]+KICKRANGE/2f){
+				tempf = pos[0];
+				shiftX(xyLimit[0]+KICKRANGE/2f-tempf);
+				ball.shiftX(xyLimit[0]+KICKRANGE/2f-tempf);
 			}
-			
+			if(pos[0]>xyLimit[1]-KICKRANGE/2f){
+				tempf = pos[0];
+				shiftX(xyLimit[1]-KICKRANGE/2f-tempf);
+				ball.shiftX(xyLimit[1]-KICKRANGE/2f-tempf);
+			}
+			if(pos[1]<xyLimit[2]+KICKRANGE/2f){
+				tempf = pos[1];
+				shiftY(xyLimit[2]+KICKRANGE/2f-tempf);
+				ball.shiftY(xyLimit[2]+KICKRANGE/2f-tempf);
+			}
+			if(pos[1]>xyLimit[3]-KICKRANGE/2f){
+				tempf = pos[1];
+				shiftY(xyLimit[3]-KICKRANGE/2f-tempf);
+				ball.shiftY(xyLimit[3]-KICKRANGE/2f-tempf);
+			}
+
+//			//If that rotation made you out of bounds, roll it back
+//			if(pos[0]-KICKRANGE/2<xyLimit[0] || pos[0]+KICKRANGE/2>xyLimit[1] || pos[1]-KICKRANGE/2<xyLimit[2] || pos[1]+KICKRANGE/2>xyLimit[3]){
+//				angle = tempf;
+//				vel[0] = (float)Math.cos(angle);
+//				vel[1] = (float)Math.sin(angle);
+//			}
+//			
 			//Keeps angle between -pi and pi for next round of calculations
 			if(angle>(float)Math.PI)
 				angle-=(float)Math.PI*2f;
 			
+		}
+		
+		//For if the ball gets knocked out of your hands
+		if(dist(pos[0],pos[1],ball.getX(),ball.getY())>=KICKRANGE/2f){
+			ball.setLocked(playerNum, false);
+			NORMALKICK = DEFAULTKICK;
 		}
 		
 		lastKickAlpha -= (float)(delta)/2400f;
@@ -160,7 +201,7 @@ public class PlayerTwoTouch extends Player{
 	
 	@Override
 	public boolean isKicking() {
-		if(lock && power>0)
+		if(power>0)
 			return false;
 		return true;
 	}
@@ -168,19 +209,13 @@ public class PlayerTwoTouch extends Player{
 	//I just kicked (power or regular kick) the ball now what
 	@Override
 	public void setKicking(Ball b){
-		if(power>0 && !lock){
-			lock = true;
-			ballPos = new float[]{b.getX(),b.getY()};
-			//Sets vel to be relative position to ball, so you don't jump on contact
-			tempArr[0] = b.getX()-pos[0];
-			tempArr[1] = b.getY()-pos[1];
-			angle = (float)Math.atan2(tempArr[1], tempArr[0]);
-			NORMALKICK = EXTRAKICK;
+		if(power>0 && !ball.locked(playerNum)){
+			//Do nothing
 		}else{
 			b.setCanBeKicked(playerNum, false);
 			kickingCoolDown = KICKCOOLDOWN;
-			if(lock){
-				lock = false;
+			if(ball.locked(playerNum)){
+				ball.setLocked(playerNum, false);
 				NORMALKICK = DEFAULTKICK;
 				if(mag(vel)>0)
 					lastKickAlpha = 1f;
@@ -191,7 +226,7 @@ public class PlayerTwoTouch extends Player{
 	//Return if the kick should flash and make the power kick sound
 	@Override
 	public boolean flashKick(){
-		return lock && mag(vel)>0;
+		return ball.locked(playerNum) && mag(vel)>0;
 	}
 	
 	@Override

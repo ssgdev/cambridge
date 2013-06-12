@@ -155,28 +155,28 @@ public abstract class Player implements KeyListener {
 		vel[0] = lStickX.getPollData();
 		vel[1] = lStickY.getPollData();
 		
-		if (Math.abs(vel[0]) < 0.1)
+		if (Math.abs(vel[0]) < 0.2)
 				vel[0] = 0f;
-		if (Math.abs(vel[1]) < 0.1)
+		if (Math.abs(vel[1]) < 0.2)
 				vel[1] = 0f;
 
 		
 		curve[0] = -rStickX.getPollData();
 		curve[1] = -rStickY.getPollData();
 		
-		if(Math.abs(curve[0]) < 0.1)
+		if(Math.abs(curve[0]) < 0.2)
 			curve[0] = 0;
-		if(Math.abs(curve[1]) < 0.1)
+		if(Math.abs(curve[1]) < 0.2)
 			curve[1] = 0;
 	}
 	
 	public void updatePos(int delta){
-		pos[0] = (int)(pos[0]+vel[0]*velMag*(float)delta);
+		pos[0] = (pos[0]+vel[0]*velMag*(float)delta);
 		if(pos[0]<xyLimit[0]+KICKRANGE/2)
 			pos[0]=xyLimit[0]+KICKRANGE/2;
 		if(pos[0]>xyLimit[1]-KICKRANGE/2)
 			pos[0]=xyLimit[1]-KICKRANGE/2;
-		pos[1]= (int)(pos[1]+vel[1]*velMag*(float)delta);
+		pos[1]= (pos[1]+vel[1]*velMag*(float)delta);
 		if(pos[1]<xyLimit[2]+KICKRANGE/2)
 			pos[1]=xyLimit[2]+KICKRANGE/2;
 		if(pos[1]>xyLimit[3]-KICKRANGE/2)

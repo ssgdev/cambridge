@@ -1,6 +1,20 @@
 TODO:
 
-Charge keyboard support
+Enforcer: Has to build up momentum
+Figure out dashing while against a wall
+Velocity add component scaled by angle coincidence
+Short dash with player deceleration?
+Ball should decelerate into TwoTouch's lock DONE
+	What happens if a ball gets knocked out of TwoTouch's hands? Seems to work
+	What happens if two twotouches both try to lock the ball Seems to work
+BUG: TwoTouch gets stuck to the ball
+	Resolved: Ball can be kicked out of TwoTouch's hands
+PlayerCharge should bounce off wall? DONE Feels a lot better
+PlayerCharge dash chaining DONE Still in testing
+Ball should accelerate into gust DONE
+Should the gust reset if the ball is kicked/the ball bounces? DONE
+	What happens if two charges both get up in it? Seems to be sequential gusting, which is totally fine
+Dash trail end nub not drawn correctly? DONE Problem with ints
 Width of kick trail not consistently aesthetic – DONE
 Make velocity add component only in positive direction – DONE
 Twins goal colour bug – DONE

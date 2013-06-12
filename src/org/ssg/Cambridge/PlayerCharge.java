@@ -27,9 +27,11 @@ public class PlayerCharge extends Player{
 	float TRAILRANGE;
 	Image hemicircle;
 
-	float orthDist;
+	float[] dashVel;
+	float dashDist;
 	float gustCountDown;
 	float GUSTCOUNTDOWN = 500;
+	boolean shortDash;
 	
 	Ball ball;
 	
@@ -55,8 +57,12 @@ public class PlayerCharge extends Player{
 		
 		hemicircle = hc.getScaledCopy(KICKRANGE/hc.getHeight());
 		
-		orthDist = 0;
+		dashVel = new float[2];
+		powerCoolDown = 0;
+		
+		dashDist = 0;
 		gustCountDown = 0;
+		shortDash = false;
 		
 		ball = b;
 	}
@@ -97,15 +103,17 @@ public class PlayerCharge extends Player{
 	@Override
 	public void drawKickTrail(Graphics g){
 		g.setColor(getColor5());
-		g.setLineWidth(KICKRANGE*1.5f);
 //		tempTrailArr = p.getTrailArr();//{bx, by, px, py}
 		float dx = prevPostPos[2]-prevPostPos[0];
 		float dy = prevPostPos[3]-prevPostPos[1];
 		float thetaTemp = (float)Math.atan2((double)dy, (double)dx);
 		g.rotate(prevPostPos[2], prevPostPos[3], 360f/2f/(float)Math.PI*thetaTemp);
-		g.fillRect(prevPostPos[2], prevPostPos[3]-KICKRANGE/2, -3200, KICKRANGE);
+		g.fillRect(prevPostPos[2], prevPostPos[3]-KICKRANGE/2, -.5f-mag(new float[]{prevPostPos[2]-prevPostPos[0], prevPostPos[3]-prevPostPos[1]}), KICKRANGE);
 		g.drawImage(hemicircle.getFlippedCopy(true, false), prevPostPos[2], prevPostPos[3]-KICKRANGE/2, getColor5()); 
 		g.rotate(prevPostPos[2], prevPostPos[3], -360f/2f/(float)Math.PI*thetaTemp);
+		g.rotate(prevPostPos[0], prevPostPos[1], 360f/2f/(float)Math.PI*thetaTemp);
+		g.drawImage(hemicircle, prevPostPos[0]-KICKRANGE/2, prevPostPos[1]-KICKRANGE/2, getColor5());
+		g.rotate(prevPostPos[0], prevPostPos[1], -360f/2f/(float)Math.PI*thetaTemp);
 		g.setLineWidth(5f);
 	}
 	
@@ -113,7 +121,8 @@ public class PlayerCharge extends Player{
 	public void update(int delta) {
 
 		if (cExist) {
-			pollController(delta);
+			if(powerCoolDown == 0)//No controller listening when cooling down from a dash
+				pollController(delta);
 			
 			if (actionButton.getPollData() == 1.0){
 				if(!buttonPressed){
@@ -132,7 +141,15 @@ public class PlayerCharge extends Player{
 			}
 		
 		}
-
+		
+		if(power>0){
+			velMag = 0;
+		}else if(powerCoolDown>0){
+			velMag = .5f*VELMAG*powerCoolDown/POWERCOOLDOWN;
+		}else{
+			velMag = VELMAG;
+		}
+		
 		updatePos(delta);
 
 		lastKickAlpha -= (float)(delta)/1200f;
@@ -144,6 +161,10 @@ public class PlayerCharge extends Player{
 		if(kickingCoolDown<0)
 			kickingCoolDown = 0;
 		
+		powerCoolDown -= (float)delta;
+		if(powerCoolDown<0)
+			powerCoolDown = 0;
+		
 		if(power>0){
 			power -= (float)delta/12f;
 			if(power<=0){
@@ -151,8 +172,7 @@ public class PlayerCharge extends Player{
 				
 				if(mag(vel)>0){
 					mySoundSystem.quickPlay( true, "pow2.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
-					//In this case commandeered to draw the dash trail
-					setLastKick(pos[0],pos[1],pos[0]+vel[0],pos[1]+vel[1],1f);
+					lastKickAlpha = 1f;
 					
 					parallelComponent(new float[] {ball.getX()-pos[0], ball.getY()-pos[1]}, vel, ballParallel);
 					ballOrth[0] = ball.getX()-pos[0]-ballParallel[0];
@@ -160,8 +180,8 @@ public class PlayerCharge extends Player{
 					
 					if(!ball.scored() && mag(ballOrth)<TRAILRANGE/2f && ball.getX()>=xyLimit[0]&&ball.getX()<=xyLimit[1]&&ball.getY()>=xyLimit[2]&&ball.getY()<=xyLimit[3]){
 						if(sameDir(vel,ballParallel)){//Push it aside
-							orthDist = mag(ballOrth)/(TRAILRANGE/2);//goes from 0 to 1, small when ball is close to center line
 							ball.setVel(new float[]{ball.getVelX(), ball.getVelY()}, ball.getVelMag()/2f);
+							ball.setReadyForGust(true);
 							gustCountDown = GUSTCOUNTDOWN;
 							//ball.setVel(new float[]{2f*ballOrth[0]-tempf*ballParallel[0],2f*ballOrth[1]-tempf*ballParallel[1]}, 1.5f*POWERKICK);
 							//ball.setAcc(new float[]{-ballParallel[0],-ballParallel[1]}, 2f*(1f-tempf));
@@ -173,28 +193,41 @@ public class PlayerCharge extends Player{
 						kickingCoolDown = KICKCOOLDOWN;
 					}
 					
-					//Dash a distance
-					//for(int i=0;i<500;i++){
+					prevPostPos[0] = pos[0];
+					prevPostPos[1] = pos[1];
+					
 					//Dash to wall
 					while(pos[0]-KICKRANGE/2>=xyLimit[0]&&pos[0]+KICKRANGE/2<=xyLimit[1]&&pos[1]-KICKRANGE/2>=xyLimit[2]&&pos[1]+KICKRANGE/2<=xyLimit[3]){
 						pos[0]+=vel[0];
 						pos[1]+=vel[1];
 					}
 					
-					if(pos[0]<xyLimit[0]+KICKRANGE/2)
-						pos[0]=xyLimit[0]+KICKRANGE/2;
-					if(pos[0]>xyLimit[1]-KICKRANGE/2)
-						pos[0]=xyLimit[1]-KICKRANGE/2;
-					if(pos[1]<xyLimit[2]+KICKRANGE/2)
-						pos[1]=xyLimit[2]+KICKRANGE/2;
-					if(pos[1]>xyLimit[3]-KICKRANGE/2)
-						pos[1]=xyLimit[3]-KICKRANGE/2;
+					//Pull back from wall
+					pos[0]-=vel[0];
+					pos[1]-=vel[1];
+					
+//					if(pos[0]<xyLimit[0]+KICKRANGE/2)
+//						pos[0]=xyLimit[0]+KICKRANGE/2;
+//					if(pos[0]>xyLimit[1]-KICKRANGE/2)
+//						pos[0]=xyLimit[1]-KICKRANGE/2;
+//					if(pos[1]<xyLimit[2]+KICKRANGE/2)
+//						pos[1]=xyLimit[2]+KICKRANGE/2;
+//					if(pos[1]>xyLimit[3]-KICKRANGE/2)
+//						pos[1]=xyLimit[3]-KICKRANGE/2;
 					
 					prevPostPos[2] = pos[0];
 					prevPostPos[3] = pos[1];
-					prevPostPos[0] = pos[0]-vel[0];
-					prevPostPos[1] = pos[1]-vel[1];
 					
+					dashDist = mag(new float[]{prevPostPos[2]-prevPostPos[0], prevPostPos[3]-prevPostPos[1]});
+					
+					prevPostPos[0] = pos[0]-2400f*vel[0];
+					prevPostPos[1] = pos[1]-2400f*vel[1];
+					
+					vel[0] = -vel[0];
+					vel[1] = -vel[1];
+					
+					powerCoolDown = POWERCOOLDOWN;
+
 				}
 			}
 		}
@@ -203,8 +236,10 @@ public class PlayerCharge extends Player{
 		if(gustCountDown>0){
 			gustCountDown -= (float)delta;
 			if(gustCountDown <= 0){
-				if(!ball.scored()){
-					ball.setVel(new float[]{ballParallel[0],  ballParallel[1]}, 2f);
+				if(!ball.scored() && ball.gustReady() && dashDist > 0){
+					ball.clearLocked();
+					ball.setVel(new float[]{ballParallel[0],  ballParallel[1]}, .1f);
+					ball.speedUp(POWERKICK+VELMAG*2f, 0, .02f);
 				}
 			}
 			
@@ -243,7 +278,12 @@ public class PlayerCharge extends Player{
 	
 	@Override
 	public void activatePower() {
-		power = MAXPOWER;
+		if(powerCoolDown >= POWERCOOLDOWN-400){//For dash chaining
+			power = 50;
+			powerCoolDown = 0;
+		}else{
+			power = MAXPOWER;
+		}
 		velMag = 0;
 		mySoundSystem.quickPlay( true, "whoosh2r.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 	}
@@ -253,7 +293,7 @@ public class PlayerCharge extends Player{
 		power = 0;
 		velMag = VELMAG;
 	}
-
+	
 	@Override
 	public boolean isKicking() {
 		return true;

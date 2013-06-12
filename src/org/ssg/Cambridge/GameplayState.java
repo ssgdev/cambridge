@@ -165,7 +165,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 			playerConsts[6] = section.get("POWERKICK", float.class);
 			playerConsts[7] = KICKRANGE;
 			
-			ballConsts[0] = section.get("ACCSCALE", float.class);
+			ballConsts[0] = section.get("CURVESCALE", float.class);
 			ballConsts[1] = section.get("BOUNCEDAMP", float.class);
 			ballConsts[2] = section.get("FLOORFRICTION", float.class);
 			
@@ -221,17 +221,18 @@ public class GameplayState extends BasicGameState implements KeyListener{
 			p1lim = new int[]{0,FIELDWIDTH/2, 0, FIELDHEIGHT};
 			p2lim = new int[]{FIELDWIDTH/2, FIELDWIDTH, 0, FIELDHEIGHT};
 		}
-		//PlayerTwoTouch p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", ball);
+		PlayerTwoTouch p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", ball);
 		//PlayerPuffer p1 = new PlayerPuffer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_E, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
 		//PlayerTwin p1L = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", 0, hemicircleL);
 		//PlayerTwin p1R = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, new float[]{p1L.getX(),p1L.getY()+1}, p1lim, Color.orange, mySoundSystem, "slow1", 1, hemicircleR);
 		//p1L.setTwin(p1R);
 		//p1R.setTwin(p1L);
 		//PlayerNeo p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
-		PlayerCharge p1 = new PlayerCharge(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", ball, hemicircleL);
+		//PlayerCharge p1 = new PlayerCharge(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", ball, hemicircleL);
 		PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", ball);
 		//PlayerNeo p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2");
-
+		//PlayerCharge p2 = new PlayerCharge(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", ball, hemicircleL);
+		
 		players = new Player[]{p1, p2};
 		for(Player p: players)
 			p.setPlayers(players);
@@ -618,7 +619,8 @@ public class GameplayState extends BasicGameState implements KeyListener{
 					resetVelocity[1]=0;
 				}
 				ball.setVel(new float[]{(targetX-ball.getX()),(targetY-ball.getY())}, 1f);
-				ball.setAcc(new float[]{0f,0f}, 0f);
+				ball.setCurve(new float[]{0f,0f}, 0f);
+				ball.cancelAcc();
 				//Scoring a goal pulls out of slowmo
 				for(Player p: players){
 					if(p.isSlowMoPower())
@@ -650,8 +652,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 					ball.setVel(kickFloat, p.kickStrength()+(float)Math.sqrt(tempf));
 					
 					spinFloat = normalNeg(p.getCurve(), kickFloat);
-					ball.setAcc(spinFloat, p.kickStrength());
-					ball.setLastKicker(p.getPlayerNum());
+					ball.setCurve(spinFloat, p.kickStrength());
 					
 					if(p.flashKick()){//If you want the kick flash and sound effect
 						p.setLastKick(ball.getPrevX(), ball.getPrevY(), ball.getPrevX()+kickFloat[0], ball.getPrevY()+kickFloat[1], 1f);//player stores coordinates of itself and ball at last kicking event;
@@ -666,6 +667,9 @@ public class GameplayState extends BasicGameState implements KeyListener{
 					}
 					
 					p.setKicking(ball);//really this does resetKicking()
+					ball.cancelAcc();
+					ball.setLastKicker(p.getPlayerNum());
+					ball.clearLocked();
 					
 					if(GOALTYPE == 1 || GOALTYPE == -1){//Squash
 						for(Goal goal: goals)

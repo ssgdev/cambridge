@@ -11,10 +11,20 @@ public class Ball {
 	float tempX, tempY;
 	float[] vel;//Unit vector direction
 	float vDelta;//delta used for calculating collision
-	float[] acc;
-	float accMag;
-	float ACCSCALE;// = .0005f; Curve acc scaling factor
+	float[] curveAcc;
+	float curveMag;
+	float CURVESCALE;// = .0005f; Curve curveAcc scaling factor
 	float velMag;//velocity magnitude
+	
+	float velTarget;
+	float accMag;
+	float accDelta;
+	boolean speedingUp;
+	boolean slowingDown;
+	boolean gustReady;
+	boolean[] locked;
+	
+	
 	float theta;
 	float BOUNCEDAMP;// = .5f;//How much speed is lost on ricochet
 	float FLOORFRICTION;//How much speed is lost by the ball traveling
@@ -36,7 +46,7 @@ public class Ball {
 
 	public Ball(float[] consts, int[] f, Goal[] g, float[] p, int gw, SoundSystem ss){
 
-		ACCSCALE = consts[0];
+		CURVESCALE = consts[0];
 		BOUNCEDAMP = consts[1];
 		FLOORFRICTION = consts[2];
 
@@ -46,12 +56,20 @@ public class Ball {
 		pos = p;
 
 		vel = new float[]{0f,0f};
-		acc = new float[]{0f,0f};
+		curveAcc = new float[]{0f,0f};
 		tempX = 0;
 		tempY = 0;
 
+		accMag = 0;
+		accDelta = 0;;
+		velTarget = 0;
+		speedingUp = false;
+		slowingDown = false;
+		gustReady = false;
+		locked = new boolean[10];
+		
 		theta = 0f;
-		accMag = 0f;
+		curveMag = 0f;
 		velMag = 0f;
 
 		vDelta = 0;
@@ -83,6 +101,21 @@ public class Ball {
 		canBeKicked[n] = b;
 	}
 	
+	//Used by PlayerTwoTouch
+	public void setLocked(int n, boolean b){
+		locked[n] = b;
+	}
+	
+	//Is it being locked by a PlayerTwoTouch
+	public boolean locked(int n){
+		return locked[n];
+	}
+	
+	public void clearLocked(){
+		for(int i=0;i<locked.length;i++)
+			locked[i] = false;
+	}
+	
 	public float getX(){
 		return pos[0];
 	}
@@ -90,7 +123,15 @@ public class Ball {
 	public float getY(){
 		return pos[1];
 	}
-
+	
+	public void shiftX(float f){
+		pos[0]+=f;		
+	}
+	
+	public void shiftY(float f){
+		pos[1]+=f;
+	}
+	
 	public float getPrevX(){
 		return pos[0]-12f*vel[0]*velMag;
 	}
@@ -126,23 +167,55 @@ public class Ball {
 		velMag = mag;
 	}
 
-	public void setAcc(float[] f, float am){
-		acc = f;
-		unit(acc);
-		if(ACCSCALE == 0){
-			accMag = 0;
+	public void setCurve(float[] f, float cm){
+		curveAcc = f;
+		unit(curveAcc);
+		if(CURVESCALE == 0){
+			curveMag = 0;
 		}else{
-			accMag = am * ACCSCALE;
+			curveMag = cm * CURVESCALE;
 		}
 	}
 
 	//Setting unscaled acceleration
 	public void setAccUnscaled(float[] f, float am){
 		if(!scored){
-			acc = f;
-			unit(acc);
-			accMag = am;
+			curveAcc = f;
+			unit(curveAcc);
+			curveMag = am;
 		}
+	}
+	
+	public void speedUp(float velTarg, float acc, float accD){
+		velTarget = velTarg;
+		accDelta = accD;
+		accMag = acc;
+		speedingUp = true;
+		slowingDown = false;
+	}
+	
+	public void slowDown(float velTarg, float acc, float accD){
+		velTarget = velTarg;
+		accDelta = accD;
+		accMag = acc;
+		speedingUp = false;
+		slowingDown = true;
+	}
+	
+	//Called when ball is kicked, bounced, or scored.
+	//Cancels any acceleration or upcoming gusting from PlayerCharge.
+	public void cancelAcc(){
+		speedingUp = false;
+		slowingDown = false;
+		gustReady = false;
+	}
+	
+	public void setReadyForGust(boolean b){
+		gustReady = b;
+	}
+	
+	public boolean gustReady(){
+		return gustReady;
 	}
 	
 	public void setScored(boolean b){
@@ -206,22 +279,45 @@ public class Ball {
 					vel[1]*=-1;
 					vDelta -= ((float)field[1]-pos[1])/(velMag*vel[1]);
 				}
-				acc[0]=0f;//Take off curve after first ricochet
-				acc[1]=0f;
-				accMag=0f;
+				curveAcc[0]=0f;//Take off curve after first ricochet
+				curveAcc[1]=0f;
+				curveMag=0f;
+				cancelAcc();
 				velMag-=BOUNCEDAMP;
 				if(velMag<0){
 					velMag = .1f;
 				}
+				
 			}
 
 		}
 
 //		velMag -= (float)delta / 1000f;//uncomment this because it's funny
-		vel[0]+=acc[0]*(float)delta*accMag;
-		vel[1]+=acc[1]*(float)delta*accMag;
+		vel[0]+=curveAcc[0]*(float)delta*curveMag;
+		vel[1]+=curveAcc[1]*(float)delta*curveMag;
 		unit(vel);
-
+		
+		if(speedingUp){
+			if(velMag<=velTarget){
+				velMag+=accMag;
+				accMag += accDelta;
+				if(velMag > velTarget){
+					velMag = velTarget;
+					speedingUp = false;
+				}
+			}
+		}else if(slowingDown){
+			if(velMag>=velTarget){
+				velMag-=accMag;
+				accMag += accDelta;
+				if(velMag < velTarget){
+					velMag = velTarget;
+					slowingDown = false;
+				}
+			}
+		}
+		
+		
 		if(velMag>0) velMag -= velMag*(float)delta * FLOORFRICTION;
 
 		theta+=velMag*delta;
