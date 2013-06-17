@@ -185,23 +185,23 @@ public class PlayerTwin extends Player{
 		if(PLAYERSIZE>0){
 			g.setColor(getColor());
 			
-			g.rotate(getX()+(float)Math.cos(theta2)*orbitRadius, getY()+(float)Math.sin(theta2)*orbitRadius, getTheta());
-			g.drawRect(getX()+(float)Math.cos(theta2)*orbitRadius-PLAYERSIZE/2, getY()+(float)Math.sin(theta2)*orbitRadius-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
-			g.rotate(getX()+(float)Math.cos(theta2)*orbitRadius, getY()+(float)Math.sin(theta2)*orbitRadius, -getTheta());
+			g.rotate(pos[0]+(float)Math.cos(theta2)*orbitRadius, pos[1]+(float)Math.sin(theta2)*orbitRadius, getTheta());
+			g.drawRect(pos[0]+(float)Math.cos(theta2)*orbitRadius-PLAYERSIZE/2, pos[1]+(float)Math.sin(theta2)*orbitRadius-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
+			g.rotate(pos[0]+(float)Math.cos(theta2)*orbitRadius, pos[1]+(float)Math.sin(theta2)*orbitRadius, -getTheta());
 			
-			g.rotate(getX()-(float)Math.cos(theta2)*orbitRadius, getY()-(float)Math.sin(theta2)*orbitRadius, getTheta());
-			g.drawRect(getX()-(float)Math.cos(theta2)*orbitRadius-PLAYERSIZE/2, getY()-(float)Math.sin(theta2)*orbitRadius-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
-			g.rotate(getX()-(float)Math.cos(theta2)*orbitRadius, getY()-(float)Math.sin(theta2)*orbitRadius, -getTheta());
+			g.rotate(pos[0]-(float)Math.cos(theta2)*orbitRadius, pos[1]-(float)Math.sin(theta2)*orbitRadius, getTheta());
+			g.drawRect(pos[0]-(float)Math.cos(theta2)*orbitRadius-PLAYERSIZE/2, pos[1]-(float)Math.sin(theta2)*orbitRadius-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
+			g.rotate(pos[0]-(float)Math.cos(theta2)*orbitRadius, pos[1]-(float)Math.sin(theta2)*orbitRadius, -getTheta());
 		}
 	}
 	
 	@Override
 	public void drawNameTag(Graphics g, Image triangle, AngelCodeFont font_small){
 		if(DESIREDPLAYERSIZE > 0){
-			g.drawImage(triangle, getX()-triangle.getWidth()/2, getY()-getKickRange()/2-25, getColor());
+			g.drawImage(triangle, pos[0]-triangle.getWidth()/2, pos[1]-KICKRANGE/2-25, getColor());
 			g.setColor(getColor());
 			g.setFont(font_small);
-			g.drawString(("P"+(getPlayerNum()+1)), getX()-font_small.getWidth("P"+(getPlayerNum()+1))/2, getY()-font_small.getHeight("P")-getKickRange()/2-30);
+			g.drawString(("P"+(playerNum+1)), pos[0]-font_small.getWidth("P"+(playerNum+1))/2, pos[1]-font_small.getHeight("P")-KICKRANGE/2-30);
 		}
 	}
 	
@@ -249,6 +249,7 @@ public class PlayerTwin extends Player{
 		nukes += n;
 	}
 	
+	//Keyboard not really supported for this character
 	@Override
 	public void keyPressed(int input, char arg1) {
 		if (!cExist) {

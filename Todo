@@ -1,19 +1,28 @@
 TODO:
 
+Go through all the code and see if it can be less horrible
 Enforcer: Has to build up momentum
+	TODO: Test Enfocer vs everyone else collision and see what happens
+Enforcer: Charge in straight lines, or can you deflect it and curve slightly? (Can be tron like)
 Figure out dashing while against a wall
 Velocity add component scaled by angle coincidence
 Short dash with player deceleration?
 Ball should decelerate into TwoTouch's lock DONE
 	What happens if a ball gets knocked out of TwoTouch's hands? Seems to work
-	What happens if two twotouches both try to lock the ball Seems to work
+		Test if NORMALKICK, DEFAULTKICK and EXTRAKICK are all the correct values
+	What happens if two twotouches both try to lock the ball? Seems to work
 BUG: TwoTouch gets stuck to the ball
 	Resolved: Ball can be kicked out of TwoTouch's hands
 PlayerCharge should bounce off wall? DONE Feels a lot better
-PlayerCharge dash chaining DONE Still in testing
+PlayerCharge dash chaining DONE (Still in testing)
 Ball should accelerate into gust DONE
 Should the gust reset if the ball is kicked/the ball bounces? DONE
 	What happens if two charges both get up in it? Seems to be sequential gusting, which is totally fine
+Sounds + slowmo versions of all sounds
+	Less shitty sound names
+Edit config usage to reflect that neo is not the only player
+Maybe have players be arraylist?
+Something to help get ball out of corners/away from walls, prevent rapid bounceback or getting stuck in a corner
 Dash trail end nub not drawn correctly? DONE Problem with ints
 Width of kick trail not consistently aesthetic – DONE
 Make velocity add component only in positive direction – DONE
@@ -31,6 +40,7 @@ Menus and stuff
 	Character Select
 	intro screen
 	help/controls screen
+	round over screen – winners, score, time etc, menu options
 Draw arena differently based on gameMode? – DONE
 More game modes
 	FOURSQUARE
@@ -48,12 +58,6 @@ Make Player abstract – DONE
 Player On Player Collision handling – DONE
 Make KickCoolDown only a visual effect, and have kicking basically be instant – DONE
 make setPlayer set the whole array of players, for case of 4P – DONE
-Less shitty sound names
-round over screen – winners, score, time etc, menu options
-Sounds + slowmo versions of all sounds
-Possibly edit config usage to reflect that neo is not the only player
-Maybe have players be arraylist?
-Something to help get ball out of corners/away from walls, prevent rapid bounceback or getting stuck in a corner
 Make actioncam less intense
 	Have targets for pos and scale but ease into them much more gradually  – DONE
 	Increase size of bounding box DONE

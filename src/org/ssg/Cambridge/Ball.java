@@ -22,7 +22,7 @@ public class Ball {
 	boolean speedingUp;
 	boolean slowingDown;
 	boolean gustReady;
-	boolean[] locked;
+	boolean[] locked;//Is it locked down by a TwoTouch
 	
 	
 	float theta;

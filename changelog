@@ -1,5 +1,13 @@
 Changelog:
 
+6.17.13
+Continued PlayerEnforcer functionality and visuals
+Fixed Player.render() methods to stop using getters
+
+6.13.13
+Updated PlayerTwoTouch catching the ball to be smoother
+Added PlayerEnforcer
+
 6.12.13
 Added recoil to PlayerCharge
 Added dash chaining to PlayerCharge (Still needs testing)

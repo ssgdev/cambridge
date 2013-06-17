@@ -152,6 +152,11 @@ public class PlayerCharge extends Player{
 		
 		updatePos(delta);
 
+		stun -= (float)delta;
+		if(stun<=0){
+			stun = 0;
+		}
+		
 		lastKickAlpha -= (float)(delta)/1200f;
 		if(lastKickAlpha<0){
 			lastKickAlpha = 0f;
@@ -205,15 +210,6 @@ public class PlayerCharge extends Player{
 					//Pull back from wall
 					pos[0]-=vel[0];
 					pos[1]-=vel[1];
-					
-//					if(pos[0]<xyLimit[0]+KICKRANGE/2)
-//						pos[0]=xyLimit[0]+KICKRANGE/2;
-//					if(pos[0]>xyLimit[1]-KICKRANGE/2)
-//						pos[0]=xyLimit[1]-KICKRANGE/2;
-//					if(pos[1]<xyLimit[2]+KICKRANGE/2)
-//						pos[1]=xyLimit[2]+KICKRANGE/2;
-//					if(pos[1]>xyLimit[3]-KICKRANGE/2)
-//						pos[1]=xyLimit[3]-KICKRANGE/2;
 					
 					prevPostPos[2] = pos[0];
 					prevPostPos[3] = pos[1];
@@ -278,7 +274,7 @@ public class PlayerCharge extends Player{
 	
 	@Override
 	public void activatePower() {
-		if(powerCoolDown >= POWERCOOLDOWN-400){//For dash chaining
+		if(powerCoolDown >= POWERCOOLDOWN-400){//For dash chaining, untested
 			power = 50;
 			powerCoolDown = 0;
 		}else{

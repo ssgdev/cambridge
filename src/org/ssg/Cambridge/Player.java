@@ -52,7 +52,12 @@ public abstract class Player implements KeyListener {
 	float[] lastKickPos;
 	float[] lastKickBallPos;
 	float lastKickAlpha;
-
+	
+	float stun;
+	float MAXSTUN = 1000;
+	float[] stunVel;//The velocity you are forced into during a stun
+	float stunVelMag;
+	
 	Color color;
 
 	SoundSystem mySoundSystem;
@@ -64,6 +69,7 @@ public abstract class Player implements KeyListener {
 	int temp;//Used whenever an int is needed temporarily
 	float tempf;
 	float[] tempArr;
+	boolean bool;
 	
 	public Player(int n, float[] consts, int f[], int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn){
 
@@ -112,6 +118,10 @@ public abstract class Player implements KeyListener {
 		lastKickBallPos = new float[]{0,0};
 		lastKickAlpha = 0f;
 
+		stun = 0;
+		stunVel = new float[2];
+		stunVelMag = 0;
+		
 		inputOn = false;
 
 		mySoundSystem = ss;
@@ -171,16 +181,25 @@ public abstract class Player implements KeyListener {
 	}
 	
 	public void updatePos(int delta){
-		pos[0] = (pos[0]+vel[0]*velMag*(float)delta);
-		if(pos[0]<xyLimit[0]+KICKRANGE/2)
+		pos[0] = (pos[0]+stunVel[0]*stunVelMag*(float)delta*stun/MAXSTUN + (1f-stun/MAXSTUN)*vel[0]*velMag*(float)delta);
+		pos[1] = (pos[1]+stunVel[1]*stunVelMag*(float)delta*stun/MAXSTUN + (1f-stun/MAXSTUN)*vel[1]*velMag*(float)delta);
+
+		if(pos[0]<xyLimit[0]+KICKRANGE/2){
 			pos[0]=xyLimit[0]+KICKRANGE/2;
-		if(pos[0]>xyLimit[1]-KICKRANGE/2)
+			bool = true;//Indicating a wall collision occured
+		}
+		if(pos[0]>xyLimit[1]-KICKRANGE/2){
 			pos[0]=xyLimit[1]-KICKRANGE/2;
-		pos[1]= (pos[1]+vel[1]*velMag*(float)delta);
-		if(pos[1]<xyLimit[2]+KICKRANGE/2)
+			bool = true;
+		}
+		if(pos[1]<xyLimit[2]+KICKRANGE/2){
 			pos[1]=xyLimit[2]+KICKRANGE/2;
-		if(pos[1]>xyLimit[3]-KICKRANGE/2)
+			bool = true;
+		}
+		if(pos[1]>xyLimit[3]-KICKRANGE/2){
 			pos[1]=xyLimit[3]-KICKRANGE/2;
+			bool = true;
+		}
 		
 //		if(temp-KICKRANGE/2>=xyLimit[0] && temp+KICKRANGE/2<=xyLimit[1])
 //			pos[0]=temp;
@@ -268,40 +287,40 @@ public abstract class Player implements KeyListener {
 		g.setColor(getColor5());
 		g.setLineWidth(KICKRANGE*1.5f);
 //		tempTrailArr = p.getTrailArr();//{bx, by, px, py}
-		float dx = getTrailArr()[2]-getTrailArr()[0];
-		float dy = getTrailArr()[3]-getTrailArr()[1];
-		float thetaTemp = (float)Math.atan2((double)dy, (double)dx);
-		g.rotate(getTrailArr()[0], getTrailArr()[1], 360f/2f/(float)Math.PI*thetaTemp);
+		float dx = lastKickPos[0]-lastKickBallPos[0];
+		float dy = lastKickPos[1]-lastKickBallPos[1];
+		tempf = (float)Math.atan2((double)dy, (double)dx);
+		g.rotate(lastKickBallPos[0], lastKickBallPos[1], 360f/2f/(float)Math.PI*tempf);
 		//g.drawLine(getTrailArr()[0]-2*FIELDWIDTH,getTrailArr()[1], getTrailArr()[0]+2*FIELDWIDTH, getTrailArr()[1]);
 		//g.drawLine(getTrailArr()[0]-2*1600,getTrailArr()[1], getTrailArr()[0]+2*1600, getTrailArr()[1]);
-		g.fillRect(getTrailArr()[0]-2*1600, getTrailArr()[1]-KICKRANGE/2-5, 1600*4, KICKRANGE+10);
-		g.rotate(getTrailArr()[0], getTrailArr()[1], -360f/2f/(float)Math.PI*thetaTemp);
+		g.fillRect(lastKickBallPos[0]-2*1600, lastKickBallPos[1]-KICKRANGE/2-5, 1600*4, KICKRANGE+10);
+		g.rotate(lastKickBallPos[0], lastKickBallPos[1], -360f/2f/(float)Math.PI*tempf);
 		g.setLineWidth(5f);
 	}
 	
 	public void drawRechargeFlash(Graphics g){
 		//Draw the flash for when your power kick is recharged
-		if(getPowerCoolDown()>-500 && getPowerCoolDown()<0){
+		if(powerCoolDown>-500 && powerCoolDown<0){
 			g.setColor(getColor4().brighter());
-			g.fillOval(getX()-getKickRange()/2f, getY()-getKickRange()/2f, getKickRange(), getKickRange());
+			g.fillOval(pos[0]-getKickRange()/2f, pos[1]-getKickRange()/2f, KICKRANGE, KICKRANGE);
 		}
 	}
 	
 	public void drawKickCircle(Graphics g){
 		//Draw kicking circle
 		g.setColor(getColor(.5f).darker());
-		g.drawOval(getX()-getKickRange()/2, getY()-getKickRange()/2, getKickRange(), getKickRange());
+		g.drawOval(pos[0]-KICKRANGE/2, pos[1]-KICKRANGE/2, KICKRANGE, KICKRANGE);
 		
 		//Kicking circle flash when kick happens
 		g.setColor(getColor2().brighter());
-		g.drawOval(getX()-getKickRange()/2f, getY()-getKickRange()/2f, getKickRange(), getKickRange());
+		g.drawOval(pos[0]-KICKRANGE/2f, pos[1]-KICKRANGE/2f, KICKRANGE, KICKRANGE);
 	}
 	
 	public void drawPlayer(Graphics g){
 		g.setColor(getColor());
-		g.rotate(getX(), getY(), getTheta());
-		g.drawRect(getX()-PLAYERSIZE/2, getY()-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
-		g.rotate(getX(), getY(), -getTheta());
+		g.rotate(pos[0], pos[1], theta);
+		g.drawRect(pos[0]-PLAYERSIZE/2, pos[1]-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
+		g.rotate(pos[0], pos[1], -theta);
 		//g.drawOval(getX()-getKickRange()/2f+BALLSIZE/2f, getY()-getKickRange()/2f+BALLSIZE/2f, getKickRange()-BALLSIZE, getKickRange()-BALLSIZE);//Draw kicking circle;
 	}
 	
@@ -309,7 +328,7 @@ public abstract class Player implements KeyListener {
 		//Draw power circle
 		if(isPower()){
 			g.setColor(getColor3());
-			g.drawOval(getX()-getKickRange()/2f-getPower()/2f, getY()-getKickRange()/2f-getPower()/2f, getKickRange()+getPower(), getKickRange()+getPower());
+			g.drawOval(pos[0]-KICKRANGE/2f-power/2f, pos[1]-KICKRANGE/2f-power/2f, KICKRANGE+power, KICKRANGE+power);
 			g.setColor(Color.white);
 		}
 	}
@@ -318,7 +337,7 @@ public abstract class Player implements KeyListener {
 		g.drawImage(triangle, getX()-triangle.getWidth()/2, getY()-getKickRange()/2-25, getColor());
 		g.setColor(getColor());
 		g.setFont(font_small);
-		g.drawString("P"+(getPlayerNum()+1), getX()-font_small.getWidth("P"+(getPlayerNum()+1))/2, getY()-font_small.getHeight("P")-getKickRange()/2-30);
+		g.drawString("P"+(playerNum+1), pos[0]-font_small.getWidth("P"+(playerNum+1))/2, pos[1]-font_small.getHeight("P")-KICKRANGE/2-30);
 
 	}
 	
@@ -354,6 +373,16 @@ public abstract class Player implements KeyListener {
 	
 	public float[] getVel(){
 		return vel;
+	}
+	
+	public void setStunned(float n, float[] v, float vm){
+		if(stun == 0){
+			mySoundSystem.quickPlay( true, "bump.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			stun = n;
+			stunVel = v;
+			unit(stunVel);
+			stunVelMag = vm;
+		}
 	}
 	
 	//Used to add velocity component of player to kick
@@ -460,12 +489,8 @@ public abstract class Player implements KeyListener {
 			}else if(input == controls[3]){
 				right = true;
 				vel[0] = 1;
-			}else if(input == controls[4]){//kick
-				if(powerCoolDown <= 0){
-					activatePower();
-				}else{
-					//play whiff animation
-				}
+			}else if(input == controls[4]){
+				activatePower();
 			}
 		}
 	}
@@ -543,6 +568,10 @@ public abstract class Player implements KeyListener {
 			f[0]/= tempf;
 			f[1]/= tempf;
 		}
+	}
+	
+	public float dot(float[] a, float[] b){
+		return a[0]*b[0]+a[1]*b[1];
 	}
 	
 	public float mag(float a, float b){

@@ -122,7 +122,7 @@ public class Cambridge extends StateBasedGame {
 		AppGameContainer app = new AppGameContainer(new Cambridge());
 		app.setDisplayMode(screenWidth, screenHeight, false);
 		app.setVSync(true);
-//		app.setTargetFrameRate(60);
+		app.setTargetFrameRate(60);
 		app.setAlwaysRender(true);
 		app.setShowFPS(true);
 		app.setTitle("Kick Kickerung");

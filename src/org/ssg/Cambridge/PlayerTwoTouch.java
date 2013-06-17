@@ -83,8 +83,8 @@ public class PlayerTwoTouch extends Player{
 			ball.setLocked(playerNum, true);
 			ball.setCanBeKicked(playerNum, true);
 			ball.setLastKicker(playerNum);
-			//ball.setVel(new float[]{0,0}, 0);
-			ball.slowDown(0, 0, ball.getVelMag()/8f);
+			ball.setVel(new float[]{ball.getVelX(),ball.getVelY()},ball.getVelMag()/4f);
+			ball.slowDown(0, ball.getVelMag()/24f, 0);
 			ballPos = new float[]{ball.getX(),ball.getY()};//TODO: Unused
 			//Sets vel to be relative position to ball, so you don't jump on contact
 			tempArr[0] = ball.getX()-pos[0];
@@ -142,7 +142,7 @@ public class PlayerTwoTouch extends Player{
 				ball.shiftY(xyLimit[3]-KICKRANGE/2f-tempf);
 			}
 
-//			//If that rotation made you out of bounds, roll it back
+//			//If that rotation made you out of bounds, roll it back//No longer used: now you get shoved away from wall if you rotate into it
 //			if(pos[0]-KICKRANGE/2<xyLimit[0] || pos[0]+KICKRANGE/2>xyLimit[1] || pos[1]-KICKRANGE/2<xyLimit[2] || pos[1]+KICKRANGE/2>xyLimit[3]){
 //				angle = tempf;
 //				vel[0] = (float)Math.cos(angle);

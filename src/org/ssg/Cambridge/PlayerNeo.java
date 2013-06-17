@@ -20,9 +20,7 @@ public class PlayerNeo extends Player {
 			pollController(delta);
 			
 			if (actionButton.getPollData() == 1.0){
-				if(powerCoolDown <= 0){
-					activatePower();
-				}
+				activatePower();
 			}
 		}
 
@@ -72,14 +70,16 @@ public class PlayerNeo extends Player {
 
 	@Override
 	public void activatePower(){
-		power = MAXPOWER;
-		powerCoolDown = MAXPOWER+POWERCOOLDOWN;
-		velMag = POWERVELMAG;
-		playedPowerDing = false;
-		mySoundSystem.quickPlay( true, "whoosh2r.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
-		mySoundSystem.play(slowName);
-		for(Player p: players){
-			p.setSlowMo(true);
+		if(powerCoolDown<=0){
+			power = MAXPOWER;
+			powerCoolDown = MAXPOWER+POWERCOOLDOWN;
+			velMag = POWERVELMAG;
+			playedPowerDing = false;
+			mySoundSystem.quickPlay( true, "whoosh2r.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			mySoundSystem.play(slowName);
+			for(Player p: players){
+				p.setSlowMo(true);
+			}
 		}
 	}
 	
