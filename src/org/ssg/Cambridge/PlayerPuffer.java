@@ -56,7 +56,7 @@ public class PlayerPuffer extends Player{
 			if (actionButton.getPollData() == 1.0 && !buttonPressed1){
 				buttonPressed1 = true;
 				activatePower();//inflate
-			}else if(buttonPressed1){
+			}else if(actionButton.getPollData() == 0 && buttonPressed1){
 				buttonPressed1 = false;
 				powerKeyReleased();
 			}
@@ -64,7 +64,7 @@ public class PlayerPuffer extends Player{
 			if (actionButton2.getPollData() == 1.0 && !buttonPressed2){
 				buttonPressed2 = true;
 				activateAntiPower();//deflate
-			}else if(buttonPressed2){
+			}else if(actionButton2.getPollData() == 0.0 && buttonPressed2){
 				buttonPressed2 = false;
 				antiPowerKeyReleased();
 			}
@@ -85,11 +85,11 @@ public class PlayerPuffer extends Player{
 		if(theta>360) theta-=360;
 		
 		if(puffup && !puffdown){
-			if(PLAYERSIZE+(float)(delta) > MAXSIZE){
+			if(PLAYERSIZE+(float)(delta)*2f > MAXSIZE){
 				PLAYERSIZE = MAXSIZE;
 				powerKeyReleased();
 			}else{
-				PLAYERSIZE+=(float)(delta);
+				PLAYERSIZE+=(float)(delta)*2f;
 			}
 			KICKRANGE = PLAYERSIZE*1.42f;
 			
@@ -106,8 +106,11 @@ public class PlayerPuffer extends Player{
 			}
 			
 		}else if(!puffup && puffdown){
-			if(PLAYERSIZE-(float)(delta/2)>=MINSIZE)
+			if(PLAYERSIZE-(float)(delta/2)>=MINSIZE){
 				PLAYERSIZE-=(float)(delta/2);
+			}else{
+				PLAYERSIZE = MINSIZE;
+			}
 			KICKRANGE = PLAYERSIZE*1.42f;
 		}
 		
@@ -121,6 +124,7 @@ public class PlayerPuffer extends Player{
 		if(PLAYERSIZE < MAXSIZE && !puffup){
 			puffup = true;
 			power = 1;
+			mySoundSystem.quickPlay( true, "PufferPuffUp.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 		}
 	}
 	
@@ -132,8 +136,10 @@ public class PlayerPuffer extends Player{
 	}
 	
 	public void activateAntiPower(){
-		if(PLAYERSIZE > MINSIZE && !puffdown)
+		if(PLAYERSIZE > MINSIZE && !puffdown){
 			puffdown = true;
+			mySoundSystem.quickPlay( true, "PufferPuffDown.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+		}
 	}
 	
 	public void antiPowerKeyReleased(){

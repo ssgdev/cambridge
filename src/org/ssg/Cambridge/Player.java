@@ -377,12 +377,15 @@ public abstract class Player implements KeyListener {
 	
 	public void setStunned(float n, float[] v, float vm){
 		if(stun == 0){
-			mySoundSystem.quickPlay( true, "bump.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			stun = n;
 			stunVel = v;
 			unit(stunVel);
 			stunVelMag = vm;
 		}
+	}
+	
+	public boolean stunned(){
+		return stun>0;
 	}
 	
 	//Used to add velocity component of player to kick

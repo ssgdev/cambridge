@@ -2,6 +2,7 @@ Changelog:
 
 6.17.13
 Continued PlayerEnforcer functionality and visuals
+Added stunning to Player
 Fixed Player.render() methods to stop using getters
 
 6.13.13

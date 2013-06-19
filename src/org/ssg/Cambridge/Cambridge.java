@@ -81,23 +81,33 @@ public class Cambridge extends StateBasedGame {
 	}
 	
 	public void initSounds() throws SlickException{
-		mySoundSystem.loadSound("bump.wav");
-		mySoundSystem.loadSound("bumpslow.wav");
-		mySoundSystem.loadSound("bump2.wav");
-		mySoundSystem.loadSound("bump2slow.wav");
-		mySoundSystem.loadSound("ding.wav");
-		mySoundSystem.loadSound("pow2.wav");
-		mySoundSystem.loadSound("pneng.wav");
-		mySoundSystem.loadSound("rumble.wav");
-		mySoundSystem.loadSound("bwuw.wav");
-		mySoundSystem.loadSound("ping.wav");
-		mySoundSystem.loadSound("pingslow.wav");
-		mySoundSystem.loadSound("thud.wav");
-		mySoundSystem.loadSound("whoosh2.wav");
-		mySoundSystem.loadSound("whoosh2r.wav");
+		mySoundSystem.loadSound("KickBump.wav");
+		mySoundSystem.loadSound("KickBumpSlow.wav");
+		mySoundSystem.loadSound("BallBounce.wav");
+		mySoundSystem.loadSound("BallBounceSlow.wav");
+		mySoundSystem.loadSound("GoalScored.wav");
+		mySoundSystem.loadSound("GoalOwnScored.wav");
+		mySoundSystem.loadSound("BallLaunch.wav");
+		mySoundSystem.loadSound("PowerKick.wav");
+		mySoundSystem.loadSound("Rumble.wav");
+		mySoundSystem.loadSound("PowerRecharged.wav");
+		mySoundSystem.loadSound("PowerRechargedSlow.wav");
+		mySoundSystem.loadSound("MenuThud.wav");
+		mySoundSystem.loadSound("NeoSlowOut.wav");
+		mySoundSystem.loadSound("NeoSlowIn.wav");
 		mySoundSystem.loadSound("TwoTouchActivate.wav");
-		mySoundSystem.newStreamingSource(false, "slow1", "rumble.wav", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);
-		mySoundSystem.newStreamingSource(false, "slow2", "rumble.wav", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);
+		mySoundSystem.loadSound("TwoTouchLockOn.wav");
+		mySoundSystem.loadSound("TwinsLtoR.wav");
+		mySoundSystem.loadSound("TwinsRtoL.wav");
+		mySoundSystem.loadSound("PufferPuffUp.wav");
+		mySoundSystem.loadSound("PufferPuffDown.wav");
+		mySoundSystem.loadSound("EnforcerBump.wav");
+		mySoundSystem.loadSound("EnforcerStep.wav");
+		mySoundSystem.loadSound("EnforcerActivate.wav");
+		mySoundSystem.loadSound("EnforcerWallBounce.wav");
+		//TODO: Have streams created after character selection?
+		mySoundSystem.newStreamingSource(false, "slow1", "Rumble.wav", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);
+		mySoundSystem.newStreamingSource(false, "slow2", "Rumble.wav", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);
 	}
 	
 	public static void main(String[] args) throws SlickException{

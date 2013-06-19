@@ -18,6 +18,9 @@ public class PlayerEnforcer extends Player{
 	boolean coolingDown;
 	float[] curve;
 	
+	float stepCoolDown;//used for playing the walking sound
+	float STEPCOOLDOWN;
+	
 	public PlayerEnforcer(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn);
 		
@@ -27,6 +30,8 @@ public class PlayerEnforcer extends Player{
 		launchVel = new float[2];
 		coolingDown = false;
 		curve = new float[2];
+		stepCoolDown = 0;
+		STEPCOOLDOWN = MAXPOWER;
 	}
 	
 	@Override
@@ -92,6 +97,23 @@ public class PlayerEnforcer extends Player{
 			
 		updatePos(delta);
 		
+		if(power>0 || coolingDown){//TODO: Make synced with actual speed
+			stepCoolDown -= (float)delta;
+			if(stepCoolDown<=0){
+				stepCoolDown = STEPCOOLDOWN;
+				if(power > 0){
+					STEPCOOLDOWN -= 4f*(float)delta;
+				}else if(coolingDown){
+					STEPCOOLDOWN += 8f*(float)delta;
+				}
+				if(STEPCOOLDOWN < 250)
+					STEPCOOLDOWN = 250;
+				if(STEPCOOLDOWN > MAXPOWER)
+					STEPCOOLDOWN = MAXPOWER;
+				mySoundSystem.quickPlay( true, "EnforcerStep.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			}
+		}
+		
 		lastKickAlpha -= (float)(delta)/1200f;
 		if(lastKickAlpha<0)
 			lastKickAlpha = 0f;
@@ -136,6 +158,7 @@ public class PlayerEnforcer extends Player{
 				power = 0;
 				targetVelmag = 0;
 				coolingDown = true;
+				mySoundSystem.quickPlay( true, "EnforcerWallBounce.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			}
 		}
 		
@@ -144,9 +167,10 @@ public class PlayerEnforcer extends Player{
 			if(otherPlayer != this){//If he's not you, collide with him
 				tempf = dist(pos[0], pos[1], otherPlayer.getX(), otherPlayer.getY());
 				if(tempf < (KICKRANGE + otherPlayer.getKickRange())/2){
-					if(power > 0){
+					if(power > 0 && !otherPlayer.stunned()){
 						otherPlayer.setStunned(MAXSTUN, new float[]{otherPlayer.getX()-pos[0]+vel[0]*vel[0],otherPlayer.getY()-pos[1]+vel[1]*vel[1]}, NORMALKICK+VELMAG);
 						kickingCoolDown = KICKCOOLDOWN;
+						mySoundSystem.quickPlay( true, "EnforcerBump.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 					}else{
 						tempArr[0] = otherPlayer.getX()-pos[0];
 						tempArr[1] = otherPlayer.getY()-pos[1];
@@ -209,6 +233,9 @@ public class PlayerEnforcer extends Player{
 			targetVelmag = MAXVELMAG;
 			launchVel[0] = 0;
 			launchVel[1] = 0;
+			//stepCoolDown = MAXPOWER;
+			STEPCOOLDOWN = MAXPOWER;
+			mySoundSystem.quickPlay( true, "EnforcerActivate.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 		}
 	}
 

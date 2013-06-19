@@ -92,6 +92,7 @@ public class PlayerTwoTouch extends Player{
 			angle = (float)Math.atan2(tempArr[1], tempArr[0]);
 			angleTarget = (float)Math.atan2(tempArr[1], tempArr[0]);
 			NORMALKICK = EXTRAKICK;
+			mySoundSystem.quickPlay( true, "TwoTouchLockOn.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 		}
 		
 		if(!ball.locked(playerNum)){
@@ -165,11 +166,16 @@ public class PlayerTwoTouch extends Player{
 		if(lastKickAlpha<0){
 			lastKickAlpha = 0f;
 		}
-
+		
 		kickingCoolDown -= (float)delta;
 		if(kickingCoolDown<0)
 			kickingCoolDown = 0;
 
+		stun -= (float)delta;
+		if(stun<=0){
+			stun = 0;
+		}
+		
 		theta+= (1f-(power/MAXPOWER*.8f))*omega*(float)delta;
 		if(theta>360) theta-=360;
 		
@@ -178,6 +184,7 @@ public class PlayerTwoTouch extends Player{
 	@Override
 	public void activatePower(){
 		power = MAXPOWER;
+		mySoundSystem.quickPlay( true, "TwoTouchActivate.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 	}
 	
 	@Override

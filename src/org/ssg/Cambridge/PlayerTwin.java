@@ -12,6 +12,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 import paulscode.sound.SoundSystem;
+import paulscode.sound.SoundSystemConfig;
 
 public class PlayerTwin extends Player{
 
@@ -211,6 +212,11 @@ public class PlayerTwin extends Player{
 		if(twin.numNukes()<2){
 			twin.addNukes(+1);
 			nukes--;
+			if(twinNum == 0){
+				mySoundSystem.quickPlay( true, "TwinsLtoR.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			}else{
+				mySoundSystem.quickPlay( true, "TwinsRtoL.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			}
 		}
 	}
 
