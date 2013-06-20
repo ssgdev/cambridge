@@ -2,6 +2,7 @@ package org.ssg.Cambridge;
 
 import java.util.ArrayList;
 import java.io.*;
+import java.net.MalformedURLException;
 
 import net.java.games.input.Controller;
 
@@ -228,8 +229,8 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		//p1L.setTwin(p1R);
 		//p1R.setTwin(p1L);
 		//PlayerNeo p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
-		//PlayerCharge p1 = new PlayerCharge(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", ball, hemicircleL);
-		PlayerEnforcer p1 = new PlayerEnforcer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
+		PlayerCharge p1 = new PlayerCharge(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", ball, hemicircleL);
+		//PlayerEnforcer p1 = new PlayerEnforcer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
 		PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", ball);
 		//PlayerNeo p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2");
 		//PlayerCharge p2 = new PlayerCharge(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", ball, hemicircleL);
@@ -293,6 +294,11 @@ public class GameplayState extends BasicGameState implements KeyListener{
 			goals[6] = new Goal(0,FIELDHEIGHT/2,-25,FIELDHEIGHT/2,-1,0,3);
 			goals[7] = new Goal(0,FIELDHEIGHT,FIELDWIDTH/2,25,0,1,3); */
 		}
+	}
+	
+	@Override
+	public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		mySoundSystem.backgroundMusic("BGM", "BGMHotline.ogg", true);
 	}
 	
 	@Override
@@ -668,7 +674,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 					}
 					
 					p.setKicking(ball);//really this does resetKicking()
-					ball.cancelAcc();
+					ball.cancelAcc();//Cancels any speeding up or slowing down. Does not affect curve
 					ball.setLastKicker(p.getPlayerNum());
 					ball.clearLocked();
 					

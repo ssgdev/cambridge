@@ -52,6 +52,7 @@ public abstract class Player implements KeyListener {
 	float[] lastKickPos;
 	float[] lastKickBallPos;
 	float lastKickAlpha;
+	float lastKickWidth;//Width of ball trail, used mainly for Puffer
 	
 	float stun;
 	float MAXSTUN = 1000;
@@ -117,6 +118,7 @@ public abstract class Player implements KeyListener {
 		lastKickPos = new float[]{0,0};
 		lastKickBallPos = new float[]{0,0};
 		lastKickAlpha = 0f;
+		lastKickWidth = KICKRANGE;
 
 		stun = 0;
 		stunVel = new float[2];
@@ -293,7 +295,7 @@ public abstract class Player implements KeyListener {
 		g.rotate(lastKickBallPos[0], lastKickBallPos[1], 360f/2f/(float)Math.PI*tempf);
 		//g.drawLine(getTrailArr()[0]-2*FIELDWIDTH,getTrailArr()[1], getTrailArr()[0]+2*FIELDWIDTH, getTrailArr()[1]);
 		//g.drawLine(getTrailArr()[0]-2*1600,getTrailArr()[1], getTrailArr()[0]+2*1600, getTrailArr()[1]);
-		g.fillRect(lastKickBallPos[0]-2*1600, lastKickBallPos[1]-KICKRANGE/2-5, 1600*4, KICKRANGE+10);
+		g.fillRect(lastKickBallPos[0]-2*1600, lastKickBallPos[1]-lastKickWidth/2-5, 1600*4, lastKickWidth+10);
 		g.rotate(lastKickBallPos[0], lastKickBallPos[1], -360f/2f/(float)Math.PI*tempf);
 		g.setLineWidth(5f);
 	}
@@ -471,6 +473,7 @@ public abstract class Player implements KeyListener {
 		lastKickPos[0] = px;
 		lastKickPos[1] = py;
 		lastKickAlpha = lka;
+		lastKickWidth = KICKRANGE;
 	}
 
 	public float[] getTrailArr(){

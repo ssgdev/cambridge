@@ -30,8 +30,17 @@ public class PlayerCharge extends Player{
 	float[] dashVel;
 	float dashDist;
 	float gustCountDown;
-	float GUSTCOUNTDOWN = 500;
+	float gustCoolDown;//Used for drawing the ghost kicker
+	float GUSTCOUNTDOWN = 800;
+	float[] gustCurve;
+	
+	//Used to draw the ghost kicker
+	float[] lastBallPos;
+	float[] lastGustVel;
+	
 	boolean shortDash;
+	float shortDashCoolDown;
+	float SHORTDASHCOOLDOWN = 500;
 	
 	Ball ball;
 	
@@ -39,8 +48,9 @@ public class PlayerCharge extends Player{
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn);
 
 		MAXPOWER = 100;
+		POWERCOOLDOWN = 500;
 		TRAILRANGE = KICKRANGE*1.4f;
-
+		
 		poly = new Polygon(new float[]{0,0,-PLAYERSIZE/3, -PLAYERSIZE/2, PLAYERSIZE*2/3, 0, -PLAYERSIZE/3, PLAYERSIZE/2});
 		ballParallel = new float[2];
 		ballOrth = new float[2];
@@ -62,7 +72,13 @@ public class PlayerCharge extends Player{
 		
 		dashDist = 0;
 		gustCountDown = 0;
+		gustCoolDown = 0;
+		gustCurve = new float[2];
+		lastBallPos = new float[2];
+		lastGustVel = new float[2];
+		
 		shortDash = false;
+		shortDashCoolDown = 0;
 		
 		ball = b;
 	}
@@ -115,13 +131,27 @@ public class PlayerCharge extends Player{
 		g.drawImage(hemicircle, prevPostPos[0]-KICKRANGE/2, prevPostPos[1]-KICKRANGE/2, getColor5());
 		g.rotate(prevPostPos[0], prevPostPos[1], -360f/2f/(float)Math.PI*thetaTemp);
 		g.setLineWidth(5f);
+		
+		//Ghostly Gust Kicker
+		if(gustCountDown>0 && ball.gustReady()){
+			tempArr[0] = prevPostPos[2]-prevPostPos[0];
+			tempArr[1] = prevPostPos[3]-prevPostPos[1];
+			unit(tempArr);
+			g.drawOval(ball.getX()-1.5f*tempArr[0]*gustCountDown-KICKRANGE/2f, ball.getY()-1.5f*tempArr[1]*gustCountDown-KICKRANGE/2f, KICKRANGE, KICKRANGE);
+			lastBallPos[0] = ball.getX();
+			lastBallPos[1] = ball.getY();
+			lastGustVel[0] = tempArr[0];
+			lastGustVel[1] = tempArr[1];
+		}else if(gustCoolDown>0){
+			g.drawOval(lastBallPos[0]+lastGustVel[0]*.1f*(GUSTCOUNTDOWN-gustCountDown)-KICKRANGE/2f, lastBallPos[1]+lastGustVel[1]*.1f*(GUSTCOUNTDOWN-gustCountDown)-KICKRANGE/2f, KICKRANGE, KICKRANGE);
+		}
 	}
 	
 	@Override
 	public void update(int delta) {
 
 		if (cExist) {
-			if(powerCoolDown == 0)//No controller listening when cooling down from a dash
+			if(shortDashCoolDown==0)
 				pollController(delta);
 			
 			if (actionButton.getPollData() == 1.0){
@@ -134,18 +164,20 @@ public class PlayerCharge extends Player{
 					buttonPressed = false;
 			}
 			
-			if (actionButton2.getPollData() == 1.0 && !button2Pressed){
+			if (actionButton2.getPollData() == 1.0 && !button2Pressed && shortDashCoolDown == 0){
 				button2Pressed = true;
+				shortDash();
 			}else if(actionButton2.getPollData() == 0 && button2Pressed){
 				button2Pressed = false;
+				shortDashReleased();
 			}
 		
 		}
 		
 		if(power>0){
 			velMag = 0;
-		}else if(powerCoolDown>0){
-			velMag = .5f*VELMAG*powerCoolDown/POWERCOOLDOWN;
+		}else if(shortDashCoolDown>0){
+			velMag = VELMAG*shortDashCoolDown/SHORTDASHCOOLDOWN;
 		}else{
 			velMag = VELMAG;
 		}
@@ -170,13 +202,22 @@ public class PlayerCharge extends Player{
 		if(powerCoolDown<0)
 			powerCoolDown = 0;
 		
+		if(shortDashCoolDown>0){
+			shortDashCoolDown -= (float)delta;
+			prevPostPos[2] = pos[0];
+			prevPostPos[3] = pos[1];
+			if(shortDashCoolDown<0)
+				shortDashCoolDown = 0;
+		}
+		
+		
 		if(power>0){
 			power -= (float)delta/12f;
 			if(power<=0){
 				powerKeyReleased();
 				
 				if(mag(vel)>0){
-					mySoundSystem.quickPlay( true, "pow2.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+					mySoundSystem.quickPlay( true, "ChargeDash.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 					lastKickAlpha = 1f;
 					
 					parallelComponent(new float[] {ball.getX()-pos[0], ball.getY()-pos[1]}, vel, ballParallel);
@@ -216,14 +257,18 @@ public class PlayerCharge extends Player{
 					
 					dashDist = mag(new float[]{prevPostPos[2]-prevPostPos[0], prevPostPos[3]-prevPostPos[1]});
 					
-					prevPostPos[0] = pos[0]-2400f*vel[0];
-					prevPostPos[1] = pos[1]-2400f*vel[1];
+					prevPostPos[0] = pos[0]-3000f*vel[0];
+					prevPostPos[1] = pos[1]-3000f*vel[1];
 					
 					vel[0] = -vel[0];
 					vel[1] = -vel[1];
 					
-					powerCoolDown = POWERCOOLDOWN;
+					//powerCoolDown = POWERCOOLDOWN;
+					
+					setStunned(MAXSTUN, new float[]{vel[0],vel[1]}, velMag);
 
+				}else{
+					mySoundSystem.quickPlay( true, "ChargeWindingDown.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				}
 			}
 		}
@@ -234,12 +279,21 @@ public class PlayerCharge extends Player{
 			if(gustCountDown <= 0){
 				if(!ball.scored() && ball.gustReady() && dashDist > 0){
 					ball.clearLocked();
-					ball.setVel(new float[]{ballParallel[0],  ballParallel[1]}, .1f);
+					ball.setVel(new float[]{prevPostPos[2]-prevPostPos[0], prevPostPos[3]-prevPostPos[1]}, .1f);
 					ball.speedUp(POWERKICK+VELMAG*2f, 0, .02f);
+					kickingCoolDown = KICKCOOLDOWN;
+					mySoundSystem.quickPlay( true, "ChargeGust.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+					lastKickAlpha = 1f;
+					
+					gustCoolDown = GUSTCOUNTDOWN;
 				}
-			}
-			
+			}	
 		}
+		
+		gustCoolDown -= (float)delta;
+		if(gustCoolDown < 0)
+			gustCoolDown = 0;
+		
 		
 		//Angle code
 		if(power>0){
@@ -275,19 +329,70 @@ public class PlayerCharge extends Player{
 	@Override
 	public void activatePower() {
 		if(powerCoolDown >= POWERCOOLDOWN-400){//For dash chaining, untested
-			power = 50;
+			power = 10;
 			powerCoolDown = 0;
 		}else{
 			power = MAXPOWER;
+			mySoundSystem.quickPlay( true, "ChargeCharging.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 		}
 		velMag = 0;
-		mySoundSystem.quickPlay( true, "whoosh2r.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 	}
 
 	@Override
 	public void powerKeyReleased() {
 		power = 0;
 		velMag = VELMAG;
+	}
+	
+	public void shortDash(){//More of a teleport
+		mySoundSystem.quickPlay( true, "ChargeShortDash.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+		
+		parallelComponent(new float[]{ball.getX()-pos[0], ball.getY()-pos[1]}, vel, ballParallel);
+		ballOrth[0] = ball.getX()-pos[0]-ballParallel[0];
+		ballOrth[1] = ball.getY()-pos[1]-ballParallel[1];
+		
+		prevPostPos[0] = pos[0];
+		prevPostPos[1] = pos[1];
+		
+		for(int i=0;i<100 && pos[0]-KICKRANGE/2>=xyLimit[0]&&pos[0]+KICKRANGE/2<=xyLimit[1]&&pos[1]-KICKRANGE/2>=xyLimit[2]&&pos[1]+KICKRANGE/2<=xyLimit[3];i++){
+			pos[0]+=vel[0];
+			pos[1]+=vel[1];
+		}
+		
+		pos[0]-=vel[0];
+		pos[1]-=vel[1];
+		
+		prevPostPos[2] = pos[0];
+		prevPostPos[3] = pos[1];
+		
+		dashDist = mag(new float[]{prevPostPos[2]-prevPostPos[0], prevPostPos[3]-prevPostPos[1]});
+		
+		prevPostPos[0] = pos[0]-3000f*vel[0];
+		prevPostPos[1] = pos[1]-3000f*vel[1];
+		lastKickAlpha = 1f;
+		
+		shortDashCoolDown = SHORTDASHCOOLDOWN;
+		
+		if(mag(ballOrth)<KICKRANGE/2f && mag(ballParallel)<dashDist+KICKRANGE/2f && sameDir(vel,ballParallel)){
+			unit(ballParallel);
+			ball.setPos(pos[0]+ballParallel[0]*KICKRANGE/2f+4f, pos[1]+ballParallel[1]*KICKRANGE/2f+4f);
+			ball.setVel(new float[]{ballParallel[0], ballParallel[1]}, POWERKICK+VELMAG);
+			ball.setLastKicker(playerNum);
+			ball.setCanBeKicked(playerNum, false);
+			ball.cancelAcc();
+			ball.clearLocked();
+			kickingCoolDown = KICKCOOLDOWN;
+			if(slowMo){
+				mySoundSystem.quickPlay( true, "KickBumpSlow.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			}else{
+				mySoundSystem.quickPlay( true, "KickBump.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			}
+		}
+		
+	}
+	
+	public void shortDashReleased(){
+		
 	}
 	
 	@Override
@@ -310,6 +415,11 @@ public class PlayerCharge extends Player{
 		tempf = (u[0]*v[0]+u[1]*v[1])/mag(v)/mag(v);
 		w[0] = v[0]*tempf;
 		w[1] = v[1]*tempf;		
+	}
+	
+	public float[] normalNeg(float[] v, float[] w){//orthogonal proj v on w, negative
+		tempf = dot(v,w)/mag(w);
+		return new float[]{-v[0]+tempf*w[0], -v[1]+tempf*w[1]};
 	}
 	
 	//vx is vel, dir is ballParallel

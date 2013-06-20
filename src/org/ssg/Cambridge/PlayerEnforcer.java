@@ -17,6 +17,7 @@ public class PlayerEnforcer extends Player{
 	float[] launchVel;
 	boolean coolingDown;
 	float[] curve;
+	float powerAlpha;//Used for drawing powercircle
 	
 	float stepCoolDown;//used for playing the walking sound
 	float STEPCOOLDOWN;
@@ -30,6 +31,7 @@ public class PlayerEnforcer extends Player{
 		launchVel = new float[2];
 		coolingDown = false;
 		curve = new float[2];
+		powerAlpha = 0;
 		stepCoolDown = 0;
 		STEPCOOLDOWN = MAXPOWER;
 	}
@@ -48,6 +50,22 @@ public class PlayerEnforcer extends Player{
 	}
 
 	@Override
+	public void drawPowerCircle(Graphics g){
+		//Draw power circle
+		if(isPower()){
+			g.setColor(getColor3());
+			g.drawOval(pos[0]-KICKRANGE/2f-power/2f, pos[1]-KICKRANGE/2f-power/2f, KICKRANGE, KICKRANGE);
+			g.setColor(Color.white);
+		}
+	}
+	
+	@Override
+	public Color getColor3(){//return color of powercircle
+		return new Color(color.getRed(), color.getGreen(), color.getBlue(), powerAlpha);
+	}
+
+	
+	@Override
 	public Color getColor4(){
 		return new Color(color.getRed(), color.getGreen(), color.getBlue(), (velMag-MINVELMAG)/MAXVELMAG);
 	}
@@ -60,8 +78,12 @@ public class PlayerEnforcer extends Player{
 			
 			if (actionButton.getPollData() == 1.0){
 					activatePower();
+					if(!buttonPressed){
+						mySoundSystem.quickPlay( true, "EnforcerActivate.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+						powerAlpha = 1f;
+					}
 					buttonPressed = true;
-			}else if(buttonPressed){
+			}else if(actionButton.getPollData() == 0 && buttonPressed){
 					powerKeyReleased();
 					buttonPressed = false;
 			}
@@ -102,12 +124,12 @@ public class PlayerEnforcer extends Player{
 			if(stepCoolDown<=0){
 				stepCoolDown = STEPCOOLDOWN;
 				if(power > 0){
-					STEPCOOLDOWN -= 4f*(float)delta;
+					STEPCOOLDOWN -= 4f*(float)delta;//Might not make sense to have a delta here
 				}else if(coolingDown){
 					STEPCOOLDOWN += 8f*(float)delta;
 				}
-				if(STEPCOOLDOWN < 250)
-					STEPCOOLDOWN = 250;
+				if(STEPCOOLDOWN < 180)
+					STEPCOOLDOWN = 180;
 				if(STEPCOOLDOWN > MAXPOWER)
 					STEPCOOLDOWN = MAXPOWER;
 				mySoundSystem.quickPlay( true, "EnforcerStep.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
@@ -117,6 +139,10 @@ public class PlayerEnforcer extends Player{
 		lastKickAlpha -= (float)(delta)/1200f;
 		if(lastKickAlpha<0)
 			lastKickAlpha = 0f;
+		
+		powerAlpha -= (float)delta/600f;
+		if(powerAlpha<0f)
+			powerAlpha = 0f;
 		
 		kickingCoolDown -= (float)delta;
 		if(kickingCoolDown<0)
@@ -158,7 +184,9 @@ public class PlayerEnforcer extends Player{
 				power = 0;
 				targetVelmag = 0;
 				coolingDown = true;
-				mySoundSystem.quickPlay( true, "EnforcerWallBounce.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+				if(velMag>.1f)
+					mySoundSystem.quickPlay( true, "EnforcerWallBounce.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+				STEPCOOLDOWN = MAXPOWER;
 			}
 		}
 		
@@ -235,7 +263,6 @@ public class PlayerEnforcer extends Player{
 			launchVel[1] = 0;
 			//stepCoolDown = MAXPOWER;
 			STEPCOOLDOWN = MAXPOWER;
-			mySoundSystem.quickPlay( true, "EnforcerActivate.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 		}
 	}
 

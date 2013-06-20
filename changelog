@@ -1,5 +1,13 @@
 Changelog:
 
+6.19.13
+More sounds added, attendant bugfixes
+PlayerCharge now has short dash
+PlayerCharge now has ghostly afterimage to kick the ball after a dash, can control direction with short dash
+
+6.18.13
+Added lots of sounds for new Players, attendant bugfixes
+
 6.17.13
 Continued PlayerEnforcer functionality and visuals
 Added stunning to Player
