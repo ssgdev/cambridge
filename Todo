@@ -4,7 +4,10 @@ BUG: Changing the size of puffer changes the size of the kick trail when it shou
 BUG: Holding ActionButton with Enforcer on wall hammers the sounds DONE
 BUG: Reactivating the power on Enforcer by holding down after the wall doesn't sound good MEH
 TODO: Give Charge the half and half like stun victims DONE
-TODO: Create UpdateCounters method
+TODO: Create UpdateCounters method DONE
+TODO: Stick direction visual guide
+TODO: Organize Player constructor
+TODO: Visuals for charge's trail
 Go through all the code and see if it can be less horrible
 Enforcer: Has to build up momentum – DONE
 	TODO: Test Enfocer vs everyone else collision and see what happens

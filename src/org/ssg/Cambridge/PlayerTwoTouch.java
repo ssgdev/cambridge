@@ -9,6 +9,7 @@ package org.ssg.Cambridge;
 import net.java.games.input.Controller;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
@@ -28,8 +29,8 @@ public class PlayerTwoTouch extends Player{
 	float angle2;//Versions of angle and angleTarget respecified from 0 to 2pi
 	float angleTarget2;
 	
-	public PlayerTwoTouch(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Ball b) {
-		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn);
+	public PlayerTwoTouch(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
+		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 
 		DEFAULTKICK = NORMALKICK;
 		EXTRAKICK = NORMALKICK * 1.5f;
@@ -162,19 +163,7 @@ public class PlayerTwoTouch extends Player{
 			NORMALKICK = DEFAULTKICK;
 		}
 		
-		lastKickAlpha -= (float)(delta)/2400f;
-		if(lastKickAlpha<0){
-			lastKickAlpha = 0f;
-		}
-		
-		kickingCoolDown -= (float)delta;
-		if(kickingCoolDown<0)
-			kickingCoolDown = 0;
-
-		stun -= (float)delta;
-		if(stun<=0){
-			stun = 0;
-		}
+		updateCounters(delta);
 		
 		theta+= (1f-(power/MAXPOWER*.8f))*omega*(float)delta;
 		if(theta>360) theta-=360;

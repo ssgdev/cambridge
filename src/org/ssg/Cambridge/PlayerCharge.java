@@ -26,12 +26,14 @@ public class PlayerCharge extends Player{
 	float[] ballParallel, ballOrth;
 	float TRAILRANGE;
 	Image hemicircle;
-
+	Image slice_tri;
+	
 	float[] dashVel;
 	float dashDist;
 	float gustCountDown;
 	float gustCoolDown;//Used for drawing the ghost kicker
 	float GUSTCOUNTDOWN = 800;
+	float[] gustVel;
 	float[] gustCurve;
 	
 	//Used to draw the ghost kicker
@@ -44,8 +46,8 @@ public class PlayerCharge extends Player{
 	
 	Ball ball;
 	
-	public PlayerCharge(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Ball b, Image hc) {
-		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn);
+	public PlayerCharge(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_t, Ball b, Image hc) {
+		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 
 		MAXPOWER = 100;
 		POWERCOOLDOWN = 500;
@@ -66,6 +68,7 @@ public class PlayerCharge extends Player{
 		button2Pressed = false;
 		
 		hemicircle = hc.getScaledCopy(KICKRANGE/hc.getHeight());
+		slice_tri = slc_t;
 		
 		dashVel = new float[2];
 		powerCoolDown = 0;
@@ -73,6 +76,7 @@ public class PlayerCharge extends Player{
 		dashDist = 0;
 		gustCountDown = 0;
 		gustCoolDown = 0;
+		gustVel = new float[2];
 		gustCurve = new float[2];
 		lastBallPos = new float[2];
 		lastGustVel = new float[2];
@@ -124,27 +128,37 @@ public class PlayerCharge extends Player{
 		float dy = prevPostPos[3]-prevPostPos[1];
 		float thetaTemp = (float)Math.atan2((double)dy, (double)dx);
 		g.rotate(prevPostPos[2], prevPostPos[3], 360f/2f/(float)Math.PI*thetaTemp);
-		g.fillRect(prevPostPos[2], prevPostPos[3]-KICKRANGE/2, -.5f-mag(new float[]{prevPostPos[2]-prevPostPos[0], prevPostPos[3]-prevPostPos[1]}), KICKRANGE);
+		g.fillRect(prevPostPos[2], prevPostPos[3]-KICKRANGE/2, -.5f-3200f, KICKRANGE);
 		g.drawImage(hemicircle.getFlippedCopy(true, false), prevPostPos[2], prevPostPos[3]-KICKRANGE/2, getColor5()); 
 		g.rotate(prevPostPos[2], prevPostPos[3], -360f/2f/(float)Math.PI*thetaTemp);
-		g.rotate(prevPostPos[0], prevPostPos[1], 360f/2f/(float)Math.PI*thetaTemp);
-		g.drawImage(hemicircle, prevPostPos[0]-KICKRANGE/2, prevPostPos[1]-KICKRANGE/2, getColor5());
-		g.rotate(prevPostPos[0], prevPostPos[1], -360f/2f/(float)Math.PI*thetaTemp);
+//		g.rotate(prevPostPos[0], prevPostPos[1], 360f/2f/(float)Math.PI*thetaTemp);
+//		g.drawImage(hemicircle, prevPostPos[0]-KICKRANGE/2, prevPostPos[1]-KICKRANGE/2, getColor5());
+//		g.rotate(prevPostPos[0], prevPostPos[1], -360f/2f/(float)Math.PI*thetaTemp);
 		g.setLineWidth(5f);
 		
 		//Ghostly Gust Kicker
+		g.setColor(getColor6());
 		if(gustCountDown>0 && ball.gustReady()){
-			tempArr[0] = prevPostPos[2]-prevPostPos[0];
-			tempArr[1] = prevPostPos[3]-prevPostPos[1];
-			unit(tempArr);
-			g.drawOval(ball.getX()-1.5f*tempArr[0]*gustCountDown-KICKRANGE/2f, ball.getY()-1.5f*tempArr[1]*gustCountDown-KICKRANGE/2f, KICKRANGE, KICKRANGE);
-			lastBallPos[0] = ball.getX();
+			//tempArr[0] = prevPostPos[2]-prevPostPos[0];
+			//tempArr[1] = prevPostPos[3]-prevPostPos[1];
+			//unit(tempArr);
+			//g.drawOval(ball.getX()-1.5f*tempArr[0]*gustCountDown-KICKRANGE/2f, ball.getY()-1.5f*tempArr[1]*gustCountDown-KICKRANGE/2f, KICKRANGE, KICKRANGE);
+			g.drawOval(ball.getX()-gustCountDown/2f, ball.getY()-gustCountDown/2f, gustCountDown, gustCountDown);
+			tempf = 360f/2f/(float)Math.PI*(float)Math.atan2(gustVel[1], gustVel[0]);
+			g.rotate(ball.getX(), ball.getY(), tempf);
+			g.drawImage(slice_tri, ball.getX()-slice_tri.getWidth()/2f, ball.getY()-slice_tri.getHeight()/2f, getColor6());
+			g.rotate(ball.getX(), ball.getY(), -tempf);
+			lastBallPos[0] = ball.getX();//In case of use for if(gustCoolDown>0) drawing below
 			lastBallPos[1] = ball.getY();
-			lastGustVel[0] = tempArr[0];
-			lastGustVel[1] = tempArr[1];
+			lastGustVel[0] = gustVel[0];
+			lastGustVel[1] = gustVel[1];
 		}else if(gustCoolDown>0){
-			g.drawOval(lastBallPos[0]+lastGustVel[0]*.1f*(GUSTCOUNTDOWN-gustCountDown)-KICKRANGE/2f, lastBallPos[1]+lastGustVel[1]*.1f*(GUSTCOUNTDOWN-gustCountDown)-KICKRANGE/2f, KICKRANGE, KICKRANGE);
+			//Maybe draw something after the gust kick
 		}
+	}
+	
+	public Color getColor6(){//gusting fade
+		return new Color(color.getRed(), color.getGreen(), color.getBlue(), 1f-gustCountDown/GUSTCOUNTDOWN);
 	}
 	
 	@Override
@@ -176,6 +190,8 @@ public class PlayerCharge extends Player{
 		
 		if(power>0){
 			velMag = 0;
+		}else if(shortDash){
+			velMag = 0;
 		}else if(shortDashCoolDown>0){
 			velMag = VELMAG*shortDashCoolDown/SHORTDASHCOOLDOWN;
 		}else{
@@ -184,23 +200,15 @@ public class PlayerCharge extends Player{
 		
 		updatePos(delta);
 
-		stun -= (float)delta;
-		if(stun<=0){
-			stun = 0;
-		}
-		
-		lastKickAlpha -= (float)(delta)/1200f;
-		if(lastKickAlpha<0){
-			lastKickAlpha = 0f;
-		}
-		
-		kickingCoolDown -= (float)delta;
-		if(kickingCoolDown<0)
-			kickingCoolDown = 0;
+		updateCounters(delta);
 		
 		powerCoolDown -= (float)delta;
 		if(powerCoolDown<0)
 			powerCoolDown = 0;
+		
+		gustCoolDown -= (float)delta;
+		if(gustCoolDown < 0)
+			gustCoolDown = 0;
 		
 		if(shortDashCoolDown>0){
 			shortDashCoolDown -= (float)delta;
@@ -225,12 +233,10 @@ public class PlayerCharge extends Player{
 					ballOrth[1] = ball.getY()-pos[1]-ballParallel[1];
 					
 					if(!ball.scored() && mag(ballOrth)<TRAILRANGE/2f && ball.getX()>=xyLimit[0]&&ball.getX()<=xyLimit[1]&&ball.getY()>=xyLimit[2]&&ball.getY()<=xyLimit[3]){
-						if(sameDir(vel,ballParallel)){//Push it aside
-							ball.setVel(new float[]{ball.getVelX(), ball.getVelY()}, ball.getVelMag()/2f);
+						if(sameDir(vel,ballParallel)){//Set up the gust
+							//ball.setVel(new float[]{ball.getVelX(), ball.getVelY()}, ball.getVelMag()/2f);//Maybe slow it down?
 							ball.setReadyForGust(true);
 							gustCountDown = GUSTCOUNTDOWN;
-							//ball.setVel(new float[]{2f*ballOrth[0]-tempf*ballParallel[0],2f*ballOrth[1]-tempf*ballParallel[1]}, 1.5f*POWERKICK);
-							//ball.setAcc(new float[]{-ballParallel[0],-ballParallel[1]}, 2f*(1f-tempf));
 						}else if(mag(ballOrth)<KICKRANGE/2){//If it's behind you, backkick relative to distance
 							ball.setVel(new float[]{ballParallel[0], ballParallel[1]}, 3f*POWERKICK);
 						}
@@ -255,18 +261,19 @@ public class PlayerCharge extends Player{
 					prevPostPos[2] = pos[0];
 					prevPostPos[3] = pos[1];
 					
+					gustVel[0] = prevPostPos[2] - prevPostPos[0];
+					gustVel[1] = prevPostPos[3] - prevPostPos[1];
+					
 					dashDist = mag(new float[]{prevPostPos[2]-prevPostPos[0], prevPostPos[3]-prevPostPos[1]});
 					
 					prevPostPos[0] = pos[0]-3000f*vel[0];
 					prevPostPos[1] = pos[1]-3000f*vel[1];
 					
-					vel[0] = -vel[0];
+					vel[0] = -vel[0];//Bouncing off the wall
 					vel[1] = -vel[1];
+					setStunned(MAXSTUN, new float[]{vel[0],vel[1]}, velMag);
 					
 					//powerCoolDown = POWERCOOLDOWN;
-					
-					setStunned(MAXSTUN, new float[]{vel[0],vel[1]}, velMag);
-
 				}else{
 					mySoundSystem.quickPlay( true, "ChargeWindingDown.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				}
@@ -275,28 +282,29 @@ public class PlayerCharge extends Player{
 		
 		//Delayed gusting of ball
 		if(gustCountDown>0){
-			gustCountDown -= (float)delta;
+			if(shortDash){//Shortdash direction can change the gust direction
+				gustCountDown -= (float)delta/2f;
+				gustVel[0] = vel[0];
+				gustVel[1] = vel[1];
+			}else{
+				gustCountDown -= (float)delta;
+			}
 			if(gustCountDown <= 0){
-				if(!ball.scored() && ball.gustReady() && dashDist > 0){
+				if(!ball.scored() && ball.gustReady()){
 					ball.clearLocked();
-					ball.setVel(new float[]{prevPostPos[2]-prevPostPos[0], prevPostPos[3]-prevPostPos[1]}, .1f);
+					ball.setVel(new float[]{gustVel[0], gustVel[1]}, .1f);
 					ball.speedUp(POWERKICK+VELMAG*2f, 0, .02f);
 					kickingCoolDown = KICKCOOLDOWN;
 					mySoundSystem.quickPlay( true, "ChargeGust.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
-					lastKickAlpha = 1f;
+					lastKickAlpha = 1f;//or maybe kickingCoolDown = KICKCOOLDOWN;
 					
 					gustCoolDown = GUSTCOUNTDOWN;
 				}
 			}	
 		}
 		
-		gustCoolDown -= (float)delta;
-		if(gustCoolDown < 0)
-			gustCoolDown = 0;
-		
-		
 		//Angle code
-		if(power>0){
+		if(power>0 || shortDash){
 			if(mag(vel)!=0)
 				thetaTarget = (float)Math.atan2(vel[1],vel[0]);
 			
@@ -328,23 +336,23 @@ public class PlayerCharge extends Player{
 	
 	@Override
 	public void activatePower() {
-		if(powerCoolDown >= POWERCOOLDOWN-400){//For dash chaining, untested
-			power = 10;
-			powerCoolDown = 0;
-		}else{
-			power = MAXPOWER;
-			mySoundSystem.quickPlay( true, "ChargeCharging.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
-		}
-		velMag = 0;
+		power = MAXPOWER;
+		mySoundSystem.quickPlay( true, "ChargeCharging.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+//		velMag = 0;//Unneeded, as velMag is set in update anyway
 	}
 
 	@Override
 	public void powerKeyReleased() {
 		power = 0;
-		velMag = VELMAG;
+//		velMag = VELMAG;
 	}
 	
-	public void shortDash(){//More of a teleport
+	public void shortDash(){
+//		velMag = 0;
+		shortDash = true;
+	}
+	
+	public void shortDashReleased(){//More of a teleport
 		mySoundSystem.quickPlay( true, "ChargeShortDash.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 		
 		parallelComponent(new float[]{ball.getX()-pos[0], ball.getY()-pos[1]}, vel, ballParallel);
@@ -354,14 +362,15 @@ public class PlayerCharge extends Player{
 		prevPostPos[0] = pos[0];
 		prevPostPos[1] = pos[1];
 		
-		for(int i=0;i<100 && pos[0]-KICKRANGE/2>=xyLimit[0]&&pos[0]+KICKRANGE/2<=xyLimit[1]&&pos[1]-KICKRANGE/2>=xyLimit[2]&&pos[1]+KICKRANGE/2<=xyLimit[3];i++){
+		//for(int i=0;i<100 && pos[0]-KICKRANGE/2>=xyLimit[0]&&pos[0]+KICKRANGE/2<=xyLimit[1]&&pos[1]-KICKRANGE/2>=xyLimit[2]&&pos[1]+KICKRANGE/2<=xyLimit[3];i++){
+		for(int i=0; i<150 ; i++){
 			pos[0]+=vel[0];
 			pos[1]+=vel[1];
 		}
 		
 		pos[0]-=vel[0];
 		pos[1]-=vel[1];
-		
+
 		prevPostPos[2] = pos[0];
 		prevPostPos[3] = pos[1];
 		
@@ -369,13 +378,17 @@ public class PlayerCharge extends Player{
 		
 		prevPostPos[0] = pos[0]-3000f*vel[0];
 		prevPostPos[1] = pos[1]-3000f*vel[1];
+		
+		gustVel[0] = prevPostPos[2] - prevPostPos[0];
+		gustVel[1] = prevPostPos[3] - prevPostPos[1];
+		
 		lastKickAlpha = 1f;
 		
 		shortDashCoolDown = SHORTDASHCOOLDOWN;
 		
 		if(mag(ballOrth)<KICKRANGE/2f && mag(ballParallel)<dashDist+KICKRANGE/2f && sameDir(vel,ballParallel)){
 			unit(ballParallel);
-			ball.setPos(pos[0]+ballParallel[0]*KICKRANGE/2f+4f, pos[1]+ballParallel[1]*KICKRANGE/2f+4f);
+			ball.setPos(pos[0]+ballParallel[0]*KICKRANGE/2f+4f, pos[1]+ballParallel[1]*KICKRANGE/2f+4f);//Teleport ball to front
 			ball.setVel(new float[]{ballParallel[0], ballParallel[1]}, POWERKICK+VELMAG);
 			ball.setLastKicker(playerNum);
 			ball.setCanBeKicked(playerNum, false);
@@ -389,10 +402,8 @@ public class PlayerCharge extends Player{
 			}
 		}
 		
-	}
-	
-	public void shortDashReleased(){
-		
+		shortDash = false;
+//		velMag = VELMAG;
 	}
 	
 	@Override

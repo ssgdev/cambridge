@@ -3,14 +3,15 @@ package org.ssg.Cambridge;
 import net.java.games.input.Controller;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Image;
 
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
 
 public class PlayerNeo extends Player {
 
-	public PlayerNeo(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn) {
-		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn);
+	public PlayerNeo(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc) {
+		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 	}
 
 	@Override
@@ -26,14 +27,7 @@ public class PlayerNeo extends Player {
 
 		updatePos(delta);
 
-		lastKickAlpha -= (float)(delta)/2400f;
-		if(lastKickAlpha<0){
-			lastKickAlpha = 0f;
-		}
-		
-		kickingCoolDown -= (float)delta;
-		if(kickingCoolDown<0)
-			kickingCoolDown = 0;
+		updateCounters(delta);
 
 		theta+= (1f-(powerCoolDown/POWERCOOLDOWN))*omega*(float)delta;
 		if(theta>360) theta-=360;

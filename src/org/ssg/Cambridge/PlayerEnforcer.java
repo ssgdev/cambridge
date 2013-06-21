@@ -4,6 +4,7 @@ import net.java.games.input.Controller;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
@@ -22,8 +23,8 @@ public class PlayerEnforcer extends Player{
 	float stepCoolDown;//used for playing the walking sound
 	float STEPCOOLDOWN;
 	
-	public PlayerEnforcer(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn) {
-		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn);
+	public PlayerEnforcer(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc) {
+		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 		
 		MINVELMAG = .2f*VELMAG;
 		MAXVELMAG = VELMAG * 2.5f;
@@ -119,6 +120,8 @@ public class PlayerEnforcer extends Player{
 			
 		updatePos(delta);
 		
+		updateCounters(delta);
+		
 		if(power>0 || coolingDown){//TODO: Make synced with actual speed
 			stepCoolDown -= (float)delta;
 			if(stepCoolDown<=0){
@@ -136,17 +139,10 @@ public class PlayerEnforcer extends Player{
 			}
 		}
 		
-		lastKickAlpha -= (float)(delta)/1200f;
-		if(lastKickAlpha<0)
-			lastKickAlpha = 0f;
-		
+
 		powerAlpha -= (float)delta/600f;
 		if(powerAlpha<0f)
 			powerAlpha = 0f;
-		
-		kickingCoolDown -= (float)delta;
-		if(kickingCoolDown<0)
-			kickingCoolDown = 0;
 		
 		theta += omega * (float)delta * 2f * velMag/MAXVELMAG;
 		if(theta>360f)

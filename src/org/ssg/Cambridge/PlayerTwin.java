@@ -38,8 +38,8 @@ public class PlayerTwin extends Player{
 	
 	int nukes;//nucleii
 	
-	public PlayerTwin(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, int tn, Image hc) throws SlickException {
-		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn);
+	public PlayerTwin(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, int tn, Image hc) throws SlickException {
+		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 		
 		DEFAULTKICKRANGE = KICKRANGE;
 		DESIREDKICKRANGE = KICKRANGE;
@@ -116,6 +116,8 @@ public class PlayerTwin extends Player{
 		
 		updatePos(delta);
 
+		updateCounters(delta);
+		
 		velMag = VELMAG * (.5f+.5f*(float)nukes);
 		NORMALKICK = DEFAULTKICK * (.5f+.5f*(float)nukes);
 		
@@ -161,15 +163,6 @@ public class PlayerTwin extends Player{
 			orbitRadius++;
 		if(orbitRadius > DESIREDORBITRADIUS)
 			orbitRadius--;
-		
-		lastKickAlpha -= (float)(delta)/2400f;
-		if(lastKickAlpha<0){
-			lastKickAlpha = 0f;
-		}
-		
-		kickingCoolDown -= (float)delta;
-		if(kickingCoolDown<0)
-			kickingCoolDown = 0;
 
 		theta+= (1f-(powerCoolDown/POWERCOOLDOWN))*omega*(float)delta;
 		if(theta>360) theta-=360;

@@ -60,7 +60,8 @@ public abstract class Player implements KeyListener {
 	float stunVelMag;
 	
 	Color color;
-
+	Image slice;
+	
 	SoundSystem mySoundSystem;
 	String slowName;//The name of the rumbling sound channel (slow1 or slow2)
 
@@ -72,7 +73,7 @@ public abstract class Player implements KeyListener {
 	float[] tempArr;
 	boolean bool;
 	
-	public Player(int n, float[] consts, int f[], int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn){
+	public Player(int n, float[] consts, int f[], int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc){
 
 		playerNum = n;
 		PLAYERSIZE = 20;
@@ -129,6 +130,8 @@ public abstract class Player implements KeyListener {
 		mySoundSystem = ss;
 		slowName = sn;
 
+		slice = slc;
+		
 		players = null;
 		slowMo = false;
 		
@@ -161,7 +164,7 @@ public abstract class Player implements KeyListener {
 
 	////////////////////////////////////////////////////
 	
-	//Two methods called in most updates
+	//Three methods called in most updates
 	
 	public void pollController(int delta){
 		vel[0] = lStickX.getPollData();
@@ -173,8 +176,8 @@ public abstract class Player implements KeyListener {
 				vel[1] = 0f;
 
 		
-		curve[0] = -rStickX.getPollData();
-		curve[1] = -rStickY.getPollData();
+		curve[0] = rStickX.getPollData();
+		curve[1] = rStickY.getPollData();
 		
 		if(Math.abs(curve[0]) < 0.2)
 			curve[0] = 0;
@@ -201,6 +204,7 @@ public abstract class Player implements KeyListener {
 		if(pos[1]>xyLimit[3]-KICKRANGE/2){
 			pos[1]=xyLimit[3]-KICKRANGE/2;
 			bool = true;
+
 		}
 		
 //		if(temp-KICKRANGE/2>=xyLimit[0] && temp+KICKRANGE/2<=xyLimit[1])
@@ -267,12 +271,34 @@ public abstract class Player implements KeyListener {
 		}
 	}
 	
+	public void updateCounters(int delta){
+		stun -= (float)delta;
+		if(stun<=0){
+			stun = 0;
+		}
+		
+		lastKickAlpha -= (float)(delta)/1200f;
+		if(lastKickAlpha<0){
+			lastKickAlpha = 0f;
+		}
+		
+		kickingCoolDown -= (float)delta;
+		if(kickingCoolDown<0)
+			kickingCoolDown = 0;
+		
+		//powerCoolDown and power are set uniquely per player
+		//as well as any player specific cooldowns and counters
+		
+	}
+	
 	/////////////////////////////////////////////////////////
 	
 	//If players have custom effects they can override individual methods
 	public void render(Graphics g, float BALLSIZE, Image triangle, AngelCodeFont font_small){
 		
 		drawKickTrail(g);
+		
+		drawSlice(g);//Draws the arc sector which describes the direction of the right stick
 		
 		drawRechargeFlash(g);
 		
@@ -298,6 +324,15 @@ public abstract class Player implements KeyListener {
 		g.fillRect(lastKickBallPos[0]-2*1600, lastKickBallPos[1]-lastKickWidth/2-5, 1600*4, lastKickWidth+10);
 		g.rotate(lastKickBallPos[0], lastKickBallPos[1], -360f/2f/(float)Math.PI*tempf);
 		g.setLineWidth(5f);
+	}
+	
+	public void drawSlice(Graphics g){
+		if(cExist && mag(curve)>0){
+			tempf = 360f/2f/(float)Math.PI*(float)Math.atan2(curve[1], curve[0]);
+			g.rotate(pos[0], pos[1], tempf);
+			g.drawImage(slice.getScaledCopy(KICKRANGE/slice.getWidth()), pos[0]-KICKRANGE/2, pos[1]-KICKRANGE/2, getColor(.2f));
+			g.rotate(pos[0], pos[1], -tempf);
+		}
 	}
 	
 	public void drawRechargeFlash(Graphics g){

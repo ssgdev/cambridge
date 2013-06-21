@@ -67,9 +67,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	private int boundingWidth = 100;
 	
 	AngelCodeFont font, font_white, font_small;
-	Image triangle;
-	Image hemicircleL;
-	Image hemicircleR;
+	Image triangle, hemicircleL, hemicircleR, slice, slice_tri;
 	Image goalScroll1, goalScroll2, goalScroll1v, goalScroll2v, goalScroll;
 	int scrollX;//For the "GOAL" scroll
 	int scrollY;
@@ -120,6 +118,8 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		triangle = new Image(RESDIR + "triangle.png");
 		hemicircleL = new Image(RESDIR + "hemicircleL.png");
 		hemicircleR = new Image(RESDIR + "hemicircleR.png");
+		slice = new Image(RESDIR + "slice.png");
+		slice_tri = new Image(RESDIR + "slice_tri.png");
 		goalScroll1 = new Image(RESDIR + "goal.png");
 		goalScroll2 = new Image(RESDIR + "goal_own.png");
 		goalScroll1v = new Image(RESDIR + "goal_v.png");
@@ -222,18 +222,18 @@ public class GameplayState extends BasicGameState implements KeyListener{
 			p1lim = new int[]{0,FIELDWIDTH/2, 0, FIELDHEIGHT};
 			p2lim = new int[]{FIELDWIDTH/2, FIELDWIDTH, 0, FIELDHEIGHT};
 		}
-		//PlayerTwoTouch p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", ball);
-		//PlayerPuffer p1 = new PlayerPuffer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_E, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
-		//PlayerTwin p1L = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", 0, hemicircleL);
-		//PlayerTwin p1R = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, new float[]{p1L.getX(),p1L.getY()+1}, p1lim, Color.orange, mySoundSystem, "slow1", 1, hemicircleR);
+		//PlayerTwoTouch p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
+		//PlayerPuffer p1 = new PlayerPuffer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_E, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
+		//PlayerTwin p1L = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, 0, hemicircleL);
+		//PlayerTwin p1R = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, new float[]{p1L.getX(),p1L.getY()+1}, p1lim, Color.orange, mySoundSystem, "slow1", slice, 1, hemicircleR);
 		//p1L.setTwin(p1R);
 		//p1R.setTwin(p1L);
-		//PlayerNeo p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
-		PlayerCharge p1 = new PlayerCharge(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", ball, hemicircleL);
-		//PlayerEnforcer p1 = new PlayerEnforcer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1");
-		PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", ball);
-		//PlayerNeo p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2");
-		//PlayerCharge p2 = new PlayerCharge(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", ball, hemicircleL);
+		//PlayerNeo p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
+		PlayerCharge p1 = new PlayerCharge(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_tri, ball, hemicircleL);
+		//PlayerEnforcer p1 = new PlayerEnforcer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
+		PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, ball);
+		//PlayerNeo p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice);
+		//PlayerCharge p2 = new PlayerCharge(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, slice_tri, ball, hemicircleL);
 		
 		players = new Player[]{p1, p2};
 		for(Player p: players)
@@ -658,7 +658,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 					}
 					ball.setVel(kickFloat, p.kickStrength()+(float)Math.sqrt(tempf));
 					
-					spinFloat = normalNeg(p.getCurve(), kickFloat);
+					spinFloat = normal(p.getCurve(), kickFloat);
 					ball.setCurve(spinFloat, p.kickStrength());
 					
 					if(p.flashKick()){//If you want the kick flash and sound effect
@@ -799,6 +799,11 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	public float[] normalNeg(float[] v, float[] w){//orthogonal proj v on w, negative
 		tempX = dot(v,w)/mag(w);//Repurposing this as a temp calculation holder
 		return new float[]{-v[0]+tempX*w[0], -v[1]+tempX*w[1]};
+	}
+	
+	public float[] normal(float[] v, float[] w){
+		tempX = dot(v,w)/mag(w);//Repurposing this as a temp calculation holder
+		return new float[]{v[0]-tempX*w[0], v[1]-tempX*w[1]};
 	}
 	
 	public boolean sameDir(float vx, int dir){

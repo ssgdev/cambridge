@@ -1,5 +1,13 @@
 Changelog:
 
+6.21.13
+Added updateCounters() method to make code marginally neater
+Added visual for direction being held on right stick
+Modified PlayerCharge to be a delayed kick special
+	Short dash activates on release
+	While holding down shortdash, can directly modify gust velocity
+	Added visual indication of gust velocity
+
 6.19.13
 More sounds added, attendant bugfixes
 PlayerCharge now has short dash
