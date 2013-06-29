@@ -626,6 +626,11 @@ public abstract class Player implements KeyListener {
 		return (float)Math.sqrt(n[0]*n[0]+n[1]*n[1]);
 	}
 	
+	public float[] normal(float[] v, float[] w){
+		float tempX = dot(v,w)/mag(w);//Repurposing this as a temp calculation holder
+		return new float[]{v[0]-tempX*w[0], v[1]-tempX*w[1]};
+	}
+	
 	public float[] approachTargets(float[] val, float[] targets, float inc){
 
 		for(int i=0; i<val.length;i++){

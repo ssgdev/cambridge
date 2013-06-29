@@ -31,6 +31,14 @@ public class PlayerTwoTouch extends Player{
 	float angleTarget;
 	float angle2;//Versions of angle and angleTarget respecified from 0 to 2pi
 	float angleTarget2;
+	float curveFactor;
+	
+	//only used during lock for prediction
+	int predictionCount;
+	float[] predictionPos, predictionVel, predictionCurveAcc;
+	float predictionVelMag, predictionCurveMag;
+	float predictionVDelta, predictionDelta;
+	float predictionTempX, predictionTempY;
 	
 	public PlayerTwoTouch(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
@@ -48,7 +56,22 @@ public class PlayerTwoTouch extends Player{
 		
 		MAXPOWER = 10;
 		
+		curveFactor = 5;
+		
 		lockCoolDown = false;
+		
+		predictionCount = 0;
+		
+		predictionPos = new float[2];
+		predictionVel = new float[2];
+		predictionCurveAcc = new float[2];
+		
+		predictionVelMag = 0f;
+		predictionCurveMag = 0f;
+		predictionVDelta = 0f;
+		predictionDelta = 0f;
+		predictionTempX = 0f;
+		predictionTempY = 0f;
 	}
 	
 	@Override
@@ -64,11 +87,96 @@ public class PlayerTwoTouch extends Player{
 			g.drawOval(getX()-getKickRange()/2f-getPower()/2f, getY()-getKickRange()/2f-getPower()/2f, getKickRange()+getPower(), getKickRange()+getPower());
 			g.setColor(Color.white);
 		}
-	}
+	};
 	
 	//Calculates and draws dotted trail for ball prediction
 	public void drawBallPrediction(Graphics g) {
+		g.setColor(getColor());
+		predictionCount = 50;
+
+		predictionPos[0] = ball.getX();
+		predictionPos[1] = ball.getY();
 		
+		predictionVel[0] = (ball.getPrevX()-pos[0]);
+		predictionVel[1] = (ball.getPrevY()-pos[1]);
+		unit(predictionVel);
+		predictionVel[0] += vel[0];
+		predictionVel[1] += vel[1];
+		unit(predictionVel);
+		
+		if (mag(predictionVel) == 0)
+			return;
+		
+		predictionVelMag = EXTRAKICK*0.5f + (mag(vel) > 0 ? mag(vel)*0.5f : 0f);
+		
+		predictionCurveAcc = normal(cExist ? curve : predictionVel, predictionVel);
+		unit(predictionCurveAcc);
+		
+		if (ball.CURVESCALE == 0)
+			predictionCurveMag = 0;
+		else
+			predictionCurveMag = EXTRAKICK * ball.CURVESCALE;
+		
+		while (predictionCount > 0) {
+			predictionVDelta = predictionDelta;
+			
+			while(predictionVDelta>0){
+
+				predictionTempX = predictionPos[0]+(predictionVelMag*predictionVel[0]*predictionVDelta);
+				predictionTempY = predictionPos[1]+(predictionVelMag*predictionVel[1]*predictionVDelta);
+
+				//System.out.println(vel[0]);
+				//goalArr is {goal x, goal y, goal width, goal thickness, direction to go in
+				if((predictionTempX>0 && predictionTempX<(float)field[0] && predictionTempY>0 && predictionTempY<(float)field[1])
+						|| ball.betweenGoals(predictionTempX, predictionTempY)){//If it's in bounds or between goalposts
+					predictionPos[0]=predictionTempX;
+					predictionPos[1]=predictionTempY;
+					predictionVDelta = 0;
+					
+					//ending trail if out of bounds -> only possible if through goals due to collision code
+					if (predictionPos[0] > (float)field[0] || predictionPos[0] < 0 
+							|| predictionPos[1] > (float)field[1] || predictionPos[1] < 0) {
+						predictionCount = 0;
+					}
+				}else{
+					if(predictionTempX<=0 && ball.sameDir(predictionVel[0], -1)){
+						predictionPos[0] = 0;
+						predictionVel[0]*=-1;
+						predictionVDelta -= -1f*predictionPos[0]/(predictionVelMag*predictionVel[0]);
+					}else if(predictionTempX>=(float)field[0] && ball.sameDir(predictionVel[0], 1)){
+						predictionPos[0]=(float)field[0];
+						predictionVel[0]*=-1;
+						predictionVDelta -= ((float)field[0]-predictionPos[0])/(predictionVelMag*predictionVel[0]);
+					}else if(predictionTempY<=0 && ball.sameDir(predictionVel[1], -1)){
+						predictionPos[1]=0;
+						predictionVel[1]*=-1;
+						predictionVDelta -= -1f*predictionPos[1]/(predictionVelMag*predictionVel[1]);
+					}else if(predictionTempY>=(float)field[1] && ball.sameDir(predictionVel[1], 1)){
+						predictionPos[1]=(float)field[1];
+						predictionVel[1]*=-1;
+						predictionVDelta -= ((float)field[1]-predictionPos[1])/(predictionVelMag*predictionVel[1]);
+					}
+					predictionCurveAcc[0]=0f;//Take off curve after first ricochet
+					predictionCurveAcc[1]=0f;
+					predictionCurveMag=0f;
+					predictionVelMag-=ball.BOUNCEDAMP;
+					if(predictionVelMag<0){
+						predictionVelMag = .1f;
+					} //end if-else block
+				} //end vDelta while loop
+				
+				predictionVel[0]+=predictionCurveAcc[0]*(float)predictionDelta*predictionCurveMag;
+				predictionVel[1]+=predictionCurveAcc[1]*(float)predictionDelta*predictionCurveMag;
+				unit(predictionVel);
+				
+				if (predictionCount % 5 == 0 && predictionCount > 0) {
+					System.out.println("Beep! " + vel[0] + " " + vel[1] + " " + (mag(vel) > 0 ? mag(vel)*0.5f : 0f));
+					g.drawOval(predictionPos[0]-2, predictionPos[1]-2, 4, 4);
+				}
+			} //end while predictionCount loop
+			
+			predictionCount--;
+		}
 	}
 	
 	@Override
@@ -90,6 +198,9 @@ public class PlayerTwoTouch extends Player{
 		
 		}
 		
+		predictionVDelta = delta;
+		predictionDelta = delta;
+		
 		//Entering Lock
 		if(!lockCoolDown && power>0 && !ball.locked(playerNum) && dist(pos[0],pos[1],ball.getX(),ball.getY())<KICKRANGE/2f && !ball.scored()){
 			ball.setLocked(playerNum, true);
@@ -110,6 +221,12 @@ public class PlayerTwoTouch extends Player{
 		if(!ball.locked(playerNum)){
 			updatePos(delta);
 		}else{
+			
+			//used to magnify curve when in locked mode
+			if (power>0) {
+				curve[0] *= curveFactor;
+				curve[1] *= curveFactor;
+			}
 			
 			if(mag(vel)!=0){
 				unit(vel);	

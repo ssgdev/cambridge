@@ -662,6 +662,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 					ball.setVel(kickFloat, p.kickStrength()*0.5f+(float)Math.sqrt(tempf)*0.5f);
 					
 					spinFloat = normal(p.getCurve(), kickFloat);
+					System.out.println(p.kickStrength() + "-" + (p.kickStrength()*0.5f+(float)Math.sqrt(tempf)*0.5f));
 					ball.setCurve(spinFloat, p.kickStrength());
 					
 					if(p.flashKick()){//If you want the kick flash and sound effect
