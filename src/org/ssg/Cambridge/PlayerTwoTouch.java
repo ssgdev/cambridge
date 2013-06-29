@@ -23,6 +23,9 @@ public class PlayerTwoTouch extends Player{
 	float[] ballPos;
 	Ball ball;
 	
+	//flag used for knocking the ball out of the locked zone, true when player can't lock ball
+	boolean lockCoolDown;
+	
 	//only used during lock
 	float angle;//Atan2 returns from pi to -pi
 	float angleTarget;
@@ -44,6 +47,8 @@ public class PlayerTwoTouch extends Player{
 		ballPos = new float[2];
 		
 		MAXPOWER = 10;
+		
+		lockCoolDown = false;
 	}
 	
 	@Override
@@ -53,11 +58,17 @@ public class PlayerTwoTouch extends Player{
 			g.setColor(getColor(mag(vel)/velMag+.5f));
 			g.drawOval(ball.getX()-KICKRANGE-power/2f, ball.getY()-KICKRANGE-power/2f, (KICKRANGE+power/2f)*2, (KICKRANGE+power/2f)*2);
 			g.setColor(Color.white);
+			drawBallPrediction(g);
 		}else if(isPower()){
 			g.setColor(getColor3());
 			g.drawOval(getX()-getKickRange()/2f-getPower()/2f, getY()-getKickRange()/2f-getPower()/2f, getKickRange()+getPower(), getKickRange()+getPower());
 			g.setColor(Color.white);
 		}
+	}
+	
+	//Calculates and draws dotted trail for ball prediction
+	public void drawBallPrediction(Graphics g) {
+		
 	}
 	
 	@Override
@@ -80,7 +91,7 @@ public class PlayerTwoTouch extends Player{
 		}
 		
 		//Entering Lock
-		if(power>0 && !ball.locked(playerNum) && dist(pos[0],pos[1],ball.getX(),ball.getY())<KICKRANGE/2f && !ball.scored()){
+		if(!lockCoolDown && power>0 && !ball.locked(playerNum) && dist(pos[0],pos[1],ball.getX(),ball.getY())<KICKRANGE/2f && !ball.scored()){
 			ball.setLocked(playerNum, true);
 			ball.setCanBeKicked(playerNum, true);
 			ball.setLastKicker(playerNum);
@@ -160,6 +171,7 @@ public class PlayerTwoTouch extends Player{
 		//For if the ball gets knocked out of your hands
 		if(dist(pos[0],pos[1],ball.getX(),ball.getY())>=KICKRANGE/2f){
 			ball.setLocked(playerNum, false);
+			lockCoolDown = false;
 			NORMALKICK = DEFAULTKICK;
 		}
 		
@@ -169,16 +181,22 @@ public class PlayerTwoTouch extends Player{
 		if(theta>360) theta-=360;
 		
 	}
+	
+	public void setLockCoolDown(boolean l) {
+		lockCoolDown = l;
+	}
 
 	@Override
 	public void activatePower(){
 		power = MAXPOWER;
+		velMag = VELMAG * 0.5f;
 		mySoundSystem.quickPlay( true, "TwoTouchActivate.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 	}
 	
 	@Override
 	public void powerKeyReleased(){
 		power = 0;
+		velMag = VELMAG;
 	}
 	
 	@Override
