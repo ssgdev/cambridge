@@ -122,27 +122,29 @@ sucks ball in
 tornado
 cannon?
 two touch – DONE
+	lose lock on play collision - DONE
+		lock cooldown after interruption - DONE
+	sniper/prediction trail - PROTOTYPE DONE
+enforcer - DONE
+	faster charge-up and much faster recovery
 joke character
 slingshot
 bat
 lightbike dash
 	must dash all the way to a wall
 	hold charge until it pops, if released, charge fizzles. More charge the further the wall.
-	dash speed faster than neo's slowmo speed
-	shape is triangle, points at charging direction (determined by rightstick) 
-		if angle != rightstickangle theta += omega*etc else no rotating
-	Maybe right stick can determine curve of gust
-	second ghost kick instead of gust/visual representation of gust?
+	faster chargeup time
+	longer time window of dash ball collision
+	slightly wider trail range (but not visually)
+	short dash release should not have visual effect if left stick is not being pushed anywhere
 twins
 	left and right bumper transfer nucleii between twins
 	right twin has special nametag
 	when right twin is dead it sits there like a bumper with no nucleus, and left twin has two nucleii
 Okami
 trickster:
-	mini slowmo effect
-	can turn into ball, enemy player, invisible
-	Activate zone. Ball enters - flashbang effect. Two balls, two players, each directed by one stick. Left stick real, right stick fake.
-	Subclass of Player: PlayerDummy. render() method is empty, used solely to juke camera for Trickster's sake
+	can turn into ball
+	can fake kicks with stealthy underkick
 
 pau gazul
 shaquille o'teal

@@ -6,6 +6,8 @@ import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
 
 public class Ball {
+	
+	Player[] players;
 
 	float[] pos;
 	float tempX, tempY;
@@ -82,6 +84,10 @@ public class Ball {
 		scored = false;
 		slowOn = false;
 	}
+	
+	public void setPlayers(Player[] p) {
+		players = p;
+	}
 
 	public void setLastKicker(int n){
 		lastKicker = n;
@@ -112,8 +118,15 @@ public class Ball {
 	}
 	
 	public void clearLocked(){
-		for(int i=0;i<locked.length;i++)
+		for(int i=0;i<players.length;i++){
 			locked[i] = false;
+			if(players[i] instanceof PlayerTwoTouch) {
+				((PlayerTwoTouch) players[i]).setLockCoolDown(true);
+//				setCanBeKicked(players[i].getPlayerNum(), true);
+				((PlayerTwoTouch) players[i]).powerKeyReleased();
+			}
+				
+		}
 	}
 	
 	public float getX(){

@@ -12,7 +12,7 @@ import org.newdawn.slick.geom.Transform;
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
 
-public class PlayerCharge extends Player{
+public class PlayerDash extends Player{
 
 	Polygon poly;
 	//Theta is between -pi and pi, theta2 is 0 to 2pi
@@ -46,7 +46,7 @@ public class PlayerCharge extends Player{
 	
 	Ball ball;
 	
-	public PlayerCharge(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_t, Ball b, Image hc) {
+	public PlayerDash(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_t, Ball b, Image hc) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 
 		MAXPOWER = 100;
