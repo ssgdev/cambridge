@@ -107,7 +107,7 @@ public class PlayerEnforcer extends Player{
 				launchVel[1] = vel[1];
 			}
 		}else if(coolingDown){
-			velMag = approachTarget(velMag,targetVelmag, (float)delta/1200f);
+			velMag = approachTarget(velMag,targetVelmag, (float)delta/800f);
 			vel[0] = launchVel[0];
 			vel[1] = launchVel[1];
 			if(velMag == targetVelmag){
@@ -178,7 +178,7 @@ public class PlayerEnforcer extends Player{
 				launchVel[1]*=-1f;
 				velMag/=2f;
 				power = 0;
-				targetVelmag = 0;
+				targetVelmag = MINVELMAG;
 				coolingDown = true;
 				if(velMag>.1f)
 					mySoundSystem.quickPlay( true, "EnforcerWallBounce.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
@@ -266,7 +266,7 @@ public class PlayerEnforcer extends Player{
 	public void powerKeyReleased() {
 		if(power>0){
 			power = 0;
-			targetVelmag = 0;
+			targetVelmag = MINVELMAG;
 			coolingDown = true;
 		}
 	}
