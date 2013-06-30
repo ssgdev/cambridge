@@ -662,8 +662,8 @@ public class GameplayState extends BasicGameState implements KeyListener{
 					ball.setVel(kickFloat, p.kickStrength()*0.5f+(float)Math.sqrt(tempf)*0.5f);
 					
 					spinFloat = normal(p.getCurve(), kickFloat);
-					System.out.println(p.kickStrength() + "-" + (p.kickStrength()*0.5f+(float)Math.sqrt(tempf)*0.5f));
-					ball.setCurve(spinFloat, p.kickStrength());
+					//System.out.println(p.kickStrength() + "-" + (p.kickStrength()*0.5f+(float)Math.sqrt(tempf)*0.5f));
+					ball.setCurve(spinFloat, mag(spinFloat));
 					
 					if(p.flashKick()){//If you want the kick flash and sound effect
 						p.setLastKick(ball.getPrevX(), ball.getPrevY(), ball.getPrevX()+kickFloat[0], ball.getPrevY()+kickFloat[1], 1f);//player stores coordinates of itself and ball at last kicking event;
@@ -845,4 +845,3 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	}
 
 }
->>>>>>> 6e12a6959662b57a06e616acabdfd4434ddc73f4

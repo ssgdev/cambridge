@@ -3,6 +3,7 @@ Changelog:
 6.29.13
 Updated TwoTouch:
 	Now locked mode will have a prediction trail that reflects the path of the ball when kicked
+Curve magnitude is now based on how much the right stick is pressed
 
 6.28.13
 Updated kicking mechanic to not be as crazy, reduced magnitude of kick, both velocity factor and kick factor

@@ -110,12 +110,13 @@ public class PlayerTwoTouch extends Player{
 		predictionVelMag = EXTRAKICK*0.5f + (mag(vel) > 0 ? mag(vel)*0.5f : 0f);
 		
 		predictionCurveAcc = normal(cExist ? curve : predictionVel, predictionVel);
-		unit(predictionCurveAcc);
-		
+
 		if (ball.CURVESCALE == 0)
 			predictionCurveMag = 0;
 		else
-			predictionCurveMag = EXTRAKICK * ball.CURVESCALE;
+			predictionCurveMag = mag(predictionCurveAcc) * ball.CURVESCALE;
+		
+		unit(predictionCurveAcc);
 		
 		while (predictionCount > 0) {
 			predictionVDelta = predictionDelta;
@@ -221,12 +222,6 @@ public class PlayerTwoTouch extends Player{
 		if(!ball.locked(playerNum)){
 			updatePos(delta);
 		}else{
-			
-			//used to magnify curve when in locked mode
-			if (power>0) {
-				curve[0] *= curveFactor;
-				curve[1] *= curveFactor;
-			}
 			
 			if(mag(vel)!=0){
 				unit(vel);	
