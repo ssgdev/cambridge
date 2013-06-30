@@ -1,14 +1,20 @@
 TODO:
 
+Keyboard Mode for each character? For example
+	PlayerTwin: The second twin is a mirror
+	PlayerTwoTouch: Holding left or right rotates the Player around the ball
 BUG: Changing the size of puffer changes the size of the kick trail when it shouldn't DONE
 BUG: Holding ActionButton with Enforcer on wall hammers the sounds DONE
 BUG: Reactivating the power on Enforcer by holding down after the wall doesn't sound good MEH
 TODO: Give Charge the half and half like stun victims DONE
 TODO: Create UpdateCounters method DONE
 TODO: Stick direction visual guide
-TODO: Organize Player constructor
 TODO: Visuals for charge's trail
 Go through all the code and see if it can be less horrible
+	TODO: Organize Player constructor
+	More abstract classing: Maybe everyone has buttonpressed and actionbutton2 but just leave it empty if unused.
+	render() has submethod drawSpecial()
+	Reorganize getColors() so you're not wasting memory making new color objects every frame?
 Enforcer: Has to build up momentum – DONE
 	TODO: Test Enfocer vs everyone else collision and see what happens
 Figure out dashing while against a wall
@@ -23,7 +29,7 @@ PlayerCharge should bounce off wall? DONE Feels a lot better
 PlayerCharge dash chaining DONE (Still in testing)
 Ball should accelerate into gust DONE
 Should the gust reset if the ball is kicked/the ball bounces? DONE
-	What happens if two charges both get up in it? Seems to be sequential gusting, which is totally fine
+	Sound Effect for this
 Sounds
 	Charge Charging DONE
 	Charge Dashing DONE
@@ -133,8 +139,10 @@ twins
 	when right twin is dead it sits there like a bumper with no nucleus, and left twin has two nucleii
 Okami
 trickster:
-	can turn into ball
-	can fake kicks with stealthy underkick
+	mini slowmo effect
+	can turn into ball, enemy player, invisible
+	Activate zone. Ball enters - flashbang effect. Two balls, two players, each directed by one stick. Left stick real, right stick fake.
+	Subclass of Player: PlayerDummy. render() method is empty, used solely to juke camera for Trickster's sake
 
 pau gazul
 shaquille o'teal
