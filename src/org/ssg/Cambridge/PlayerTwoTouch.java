@@ -35,6 +35,7 @@ public class PlayerTwoTouch extends Player{
 	
 	//only used during lock for prediction
 	int predictionCount;
+	int PREDICTIONCOUNT = 50;
 	float[] predictionPos, predictionVel, predictionCurveAcc;
 	float predictionVelMag, predictionCurveMag;
 	float predictionVDelta, predictionDelta;
@@ -92,7 +93,7 @@ public class PlayerTwoTouch extends Player{
 	//Calculates and draws dotted trail for ball prediction
 	public void drawBallPrediction(Graphics g) {
 		g.setColor(getColor());
-		predictionCount = 50;
+		predictionCount = PREDICTIONCOUNT;
 
 		predictionPos[0] = ball.getX();
 		predictionPos[1] = ball.getY();
@@ -129,7 +130,7 @@ public class PlayerTwoTouch extends Player{
 				//System.out.println(vel[0]);
 				//goalArr is {goal x, goal y, goal width, goal thickness, direction to go in
 				if((predictionTempX>0 && predictionTempX<(float)field[0] && predictionTempY>0 && predictionTempY<(float)field[1])
-						|| ball.betweenGoals(predictionTempX, predictionTempY)){//If it's in bounds or between goalposts
+						|| ball.betweenGoals(predictionTempX, predictionTempY, predictionVel)){//If it's in bounds or between goalposts
 					predictionPos[0]=predictionTempX;
 					predictionPos[1]=predictionTempY;
 					predictionVDelta = 0;
@@ -171,8 +172,9 @@ public class PlayerTwoTouch extends Player{
 				unit(predictionVel);
 				
 				if (predictionCount % 5 == 0 && predictionCount > 0) {
-					//System.out.println("Beep! " + vel[0] + " " + vel[1] + " " + (mag(vel) > 0 ? mag(vel)*0.5f : 0f));
-					g.drawOval(predictionPos[0]-2, predictionPos[1]-2, 4, 4);
+//					System.out.println("Beep! " + vel[0] + " " + vel[1] + " " + (mag(vel) > 0 ? mag(vel)*0.5f : 0f));
+					g.setColor(getColor((float)predictionCount/(float)PREDICTIONCOUNT));
+					g.fillRect(predictionPos[0]-3, predictionPos[1]-3, 6, 6);
 				}
 			} //end while predictionCount loop
 			

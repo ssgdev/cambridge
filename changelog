@@ -3,9 +3,11 @@ Changelog:
 7.1.13
 Update TwoTouch:
 	Getting pushed around in lock is much less slippery
+	Fixed ball predictor showing a reflection off a goal
+	Ball predictor fades with distance, is squares now
 Update Dash:
 	Minor bugfix. Releasing short dash with left stick unheld doesn't cause the kick flash and sound fx
-	Bouncing off a wall no longer cancels gust
+	The ball bouncing off a wall no longer cancels gust
 	When you dash, it now calculates if the ball will enter the trail within a certain time. If so, it will gust with the delay extended by that time
 		In effect, it's like the trail can "catch" the ball for a gust, for a short window after the dash.
 		The duration of the window needs testing, of course. Its really effective at catching fast balls

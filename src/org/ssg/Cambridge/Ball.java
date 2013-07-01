@@ -263,7 +263,7 @@ public class Ball {
 			//System.out.println(vel[0]);
 			//goalArr is {goal x, goal y, goal width, goal thickness, direction to go in
 			if(scored || (tempX>0 && tempX<(float)field[0] && tempY>0 && tempY<(float)field[1])
-					|| betweenGoals(tempX, tempY)){//If it's in bounds or between goalposts
+					|| betweenGoals(tempX, tempY, vel)){//If it's in bounds or between goalposts
 				pos[0]=tempX;
 				pos[1]=tempY;
 				vDelta = 0;
@@ -336,11 +336,11 @@ public class Ball {
 		theta+=velMag*delta;
 	}
 
-	public boolean betweenGoals(float x, float y){
+	public boolean betweenGoals(float x, float y, float[] velocity){
 		for(Goal g: goals){
-			if(y>(float)g.getMinY() && y<(float)g.getMaxY() && sameDir(vel[0], g.getXDir()))
+			if(y>(float)g.getMinY() && y<(float)g.getMaxY() && sameDir(velocity[0], g.getXDir()))
 					return true;
-			if(x>(float)g.getMinX() && x<(float)g.getMaxX() && sameDir(vel[1], g.getYDir()))
+			if(x>(float)g.getMinX() && x<(float)g.getMaxX() && sameDir(velocity[1], g.getYDir()))
 					return true;
 		}
 		return false;

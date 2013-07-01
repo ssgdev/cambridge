@@ -130,9 +130,8 @@ two touch – DONE
 	BUG: Angle jumps when circling on left stick in lock.
 		It happens when you move the stick too fast, it looks like
 enforcer - DONE
-	faster charge-up and much faster recovery
-	Less slippery turning
-		Maybe have it revert to old velocity while charging
+	faster charge-up and much faster recovery DONE
+	Less slippery turning DONE
 lightbike dash
 	must dash all the way to a wall	hold charge until it pops, if released, charge fizzles. More charge the further the wall.
 	faster chargeup time
