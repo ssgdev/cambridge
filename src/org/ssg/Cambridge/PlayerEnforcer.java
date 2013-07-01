@@ -16,9 +16,13 @@ public class PlayerEnforcer extends Player{
 	float MAXVELMAG;
 	float targetVelmag;
 	float[] launchVel;
-	boolean coolingDown;
+	boolean coolingDown, wallCoolingDown;
 	float[] curve;
 	float powerAlpha;//Used for drawing powercircle
+	
+	float[] lastPos;//Used for drawing the afterimage when he turns sharply
+	float[] lastVel;
+	float turningAlpha;
 	
 	float stepCoolDown;//used for playing the walking sound
 	float STEPCOOLDOWN;
@@ -31,8 +35,12 @@ public class PlayerEnforcer extends Player{
 		targetVelmag = VELMAG;
 		launchVel = new float[2];
 		coolingDown = false;
+		wallCoolingDown = false;
 		curve = new float[2];
 		powerAlpha = 0;
+		lastPos = new float[2];
+		lastVel = new float[2];
+		turningAlpha = 0;
 		stepCoolDown = 0;
 		STEPCOOLDOWN = MAXPOWER;
 	}
@@ -48,6 +56,11 @@ public class PlayerEnforcer extends Player{
 		}
 		g.rotate(pos[0], pos[1], -getTheta());
 		//g.drawOval(getX()-getKickRange()/2f+BALLSIZE/2f, getY()-getKickRange()/2f+BALLSIZE/2f, getKickRange()-BALLSIZE, getKickRange()-BALLSIZE);//Draw kicking circle;
+		
+		//Draw ghostly turning circle
+		g.setColor(getColor(turningAlpha));
+		g.drawOval(lastPos[0] - KICKRANGE/2f, lastPos[1] - KICKRANGE/2f, KICKRANGE, KICKRANGE);
+
 	}
 
 	@Override
@@ -65,7 +78,6 @@ public class PlayerEnforcer extends Player{
 		return new Color(color.getRed(), color.getGreen(), color.getBlue(), powerAlpha);
 	}
 
-	
 	@Override
 	public Color getColor4(){
 		return new Color(color.getRed(), color.getGreen(), color.getBlue(), (velMag-MINVELMAG)/MAXVELMAG);
@@ -79,10 +91,6 @@ public class PlayerEnforcer extends Player{
 			
 			if (actionButton.getPollData() == 1.0){
 					activatePower();
-					if(!buttonPressed){
-						mySoundSystem.quickPlay( true, "EnforcerActivate.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
-						powerAlpha = 1f;
-					}
 					buttonPressed = true;
 			}else if(actionButton.getPollData() == 0 && buttonPressed){
 					powerKeyReleased();
@@ -100,22 +108,25 @@ public class PlayerEnforcer extends Player{
 				curve = normal(vel, launchVel);
 				unit(curve);
 				velMag = approachTarget(velMag,targetVelmag, (float)delta/1600f);
-				vel[0] = launchVel[0]+curve[0]*.1f;
-				vel[1] = launchVel[1]+curve[1]*.1f;
+				vel[0] = launchVel[0]+curve[0]*.05f*(1.5f-velMag/targetVelmag);
+				vel[1] = launchVel[1]+curve[1]*.05f*(1.5f-velMag/targetVelmag);
 				unit(vel);
 				launchVel[0] = vel[0];
 				launchVel[1] = vel[1];
 			}
-		}else if(coolingDown){
+		}else if(coolingDown || wallCoolingDown){
 			velMag = approachTarget(velMag,targetVelmag, (float)delta/800f);
 			vel[0] = launchVel[0];
 			vel[1] = launchVel[1];
 			if(velMag == targetVelmag){
 				coolingDown = false;
+				wallCoolingDown = false;
 				targetVelmag = VELMAG;
 			}
+			
 		}else{
-			velMag = approachTarget(velMag,targetVelmag, (float)delta/1200f);	
+			velMag = approachTarget(velMag,targetVelmag, (float)delta/1200f);
+
 		}
 			
 		updatePos(delta);
@@ -126,11 +137,7 @@ public class PlayerEnforcer extends Player{
 			stepCoolDown -= (float)delta;
 			if(stepCoolDown<=0){
 				stepCoolDown = STEPCOOLDOWN;
-				if(power > 0){
-					STEPCOOLDOWN -= 4f*(float)delta;//Might not make sense to have a delta here
-				}else if(coolingDown){
-					STEPCOOLDOWN += 8f*(float)delta;
-				}
+				STEPCOOLDOWN = MAXPOWER*(1f-velMag/MAXVELMAG);
 				if(STEPCOOLDOWN < 180)
 					STEPCOOLDOWN = 180;
 				if(STEPCOOLDOWN > MAXPOWER)
@@ -143,6 +150,13 @@ public class PlayerEnforcer extends Player{
 		powerAlpha -= (float)delta/600f;
 		if(powerAlpha<0f)
 			powerAlpha = 0f;
+		
+		turningAlpha -= (float)delta/600f;
+		if(turningAlpha<0)
+			turningAlpha = 0;
+		
+		lastPos[0] += (float)delta*lastVel[0]*.5f;
+		lastPos[1] += (float)delta*lastVel[1]*.5f;
 		
 		theta += omega * (float)delta * 2f * velMag/MAXVELMAG;
 		if(theta>360f)
@@ -179,7 +193,7 @@ public class PlayerEnforcer extends Player{
 				velMag/=2f;
 				power = 0;
 				targetVelmag = MINVELMAG;
-				coolingDown = true;
+				wallCoolingDown = true;
 				if(velMag>.1f)
 					mySoundSystem.quickPlay( true, "EnforcerWallBounce.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				STEPCOOLDOWN = MAXPOWER;
@@ -251,14 +265,32 @@ public class PlayerEnforcer extends Player{
 	
 	@Override
 	public void activatePower() {
-		if(power==0 && !coolingDown){
-			power = 1;
-			velMag = MINVELMAG;
-			targetVelmag = MAXVELMAG;
-			launchVel[0] = 0;
-			launchVel[1] = 0;
-			//stepCoolDown = MAXPOWER;
-			STEPCOOLDOWN = MAXPOWER;
+		if(power==0 && !wallCoolingDown){
+			if(coolingDown && velMag>.5f){//If you've let go of the button previously and still have speed
+				mySoundSystem.quickPlay( true, "EnforcerTurn.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+				lastPos[0] = pos[0];
+				lastPos[1] = pos[1];
+				lastVel[0] = vel[0];
+				lastVel[1] = vel[1];
+				turningAlpha = 1f;
+				power = 1;
+				targetVelmag = MAXVELMAG;
+				launchVel[0] = vel[0];
+				launchVel[1] = vel[1];
+				//STEPCOOLDOWN = MAXPOWER;
+			}else{//From a standstill
+				if(!buttonPressed){
+					mySoundSystem.quickPlay( true, "EnforcerActivate.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+					powerAlpha = 1f;
+				}
+				power = 1;
+				velMag = MINVELMAG;
+				targetVelmag = MAXVELMAG;
+				launchVel[0] = 0;
+				launchVel[1] = 0;
+				//stepCoolDown = MAXPOWER;
+				STEPCOOLDOWN = MAXPOWER;
+			}
 		}
 	}
 

@@ -132,6 +132,7 @@ two touch – DONE
 enforcer - DONE
 	faster charge-up and much faster recovery
 	Less slippery turning
+		Maybe have it revert to old velocity while charging
 lightbike dash
 	must dash all the way to a wall	hold charge until it pops, if released, charge fizzles. More charge the further the wall.
 	faster chargeup time

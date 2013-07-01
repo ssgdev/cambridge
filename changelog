@@ -10,6 +10,11 @@ Update Dash:
 		In effect, it's like the trail can "catch" the ball for a gust, for a short window after the dash.
 		The duration of the window needs testing, of course. Its really effective at catching fast balls
 	The backkick range is slightly extended so it'll kick if the trail appears to connect with even the edge of the ball 
+Update Enforcer
+	Less turning in enforcement mode
+	Doesn't lose speed if reactivating power after letting go of the button. Lets you turn instantly if you release and repress the button
+	Accompanying graphical and sound effects for the above maneuvre
+	STEPCOOLDOWN is actually proportional to player speed now
 
 6.29.13
 Updated TwoTouch:

@@ -104,6 +104,7 @@ public class Cambridge extends StateBasedGame {
 		mySoundSystem.loadSound("EnforcerBump.wav");
 		mySoundSystem.loadSound("EnforcerStep.wav");
 		mySoundSystem.loadSound("EnforcerActivate.wav");
+		mySoundSystem.loadSound("EnforcerTurn.wav");
 		mySoundSystem.loadSound("EnforcerWallBounce.wav");
 		mySoundSystem.loadSound("ChargeCharging.wav");
 		mySoundSystem.loadSound("ChargeDash.wav");

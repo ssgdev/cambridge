@@ -296,16 +296,6 @@ public class PlayerTwoTouch extends Player{
 		
 	}
 	
-	//Only shiftY is used since shiftY is always called second.
-	//Since this method is used in updatePos to push players out of the way, this has TwoTouch update his angle
-	//when he is pushed out of the way
-//	@Override
-//	public void shiftY(float f){
-//		pos[1]+=f;
-//		angle = (float)Math.atan2(ball.getY()-pos[1], ball.getX()-pos[0]);
-//		angleTarget = (float)Math.atan2(ball.getY()-pos[1], ball.getX()-pos[0]);
-//	}
-//	
 	public void setLockCoolDown(boolean l) {
 		lockCoolDown = l;
 	}
