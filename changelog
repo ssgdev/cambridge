@@ -3,11 +3,19 @@ Changelog:
 7.1.13
 Update TwoTouch:
 	Getting pushed around in lock is much less slippery
+Update Dash:
+	Minor bugfix. Releasing short dash with left stick unheld doesn't cause the kick flash and sound fx
+	Bouncing off a wall no longer cancels gust
+	When you dash, it now calculates if the ball will enter the trail within a certain time. If so, it will gust with the delay extended by that time
+		In effect, it's like the trail can "catch" the ball for a gust, for a short window after the dash.
+		The duration of the window needs testing, of course. Its really effective at catching fast balls
+	The backkick range is slightly extended so it'll kick if the trail appears to connect with even the edge of the ball 
 
 6.29.13
 Updated TwoTouch:
 	Now locked mode will have a prediction trail that reflects the path of the ball when kicked
 Curve magnitude is now based on how much the right stick is pressed
+PlayerCharge is now called PlayerDash
 
 6.28.13
 Updated kicking mechanic to not be as crazy, reduced magnitude of kick, both velocity factor and kick factor

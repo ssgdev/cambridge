@@ -126,18 +126,20 @@ two touch – DONE
 		lock cooldown after interruption - DONE
 	sniper/prediction trail - PROTOTYPE DONE
 	Getting pushed while in lock should change angle instead of teleporting back. DONE
+	Make ball getting kicked away behaviour better? What happens when he's enforcer kicked btw
 	BUG: Angle jumps when circling on left stick in lock.
 		It happens when you move the stick too fast, it looks like
 enforcer - DONE
 	faster charge-up and much faster recovery
 	Less slippery turning
 lightbike dash
-	must dash all the way to a wall
-	hold charge until it pops, if released, charge fizzles. More charge the further the wall.
+	must dash all the way to a wall	hold charge until it pops, if released, charge fizzles. More charge the further the wall.
 	faster chargeup time
-	longer time window of dash ball collision
-	slightly wider trail range (but not visually)
-	short dash release should not have visual effect if left stick is not being pushed anywhere
+	dash trail can "catch" the ball for a brief while DONE (NEEDS TESTING)
+	slightly wider trail range (but not visually) DONE
+	short dash release should not have visual effect if left stick is not being pushed anywhere DONE
+	bouncing no longer cancels the gust DONE
+	BUG: His dash doesn't change the colour of the goals for squash
 twins
 	left and right bumper transfer nucleii between twins
 	right twin has special nametag

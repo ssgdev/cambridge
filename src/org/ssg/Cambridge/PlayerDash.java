@@ -30,6 +30,7 @@ public class PlayerDash extends Player{
 	
 	float[] dashVel;
 	float dashDist;
+	float DASHDURATION = 500;//The time window in which the trail can "catch" the ball
 	float gustCountDown;
 	float gustCoolDown;//Used for drawing the ghost kicker
 	float GUSTCOUNTDOWN = 800;
@@ -237,12 +238,28 @@ public class PlayerDash extends Player{
 							//ball.setVel(new float[]{ball.getVelX(), ball.getVelY()}, ball.getVelMag()/2f);//Maybe slow it down?
 							ball.setReadyForGust(true);
 							gustCountDown = GUSTCOUNTDOWN;
-						}else if(mag(ballOrth)<KICKRANGE/2){//If it's behind you, backkick relative to distance
+						}else if(mag(ballOrth)<KICKRANGE/2f + 10f){//If it's behind you, backkick relative to distance
 							ball.setVel(new float[]{ballParallel[0], ballParallel[1]}, 3f*POWERKICK);
 						}
 						ball.setLastKicker(playerNum);
 						ball.setCanBeKicked(playerNum, false);
 						kickingCoolDown = KICKCOOLDOWN;
+					}else if(!ball.scored() && ball.getX()>=xyLimit[0]&&ball.getX()<=xyLimit[1]&&ball.getY()>=xyLimit[2]&&ball.getY()<=xyLimit[3]){//The second clause, for "catching" ball in the trail
+						//Find the orthogonal component of the ball's velocity relative to the trail
+						tempArr = normal(new float[]{ball.getVelX()*ball.getVelMag(), ball.getVelY()*ball.getVelMag()}, vel);//Note the magnitude of tempArr matters this time
+						//if the ball is heading towards the trail
+						if(sameDir(tempArr, new float[]{-ballOrth[0], -ballOrth[1]})){
+							//calculate how much how much time until the ball will reach the trail
+							tempf = mag(ballOrth)/(mag(tempArr));
+							//If that is within the accepted limit, set up the gust with the added delay
+							if(tempf<DASHDURATION){
+								ball.setReadyForGust(true);
+								gustCountDown = GUSTCOUNTDOWN + tempf;
+								ball.setLastKicker(playerNum);
+								ball.setCanBeKicked(playerNum, false);
+								kickingCoolDown = KICKCOOLDOWN;
+							}
+						}
 					}
 					
 					prevPostPos[0] = pos[0];
@@ -282,7 +299,9 @@ public class PlayerDash extends Player{
 		
 		//Delayed gusting of ball
 		if(gustCountDown>0){
-			if(shortDash){//Shortdash direction can change the gust direction
+			//Shortdash direction can change the gust direction.
+			//The second part of the condition is so shortdashing can't slow down the gust countdown before the ball has touched the trail
+			if(shortDash && gustCountDown<GUSTCOUNTDOWN){
 				gustCountDown -= (float)delta/2f;
 				gustVel[0] = vel[0];
 				gustVel[1] = vel[1];
@@ -353,55 +372,56 @@ public class PlayerDash extends Player{
 	}
 	
 	public void shortDashReleased(){//More of a teleport
-		mySoundSystem.quickPlay( true, "ChargeShortDash.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
-		
-		parallelComponent(new float[]{ball.getX()-pos[0], ball.getY()-pos[1]}, vel, ballParallel);
-		ballOrth[0] = ball.getX()-pos[0]-ballParallel[0];
-		ballOrth[1] = ball.getY()-pos[1]-ballParallel[1];
-		
-		prevPostPos[0] = pos[0];
-		prevPostPos[1] = pos[1];
-		
-		//for(int i=0;i<100 && pos[0]-KICKRANGE/2>=xyLimit[0]&&pos[0]+KICKRANGE/2<=xyLimit[1]&&pos[1]-KICKRANGE/2>=xyLimit[2]&&pos[1]+KICKRANGE/2<=xyLimit[3];i++){
-		for(int i=0; i<150 ; i++){
-			pos[0]+=vel[0];
-			pos[1]+=vel[1];
-		}
-		
-		pos[0]-=vel[0];
-		pos[1]-=vel[1];
-
-		prevPostPos[2] = pos[0];
-		prevPostPos[3] = pos[1];
-		
-		dashDist = mag(new float[]{prevPostPos[2]-prevPostPos[0], prevPostPos[3]-prevPostPos[1]});
-		
-		prevPostPos[0] = pos[0]-3000f*vel[0];
-		prevPostPos[1] = pos[1]-3000f*vel[1];
-		
-		gustVel[0] = prevPostPos[2] - prevPostPos[0];
-		gustVel[1] = prevPostPos[3] - prevPostPos[1];
-		
-		lastKickAlpha = 1f;
-		
-		shortDashCoolDown = SHORTDASHCOOLDOWN;
-		
-		if(mag(ballOrth)<KICKRANGE/2f && mag(ballParallel)<dashDist+KICKRANGE/2f && sameDir(vel,ballParallel)){
-			unit(ballParallel);
-			ball.setPos(pos[0]+ballParallel[0]*KICKRANGE/2f+4f, pos[1]+ballParallel[1]*KICKRANGE/2f+4f);//Teleport ball to front
-			ball.setVel(new float[]{ballParallel[0], ballParallel[1]}, POWERKICK+VELMAG);
-			ball.setLastKicker(playerNum);
-			ball.setCanBeKicked(playerNum, false);
-			ball.cancelAcc();
-			ball.clearLocked();
-			kickingCoolDown = KICKCOOLDOWN;
-			if(slowMo){
-				mySoundSystem.quickPlay( true, "KickBumpSlow.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
-			}else{
-				mySoundSystem.quickPlay( true, "KickBump.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+		if(mag(vel)>0){
+			mySoundSystem.quickPlay( true, "ChargeShortDash.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			
+			parallelComponent(new float[]{ball.getX()-pos[0], ball.getY()-pos[1]}, vel, ballParallel);
+			ballOrth[0] = ball.getX()-pos[0]-ballParallel[0];
+			ballOrth[1] = ball.getY()-pos[1]-ballParallel[1];
+			
+			prevPostPos[0] = pos[0];
+			prevPostPos[1] = pos[1];
+			
+			//for(int i=0;i<100 && pos[0]-KICKRANGE/2>=xyLimit[0]&&pos[0]+KICKRANGE/2<=xyLimit[1]&&pos[1]-KICKRANGE/2>=xyLimit[2]&&pos[1]+KICKRANGE/2<=xyLimit[3];i++){
+			for(int i=0; i<150 ; i++){
+				pos[0]+=vel[0];
+				pos[1]+=vel[1];
+			}
+			
+			pos[0]-=vel[0];
+			pos[1]-=vel[1];
+	
+			prevPostPos[2] = pos[0];
+			prevPostPos[3] = pos[1];
+			
+			dashDist = mag(new float[]{prevPostPos[2]-prevPostPos[0], prevPostPos[3]-prevPostPos[1]});
+			
+			prevPostPos[0] = pos[0]-3000f*vel[0];
+			prevPostPos[1] = pos[1]-3000f*vel[1];
+			
+			gustVel[0] = prevPostPos[2] - prevPostPos[0];
+			gustVel[1] = prevPostPos[3] - prevPostPos[1];
+			
+			lastKickAlpha = 1f;
+			
+			shortDashCoolDown = SHORTDASHCOOLDOWN;
+			
+			if(mag(ballOrth)<KICKRANGE/2f && mag(ballParallel)<dashDist+KICKRANGE/2f && sameDir(vel,ballParallel)){
+				unit(ballParallel);
+				ball.setPos(pos[0]+ballParallel[0]*KICKRANGE/2f+4f, pos[1]+ballParallel[1]*KICKRANGE/2f+4f);//Teleport ball to front
+				ball.setVel(new float[]{ballParallel[0], ballParallel[1]}, POWERKICK+VELMAG);
+				ball.setLastKicker(playerNum);
+				ball.setCanBeKicked(playerNum, false);
+				ball.cancelAcc();
+				ball.clearLocked();
+				kickingCoolDown = KICKCOOLDOWN;
+				if(slowMo){
+					mySoundSystem.quickPlay( true, "KickBumpSlow.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+				}else{
+					mySoundSystem.quickPlay( true, "KickBump.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+				}
 			}
 		}
-		
 		shortDash = false;
 //		velMag = VELMAG;
 	}
@@ -431,6 +451,11 @@ public class PlayerDash extends Player{
 	public float[] normalNeg(float[] v, float[] w){//orthogonal proj v on w, negative
 		tempf = dot(v,w)/mag(w);
 		return new float[]{-v[0]+tempf*w[0], -v[1]+tempf*w[1]};
+	}
+	
+	public float[] normal(float[] v, float[] w){//orthogonal proj v on w
+		tempf = dot(v,w)/mag(w);
+		return new float[]{v[0]-tempf*w[0], v[1]-tempf*w[1]};
 	}
 	
 	//vx is vel, dir is ballParallel

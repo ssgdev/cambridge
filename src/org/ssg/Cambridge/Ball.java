@@ -122,7 +122,7 @@ public class Ball {
 			locked[i] = false;
 			if(players[i] instanceof PlayerTwoTouch) {
 				((PlayerTwoTouch) players[i]).setLockCoolDown(true);
-//				setCanBeKicked(players[i].getPlayerNum(), true);
+				//setCanBeKicked(players[i].getPlayerNum(), true);
 				((PlayerTwoTouch) players[i]).powerKeyReleased();
 			}
 				
@@ -295,7 +295,7 @@ public class Ball {
 				curveAcc[0]=0f;//Take off curve after first ricochet
 				curveAcc[1]=0f;
 				curveMag=0f;
-				cancelAcc();
+//				cancelAcc();
 				velMag-=BOUNCEDAMP;
 				if(velMag<0){
 					velMag = .1f;
