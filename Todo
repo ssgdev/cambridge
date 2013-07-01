@@ -125,11 +125,12 @@ two touch – DONE
 	lose lock on play collision - DONE
 		lock cooldown after interruption - DONE
 	sniper/prediction trail - PROTOTYPE DONE
+	Getting pushed while in lock should change angle instead of teleporting back. DONE
+	BUG: Angle jumps when circling on left stick in lock.
+		It happens when you move the stick too fast, it looks like
 enforcer - DONE
 	faster charge-up and much faster recovery
-joke character
-slingshot
-bat
+	Less slippery turning
 lightbike dash
 	must dash all the way to a wall
 	hold charge until it pops, if released, charge fizzles. More charge the further the wall.

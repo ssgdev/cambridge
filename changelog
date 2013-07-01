@@ -1,5 +1,9 @@
 Changelog:
 
+7.1.13
+Update TwoTouch:
+	Getting pushed around in lock is much less slippery
+
 6.29.13
 Updated TwoTouch:
 	Now locked mode will have a prediction trail that reflects the path of the ball when kicked
