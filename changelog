@@ -1,17 +1,22 @@
 Changelog:
 
+7.2.13
+Added PlayerTricky functionality
+Added PlayerDummy: An invisible, non colliding Player subclass used primarily for moving the camera
+Added BallFake: Identical to Ball except it bounces off goals
+
 7.1.13
 Update TwoTouch:
 	Getting pushed around in lock is much less slippery
 	Fixed ball predictor showing a reflection off a goal
-	Ball predictor fades with distance, is squares now
+	Ball predictor fades with distance, is squares now, goes for longer
 Update Dash:
 	Minor bugfix. Releasing short dash with left stick unheld doesn't cause the kick flash and sound fx
 	The ball bouncing off a wall no longer cancels gust
 	When you dash, it now calculates if the ball will enter the trail within a certain time. If so, it will gust with the delay extended by that time
 		In effect, it's like the trail can "catch" the ball for a gust, for a short window after the dash.
-		The duration of the window needs testing, of course. Its really effective at catching fast balls
-	The backkick range is slightly extended so it'll kick if the trail appears to connect with even the edge of the ball 
+		The duration of the window needs testing, of course. It's really effective at catching fast balls
+	The backkick range is slightly widened so it'll kick if the trail appears to connect with even the edge of the ball 
 Update Enforcer
 	Less turning in enforcement mode
 	Doesn't lose speed if reactivating power after letting go of the button. Lets you turn instantly if you release and repress the button

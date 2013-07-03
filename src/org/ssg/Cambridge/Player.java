@@ -370,11 +370,10 @@ public abstract class Player implements KeyListener {
 	}
 	
 	public void drawNameTag(Graphics g, Image triangle, AngelCodeFont font_small){
-		g.drawImage(triangle, getX()-triangle.getWidth()/2, getY()-getKickRange()/2-25, getColor());
-		g.setColor(getColor());
+		g.drawImage(triangle, pos[0]-triangle.getWidth()/2, pos[1]-getKickRange()/2-25, color);
+		g.setColor(color);
 		g.setFont(font_small);
 		g.drawString("P"+(playerNum+1), pos[0]-font_small.getWidth("P"+(playerNum+1))/2, pos[1]-font_small.getHeight("P")-KICKRANGE/2-30);
-
 	}
 	
 	////////////////////////////////////////////////////

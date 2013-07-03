@@ -35,7 +35,7 @@ public class PlayerTwoTouch extends Player{
 	
 	//only used during lock for prediction
 	int predictionCount;
-	int PREDICTIONCOUNT = 50;
+	int PREDICTIONCOUNT = 150;
 	float[] predictionPos, predictionVel, predictionCurveAcc;
 	float predictionVelMag, predictionCurveMag;
 	float predictionVDelta, predictionDelta;
