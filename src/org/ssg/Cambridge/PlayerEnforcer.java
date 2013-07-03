@@ -59,7 +59,8 @@ public class PlayerEnforcer extends Player{
 		
 		//Draw ghostly turning circle
 		g.setColor(getColor(turningAlpha));
-		g.drawOval(lastPos[0] - KICKRANGE/2f, lastPos[1] - KICKRANGE/2f, KICKRANGE, KICKRANGE);
+		tempf = (1f-turningAlpha)*400f;
+		g.drawOval(lastPos[0] - KICKRANGE/2f - tempf, lastPos[1] - KICKRANGE/2f - tempf, KICKRANGE+tempf*2f, KICKRANGE+tempf*2f);
 
 	}
 
@@ -155,8 +156,8 @@ public class PlayerEnforcer extends Player{
 		if(turningAlpha<0)
 			turningAlpha = 0;
 		
-		lastPos[0] += (float)delta*lastVel[0]*.5f;
-		lastPos[1] += (float)delta*lastVel[1]*.5f;
+		//lastPos[0] += (float)delta*lastVel[0]*.5f;
+		//lastPos[1] += (float)delta*lastVel[1]*.5f;
 		
 		theta += omega * (float)delta * 2f * velMag/MAXVELMAG;
 		if(theta>360f)

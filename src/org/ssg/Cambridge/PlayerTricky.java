@@ -14,6 +14,7 @@ public class PlayerTricky extends Player{
 
 	Ball ball;
 	BallFake fakeball;
+	float fakeballAlpha;
 	float[] fakeKickPos;
 	float fakeCounter;
 	float FAKECOUNTER;
@@ -33,6 +34,7 @@ public class PlayerTricky extends Player{
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 
 		ball = b;
+		fakeballAlpha = 0f;
 		fakeKickPos = new float[2];
 		fakeCounter = 0;
 		FAKECOUNTER = 5000f;
@@ -96,7 +98,7 @@ public class PlayerTricky extends Player{
 		
 		if(fakeAlpha>0){
 			//Draw fake ball
-			g.setColor(Color.red.scaleCopy(fakeAlpha*2f));
+			g.setColor(Color.red.scaleCopy(fakeballAlpha));
 			g.rotate(fakeball.getX(), fakeball.getY(), fakeball.getTheta());
 			g.fillRect(fakeball.getX()-10f, fakeball.getY()-10f, 20f, 20f);
 			g.rotate(fakeball.getX(), fakeball.getY(), -fakeball.getTheta());
@@ -166,8 +168,10 @@ public class PlayerTricky extends Player{
 			if(fakeCounter < 0)
 				fakeCounter = 0;
 			
-			if(fakeCounter == 0)
+			if(fakeCounter == 0){
 				fakeAlpha -= (float)delta/2400f;
+				fakeballAlpha -= (float)delta/2400f;
+			}
 		}else{
 			fakePos[0] = pos[0];
 			fakePos[1] = pos[1];
@@ -202,12 +206,12 @@ public class PlayerTricky extends Player{
 		for(Player otherPlayer: players){
 			if(otherPlayer != this && otherPlayer != dummy){
 				tempf = dist(fakePos[0], fakePos[1], otherPlayer.getX(), otherPlayer.getY());
-				if(tempf < (KICKRANGE + otherPlayer.getKickRange())/2){
+				if(fakeAlpha > 0.2f && tempf < (KICKRANGE + otherPlayer.getKickRange())/2){
 					fakeAlpha = 0.2f;
 				}
 				tempf = dist(fakeball.getX(), fakeball.getY(), otherPlayer.getX(), otherPlayer.getY());
-				if(tempf < otherPlayer.getKickRange()/2){
-					fakeAlpha = 0.2f;
+				if(fakeballAlpha > 0.5f && tempf < otherPlayer.getKickRange()/2){
+					fakeballAlpha = 0.5f;
 				}
 			}
 		}
@@ -252,6 +256,7 @@ public class PlayerTricky extends Player{
 		}
 		fakeball.setVel(new float[]{tempArr[0], tempArr[1]}, POWERKICK*0.5f+(float)Math.sqrt(tempf)*0.5f);
 		fakeAlpha = 1f;
+		fakeballAlpha = 1f;
 		fakeCounter = FAKECOUNTER;
 		
 		fakeKickPos[0] = ball.getPrevX()+tempArr[0];
