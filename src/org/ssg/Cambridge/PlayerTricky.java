@@ -173,8 +173,8 @@ public class PlayerTricky extends Player{
 				fakeballAlpha -= (float)delta/2400f;
 			}
 		}else{
-			fakePos[0] = pos[0];
-			fakePos[1] = pos[1];
+			fakePos[0] = approachTarget(fakePos[0], pos[0], (float)(delta));
+			fakePos[1] = approachTarget(fakePos[1], pos[1], (float)(delta));
 		}
 		
 		theta+= omega*(float)delta;
