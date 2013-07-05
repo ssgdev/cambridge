@@ -26,6 +26,10 @@ public class PlayerDummy extends Player{
 		pos = f;
 	}
 	
+	public void setVel(float[] v){
+		vel = v;
+	}
+	
 	@Override
 	public void render(Graphics g, float BALLSIZE, Image triangle, AngelCodeFont font_small){
 		
@@ -33,7 +37,7 @@ public class PlayerDummy extends Player{
 	
 	@Override
 	public void update(int delta) {
-
+		
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 TODO:
 
+Save memory by casting delta to float at the top of update
 Keyboard Mode for each character? For example
 	PlayerTwin: The second twin is a mirror
 	PlayerTwoTouch: Holding left or right rotates the Player around the ball
@@ -8,8 +9,8 @@ BUG: Holding ActionButton with Enforcer on wall hammers the sounds DONE
 BUG: Reactivating the power on Enforcer by holding down after the wall doesn't sound good MEH
 TODO: Give Charge the half and half like stun victims DONE
 TODO: Create UpdateCounters method DONE
-TODO: Stick direction visual guide
-TODO: Visuals for charge's trail
+TODO: Stick direction visual guide DONE
+TODO: Visuals for charge's trail DONE
 Go through all the code and see if it can be less horrible
 	TODO: Organize Player constructor
 	More abstract classing: Maybe everyone has buttonpressed and actionbutton2 but just leave it empty if unused.
@@ -148,6 +149,12 @@ Okami
 trickster:
 	can turn into ball
 	can fake kicks with stealthy underkick
+shooter
+	can shoot sniper shot with right bumper, aim with right stick
+	left bumper is a sort of wider laser which does less to the ball
+	can't shoot through other players (but it will bump them a little?)
+	doesn't collide with ball
+	
 
 pau gazul
 shaquille o'teal

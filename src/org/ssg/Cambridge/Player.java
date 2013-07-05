@@ -215,7 +215,7 @@ public abstract class Player implements KeyListener {
 		//player on player collision handling
 		//TODO: modify for 4P
 		for(Player otherPlayer: players){
-			if(otherPlayer != this){//If he's not you, collide with him
+			if(otherPlayer != this  && !(otherPlayer instanceof PlayerDummy)){//If he's not you, collide with him
 				tempf = dist(pos[0], pos[1], otherPlayer.getX(), otherPlayer.getY());
 				if(tempf < (KICKRANGE + otherPlayer.getKickRange())/2){
 					tempArr[0] = otherPlayer.getX()-pos[0];
@@ -626,8 +626,12 @@ public abstract class Player implements KeyListener {
 	}
 	
 	public float[] normal(float[] v, float[] w){
-		float tempX = dot(v,w)/mag(w);//Repurposing this as a temp calculation holder
-		return new float[]{v[0]-tempX*w[0], v[1]-tempX*w[1]};
+		if(mag(w)>0){
+			tempf = dot(v,w)/mag(w);//Repurposing this as a temp calculation holder
+			return new float[]{v[0]-tempf*w[0], v[1]-tempf*w[1]};
+		}else{
+			return new float[]{0,0};
+		}
 	}
 	
 	public float[] approachTargets(float[] val, float[] targets, float inc){

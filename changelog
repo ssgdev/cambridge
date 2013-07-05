@@ -1,5 +1,13 @@
 Changelog:
 
+7.4.13
+Added PlayerGun, begun implementation
+
+7.3.13
+Minor updates to PlayerTricky's drawing of the fake ball and player: ball and player have separate alphas
+Changed PlayerEnforcer's rapid turn graphical effect
+Smoothed the camera movement when a PlayerTricky's double fades away
+
 7.2.13
 Added PlayerTricky functionality
 Added PlayerDummy: An invisible, non colliding Player subclass used primarily for moving the camera

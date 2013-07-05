@@ -203,7 +203,7 @@ public class PlayerEnforcer extends Player{
 		
 		//player on player collision handling
 		for(Player otherPlayer: players){
-			if(otherPlayer != this){//If he's not you, collide with him
+			if(otherPlayer != this && !(otherPlayer instanceof PlayerDummy)){//If he's not you, collide with him
 				tempf = dist(pos[0], pos[1], otherPlayer.getX(), otherPlayer.getY());
 				if(tempf < (KICKRANGE + otherPlayer.getKickRange())/2){
 					if(power > 0 && !otherPlayer.stunned()){
