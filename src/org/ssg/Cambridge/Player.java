@@ -471,7 +471,9 @@ public abstract class Player implements KeyListener {
 	}
 
 	public float kickStrength(){
-		if(power>0){
+		if(mag(vel)==0){
+			return .5f;
+		}else if(power>0){
 			return POWERKICK;
 		}else{
 			return NORMALKICK;

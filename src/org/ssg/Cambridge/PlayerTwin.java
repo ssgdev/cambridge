@@ -201,10 +201,14 @@ public class PlayerTwin extends Player{
 			
 			g.rotate(pos[0]+(float)Math.cos(theta2)*orbitRadius, pos[1]+(float)Math.sin(theta2)*orbitRadius, getTheta());
 			g.drawRect(pos[0]+(float)Math.cos(theta2)*orbitRadius-PLAYERSIZE/2, pos[1]+(float)Math.sin(theta2)*orbitRadius-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
+			if(ball.assistTwin()[0] == playerNum && ball.assistTwin()[1] == twinNum)
+				g.fillRect(pos[0]+(float)Math.cos(theta2)*orbitRadius-PLAYERSIZE/2, pos[1]+(float)Math.sin(theta2)*orbitRadius-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
 			g.rotate(pos[0]+(float)Math.cos(theta2)*orbitRadius, pos[1]+(float)Math.sin(theta2)*orbitRadius, -getTheta());
 			
 			g.rotate(pos[0]-(float)Math.cos(theta2)*orbitRadius, pos[1]-(float)Math.sin(theta2)*orbitRadius, getTheta());
 			g.drawRect(pos[0]-(float)Math.cos(theta2)*orbitRadius-PLAYERSIZE/2, pos[1]-(float)Math.sin(theta2)*orbitRadius-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
+			if(ball.assistTwin()[0] == playerNum && ball.assistTwin()[1] == twinNum)
+				g.fillRect(pos[0]-(float)Math.cos(theta2)*orbitRadius-PLAYERSIZE/2, pos[1]-(float)Math.sin(theta2)*orbitRadius-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
 			g.rotate(pos[0]-(float)Math.cos(theta2)*orbitRadius, pos[1]-(float)Math.sin(theta2)*orbitRadius, -getTheta());
 		}
 	}
@@ -257,7 +261,9 @@ public class PlayerTwin extends Player{
 	
 	@Override
 	public float kickStrength(){
-		if(flashKick()){
+		if(mag(vel)==0){
+			return .5f;
+		}else if(flashKick()){
 			return POWERKICK;
 		}else{
 			return NORMALKICK;

@@ -324,6 +324,17 @@ public class PlayerTwoTouch extends Player{
 	}
 	
 	@Override
+	public float kickStrength(){
+		if(power>0){
+			return POWERKICK;
+		}else if(mag(vel)==0){
+			return .5f;
+		}else{
+			return NORMALKICK;
+		}
+	}
+	
+	@Override
 	public boolean isKicking() {
 		if(power>0)
 			return false;
