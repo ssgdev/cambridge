@@ -1,9 +1,3 @@
-/**
-TODO:
-gravity well
-slowmo version of activation sound
- */
-
 package org.ssg.Cambridge;
 
 import net.java.games.input.Controller;
@@ -45,7 +39,7 @@ public class PlayerTwoTouch extends Player{
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 
 		DEFAULTKICK = NORMALKICK;
-		EXTRAKICK = NORMALKICK * 1.5f;
+		EXTRAKICK = POWERKICK;
 		POWERKICK = 0;
 
 		angleTarget = 0;
@@ -333,7 +327,7 @@ public class PlayerTwoTouch extends Player{
 	public boolean isKicking() {
 		if(power>0)
 			return false;
-		return true;
+		return kickingCoolDown == 0;
 	}
 	
 	//I just kicked (power or regular kick) the ball now what
@@ -358,7 +352,7 @@ public class PlayerTwoTouch extends Player{
 	public boolean flashKick(){
 		return ball.locked(playerNum) && mag(vel)>0;
 	}
-	
+
 	@Override
 	public void setLastKick(float bx, float by, float px, float py, float lka){//ball pos, player pos, was it a power kick
 		lastKickBallPos[0] = bx;

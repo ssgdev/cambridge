@@ -224,10 +224,10 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		}
 		//PlayerTwoTouch p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
 		//PlayerPuffer p1 = new PlayerPuffer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_E, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
-		//PlayerTwin p1L = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, 0, hemicircleL);
-		//PlayerTwin p1R = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, new float[]{p1L.getX(),p1L.getY()+1}, p1lim, Color.orange, mySoundSystem, "slow1", slice, 1, hemicircleR);
-		//p1L.setTwin(p1R);
-		//p1R.setTwin(p1L);
+		PlayerTwin p1L = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, 0, hemicircleL, ball);
+		PlayerTwin p1R = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, new float[]{p1L.getX(),p1L.getY()+1}, p1lim, Color.orange, mySoundSystem, "slow1", slice, 1, hemicircleR, ball);
+		p1L.setTwin(p1R);
+		p1R.setTwin(p1L);
 		//PlayerNeo p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
 		//PlayerDash p1 = new PlayerDash(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_tri, ball, hemicircleL);
 		//PlayerEnforcer p1 = new PlayerEnforcer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
@@ -235,15 +235,12 @@ public class GameplayState extends BasicGameState implements KeyListener{
 //		p1.setFakeBall(new BallFake(ballConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, goals, new float[]{FIELDWIDTH/2, FIELDHEIGHT/2}, GOALSIZE,  mySoundSystem));
 //		PlayerDummy p1D1 = new PlayerDummy(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
 //		p1.setDummy(p1D1);
-		PlayerGun p1 = new PlayerGun(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
-		PlayerDummy p1D2 = new PlayerDummy(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
-		p1.setDummy(p1D2);
-		//PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, ball);
+		PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, ball);
 		//PlayerNeo p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice);
-		PlayerDash p2 = new PlayerDash(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, slice_tri, ball, hemicircleL);
+		//PlayerDash p2 = new PlayerDash(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, slice_tri, ball, hemicircleL);
 		//PlayerEnforcer p2 = new PlayerEnforcer(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_Q}, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow1", slice);
 		
-		players = new Player[]{p1, p1D2, p2};
+		players = new Player[]{p1L, p1R, p2};
 		for(Player p: players)
 			p.setPlayers(players);
 		
@@ -638,6 +635,8 @@ public class GameplayState extends BasicGameState implements KeyListener{
 				ball.setVel(new float[]{(targetX-ball.getX()),(targetY-ball.getY())}, 1f);
 				ball.setCurve(new float[]{0f,0f}, 0f);
 				ball.cancelAcc();
+				ball.setReadyForGust(false);
+				ball.setAssistTwin(-1,-1);
 				//Scoring a goal pulls out of slowmo
 				for(Player p: players){
 					if(p.isSlowMoPower())
@@ -657,16 +656,16 @@ public class GameplayState extends BasicGameState implements KeyListener{
 					kickFloat[1] = (ball.getPrevY()-p.getY());
 					
 					unit(kickFloat);
-					tempf = 0;//Used to store the amount of player velocity added to the kick
+//					tempf = 0;//Used to store the amount of player velocity added to the kick
 					if(sameDir(p.getVel()[0], kickFloat[0])){
 						kickFloat[0] += p.getKick()[0];
-						tempf += p.getKick()[0]*p.getKick()[0];
+//						tempf += p.getKick()[0]*p.getKick()[0];
 					}
 					if(sameDir(p.getVel()[1], kickFloat[1])){
 						kickFloat[1] += p.getKick()[1];
-						tempf += p.getKick()[1]*p.getKick()[1];
+//						tempf += p.getKick()[1]*p.getKick()[1];
 					}
-					ball.setVel(kickFloat, p.kickStrength()*0.5f+(float)Math.sqrt(tempf)*0.5f);
+					ball.setVel(kickFloat, p.kickStrength()*(float)p.getVelMag());
 					
 					spinFloat = normal(p.getCurve(), kickFloat);
 					//System.out.println(p.kickStrength() + "-" + (p.kickStrength()*0.5f+(float)Math.sqrt(tempf)*0.5f));
@@ -686,6 +685,8 @@ public class GameplayState extends BasicGameState implements KeyListener{
 					
 					p.setKicking(ball);//really this does resetKicking()
 					ball.cancelAcc();//Cancels any speeding up or slowing down. Does not affect curve
+					ball.setReadyForGust(false);
+					if(!(p instanceof PlayerTwin)) ball.setAssistTwin(-1,-1);
 					ball.setLastKicker(p.getPlayerNum());
 					ball.clearLocked();
 					
@@ -702,6 +703,18 @@ public class GameplayState extends BasicGameState implements KeyListener{
 				}else{
 					if(dist(p) > p.getKickRange()/2)
 						ball.setCanBeKicked(p.getPlayerNum(), true);
+				}
+			}else if(!p.isKicking() && !scored && !(p instanceof PlayerTwoTouch && p.isPower())){
+				if(dist(p)<p.getKickRange()/2){//Nudge it out of the way
+					kickFloat[0] = (ball.getPrevX()-p.getX());
+					kickFloat[1] = (ball.getPrevY()-p.getY());
+					unit(kickFloat);
+					
+					tempf = (float)Math.atan2(kickFloat[1], kickFloat[0]);
+					ball.setPos(p.getX()+p.getKickRange()/2f*(float)Math.cos(tempf)-1, p.getY()+p.getKickRange()/2f*(float)Math.sin(tempf)-1);
+					
+					ball.setLastKicker(p.getPlayerNum());
+					//It shouldn't reset anything because this was added to prevent players from double tapping and clearing their own powers
 				}
 			}
 		}

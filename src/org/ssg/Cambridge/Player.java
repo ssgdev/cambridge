@@ -410,6 +410,10 @@ public abstract class Player implements KeyListener {
 		return vel;
 	}
 	
+	public float getVelMag(){
+		return velMag;
+	}
+	
 	public void setStunned(float n, float[] v, float vm){
 		if(stun == 0){
 			stun = n;

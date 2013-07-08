@@ -26,6 +26,7 @@ public class Ball {
 	boolean gustReady;
 	boolean[] locked;//Is it locked down by a TwoTouch
 	
+	int[] assistTwin;//{playerNum, twinNum} of the twin who is set up the assist
 	
 	float theta;
 	float BOUNCEDAMP;// = .5f;//How much speed is lost on ricochet
@@ -70,6 +71,10 @@ public class Ball {
 		gustReady = false;
 		locked = new boolean[10];
 		
+		assistTwin = new int[2];
+		assistTwin[0] = -1;
+		assistTwin[1] = -1;
+		
 		theta = 0f;
 		curveMag = 0f;
 		velMag = 0f;
@@ -105,28 +110,6 @@ public class Ball {
 	//Sets if the ball can be kicked by player n
 	public void setCanBeKicked(int n, boolean b){
 		canBeKicked[n] = b;
-	}
-	
-	//Used by PlayerTwoTouch
-	public void setLocked(int n, boolean b){
-		locked[n] = b;
-	}
-	
-	//Is it being locked by a PlayerTwoTouch
-	public boolean locked(int n){
-		return locked[n];
-	}
-	
-	public void clearLocked(){
-		for(int i=0;i<players.length;i++){
-			locked[i] = false;
-			if(players[i] instanceof PlayerTwoTouch) {
-				((PlayerTwoTouch) players[i]).setLockCoolDown(true);
-				//setCanBeKicked(players[i].getPlayerNum(), true);
-				((PlayerTwoTouch) players[i]).powerKeyReleased();
-			}
-				
-		}
 	}
 	
 	public float getX(){
@@ -199,6 +182,37 @@ public class Ball {
 		}
 	}
 	
+	//Used by PlayerTwoTouch
+	public void setLocked(int n, boolean b){
+		locked[n] = b;
+	}
+	
+	//Is it being locked by a PlayerTwoTouch
+	public boolean locked(int n){
+		return locked[n];
+	}
+	
+	public void clearLocked(){
+		for(int i=0;i<players.length;i++){
+			locked[i] = false;
+			if(players[i] instanceof PlayerTwoTouch) {
+				((PlayerTwoTouch) players[i]).setLockCoolDown(true);
+				//setCanBeKicked(players[i].getPlayerNum(), true);
+				((PlayerTwoTouch) players[i]).powerKeyReleased();
+			}
+				
+		}
+	}
+	
+	public int[] assistTwin(){
+		return assistTwin;
+	}
+	
+	public void setAssistTwin(int player, int twin){
+		assistTwin[0] = player;
+		assistTwin[1] = twin;
+	}
+	
 	public void speedUp(float velTarg, float acc, float accD){
 		velTarget = velTarg;
 		accDelta = accD;
@@ -215,12 +229,11 @@ public class Ball {
 		slowingDown = true;
 	}
 	
-	//Called when ball is kicked, bounced, or scored.
+	//Called when ball is kicked, ?bounced?, or scored.
 	//Cancels any acceleration or upcoming gusting from PlayerCharge.
 	public void cancelAcc(){
 		speedingUp = false;
 		slowingDown = false;
-		gustReady = false;
 	}
 	
 	public void setReadyForGust(boolean b){
@@ -295,7 +308,8 @@ public class Ball {
 				curveAcc[0]=0f;//Take off curve after first ricochet
 				curveAcc[1]=0f;
 				curveMag=0f;
-//				cancelAcc();
+				cancelAcc();
+				//setAssistTwin(-1,-1);
 				velMag-=BOUNCEDAMP;
 				if(velMag<0){
 					velMag = .1f;

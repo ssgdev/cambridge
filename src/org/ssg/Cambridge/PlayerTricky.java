@@ -229,7 +229,7 @@ public class PlayerTricky extends Player{
 
 	@Override
 	public boolean isKicking() {
-		return true;
+		return kickingCoolDown == 0;
 	}
 
 	@Override

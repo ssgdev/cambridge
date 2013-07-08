@@ -20,6 +20,8 @@ public class PlayerTwin extends Player{
 	int twinNum;
 	Image hemicircle;
 	
+	Ball ball;
+	
 	boolean buttonPressed;
 	
 	float DEFAULTKICKRANGE;
@@ -38,8 +40,10 @@ public class PlayerTwin extends Player{
 	
 	int nukes;//nucleii
 	
-	public PlayerTwin(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, int tn, Image hc) throws SlickException {
+	public PlayerTwin(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, int tn, Image hc, Ball b) throws SlickException {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
+		
+		ball = b;
 		
 		DEFAULTKICKRANGE = KICKRANGE;
 		DESIREDKICKRANGE = KICKRANGE;
@@ -119,7 +123,7 @@ public class PlayerTwin extends Player{
 		updateCounters(delta);
 		
 		velMag = VELMAG * (.5f+.5f*(float)nukes);
-		NORMALKICK = DEFAULTKICK * (.5f+.5f*(float)nukes);
+//		NORMALKICK = DEFAULTKICK * (.5f+.5f*(float)nukes);
 		
 		DESIREDKICKRANGE = DEFAULTKICKRANGE * (1f + .2f*(float)(nukes*nukes));
 		
@@ -173,9 +177,25 @@ public class PlayerTwin extends Player{
 	}
 	
 	@Override
+	public void drawKickCircle(Graphics g){
+		//Draw kicking circle
+		g.setColor(getColor(.5f).darker());
+		g.drawOval(pos[0]-KICKRANGE/2, pos[1]-KICKRANGE/2, KICKRANGE, KICKRANGE);
+		
+		//Kicking circle flash when kick happens
+		g.setColor(getColor2().brighter());
+		g.drawOval(pos[0]-KICKRANGE/2f, pos[1]-KICKRANGE/2f, KICKRANGE, KICKRANGE);
+	}
+	
+	@Override
+	public void drawSlice(Graphics g){
+		
+	}
+	
+	@Override
 	public void drawPlayer(Graphics g){
 		g.drawImage(hemicircle.getScaledCopy(KICKRANGE/hemicircle.getHeight()), pos[0]-KICKRANGE/2+twinNum*KICKRANGE/2, pos[1]-KICKRANGE/2, getColor(.2f));
-		
+
 		if(PLAYERSIZE>0){
 			g.setColor(getColor());
 			
@@ -220,12 +240,37 @@ public class PlayerTwin extends Player{
 	
 	@Override
 	public boolean isKicking() {
-		return true;
+		return kickingCoolDown == 0;
 	}
 
+	//Is called after flashkick
+	@Override
+	public void setKicking(Ball b){
+		b.setCanBeKicked(playerNum, false);
+		kickingCoolDown = KICKCOOLDOWN;
+		if(ball.assistTwin()[0] == playerNum && ball.assistTwin()[1] == twinNum){//If you got assisted, clear the ball assist
+			ball.setAssistTwin(-1,-1);
+		}else{//Set up the assist
+			ball.setAssistTwin(twin.getPlayerNum(), twin.getTwinNum());
+		}
+	}
+	
+	@Override
+	public float kickStrength(){
+		if(flashKick()){
+			return POWERKICK;
+		}else{
+			return NORMALKICK;
+		}
+	}
+	
 	@Override
 	public boolean flashKick() {
-		return false;
+		if(ball.assistTwin()[0] == playerNum && ball.assistTwin()[1] == twinNum){
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 	@Override
@@ -235,9 +280,7 @@ public class PlayerTwin extends Player{
 	
 	@Override
 	public float[] getCurve() {
-		if(twin.numNukes()==0)
-			return curve;
-		return vel;
+		return new float[]{0,0};
 	}
 	
 	public int numNukes(){
@@ -246,6 +289,10 @@ public class PlayerTwin extends Player{
 	
 	public void addNukes(int n){
 		nukes += n;
+	}
+	
+	public int getTwinNum(){
+		return twinNum;
 	}
 	
 	//Keyboard not really supported for this character

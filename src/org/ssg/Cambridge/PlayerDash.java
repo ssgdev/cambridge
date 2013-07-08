@@ -386,6 +386,15 @@ public class PlayerDash extends Player{
 			for(int i=0; i<150 ; i++){
 				pos[0]+=vel[0];
 				pos[1]+=vel[1];
+				
+				if(pos[0]<xyLimit[0]+KICKRANGE/2)
+					pos[0]=xyLimit[0]+KICKRANGE/2;
+				if(pos[0]>xyLimit[1]-KICKRANGE/2)
+					pos[0]=xyLimit[1]-KICKRANGE/2;
+				if(pos[1]<xyLimit[2]+KICKRANGE/2)
+					pos[1]=xyLimit[2]+KICKRANGE/2;
+				if(pos[1]>xyLimit[3]-KICKRANGE/2)
+					pos[1]=xyLimit[3]-KICKRANGE/2;
 			}
 			
 			pos[0]-=vel[0];
@@ -409,7 +418,21 @@ public class PlayerDash extends Player{
 			if(mag(ballOrth)<KICKRANGE/2f && mag(ballParallel)<dashDist+KICKRANGE/2f && sameDir(vel,ballParallel)){
 				unit(ballParallel);
 				ball.setPos(pos[0]+ballParallel[0]*KICKRANGE/2f+4f, pos[1]+ballParallel[1]*KICKRANGE/2f+4f);//Teleport ball to front
-				ball.setVel(new float[]{ballParallel[0], ballParallel[1]}, POWERKICK+VELMAG);
+				
+				if(ball.getX()<0){
+					shiftX(-ball.getX());
+					ball.shiftX(-ball.getX());}
+				if(ball.getX()>field[0]){
+					shiftX(field[0]-ball.getX());
+					ball.shiftX(field[0]-ball.getX());}
+				if(ball.getY()<0){
+					shiftY(-ball.getY());
+					ball.shiftY(-ball.getY());}
+				if(ball.getY()>field[1]){
+					shiftY(field[1]-ball.getY());
+					ball.shiftY(field[1]-ball.getY());}
+				
+				ball.setVel(new float[]{ballParallel[0], ballParallel[1]}, POWERKICK*VELMAG);
 				ball.setLastKicker(playerNum);
 				ball.setCanBeKicked(playerNum, false);
 				ball.cancelAcc();
@@ -428,7 +451,7 @@ public class PlayerDash extends Player{
 	
 	@Override
 	public boolean isKicking() {
-		return true;
+		return kickingCoolDown == 0;
 	}
 
 	@Override
