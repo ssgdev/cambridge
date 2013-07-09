@@ -1,5 +1,14 @@
 Changelog:
 
+7.9.13
+PlayerBack bugfixes
+	Fixed throwing behaviour and power activation bug
+Experimental: Enforcer knocks Back and TwoTouch out of lock
+Removed canBeKicked() as it's no longer needed
+Updated PlayerTwoTouch's ball prediction trail to reflect updated kicking mechanics and some bugfixes:
+	Moved velocity update outside of vDelta loop, like it is in Ball
+	Enoch forgot to put the FLOORFRICTION code in the predictor like a jerk
+
 7.8.13
 Added PlayerBack
 

@@ -162,8 +162,16 @@ running back
 	running the ball into a wall crashes the game SOLVED Pop more out in collision
 	turning radius
 	letting go of the ball at too slow a velocity interacts weirdly with the player on ball collision code
+	It also seems that letting go of the ball at too slow a velocity makes the direction backwards
+		Sometimes there's a tiny actual backwards angle movement CANT HELP AT MOMENT
+		Sometimes it's you release the ball and walk into it, and then weird things happen
+			SOLVED: Use ball.getX() instead of ball.getPrevX() in ball shoving code
 	For him and twotouch, angle's CW or CCW rotation should be determined not by which angletarget is closest, but the direction of rotation of the stick
 		That way rotating too fast in one direction won't have it flip out in the other direction
+	BUG: Pushing the button and releasing it then walking into the ball activates lock
+	BUG: Holding the ball and walking into another player has the ball go through them
+		Both seem to be resolved by removing the buttonPressed requirement in power activation.
+	TODO: Test Back vs TwoTouch and Enforcer interaction
 	
 pau gazul
 shaquille o'teal
