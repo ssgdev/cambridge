@@ -24,7 +24,7 @@ public class Ball {
 	boolean speedingUp;
 	boolean slowingDown;
 	boolean gustReady;
-	boolean[] locked;//Is it locked down by a TwoTouch
+	boolean[] locked;//Is it locked down by a TwoTouch or Back
 	
 	int[] assistTwin;//{playerNum, twinNum} of the twin who is set up the assist
 	
@@ -153,6 +153,10 @@ public class Ball {
 		return velMag;
 	}
 	
+	public float[] getVel(){
+		return vel;
+	}
+	
 	public float getTheta(){
 		return theta;
 	}
@@ -199,6 +203,9 @@ public class Ball {
 				((PlayerTwoTouch) players[i]).setLockCoolDown(true);
 				//setCanBeKicked(players[i].getPlayerNum(), true);
 				((PlayerTwoTouch) players[i]).powerKeyReleased();
+			}else if(players[i] instanceof PlayerBack){
+				((PlayerBack) players[i]).setLockCoolDown(true);
+				((PlayerBack) players[i]).powerKeyReleased();
 			}
 				
 		}

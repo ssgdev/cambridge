@@ -189,7 +189,8 @@ public class PlayerTwin extends Player{
 	
 	@Override
 	public void drawSlice(Graphics g){
-		
+		if(nukes==2)
+			super.drawSlice(g);
 	}
 	
 	@Override
@@ -286,6 +287,8 @@ public class PlayerTwin extends Player{
 	
 	@Override
 	public float[] getCurve() {
+		if(nukes == 2)
+			return curve;
 		return new float[]{0,0};
 	}
 	

@@ -1,6 +1,5 @@
 TODO:
 
-Save memory by casting delta to float at the top of update
 Keyboard Mode for each character? For example
 	PlayerTwin: The second twin is a mirror
 	PlayerTwoTouch: Holding left or right rotates the Player around the ball
@@ -12,10 +11,12 @@ TODO: Create UpdateCounters method DONE
 TODO: Stick direction visual guide DONE
 TODO: Visuals for charge's trail DONE
 Go through all the code and see if it can be less horrible
+	Save memory by casting delta to float at the top of update
 	TODO: Organize Player constructor
 	More abstract classing: Maybe everyone has buttonpressed and actionbutton2 but just leave it empty if unused.
 	render() has submethod drawSpecial()
 	Reorganize getColors() so you're not wasting memory making new color objects every frame?
+	find a better way to pass by value than making new float arrays every time
 Enforcer: Has to build up momentum – DONE
 	TODO: Test Enfocer vs everyone else collision and see what happens
 Figure out dashing while against a wall
@@ -49,7 +50,7 @@ Sounds
 	Slowmo versions of all sounds
 Visual Effects
 	Different Shapes
-	Enforcer Activation Effect
+	Enforcer Activation Effect DONE
 Edit config usage to reflect that neo is not the only player
 Maybe have players be arraylist?
 Something to help get ball out of corners/away from walls, prevent rapid bounceback or getting stuck in a corner
@@ -133,6 +134,7 @@ two touch – DONE
 enforcer - DONE
 	faster charge-up and much faster recovery DONE
 	Less slippery turning DONE
+	BUG: Keyboard controls bugged
 lightbike dash
 	must dash all the way to a wall	hold charge until it pops, if released, charge fizzles. More charge the further the wall.
 	faster chargeup time
@@ -145,17 +147,24 @@ twins
 	left and right bumper transfer nucleii between twins
 	right twin has special nametag
 	when right twin is dead it sits there like a bumper with no nucleus, and left twin has two nucleii
+	kicking the ball with one twin sets the other up for a power kick
+	BUG?: the canBeKicked() method in ball doesn't work on twin since they're the same playerNum
+	make the curve indicator look better
 Okami
 trickster:
 	can turn into ball
 	can fake kicks with stealthy underkick
-shooter
-	can shoot sniper shot with right bumper, aim with right stick
-	left bumper is a sort of wider laser which does less to the ball
-	can't shoot through other players (but it will bump them a little?)
-	doesn't collide with ball
+running back
+	grabs the ball and runs with it
+	has a turn radius like Enforcer
+	right stick jukes?
+	TODO:
+	running the ball into a wall crashes the game SOLVED Pop more out in collision
+	turning radius
+	letting go of the ball at too slow a velocity interacts weirdly with the player on ball collision code
+	For him and twotouch, angle's CW or CCW rotation should be determined not by which angletarget is closest, but the direction of rotation of the stick
+		That way rotating too fast in one direction won't have it flip out in the other direction
 	
-
 pau gazul
 shaquille o'teal
 Foger Rederer

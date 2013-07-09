@@ -106,11 +106,11 @@ public class PlayerEnforcer extends Player{
 				launchVel[1] = vel[1];
 				unit(launchVel);
 			}else if(mag(launchVel)>0){
-				curve = normal(vel, launchVel);
-				unit(curve);
+				tempArr = normal(vel, launchVel);
+				unit(tempArr);
 				velMag = approachTarget(velMag,targetVelmag, (float)delta/1600f);
-				vel[0] = launchVel[0]+curve[0]*.05f*(1.5f-velMag/targetVelmag);
-				vel[1] = launchVel[1]+curve[1]*.05f*(1.5f-velMag/targetVelmag);
+				vel[0] = launchVel[0]+tempArr[0]*.05f*(1.5f-velMag/targetVelmag);
+				vel[1] = launchVel[1]+tempArr[1]*.05f*(1.5f-velMag/targetVelmag);
 				unit(vel);
 				launchVel[0] = vel[0];
 				launchVel[1] = vel[1];
@@ -124,7 +124,6 @@ public class PlayerEnforcer extends Player{
 				wallCoolingDown = false;
 				targetVelmag = VELMAG;
 			}
-			
 		}else{
 			velMag = approachTarget(velMag,targetVelmag, (float)delta/1200f);
 

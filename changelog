@@ -1,5 +1,20 @@
 Changelog:
 
+7.8.13
+Added PlayerBack
+
+7.7.13
+Removed PlayerGun
+Added PlayerTwin power "assist": kicking with one twin sets up the flash kick on the other
+	Needs testing with multiple twins on one team, twins on both teams
+Changed the way kicking works
+	The magnitude of the kick is now the player's velMag multiplied by NORMALKICK or POWERKICK.
+	NORMALKICK and POWERKICK are always over 1.0.
+	This hopefully reduces double tapping
+	Note: If the player is not moving then the magnitude of the kick is reduced
+Kickingcooldown returns, but instead of having balls go through players when they're in cooldown, it nudges the ball like player on player collision
+Modified slice.png to be thinner
+
 7.4.13
 Added PlayerGun, begun implementation
 

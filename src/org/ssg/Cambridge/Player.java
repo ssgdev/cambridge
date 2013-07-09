@@ -72,6 +72,7 @@ public abstract class Player implements KeyListener {
 	float tempf;
 	float[] tempArr;
 	boolean bool;
+	float[] zeroes = {0,0};
 	
 	public Player(int n, float[] consts, int f[], int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc){
 
@@ -435,7 +436,7 @@ public abstract class Player implements KeyListener {
 	public float[] getCurve() {
 		if(cExist)
 			return curve;
-		return vel;
+		return zeroes;
 	}
 
 	public float getTheta(){
@@ -633,7 +634,7 @@ public abstract class Player implements KeyListener {
 	
 	public float[] normal(float[] v, float[] w){
 		if(mag(w)>0){
-			tempf = dot(v,w)/mag(w);//Repurposing this as a temp calculation holder
+			tempf = dot(v,w)/mag(w);
 			return new float[]{v[0]-tempf*w[0], v[1]-tempf*w[1]};
 		}else{
 			return new float[]{0,0};
