@@ -69,7 +69,7 @@ public class PlayerBack extends Player {
 		//Entering Lock
 		if(!lockCoolDown && power>0 && !ball.locked(playerNum) && dist(pos[0],pos[1],ball.getX(),ball.getY())<KICKRANGE/2f && !ball.scored()){
 			ball.setLocked(playerNum, true);
-			ball.setCanBeKicked(playerNum, true);
+//			ball.setCanBeKicked(playerNum, true);
 			ball.setLastKicker(playerNum);
 //			ball.setVel(new float[]{ball.getVelX(),ball.getVelY()},ball.getVelMag()/4f);
 //			ball.slowDown(0, ball.getVelMag()/24f, 0);

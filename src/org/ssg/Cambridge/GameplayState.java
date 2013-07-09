@@ -651,7 +651,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		for(Player p: players){
 			p.update(delta);
 			if(p.isKicking() && !scored ){
-				if(dist(p)<p.getKickRange()/2 && ball.canBeKicked(p.getPlayerNum())) {//Perform a kick
+				if(dist(p)<p.getKickRange()/2 /* && ball.canBeKicked(p.getPlayerNum())*/) {//Perform a kick
 					//Use prevX to prevent going through the player
 					kickFloat[0] = (ball.getPrevX()-p.getX());
 					kickFloat[1] = (ball.getPrevY()-p.getY());
@@ -701,10 +701,11 @@ public class GameplayState extends BasicGameState implements KeyListener{
 							goal.changeSides();//Hacky ass way to set goal to opposite side as whoever kicked
 						}
 					}
-				}else{
-					if(dist(p) > p.getKickRange()/2)
-						ball.setCanBeKicked(p.getPlayerNum(), true);
 				}
+//				 else{
+//					if(dist(p) > p.getKickRange()/2)
+//						ball.setCanBeKicked(p.getPlayerNum(), true);
+//				}
 			}else if(!p.isKicking() && !scored && !(p instanceof PlayerTwoTouch && p.isPower()) && !(p instanceof PlayerBack && p.isPower())){
 				if(dist(p)<p.getKickRange()/2){//Nudge it out of the way
 					//Don't use prevX, to prevent weird sliding

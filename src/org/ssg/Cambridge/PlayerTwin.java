@@ -251,7 +251,7 @@ public class PlayerTwin extends Player{
 	//Is called after flashkick
 	@Override
 	public void setKicking(Ball b){
-		b.setCanBeKicked(playerNum, false);
+//		b.setCanBeKicked(playerNum, false);
 		kickingCoolDown = KICKCOOLDOWN;
 		if(ball.assistTwin()[0] == playerNum && ball.assistTwin()[1] == twinNum){//If you got assisted, clear the ball assist
 			ball.setAssistTwin(-1,-1);

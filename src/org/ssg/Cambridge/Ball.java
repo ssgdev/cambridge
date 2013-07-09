@@ -41,7 +41,7 @@ public class Ball {
 
 	boolean scored;//Used to control playing of sounds
 	int soundCoolDown;
-	boolean[] canBeKicked;//by player n. Hopefully prevents double tapping
+//	boolean[] canBeKicked;//by player n. Hopefully prevents double tapping
 	
 	boolean slowOn;
 	
@@ -81,7 +81,7 @@ public class Ball {
 
 		vDelta = 0;
 
-		canBeKicked = new boolean[2];//Number of players
+//		canBeKicked = new boolean[2];//Number of players
 		lastKicker = -1;
 
 		mySoundSystem = ss;
@@ -102,15 +102,15 @@ public class Ball {
 		return lastKicker;
 	}
 
-	//Can this ball be kicked by player n
-	public boolean canBeKicked(int n){
-		return canBeKicked[n];
-	}
-	
-	//Sets if the ball can be kicked by player n
-	public void setCanBeKicked(int n, boolean b){
-		canBeKicked[n] = b;
-	}
+//	//Can this ball be kicked by player n
+//	public boolean canBeKicked(int n){
+//		return canBeKicked[n];
+//	}
+//	
+//	//Sets if the ball can be kicked by player n
+//	public void setCanBeKicked(int n, boolean b){
+//		canBeKicked[n] = b;
+//	}
 	
 	public float getX(){
 		return pos[0];
@@ -318,14 +318,13 @@ public class Ball {
 				cancelAcc();
 				//setAssistTwin(-1,-1);
 				velMag-=BOUNCEDAMP;
-				if(velMag<0){
+				if(velMag<.1f){
 					velMag = .1f;
 				}
 				
-			}
-
+			}	
 		}
-
+		
 //		velMag -= (float)delta / 1000f;//uncomment this because it's funny
 		vel[0]+=curveAcc[0]*(float)delta*curveMag;
 		vel[1]+=curveAcc[1]*(float)delta*curveMag;

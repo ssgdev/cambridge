@@ -159,7 +159,7 @@ public abstract class Player implements KeyListener {
 	//Not an abstract method, but put here for organization purposes
 	//I just kicked (any kick) the ball now what
 	public void setKicking(Ball b){
-		b.setCanBeKicked(playerNum, false);
+//		b.setCanBeKicked(playerNum, false);
 		kickingCoolDown = KICKCOOLDOWN;
 	}
 
@@ -644,6 +644,12 @@ public abstract class Player implements KeyListener {
 		}else{
 			return new float[]{0,0};
 		}
+	}
+	
+	public boolean sameDir(float vx, float dir){
+		if(vx == 0)
+			return false;
+		return vx/Math.abs(vx) == dir/Math.abs(dir);
 	}
 	
 	public float[] approachTargets(float[] val, float[] targets, float inc){

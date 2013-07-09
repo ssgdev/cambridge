@@ -95,22 +95,24 @@ public class PlayerTwoTouch extends Player{
 		predictionVel[0] = (ball.getPrevX()-pos[0]);
 		predictionVel[1] = (ball.getPrevY()-pos[1]);
 		unit(predictionVel);
-		predictionVel[0] += vel[0];
-		predictionVel[1] += vel[1];
-		unit(predictionVel);
+		if(sameDir(vel[0], predictionVel[0]))
+			predictionVel[0] += vel[0];
+		if(sameDir(vel[1], predictionVel[1]))
+			predictionVel[1] += vel[1];
 		
 		if (mag(predictionVel) == 0)
 			return;
 		
-		predictionVelMag = EXTRAKICK*0.5f + (mag(vel) > 0 ? mag(vel)*0.5f : 0f);
+		predictionVelMag = (mag(vel)>0 ? EXTRAKICK : DEFAULTKICK) * VELMAG;
 		
-		predictionCurveAcc = normal(cExist ? curve : predictionVel, predictionVel);
+		predictionCurveAcc = normal(cExist ? curve : zeroes, predictionVel);
 
 		if (ball.CURVESCALE == 0)
 			predictionCurveMag = 0;
 		else
 			predictionCurveMag = mag(predictionCurveAcc) * ball.CURVESCALE;
 		
+		unit(predictionVel);
 		unit(predictionCurveAcc);
 		
 		while (predictionCount > 0) {
@@ -156,24 +158,27 @@ public class PlayerTwoTouch extends Player{
 					predictionCurveAcc[1]=0f;
 					predictionCurveMag=0f;
 					predictionVelMag-=ball.BOUNCEDAMP;
-					if(predictionVelMag<0){
+					if(predictionVelMag<.1f){
 						predictionVelMag = .1f;
-					} //end if-else block
-				} //end vDelta while loop
-				
-				predictionVel[0]+=predictionCurveAcc[0]*(float)predictionDelta*predictionCurveMag;
-				predictionVel[1]+=predictionCurveAcc[1]*(float)predictionDelta*predictionCurveMag;
-				unit(predictionVel);
-				
-				if (predictionCount % 5 == 0 && predictionCount > 0) {
-//					System.out.println("Beep! " + vel[0] + " " + vel[1] + " " + (mag(vel) > 0 ? mag(vel)*0.5f : 0f));
-					g.setColor(getColor((float)predictionCount/(float)PREDICTIONCOUNT));
-					g.fillRect(predictionPos[0]-3, predictionPos[1]-3, 6, 6);
-				}
-			} //end while predictionCount loop
+					} 
+				}//end if-else block
+			
+			}//end vDelta loop
+			
+			predictionVel[0]+=predictionCurveAcc[0]*(float)predictionDelta*predictionCurveMag;
+			predictionVel[1]+=predictionCurveAcc[1]*(float)predictionDelta*predictionCurveMag;
+			unit(predictionVel);
+			
+			if(predictionVelMag>0) predictionVelMag -= predictionVelMag*predictionDelta * ball.FLOORFRICTION;
+			
+			if (predictionCount % 5 == 0 && predictionCount > 0) {
+//				System.out.println("Beep! " + vel[0] + " " + vel[1] + " " + (mag(vel) > 0 ? mag(vel)*0.5f : 0f));
+				g.setColor(getColor((float)predictionCount/(float)PREDICTIONCOUNT));
+				g.fillRect(predictionPos[0]-3, predictionPos[1]-3, 6, 6);
+			}
 			
 			predictionCount--;
-		}
+		}//end while predictionCount loop
 	}
 	
 	@Override
@@ -201,7 +206,7 @@ public class PlayerTwoTouch extends Player{
 		//Entering Lock
 		if(!lockCoolDown && power>0 && !ball.locked(playerNum) && dist(pos[0],pos[1],ball.getX(),ball.getY())<KICKRANGE/2f && !ball.scored()){
 			ball.setLocked(playerNum, true);
-			ball.setCanBeKicked(playerNum, true);
+//			ball.setCanBeKicked(playerNum, true);
 			ball.setLastKicker(playerNum);
 			ball.setVel(new float[]{ball.getVelX(),ball.getVelY()},ball.getVelMag()/4f);
 			ball.slowDown(0, ball.getVelMag()/24f, 0);
@@ -326,9 +331,14 @@ public class PlayerTwoTouch extends Player{
 	
 	@Override
 	public float kickStrength(){
-		if(power>0){
+		if(NORMALKICK == EXTRAKICK){
+			if(mag(vel)>0)
+				return EXTRAKICK;
+			else
+				return DEFAULTKICK;
+		}else if(power>0){
 			return POWERKICK;
-		}else if(mag(vel)==0){
+		}if(mag(vel)==0){
 			return .5f;
 		}else{
 			return NORMALKICK;
@@ -348,7 +358,7 @@ public class PlayerTwoTouch extends Player{
 		if(power>0 && !ball.locked(playerNum)){
 			//Do nothing
 		}else{
-			b.setCanBeKicked(playerNum, false);
+//			b.setCanBeKicked(playerNum, false);
 			kickingCoolDown = KICKCOOLDOWN;
 			if(ball.locked(playerNum)){
 				ball.setLocked(playerNum, false);

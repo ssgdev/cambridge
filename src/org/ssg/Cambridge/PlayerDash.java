@@ -242,7 +242,7 @@ public class PlayerDash extends Player{
 							ball.setVel(new float[]{ballParallel[0], ballParallel[1]}, 3f*POWERKICK);
 						}
 						ball.setLastKicker(playerNum);
-						ball.setCanBeKicked(playerNum, false);
+//						ball.setCanBeKicked(playerNum, false);
 						kickingCoolDown = KICKCOOLDOWN;
 					}else if(!ball.scored() && ball.getX()>=xyLimit[0]&&ball.getX()<=xyLimit[1]&&ball.getY()>=xyLimit[2]&&ball.getY()<=xyLimit[3]){//The second clause, for "catching" ball in the trail
 						//Find the orthogonal component of the ball's velocity relative to the trail
@@ -256,7 +256,7 @@ public class PlayerDash extends Player{
 								ball.setReadyForGust(true);
 								gustCountDown = GUSTCOUNTDOWN + tempf;
 								ball.setLastKicker(playerNum);
-								ball.setCanBeKicked(playerNum, false);
+//								ball.setCanBeKicked(playerNum, false);
 								kickingCoolDown = KICKCOOLDOWN;
 							}
 						}
@@ -434,7 +434,7 @@ public class PlayerDash extends Player{
 				
 				ball.setVel(new float[]{ballParallel[0], ballParallel[1]}, POWERKICK*VELMAG);
 				ball.setLastKicker(playerNum);
-				ball.setCanBeKicked(playerNum, false);
+//				ball.setCanBeKicked(playerNum, false);
 				ball.cancelAcc();
 				ball.clearLocked();
 				kickingCoolDown = KICKCOOLDOWN;
