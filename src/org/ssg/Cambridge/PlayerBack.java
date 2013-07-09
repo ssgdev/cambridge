@@ -56,11 +56,9 @@ public class PlayerBack extends Player {
 			pollController(delta);
 			
 			if (actionButton.getPollData() == 1.0){
-				if(!buttonPressed){
 					activatePower();
 					buttonPressed = true;
-				}
-			}else if(buttonPressed){
+			}else{
 					powerKeyReleased();
 					buttonPressed = false;
 			}
@@ -137,13 +135,19 @@ public class PlayerBack extends Player {
 			if(angle>(float)Math.PI)
 				angle-=(float)Math.PI*2f;
 			
+//			System.out.println("-> "+angle/(float)Math.PI/2f*360f);
+			
 		}
 		
+//		if(power==0)
+//			System.out.println(ball.getVelX()+" -- "+ball.getVelY());
+//		
 		//For if the ball gets knocked out of your hands
-		if(dist(pos[0],pos[1],ball.getX(),ball.getY())>=KICKRANGE/2f+3f || ball.scored()){
+		if((dist(pos[0],pos[1],ball.getX(),ball.getY())>=KICKRANGE/2f+3f || ball.scored())){
 			ball.setLocked(playerNum, false);
 			lockCoolDown = false;
-			buttonPressed = false;
+//			buttonPressed = false;
+			power = 0;
 		}
 		
 		updateCounters(delta);
@@ -153,6 +157,7 @@ public class PlayerBack extends Player {
 		
 	}
 	
+	@Override
 	public void setLockCoolDown(boolean l) {
 		lockCoolDown = l;
 	}
@@ -169,17 +174,31 @@ public class PlayerBack extends Player {
 		if(ball.locked(playerNum)){
 			ball.setLocked(playerNum, false);
 			lockCoolDown = false;
+			
 			if(angle<0)
-				angle+= (2f*(float)Math.PI);
+				angle+=2f*(float)Math.PI;
 			if(prevAngle<0)
-				prevAngle+= (2f*(float)Math.PI);
+				prevAngle+=2f*(float)Math.PI;
+			
+			//This should keep angles subtracting in the correct direction
+			if((angle<(float)Math.PI/2f || angle>(float)Math.PI*1.5f) && (prevAngle>(float)Math.PI*1.5f || prevAngle<(float)Math.PI/2f)){
+				if(angle>(float)Math.PI)
+					angle-=2f*(float)Math.PI;
+				if(prevAngle>(float)Math.PI)
+					prevAngle-=2f*(float)Math.PI;
+			}
+			
 			tempf = (angle-prevAngle);
 			if(mag(vel)>0 && tempf!=0){
 				//Should send the ball off tangentially
 				tempf/=Math.abs(tempf);
-				tempArr[0] = (float)Math.cos(angle+(float)Math.PI/4f*tempf);
-				tempArr[1] = (float)Math.sin(angle+(float)Math.PI/4f*tempf);
-				
+				tempArr[0] = (float)Math.cos(angle+(float)Math.PI/2f*tempf);
+				tempArr[1] = (float)Math.sin(angle+(float)Math.PI/2f*tempf);
+//				
+//				System.out.println(tempf);
+//				System.out.println(angle/(float)Math.PI/2f*360f+": "+prevAngle/(float)Math.PI/2f*360f);
+//				System.out.println(tempArr[0]+", "+tempArr[1]);
+//				
 				unit(tempArr);
 				ball.setVel(new float[]{tempArr[0], tempArr[1]}, .5f);
 			}else{

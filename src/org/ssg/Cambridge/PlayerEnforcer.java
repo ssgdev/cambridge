@@ -11,6 +11,8 @@ import paulscode.sound.SoundSystemConfig;
 
 public class PlayerEnforcer extends Player{
 
+	Ball ball;
+	
 	boolean buttonPressed;
 	float MINVELMAG;//The velocity you're set to when you start charging
 	float MAXVELMAG;
@@ -27,7 +29,7 @@ public class PlayerEnforcer extends Player{
 	float stepCoolDown;//used for playing the walking sound
 	float STEPCOOLDOWN;
 	
-	public PlayerEnforcer(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc) {
+	public PlayerEnforcer(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 		
 		MINVELMAG = .2f*VELMAG;
@@ -43,6 +45,8 @@ public class PlayerEnforcer extends Player{
 		turningAlpha = 0;
 		stepCoolDown = 0;
 		STEPCOOLDOWN = MAXPOWER;
+		
+		ball = b;
 	}
 	
 	@Override
@@ -208,7 +212,13 @@ public class PlayerEnforcer extends Player{
 					if(power > 0 && !otherPlayer.stunned()){
 						otherPlayer.setStunned(MAXSTUN, new float[]{otherPlayer.getX()-pos[0]+vel[0]*vel[0],otherPlayer.getY()-pos[1]+vel[1]*vel[1]}, NORMALKICK+VELMAG);
 						kickingCoolDown = KICKCOOLDOWN;
+						if(ball.locked(otherPlayer.getPlayerNum())){//Should only be true for TwoTouch and Back
+							otherPlayer.powerKeyReleased();
+							otherPlayer.setLockCoolDown(true);
+							ball.setLocked(otherPlayer.getPlayerNum(), false);
+						}
 						mySoundSystem.quickPlay( true, "EnforcerBump.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+						
 					}else{
 						tempArr[0] = otherPlayer.getX()-pos[0];
 						tempArr[1] = otherPlayer.getY()-pos[1];

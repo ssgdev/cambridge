@@ -520,6 +520,11 @@ public abstract class Player implements KeyListener {
 		return new float[]{lastKickBallPos[0], lastKickBallPos[1], lastKickPos[0], lastKickPos[1]};
 	}
 
+	//Empty, only overriden for Back and TwoTouch
+	public void setLockCoolDown(boolean b){
+		
+	}
+	
 	@Override
 	public void keyPressed(int input, char arg1) {
 		if (!cExist) {

@@ -292,6 +292,7 @@ public class PlayerTwoTouch extends Player{
 		
 	}
 	
+	@Override
 	public void setLockCoolDown(boolean l) {
 		lockCoolDown = l;
 	}
