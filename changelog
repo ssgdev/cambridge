@@ -8,6 +8,7 @@ Removed canBeKicked() as it's no longer needed
 Updated PlayerTwoTouch's ball prediction trail to reflect updated kicking mechanics and some bugfixes:
 	Moved velocity update outside of vDelta loop, like it is in Ball
 	Enoch forgot to put the FLOORFRICTION code in the predictor like a jerk
+Revamped the angle control code for TwoTouch so it always rotates in the direction you're rotating the stick
 
 7.8.13
 Added PlayerBack

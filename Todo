@@ -1,5 +1,6 @@
 TODO:
 
+HMM: Kick trails get jaggy
 Keyboard Mode for each character? For example
 	PlayerTwin: The second twin is a mirror
 	PlayerTwoTouch: Holding left or right rotates the Player around the ball
@@ -172,6 +173,7 @@ running back
 	BUG: Holding the ball and walking into another player has the ball go through them
 		Both seem to be resolved by removing the buttonPressed requirement in power activation.
 	TODO: Test Back vs TwoTouch and Enforcer interaction
+		DONE Now they get kicked away from the ball
 	
 pau gazul
 shaquille o'teal

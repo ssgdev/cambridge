@@ -23,9 +23,11 @@ public class PlayerTwoTouch extends Player{
 	//only used during lock
 	float angle;//Atan2 returns from pi to -pi
 	float angleTarget;
-	float angle2;//Versions of angle and angleTarget respecified from 0 to 2pi
-	float angleTarget2;
+	//float angle2;//Versions of angle and angleTarget respecified from 0 to 2pi
+	float prevAngleTarget;
 	float curveFactor;
+	float[] prevVel;
+	int rotateDir;
 	
 	//only used during lock for prediction
 	int predictionCount;
@@ -43,8 +45,11 @@ public class PlayerTwoTouch extends Player{
 		POWERKICK = 0;
 
 		angleTarget = 0;
-		angleTarget2 = 0;
+		prevAngleTarget = 0;
 		angle = 0;
+		
+		prevVel = new float[2];
+		rotateDir = 1;
 		
 		ball = b;
 		ballPos = new float[2];
@@ -186,6 +191,9 @@ public class PlayerTwoTouch extends Player{
 		
 		if (cExist) {
 			
+			prevVel[0] = vel[0];
+			prevVel[1] = vel[1];
+			
 			pollController(delta);
 			
 			if (actionButton.getPollData() == 1.0){
@@ -225,26 +233,81 @@ public class PlayerTwoTouch extends Player{
 		}else{
 			
 			angle = (float)Math.atan2(ball.getY()-pos[1], ball.getX()-pos[0]);
-			
+//			System.out.println(angle/2/Math.PI*360);
 			if(mag(vel)!=0){
 				unit(vel);	
 				angleTarget = (float)Math.atan2(vel[1],vel[0]);
 			}
 			
-			angle2 = angle;
-			if(angle2<0)
-				angle2 += 2f*(float)Math.PI;
-			angleTarget2 = angleTarget;
-			if(angleTarget2<0)
-				angleTarget2 += 2f*(float)Math.PI;
+//Shortest distance based rotation
+//			
+//			angle2 = angle;
+//			if(angle2<0)
+//				angle2 += 2f*(float)Math.PI;
+//			prevAngleTarget = angleTarget;
+//			if(prevAngleTarget<0)
+//				prevAngleTarget += 2f*(float)Math.PI;
+//
+//			tempf = angle;//Store the angle in case we need to roll back, in case of the rotation putting you into a wall
+//			//Choose the direction of shortest rotation
+//			if(Math.abs(angleTarget-angle)-Math.abs(prevAngleTarget-angle2) >= 0){
+//				angle = approachTarget(angle2, prevAngleTarget, (float)delta/120f);
+//			}else{
+//				angle = approachTarget(angle, angleTarget, (float)delta/120f);
+//			}
 
-			tempf = angle;//Store the angle in case we need to roll back, in case of the rotation putting you into a wall
-			//Choose the direction of shortest rotation
-			if(Math.abs(angleTarget-angle)-Math.abs(angleTarget2-angle2) >= 0){
-				angle = approachTarget(angle2, angleTarget2, (float)delta/120f);
-			}else{
-				angle = approachTarget(angle, angleTarget, (float)delta/120f);
+//Joystick rotation based rotation
+			
+			prevAngleTarget = (float)Math.atan2(prevVel[1], prevVel[0]);
+		
+			//So they're in the same range (-pi to pi or 0 to 2pi) and subtraction works
+			if(angleTarget< -(float)Math.PI/2f)
+				angleTarget+=(float)Math.PI*2f;
+			if(prevAngleTarget< -(float)Math.PI/2f)
+				prevAngleTarget+=(float)Math.PI*2f;
+//			if(angle < -(float)Math.PI/2f)
+//				angle+=(float)Math.PI*2f;
+			
+//			System.out.println(angle/2/Math.PI*360+"->  "+angleTarget/2/Math.PI*360);
+
+			if(Math.abs(angleTarget-prevAngleTarget) > .1f){//If you've moved the stick a non negligible amount
+				rotateDir = angleTarget>prevAngleTarget ? 1 : -1;
 			}
+			
+			//Set them back to -pi to pi values so the rest of math works
+			if(angleTarget>(float)Math.PI)
+				angleTarget-=(float)Math.PI*2f;
+			if(prevAngleTarget>(float)Math.PI)
+				prevAngleTarget-=(float)Math.PI*2f;
+			
+			tempf = (float)delta/120f;//The step interval
+			if(angle != angleTarget){
+				if(Math.abs(angle-angleTarget)>tempf){//If it's actual turning and not a microscopic slip of the finger
+					if(rotateDir > 0){
+						if(angle > angleTarget)
+							angle-=(float)Math.PI*2f;
+						if(angle + tempf >= angleTarget){
+							angle = angleTarget;
+						}else{
+							angle+=tempf;
+						}
+//						System.out.println(angle/2/Math.PI*360+"->  "+angleTarget/2/Math.PI*360);
+					}else if(rotateDir < 0){
+						if(angle < angleTarget)
+							angle += (float)Math.PI*2f;
+						if(angle - tempf <= angleTarget){
+							angle = angleTarget;
+						}else{
+							angle-=tempf;
+						}
+					}
+				}else{
+					angle = angleTarget;
+				}
+			}
+				
+//End rotation code
+			
 			
 			pos[0] = ball.getX()-(float)Math.cos(angle)*(KICKRANGE/2-1);
 			pos[1] = ball.getY()-(float)Math.sin(angle)*(KICKRANGE/2-1);
@@ -277,9 +340,12 @@ public class PlayerTwoTouch extends Player{
 //				vel[1] = (float)Math.sin(angle);
 //			}
 //			
+
 			//Keeps angle between -pi and pi for next round of calculations
 			if(angle>(float)Math.PI)
 				angle-=(float)Math.PI*2f;
+			if(angle<-(float)Math.PI)
+				angle+=(float)Math.PI*2f;
 			
 		}
 		
