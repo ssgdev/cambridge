@@ -1,8 +1,10 @@
 package org.ssg.Cambridge;
 
+import net.java.games.input.Component;
 import net.java.games.input.Controller;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 import paulscode.sound.SoundSystem;
@@ -13,6 +15,8 @@ public class PlayerBack extends Player {
 	Ball ball;
 	boolean buttonPressed;
 	
+	Component actionButton2;
+	
 	float[] prevVel;
 	
 	boolean lockCoolDown;//True if you can't lock ball
@@ -20,17 +24,21 @@ public class PlayerBack extends Player {
 	//only used during lock
 	float angle;//Atan2 returns from pi to -pi
 	float angleTarget;
-	float angle2;//Versions of angle and angleTarget respecified from 0 to 2pi
-	float angleTarget2;
+	//float angle2;//Versions of angle and angleTarget respecified from 0 to 2pi
+	float prevAngleTarget;
 	float prevAngle;
+	int rotateDir;
 	
 	float targetVelMag;
+	
+	float radius;//Used for drawing the shoulders
+	float RADIUS;
 	
 	public PlayerBack(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 		
-		NORMALKICK *= .1f;
-		POWERKICK *= .1f;
+		NORMALKICK *= .2f;
+		POWERKICK *= .2f;
 		
 		ball = b;
 		
@@ -42,25 +50,67 @@ public class PlayerBack extends Player {
 		
 		angle = 0f;
 		angleTarget = 0f;
-		angle2 = 0f;
-		angleTarget2 = 0f;
+		//angle2 = 0f;
+		prevAngleTarget = 0f;
 		prevAngle = 0f;
+		rotateDir = 1;
 		
 		targetVelMag = VELMAG;
+		
+		if (cExist) {
+			actionButton2 = this.c.getComponent(Component.Identifier.Button._4); 
+		}
+		
+		RADIUS = 20f;
+		radius = RADIUS;
 	}
 
+	@Override
+	public void drawSlice(Graphics g){
+		if(buttonPressed){
+			if(ball.locked(playerNum)){
+				tempf = 360f/2f/(float)Math.PI*(float)angle + 90f;
+				tempArr[0] = .5f + kickingCoolDown/KICKCOOLDOWN*.5f;
+			}else{
+				tempf = 360f/2f/(float)Math.PI*(float)angleTarget + 90f;
+				tempArr[0] = .5f;
+			}
+			g.rotate(pos[0], pos[1], tempf);
+			g.drawImage(slice.getScaledCopy(KICKRANGE/slice.getWidth()), pos[0]-KICKRANGE/2+radius, pos[1]-KICKRANGE/2, getColor(tempArr[0]));
+			g.rotate(pos[0], pos[1], 180f);
+			g.drawImage(slice.getScaledCopy(KICKRANGE/slice.getWidth()), pos[0]-KICKRANGE/2+radius, pos[1]-KICKRANGE/2, getColor(tempArr[0]));
+			g.rotate(pos[0], pos[1], -180f);
+			g.rotate(pos[0], pos[1], -tempf);
+		}else if(cExist && mag(curve)>0){
+			tempf = 360f/2f/(float)Math.PI*(float)Math.atan2(curve[1], curve[0]);
+			g.rotate(pos[0], pos[1], tempf);
+			g.drawImage(slice.getScaledCopy(KICKRANGE/slice.getWidth()), pos[0]-KICKRANGE/2, pos[1]-KICKRANGE/2, getColor(.5f));
+			g.rotate(pos[0], pos[1], -tempf);
+		}
+	}
+	
 	@Override
 	public void update(int delta) {
 		
 		if(cExist){
+			
+			prevVel[0] = vel[0];
+			prevVel[1] = vel[1];
+			
 			pollController(delta);
 			
-			if (actionButton.getPollData() == 1.0){
-					activatePower();
-					buttonPressed = true;
+			if(actionButton.getPollData() == 1.0){
+				activatePower();
+				buttonPressed = true;
 			}else{
-					powerKeyReleased();
-					buttonPressed = false;
+				powerKeyReleased();
+				buttonPressed = false;
+			}
+			
+			if (actionButton2.getPollData() == 1.0){
+
+			}else if(actionButton2.getPollData() == 0.0){
+
 			}
 		}
 		
@@ -78,30 +128,75 @@ public class PlayerBack extends Player {
 			tempArr[1] = ball.getY()-pos[1];
 			angle = (float)Math.atan2(tempArr[1], tempArr[0]);
 			angleTarget = (float)Math.atan2(tempArr[1], tempArr[0]);
-			mySoundSystem.quickPlay( true, "TwoTouchLockOn.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			mySoundSystem.quickPlay( true, "BackLock.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			
+			kickingCoolDown = KICKCOOLDOWN;//visual effect
 		}
 
+		
+		//Is technically part of the lock statement, but left outside so the shoulders can be drawn outside of lock
+		if(mag(vel)!=0){
+			unit(vel);	
+			angleTarget = (float)Math.atan2(vel[1],vel[0]);
+		}
+		
 		if(ball.locked(playerNum) && !ball.scored()){
+			
+			radius-=(float)delta/2f;
+			if(radius<0)
+				radius = 0;
+			
+//			velMag = .1f;
+			
 			//angle = (float)Math.atan2(ball.getY()-pos[1], ball.getX()-pos[0]);
-			prevAngle = angle;
-//////////////Angle Code
-			if(mag(vel)!=0){
-				unit(vel);	
-				angleTarget = (float)Math.atan2(vel[1],vel[0]);
+//			System.out.println(angle/2/Math.PI*360);
+			
+			prevAngleTarget = (float)Math.atan2(prevVel[1], prevVel[0]);
+		
+			//So they're in the same range (-pi to pi or 0 to 2pi) and subtraction works
+			if(angleTarget< -(float)Math.PI/2f)
+				angleTarget+=(float)Math.PI*2f;
+			if(prevAngleTarget< -(float)Math.PI/2f)
+				prevAngleTarget+=(float)Math.PI*2f;
+//			if(angle < -(float)Math.PI/2f)
+//				angle+=(float)Math.PI*2f;
+			
+//			System.out.println(angle/2/Math.PI*360+"->  "+angleTarget/2/Math.PI*360);
+
+			if(Math.abs(angleTarget-prevAngleTarget) > .1f){//If you've moved the stick a non negligible amount
+				rotateDir = angleTarget>prevAngleTarget ? 1 : -1;
 			}
 			
-			angle2 = angle;
-			if(angle2<0)
-				angle2 += 2f*(float)Math.PI;
-			angleTarget2 = angleTarget;
-			if(angleTarget2<0)
-				angleTarget2 += 2f*(float)Math.PI;
-
-			//Choose the direction of shortest rotation
-			if(Math.abs(angleTarget-angle)-Math.abs(angleTarget2-angle2) >= 0){
-				angle = approachTarget(angle2, angleTarget2, 24f/120f);
-			}else{
-				angle = approachTarget(angle, angleTarget, 24f/120f);
+			//Set them back to -pi to pi values so the rest of math works
+			if(angleTarget>(float)Math.PI)
+				angleTarget-=(float)Math.PI*2f;
+			if(prevAngleTarget>(float)Math.PI)
+				prevAngleTarget-=(float)Math.PI*2f;
+			
+			tempf = (float)delta/80f;//The step interval
+			if(angle != angleTarget){
+				if(Math.abs(angle-angleTarget)>tempf){//If it's actual turning and not a microscopic slip of the finger
+					if(rotateDir > 0){
+						if(angle > angleTarget)
+							angle-=(float)Math.PI*2f;
+						if(angle + tempf >= angleTarget){
+							angle = angleTarget;
+						}else{
+							angle+=tempf;
+						}
+//						System.out.println(angle/2/Math.PI*360+"->  "+angleTarget/2/Math.PI*360);
+					}else if(rotateDir < 0){
+						if(angle < angleTarget)
+							angle += (float)Math.PI*2f;
+						if(angle - tempf <= angleTarget){
+							angle = angleTarget;
+						}else{
+							angle-=tempf;
+						}
+					}
+				}else{
+					angle = angleTarget;
+				}
 			}
 			
 			ball.setPos(pos[0]+(float)Math.cos(angle)*(KICKRANGE/2f+2f), pos[1]+(float)Math.sin(angle)*(KICKRANGE/2f+2f));
@@ -130,10 +225,12 @@ public class PlayerBack extends Player {
 					ball.shiftY(xyLimit[3]-tempf);
 				}
 			}
-
+			
 			//Keeps angle between -pi and pi for next round of calculations
 			if(angle>(float)Math.PI)
 				angle-=(float)Math.PI*2f;
+			if(angle<-(float)Math.PI)
+				angle+=(float)Math.PI*2f;
 			
 //			System.out.println("-> "+angle/(float)Math.PI/2f*360f);
 			
@@ -153,8 +250,7 @@ public class PlayerBack extends Player {
 		updateCounters(delta);
 		
 		theta+= omega*(float)delta;
-		if(theta>360) theta-=360;
-		
+		if(theta>360) theta-=360;		
 	}
 	
 	@Override
@@ -165,12 +261,14 @@ public class PlayerBack extends Player {
 	@Override
 	public void activatePower() {
 		power = 1;
-		
+		if(!buttonPressed)
+			mySoundSystem.quickPlay( true, "BackActivate.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 	}
 
 	@Override
 	public void powerKeyReleased() {
 		power = 0;
+		radius = RADIUS;
 		if(ball.locked(playerNum)){
 			ball.setLocked(playerNum, false);
 			lockCoolDown = false;
@@ -191,16 +289,17 @@ public class PlayerBack extends Player {
 			tempf = (angle-prevAngle);
 			if(mag(vel)>0 && tempf!=0){
 				//Should send the ball off tangentially
-				tempf/=Math.abs(tempf);
-				tempArr[0] = (float)Math.cos(angle+(float)Math.PI/2f*tempf);
-				tempArr[1] = (float)Math.sin(angle+(float)Math.PI/2f*tempf);
+//				tempf/=Math.abs(tempf);
+				tempArr[0] = (float)Math.cos(angle+(float)Math.PI/2f*(float)rotateDir);
+				tempArr[1] = (float)Math.sin(angle+(float)Math.PI/2f*(float)rotateDir);
 //				
 //				System.out.println(tempf);
 //				System.out.println(angle/(float)Math.PI/2f*360f+": "+prevAngle/(float)Math.PI/2f*360f);
 //				System.out.println(tempArr[0]+", "+tempArr[1]);
 //				
 				unit(tempArr);
-				ball.setVel(new float[]{tempArr[0], tempArr[1]}, .5f);
+				ball.setVel(new float[]{tempArr[0], tempArr[1]}, .6f);
+//				ball.setVel(new float[]{vel[0], vel[1]}, .5f);
 			}else{
 				ball.setVel(new float[]{ball.getX()-pos[0], ball.getY()-pos[1]}, .1f);
 			}

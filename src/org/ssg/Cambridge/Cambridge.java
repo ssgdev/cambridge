@@ -111,6 +111,8 @@ public class Cambridge extends StateBasedGame {
 		mySoundSystem.loadSound("ChargeGust.wav");
 		mySoundSystem.loadSound("ChargeWindingDown.wav");
 		mySoundSystem.loadSound("ChargeShortDash.wav");
+		mySoundSystem.loadSound("BackLock.wav");
+		mySoundSystem.loadSound("BackActivate.wav");
 		//TODO: Have streams created after character selection?
 		mySoundSystem.newStreamingSource(false, "slow1", "Rumble.wav", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);
 		mySoundSystem.newStreamingSource(false, "slow2", "Rumble.wav", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);

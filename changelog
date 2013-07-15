@@ -1,5 +1,9 @@
 Changelog:
 
+7.11.13
+Added angle control code changes to PlayerBack, with slight modifications
+	TODO: Test between "tangential release" behaviour or "release in direction of vel" behaviour
+
 7.9.13
 PlayerBack bugfixes
 	Fixed throwing behaviour and power activation bug

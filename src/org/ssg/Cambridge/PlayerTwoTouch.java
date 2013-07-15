@@ -280,7 +280,7 @@ public class PlayerTwoTouch extends Player{
 			if(prevAngleTarget>(float)Math.PI)
 				prevAngleTarget-=(float)Math.PI*2f;
 			
-			tempf = (float)delta/120f;//The step interval
+			tempf = (float)delta/80f;//The step interval
 			if(angle != angleTarget){
 				if(Math.abs(angle-angleTarget)>tempf){//If it's actual turning and not a microscopic slip of the finger
 					if(rotateDir > 0){
