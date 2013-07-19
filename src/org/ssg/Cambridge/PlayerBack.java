@@ -69,10 +69,10 @@ public class PlayerBack extends Player {
 	public void drawSlice(Graphics g){
 		if(buttonPressed){
 			if(ball.locked(playerNum)){
-				tempf = 360f/2f/(float)Math.PI*(float)angle + 90f;
+				tempf = 360f/2f/(float)Math.PI*angle + 90f;
 				tempArr[0] = .5f + kickingCoolDown/KICKCOOLDOWN*.5f;
 			}else{
-				tempf = 360f/2f/(float)Math.PI*(float)angleTarget + 90f;
+				tempf = 360f/2f/(float)Math.PI*angleTarget + 90f;
 				tempArr[0] = .5f;
 			}
 			g.rotate(pos[0], pos[1], tempf);
@@ -90,7 +90,7 @@ public class PlayerBack extends Player {
 	}
 	
 	@Override
-	public void update(int delta) {
+	public void update(float delta) {
 		
 		if(cExist){
 			
@@ -142,7 +142,7 @@ public class PlayerBack extends Player {
 		
 		if(ball.locked(playerNum) && !ball.scored()){
 			
-			radius-=(float)delta/2f;
+			radius-=delta/2f;
 			if(radius<0)
 				radius = 0;
 			
@@ -173,7 +173,7 @@ public class PlayerBack extends Player {
 			if(prevAngleTarget>(float)Math.PI)
 				prevAngleTarget-=(float)Math.PI*2f;
 			
-			tempf = (float)delta/80f;//The step interval
+			tempf = delta/80f;//The step interval
 			if(angle != angleTarget){
 				if(Math.abs(angle-angleTarget)>tempf){//If it's actual turning and not a microscopic slip of the finger
 					if(rotateDir > 0){
@@ -249,7 +249,7 @@ public class PlayerBack extends Player {
 		
 		updateCounters(delta);
 		
-		theta+= omega*(float)delta;
+		theta+= omega*delta;
 		if(theta>360) theta-=360;		
 	}
 	

@@ -15,7 +15,7 @@ public class PlayerNeo extends Player {
 	}
 
 	@Override
-	public void update(int delta){
+	public void update(float delta){
 
 		if (cExist) {
 			pollController(delta);
@@ -29,11 +29,11 @@ public class PlayerNeo extends Player {
 
 		updateCounters(delta);
 
-		theta+= (1f-(powerCoolDown/POWERCOOLDOWN))*omega*(float)delta;
+		theta+= (1f-(powerCoolDown/POWERCOOLDOWN))*omega*delta;
 		if(theta>360) theta-=360;
 		
 		if(power>0){
-			power-=(float)delta;
+			power-=delta;
 			if(power<=0){
 				power = 0;
 				velMag = VELMAG;
@@ -47,7 +47,7 @@ public class PlayerNeo extends Player {
 		}
 
 		if(powerCoolDown>-500f){
-			powerCoolDown -=(float)delta;
+			powerCoolDown -= delta;
 			if(powerCoolDown<=0 && !playedPowerDing){
 				if(slowMo){
 					mySoundSystem.quickPlay( true, "PowerRechargedSlow.wav", false, 0,0,0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );

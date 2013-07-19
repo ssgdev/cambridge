@@ -83,7 +83,7 @@ public class PlayerTwin extends Player{
 	}
 	
 	@Override
-	public void update(int delta) {
+	public void update(float delta) {
 		if(cExist){
 			
 			if(nukes>0){
@@ -168,10 +168,10 @@ public class PlayerTwin extends Player{
 		if(orbitRadius > DESIREDORBITRADIUS)
 			orbitRadius--;
 
-		theta+= (1f-(powerCoolDown/POWERCOOLDOWN))*omega*(float)delta;
+		theta+= (1f-(powerCoolDown/POWERCOOLDOWN))*omega*delta;
 		if(theta>360) theta-=360;
 		
-		theta2 += -1*omega*.002f*(float)delta;
+		theta2 += -1*omega*.002f*delta;
 		if(theta2>360) theta2-=360;
 		
 	}

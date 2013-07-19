@@ -1,9 +1,16 @@
 TODO:
 
+White bars on outside, so don't draw gameplay outside the black playing field?
 HMM: Kick trails get jaggy
-Keyboard Mode for each character? For example
+Implement/Revamp Keyboard Controls for each character? For example
+	PlayerNeo: Good for now
 	PlayerTwin: The second twin is a mirror
-	PlayerTwoTouch: Holding left or right rotates the Player around the ball
+	PlayerTwoTouch: Holding left or right rotates the Player around the ball, up and down change curve.
+	PlayerEnforcer: Doesn't work at all atm.
+	PlayerTricky: Fake ball is random, fake player is somewhat AIed.
+	PlayerDash: Holding and charging through does big dash, releasing it does the short dash.
+	PlayerBack: Hold off until main gameplay is set.
+	Last Player: Hold off until main gameplay is set
 BUG: Changing the size of puffer changes the size of the kick trail when it shouldn't DONE
 BUG: Holding ActionButton with Enforcer on wall hammers the sounds DONE
 BUG: Reactivating the power on Enforcer by holding down after the wall doesn't sound good MEH
@@ -12,7 +19,7 @@ TODO: Create UpdateCounters method DONE
 TODO: Stick direction visual guide DONE
 TODO: Visuals for charge's trail DONE
 Go through all the code and see if it can be less horrible
-	Save memory by casting delta to float at the top of update
+	Save memory by casting delta to float at the top of update DONE
 	TODO: Organize Player constructor
 	More abstract classing: Maybe everyone has buttonpressed and actionbutton2 but just leave it empty if unused.
 	render() has submethod drawSpecial()
@@ -21,7 +28,7 @@ Go through all the code and see if it can be less horrible
 Enforcer: Has to build up momentum – DONE
 	TODO: Test Enfocer vs everyone else collision and see what happens
 Figure out dashing while against a wall
-TODO: Velocity add component scaled by angle coincidence
+TODO: Velocity add component scaled by angle coincidence DONE
 Ball should decelerate into TwoTouch's lock DONE
 	What happens if a ball gets knocked out of TwoTouch's hands? Seems to work
 		Test if NORMALKICK, DEFAULTKICK and EXTRAKICK are all the correct values

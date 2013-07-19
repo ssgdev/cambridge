@@ -89,7 +89,7 @@ public class PlayerEnforcer extends Player{
 	}
 	
 	@Override
-	public void update(int delta) {
+	public void update(float delta) {
 		if (cExist) {
 			
 			pollController(delta);				
@@ -112,7 +112,7 @@ public class PlayerEnforcer extends Player{
 			}else if(mag(launchVel)>0){
 				tempArr = normal(vel, launchVel);
 				unit(tempArr);
-				velMag = approachTarget(velMag,targetVelmag, (float)delta/1600f);
+				velMag = approachTarget(velMag,targetVelmag, delta/1600f);
 				vel[0] = launchVel[0]+tempArr[0]*.05f*(1.5f-velMag/targetVelmag);
 				vel[1] = launchVel[1]+tempArr[1]*.05f*(1.5f-velMag/targetVelmag);
 				unit(vel);
@@ -120,7 +120,7 @@ public class PlayerEnforcer extends Player{
 				launchVel[1] = vel[1];
 			}
 		}else if(coolingDown || wallCoolingDown){
-			velMag = approachTarget(velMag,targetVelmag, (float)delta/800f);
+			velMag = approachTarget(velMag,targetVelmag, delta/800f);
 			vel[0] = launchVel[0];
 			vel[1] = launchVel[1];
 			if(velMag == targetVelmag){
@@ -129,7 +129,7 @@ public class PlayerEnforcer extends Player{
 				targetVelmag = VELMAG;
 			}
 		}else{
-			velMag = approachTarget(velMag,targetVelmag, (float)delta/1200f);
+			velMag = approachTarget(velMag,targetVelmag, delta/1200f);
 
 		}
 			
@@ -138,7 +138,7 @@ public class PlayerEnforcer extends Player{
 		updateCounters(delta);
 		
 		if(power>0 || coolingDown){//TODO: Make synced with actual speed
-			stepCoolDown -= (float)delta;
+			stepCoolDown -= delta;
 			if(stepCoolDown<=0){
 				stepCoolDown = STEPCOOLDOWN;
 				STEPCOOLDOWN = MAXPOWER*(1f-velMag/MAXVELMAG);
@@ -151,26 +151,26 @@ public class PlayerEnforcer extends Player{
 		}
 		
 
-		powerAlpha -= (float)delta/600f;
+		powerAlpha -= delta/600f;
 		if(powerAlpha<0f)
 			powerAlpha = 0f;
 		
-		turningAlpha -= (float)delta/600f;
+		turningAlpha -= delta/600f;
 		if(turningAlpha<0)
 			turningAlpha = 0;
 		
-		//lastPos[0] += (float)delta*lastVel[0]*.5f;
-		//lastPos[1] += (float)delta*lastVel[1]*.5f;
+		//lastPos[0] += delta*lastVel[0]*.5f;
+		//lastPos[1] += delta*lastVel[1]*.5f;
 		
-		theta += omega * (float)delta * 2f * velMag/MAXVELMAG;
+		theta += omega * delta * 2f * velMag/MAXVELMAG;
 		if(theta>360f)
 			theta-=360f;
 	}
 	
 	//Can kick other players
 	@Override
-	public void updatePos(int delta){
-		pos[0] = (pos[0]+vel[0]*velMag*(float)delta);
+	public void updatePos(float delta){
+		pos[0] = (pos[0]+vel[0]*velMag*delta);
 		tempf = 0;//Used here as flag for bouncing
 		if(pos[0]<xyLimit[0]+KICKRANGE/2){
 			pos[0]=xyLimit[0]+KICKRANGE/2;
@@ -180,7 +180,7 @@ public class PlayerEnforcer extends Player{
 			pos[0]=xyLimit[1]-KICKRANGE/2;
 			tempf = 1f;
 		}
-		pos[1]= (pos[1]+vel[1]*velMag*(float)delta);
+		pos[1]= (pos[1]+vel[1]*velMag*delta);
 		if(pos[1]<xyLimit[2]+KICKRANGE/2){
 			pos[1]=xyLimit[2]+KICKRANGE/2;
 			tempf = 1f;

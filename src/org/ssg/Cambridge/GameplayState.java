@@ -94,8 +94,10 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	Controller c1, c2;
 	boolean c1Exist, c2Exist;
 	
+	float deltaf;
 	boolean temp;
 	float tempf;
+	float[] tempArr;
 	
 	public GameplayState(int i, boolean renderoff, int gt){
 		stateID = i;
@@ -279,6 +281,8 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		
 		slowMo = false;
 //		gc.getGraphics().setAntiAlias(true);
+		
+		tempArr = new float[2];
 	}
 	
 	public void initGoals(int randomNum){
@@ -466,6 +470,8 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		
+		deltaf = (float)delta;
+		
 		slowMo = false;
 		for(Player p: players){
 			if(p.isSlowMoPower()){
@@ -475,13 +481,13 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		}
 		
 		if(slowMo){
-			delta=delta/4;
+			deltaf=deltaf/4f;
 			ball.setSlowOn(true);
 		}else{
 			ball.setSlowOn(false);
 		}
 		
-		gameModeAlpha -= (float)delta/1200f;
+		gameModeAlpha -= deltaf/1200f;
 		if(gameModeAlpha < 0){
 			gameModeAlpha = 0;
 		}
@@ -530,15 +536,15 @@ public class GameplayState extends BasicGameState implements KeyListener{
 			mySoundSystem.cleanup();
 		}
 		
-		scrollX+=delta*scrollXDir;
+		scrollX+=deltaf*scrollXDir;
 		if(scrollX>FIELDWIDTH+500 || scrollX<0-goalScroll.getWidth()-500)
 			scrollXDir=0;
 		
-		scrollY+=delta*scrollYDir;
+		scrollY+=deltaf*scrollYDir;
 		if(scrollY>FIELDHEIGHT+500 || scrollY<0-goalScroll.getHeight()-500)
 			scrollYDir=0;
 		
-		ball.update(delta);
+		ball.update(deltaf);
 		
 		//Put ball back in play
 		if(scored){
@@ -650,7 +656,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 
 		//Kicking the ball
 		for(Player p: players){
-			p.update(delta);
+			p.update(deltaf);
 			if(p.isKicking() && !scored ){
 				if(dist(p)<p.getKickRange()/2 /* && ball.canBeKicked(p.getPlayerNum())*/) {//Perform a kick
 					//Use prevX to prevent going through the player
@@ -667,7 +673,9 @@ public class GameplayState extends BasicGameState implements KeyListener{
 						kickFloat[1] += p.getKick()[1];
 //						tempf += p.getKick()[1]*p.getKick()[1];
 					}
-					ball.setVel(new float[]{kickFloat[0], kickFloat[1]}, p.kickStrength()*(float)p.getVelMag());
+					unit(kickFloat);
+					tempf = Math.abs(dot(p.getVel(), kickFloat)); 
+					ball.setVel(new float[]{kickFloat[0], kickFloat[1]}, .2f+p.getVelMag()*tempf*p.kickStrength());
 					
 					spinFloat = normal(p.getCurve(), kickFloat);
 					//System.out.println(p.kickStrength() + "-" + (p.kickStrength()*0.5f+(float)Math.sqrt(tempf)*0.5f));
@@ -769,14 +777,14 @@ public class GameplayState extends BasicGameState implements KeyListener{
 			targetViewY = minY - (((int)tempY - (maxY - minY))/2);
 			
 			if(viewX != targetViewX)
-				viewX += (targetViewX-viewX)*(float)(delta)/300f;
+				viewX += (targetViewX-viewX)*deltaf/300f;
 			if(viewY != targetViewY)
-				viewY += (targetViewY-viewY)*(float)(delta)/300f;
+				viewY += (targetViewY-viewY)*deltaf/300f;
 			
 			targetScaleFactor = SCREENWIDTH/tempX;
 			
 			if(scaleFactor != targetScaleFactor)
-				scaleFactor += (targetScaleFactor - scaleFactor)*(float)(delta)/240f;
+				scaleFactor += (targetScaleFactor - scaleFactor)*deltaf/240f;
 		}else{
 			tempX = tempX * 1.2f;
 			tempY = tempY * 1.2f;
@@ -831,6 +839,13 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	public float[] normal(float[] v, float[] w){
 		tempX = dot(v,w)/mag(w);//Repurposing this as a temp calculation holder
 		return new float[]{v[0]-tempX*w[0], v[1]-tempX*w[1]};
+	}
+	
+	//Parallel component of u on v, written to w
+	public void parallelComponent(float[] u, float[] v, float[] w){
+		tempf = (u[0]*v[0]+u[1]*v[1])/mag(v)/mag(v);
+		w[0] = v[0]*tempf;
+		w[1] = v[1]*tempf;		
 	}
 	
 	public boolean sameDir(float vx, int dir){

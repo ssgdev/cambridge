@@ -1,5 +1,19 @@
 Changelog:
 
+7.17.13
+Kicking Changes in GameplayState:
+	Velocity of kick is a base value plus the velocity of the player in the direction of the kick, times the kick strength multiplier
+	Hopefully this makes it so direct kicks are faster and glancing kicks are slower.
+	TODO: Test with many kick strengths
+Some PlayerNeutron functionality implemented (Experimental)
+
+7.17.13
+Minor optimizations:
+	Cast delta to float at top of update, reducing number of delta casts in individual methods
+
+7.15.13
+PlayerBack graphics and sound effects
+
 7.11.13
 Added angle control code changes to PlayerBack, with slight modifications
 	TODO: Test between "tangential release" behaviour or "release in direction of vel" behaviour

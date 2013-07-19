@@ -170,8 +170,8 @@ public class PlayerTwoTouch extends Player{
 			
 			}//end vDelta loop
 			
-			predictionVel[0]+=predictionCurveAcc[0]*(float)predictionDelta*predictionCurveMag;
-			predictionVel[1]+=predictionCurveAcc[1]*(float)predictionDelta*predictionCurveMag;
+			predictionVel[0]+=predictionCurveAcc[0]*predictionDelta*predictionCurveMag;
+			predictionVel[1]+=predictionCurveAcc[1]*predictionDelta*predictionCurveMag;
 			unit(predictionVel);
 			
 			if(predictionVelMag>0) predictionVelMag -= predictionVelMag*predictionDelta * ball.FLOORFRICTION;
@@ -187,7 +187,7 @@ public class PlayerTwoTouch extends Player{
 	}
 	
 	@Override
-	public void update(int delta){
+	public void update(float delta){
 		
 		if (cExist) {
 			
@@ -280,7 +280,7 @@ public class PlayerTwoTouch extends Player{
 			if(prevAngleTarget>(float)Math.PI)
 				prevAngleTarget-=(float)Math.PI*2f;
 			
-			tempf = (float)delta/80f;//The step interval
+			tempf = delta/80f;//The step interval
 			if(angle != angleTarget){
 				if(Math.abs(angle-angleTarget)>tempf){//If it's actual turning and not a microscopic slip of the finger
 					if(rotateDir > 0){
@@ -307,7 +307,6 @@ public class PlayerTwoTouch extends Player{
 			}
 				
 //End rotation code
-			
 			
 			pos[0] = ball.getX()-(float)Math.cos(angle)*(KICKRANGE/2-1);
 			pos[1] = ball.getY()-(float)Math.sin(angle)*(KICKRANGE/2-1);
@@ -358,7 +357,7 @@ public class PlayerTwoTouch extends Player{
 		
 		updateCounters(delta);
 		
-		theta+= (1f-(power/MAXPOWER*.8f))*omega*(float)delta;
+		theta+= (1f-(power/MAXPOWER*.8f))*omega*delta;
 		if(theta>360) theta-=360;
 		
 	}

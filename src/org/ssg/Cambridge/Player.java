@@ -141,7 +141,7 @@ public abstract class Player implements KeyListener {
 	}
 
 	/////////////////////////////////////////////////////
-	public abstract void update(int delta);
+	public abstract void update(float delta);
 	
 	public abstract void activatePower();
 	
@@ -167,7 +167,7 @@ public abstract class Player implements KeyListener {
 	
 	//Three methods called in most updates
 	
-	public void pollController(int delta){
+	public void pollController(float delta){
 		vel[0] = lStickX.getPollData();
 		vel[1] = lStickY.getPollData();
 		
@@ -185,9 +185,9 @@ public abstract class Player implements KeyListener {
 		}
 	}
 	
-	public void updatePos(int delta){
-		pos[0] = (pos[0]+stunVel[0]*stunVelMag*(float)delta*stun/MAXSTUN + (1f-stun/MAXSTUN)*vel[0]*velMag*(float)delta);
-		pos[1] = (pos[1]+stunVel[1]*stunVelMag*(float)delta*stun/MAXSTUN + (1f-stun/MAXSTUN)*vel[1]*velMag*(float)delta);
+	public void updatePos(float delta){
+		pos[0] = (pos[0]+stunVel[0]*stunVelMag*delta*stun/MAXSTUN + (1f-stun/MAXSTUN)*vel[0]*velMag*delta);
+		pos[1] = (pos[1]+stunVel[1]*stunVelMag*delta*stun/MAXSTUN + (1f-stun/MAXSTUN)*vel[1]*velMag*delta);
 
 		if(pos[0]<xyLimit[0]+KICKRANGE/2){
 			pos[0]=xyLimit[0]+KICKRANGE/2;
@@ -271,18 +271,18 @@ public abstract class Player implements KeyListener {
 		}
 	}
 	
-	public void updateCounters(int delta){
-		stun -= (float)delta;
+	public void updateCounters(float delta){
+		stun -= delta;
 		if(stun<=0){
 			stun = 0;
 		}
 		
-		lastKickAlpha -= (float)(delta)/1200f;
+		lastKickAlpha -= (delta)/1200f;
 		if(lastKickAlpha<0){
 			lastKickAlpha = 0f;
 		}
 		
-		kickingCoolDown -= (float)delta;
+		kickingCoolDown -= delta;
 		if(kickingCoolDown<0)
 			kickingCoolDown = 0;
 		

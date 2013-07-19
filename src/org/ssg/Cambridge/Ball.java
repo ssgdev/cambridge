@@ -267,13 +267,13 @@ public class Ball {
 		slowOn = b;
 	}
 
-	public void update(int delta){
+	public void update(float delta){
 
 		soundCoolDown -= delta;
 		if(soundCoolDown<0)
 			soundCoolDown = 0;
 
-		vDelta = (float)delta;
+		vDelta = delta;
 
 		while(vDelta>0){
 
@@ -326,8 +326,8 @@ public class Ball {
 		}
 		
 //		velMag -= (float)delta / 1000f;//uncomment this because it's funny
-		vel[0]+=curveAcc[0]*(float)delta*curveMag;
-		vel[1]+=curveAcc[1]*(float)delta*curveMag;
+		vel[0]+=curveAcc[0]*delta*curveMag;
+		vel[1]+=curveAcc[1]*delta*curveMag;
 		unit(vel);
 		
 		if(speedingUp){
@@ -351,7 +351,7 @@ public class Ball {
 		}
 		
 		
-		if(velMag>0) velMag -= velMag*(float)delta * FLOORFRICTION;
+		if(velMag>0) velMag -= velMag*delta * FLOORFRICTION;
 
 		theta+=velMag*delta;
 	}

@@ -163,7 +163,7 @@ public class PlayerDash extends Player{
 	}
 	
 	@Override
-	public void update(int delta) {
+	public void update(float delta) {
 
 		if (cExist) {
 			if(shortDashCoolDown==0)
@@ -203,16 +203,16 @@ public class PlayerDash extends Player{
 
 		updateCounters(delta);
 		
-		powerCoolDown -= (float)delta;
+		powerCoolDown -= delta;
 		if(powerCoolDown<0)
 			powerCoolDown = 0;
 		
-		gustCoolDown -= (float)delta;
+		gustCoolDown -= delta;
 		if(gustCoolDown < 0)
 			gustCoolDown = 0;
 		
 		if(shortDashCoolDown>0){
-			shortDashCoolDown -= (float)delta;
+			shortDashCoolDown -= delta;
 			prevPostPos[2] = pos[0];
 			prevPostPos[3] = pos[1];
 			if(shortDashCoolDown<0)
@@ -221,7 +221,7 @@ public class PlayerDash extends Player{
 		
 		
 		if(power>0){
-			power -= (float)delta/12f;
+			power -= delta/12f;
 			if(power<=0){
 				powerKeyReleased();
 				
@@ -302,11 +302,11 @@ public class PlayerDash extends Player{
 			//Shortdash direction can change the gust direction.
 			//The second part of the condition is so shortdashing can't slow down the gust countdown before the ball has touched the trail
 			if(shortDash && gustCountDown<GUSTCOUNTDOWN){
-				gustCountDown -= (float)delta/2f;
+				gustCountDown -= delta/2f;
 				gustVel[0] = vel[0];
 				gustVel[1] = vel[1];
 			}else{
-				gustCountDown -= (float)delta;
+				gustCountDown -= delta;
 			}
 			if(gustCountDown <= 0){
 				if(!ball.scored() && ball.gustReady()){
@@ -336,9 +336,9 @@ public class PlayerDash extends Player{
 	
 			//Choose the direction of shortest rotation
 			if(Math.abs(thetaTarget-theta)-Math.abs(thetaTarget2-theta2) >= 0){
-				theta = approachTarget(theta2, thetaTarget2, (float)delta/120f);
+				theta = approachTarget(theta2, thetaTarget2, delta/120f);
 			}else{
-				theta = approachTarget(theta, thetaTarget, (float)delta/120f);
+				theta = approachTarget(theta, thetaTarget, delta/120f);
 			}
 			
 			//Set theta between -pi and pi, for the next round of calculation
@@ -346,7 +346,7 @@ public class PlayerDash extends Player{
 				theta-=(float)Math.PI*2f;
 			
 		}else{
-			theta += omega*(float)delta/60f*Math.PI;
+			theta += omega*delta/60f*Math.PI;
 			if(theta>2f*(float)Math.PI)
 				theta-=2f*(float)Math.PI;
 		}

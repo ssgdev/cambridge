@@ -50,7 +50,7 @@ public class PlayerPuffer extends Player{
 	}
 	
 	@Override
-	public void update(int delta){
+	public void update(float delta){
 		if (cExist) {
 			pollController(delta);
 			
@@ -75,15 +75,15 @@ public class PlayerPuffer extends Player{
 
 		updateCounters(delta);
 		
-		theta+= (1f-(PLAYERSIZE/(MAXSIZE+100)))*omega*(float)delta;
+		theta+= (1f-(PLAYERSIZE/(MAXSIZE+100)))*omega*delta;
 		if(theta>360) theta-=360;
 		
 		if(puffup && !puffdown){
-			if(PLAYERSIZE+(float)(delta)*2f > MAXSIZE){
+			if(PLAYERSIZE+(delta)*2f > MAXSIZE){
 				PLAYERSIZE = MAXSIZE;
 				powerKeyReleased();
 			}else{
-				PLAYERSIZE+=(float)(delta)*2f;
+				PLAYERSIZE+=(delta)*2f;
 			}
 			KICKRANGE = PLAYERSIZE*1.42f;
 			
@@ -100,8 +100,8 @@ public class PlayerPuffer extends Player{
 			}
 			
 		}else if(!puffup && puffdown){
-			if(PLAYERSIZE-(float)(delta/2)>=MINSIZE){
-				PLAYERSIZE-=(float)(delta/2);
+			if(PLAYERSIZE-(delta/2)>=MINSIZE){
+				PLAYERSIZE-=(delta/2);
 			}else{
 				PLAYERSIZE = MINSIZE;
 			}

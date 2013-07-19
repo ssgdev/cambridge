@@ -136,7 +136,7 @@ public class PlayerTricky extends Player{
 	}
 	
 	@Override
-	public void update(int delta) {
+	public void update(float delta) {
 		if (cExist) {
 			pollController(delta);
 			
@@ -164,26 +164,26 @@ public class PlayerTricky extends Player{
 			
 			fakeball.update(delta);
 			
-			fakeCounter -= (float)delta;
+			fakeCounter -= delta;
 			if(fakeCounter < 0)
 				fakeCounter = 0;
 			
 			if(fakeCounter == 0){
-				fakeAlpha -= (float)delta/2400f;
-				fakeballAlpha -= (float)delta/2400f;
+				fakeAlpha -= delta/2400f;
+				fakeballAlpha -= delta/2400f;
 			}
 		}else{
-			fakePos[0] = approachTarget(fakePos[0], pos[0], (float)(delta));
-			fakePos[1] = approachTarget(fakePos[1], pos[1], (float)(delta));
+			fakePos[0] = approachTarget(fakePos[0], pos[0], delta);
+			fakePos[1] = approachTarget(fakePos[1], pos[1], delta);
 		}
 		
-		theta+= omega*(float)delta;
+		theta+= omega*delta;
 		if(theta>360) theta-=360;
 	}
 	
-	public void updateFakePos(int delta){
-		fakePos[0] = (fakePos[0]+curve[0]*velMag*(float)delta);
-		fakePos[1] = (fakePos[1]+curve[1]*velMag*(float)delta);
+	public void updateFakePos(float delta){
+		fakePos[0] = (fakePos[0]+curve[0]*velMag*delta);
+		fakePos[1] = (fakePos[1]+curve[1]*velMag*delta);
 
 		if(fakePos[0]<xyLimit[0]+KICKRANGE/2){
 			fakePos[0]=xyLimit[0]+KICKRANGE/2;
