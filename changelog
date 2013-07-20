@@ -1,11 +1,15 @@
 Changelog:
 
+7.18.13
+More PlayerNeutron functionality implemented (Experimental)
+
 7.17.13
 Kicking Changes in GameplayState:
 	Velocity of kick is a base value plus the velocity of the player in the direction of the kick, times the kick strength multiplier
 	Hopefully this makes it so direct kicks are faster and glancing kicks are slower.
 	TODO: Test with many kick strengths
 Some PlayerNeutron functionality implemented (Experimental)
+	TODO: Test Gravitational Push with TwoTouch and Back
 
 7.17.13
 Minor optimizations:
