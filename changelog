@@ -1,5 +1,10 @@
 Changelog:
 
+7.22.13
+PlayerNeutron Prototype completed
+Ball can have negative velmag targets, will flip the velocity vector when negative velocities are reached
+Ball will not have curve if the velmag target is negative
+
 7.18.13
 More PlayerNeutron functionality implemented (Experimental)
 

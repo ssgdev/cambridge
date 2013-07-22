@@ -25,7 +25,11 @@ public class PlayerNeutron extends Player {
 	float prevDot;//Used to tell when the ball crosses 90 degrees with the player
 	boolean orbiting;
 	float orbitAngle;
+	float orbitDir;
 	float orbitOmega;
+	float orbitRadius;
+	float OMEGALOW;
+	float ORBITVEL = .7f;
 	
 	boolean pushCoolDown;
 	boolean pullCoolDown;
@@ -35,7 +39,7 @@ public class PlayerNeutron extends Player {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 
 		NORMALKICK = 1f;		
-		//KICKRANGE *= .6f;
+		KICKRANGE *= .7f;
 		
 		ball = b;
 		
@@ -48,13 +52,15 @@ public class PlayerNeutron extends Player {
 	
 		targetVelMag = VELMAG;
 		
-		GRAVRANGE = 300f;
+		GRAVRANGE = 250f;
 		gravRange = 0;
 		gravDir = 0;
 		prevDot = 0;
 		orbiting = false;
 		orbitAngle = 0f;
 		orbitOmega = 0f;
+		orbitDir = 0f;
+		orbitRadius = 0f;
 		pushCoolDown = false;
 		pullCoolDown = false;
 		
@@ -74,7 +80,7 @@ public class PlayerNeutron extends Player {
 		if(gravDir == 1){
 			g.setColor(getColor(2f*(1f-gravRange/GRAVRANGE)));
 			g.drawOval(pos[0]-gravRange/2f, pos[1]-gravRange/2f, gravRange, gravRange);
-		}else if(gravRange == -1){
+		}else if(gravDir == -1){
 			g.setColor(getColor(1f));
 			g.drawOval(pos[0]-gravRange/2f, pos[1]-gravRange/2f, gravRange, gravRange);
 		}
@@ -129,25 +135,33 @@ public class PlayerNeutron extends Player {
 			//ball.speedUp(ball.getVelMag()+.3f, .05f, 0);
 			if(sameDir(tempArr[0], pos[0]-ball.getX()) && sameDir(tempArr[1], pos[1]-ball.getY())){
 				if(ball.getVelMag()>0.02f){
-					ball.slowDown(0.01f, .002f, 0);
+					ball.slowDown(-VELMAG-NORMALKICK, .01f, 0);
 				}else{
 					ball.setVel(new float[]{ball.getX()-pos[0], ball.getY()-pos[1]}, ball.getVelMag());
 					ball.speedUp(VELMAG+NORMALKICK, .01f, 0);
 				}
 			}else{
 //				ball.setVel(new float[]{tempArr[0],  tempArr[1]}, ball.getVelMag());
-				ball.speedUp((1f-gravRange/GRAVRANGE)*NORMALKICK+ball.getVelMag(), .01f, 0);
+				ball.speedUp((1.5f-gravRange/GRAVRANGE)*NORMALKICK+ball.getVelMag(), .01f, 0);
 			}
 			ball.setLastKicker(playerNum);
 			ball.clearLocked();
 			pushCoolDown = true;
 			kickingCoolDown = KICKCOOLDOWN;
 		}else if(!pullCoolDown && tempf <= gravRange/2f && gravDir == -1 && !ball.scored()){//Grav Pull
-//			ball.slowDown(ball.getVelMag()/2f, 0.01f, 0); //Might need to depend on speed. No point slowing down a slow ball.
 			tempArr[0] = ball.getX()-pos[0];
 			tempArr[1] = ball.getY()-pos[1];
-			prevDot = Math.abs(dot(ball.getVel(), tempArr));
+			prevDot = dot(ball.getVel(), tempArr);
+			//System.out.println(prevDot);
 			ball.setLocked(playerNum, true);
+			ball.setLastKicker(playerNum);
+			parallelComponent(ball.getVel(), new float[]{ball.getX()-pos[0], ball.getY()-pos[1]}, tempArr);
+			if(sameDir(tempArr[0], pos[0]-ball.getX()) && sameDir(tempArr[1], pos[1]-ball.getY()) && ball.getVelMag()/tempf < ORBITVEL){
+				ball.speedUp(ORBITVEL, .01f, 0);
+				ball.setCurve(new float[]{-tempArr[0], -tempArr[1]}, .05f);
+			}else{
+				ball.setCurve(new float[]{-tempArr[0], -tempArr[1]}, 1f);
+			}
 			pullCoolDown = true;
 		}
 		
@@ -155,15 +169,50 @@ public class PlayerNeutron extends Player {
 			if(!orbiting){
 				tempArr[0] = ball.getX()-pos[0];
 				tempArr[1] = ball.getY()-pos[1];
-				if(!sameDir(prevDot, Math.abs(dot(ball.getVel(), tempArr)))){//When it crosses 90 degrees, seize it into circular orbit
-					//Determine initial angle and direction of rotation and angular velocity based on velocity
+				//System.out.println(Math.abs(dot(ball.getVel(), tempArr)));
+				if(!sameDir(prevDot, dot(ball.getVel(), tempArr))){//When it crosses 90 degrees, seize it into circular orbit
 					orbitAngle = (float)Math.atan2(tempArr[1], tempArr[0]);
-					orbitOmega = ball.getVelMag()/mag(tempArr);
+					orbitDir = (tempArr[0]*ball.getVelY()-tempArr[1]*ball.getVelX());//z component of the cross product, for orbit cw or ccw
+					if(orbitDir!=0)
+						orbitDir /= Math.abs(orbitDir);
+					orbitOmega = ball.getVelMag()/mag(tempArr)*orbitDir;
+					orbitRadius = mag(tempArr);
 					orbiting = true;
+					ball.setVel(ball.getVel(), 0);
+					ball.cancelAcc();
 				}
 			}else{
-				
+				//Have it spiral in?
+				orbitAngle+=delta*orbitOmega;
+				if(Math.abs(orbitOmega*orbitRadius)<ORBITVEL)
+					orbitOmega+=orbitDir*(float)delta*.000005f;
+				if(orbitRadius > KICKRANGE/2f+30)
+					orbitRadius -= (float)delta/80f;
+				ball.setPos(pos[0]+(float)Math.cos(orbitAngle)*orbitRadius, pos[1]+(float)Math.sin(orbitAngle)*orbitRadius);
+				if(ball.getX()<=0 || ball.getX()>=field[0] || ball.getY()<=0 || ball.getY()>=field[1]){
+					if(ball.getX()<0)
+						ball.setPos(0, ball.getY());
+					if(ball.getX()>field[0])
+						ball.setPos(field[0], ball.getY());
+					if(ball.getY()<0)
+						ball.setPos(ball.getX(), 0);
+					if(ball.getY()>field[1])
+						ball.setPos(ball.getX(), field[1]);
+					tempf = orbitAngle+(float)Math.PI/2f*orbitDir;
+					ball.setVel(new float[]{-(float)Math.cos(tempf), -(float)Math.sin(tempf)}, orbitOmega*orbitRadius);
+					ball.setLocked(playerNum, false);
+					orbiting = false;
+				}
+//				System.out.println(ball.getX()+" "+ball.getY());
 			}
+		}
+		
+		//For if the ball gets knocked out of your hands
+		if(dist(pos[0],pos[1],ball.getX(),ball.getY()) > GRAVRANGE/2f){
+			if(ball.locked(playerNum))
+				ball.setCurve(zeroes, 0);
+			ball.setLocked(playerNum, false);
+			orbiting = false;
 		}
 		
 		theta+= omega*delta;
@@ -195,8 +244,16 @@ public class PlayerNeutron extends Player {
 	public void powerKey2Released(){
 		gravRange = 0;
 		targetVelMag = VELMAG;
-		//Launch the ball if it was orbiting, resume the ball if it was locked
-		orbiting = false;
+		if(ball.locked(playerNum)){
+			if(orbiting){
+				tempf = orbitAngle+(float)Math.PI/2f*orbitDir;
+				ball.setVel(new float[]{(float)Math.cos(tempf), (float)Math.sin(tempf)}, Math.abs(orbitOmega)*orbitRadius);
+				ball.speedUp((1f-orbitRadius/GRAVRANGE)*2f*VELMAG+NORMALKICK, 0.05f, 0);
+			}
+			ball.setCurve(zeroes, 0);
+			ball.setLocked(playerNum, false);
+			orbiting = false;
+		}
 	}
 	
 	@Override

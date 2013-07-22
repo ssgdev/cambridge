@@ -1,5 +1,6 @@
 TODO:
 
+Ball in wall failsafe
 White bars on outside, so don't draw gameplay outside the black playing field?
 HMM: Kick trails get jaggy
 Implement/Revamp Keyboard Controls for each character? For example

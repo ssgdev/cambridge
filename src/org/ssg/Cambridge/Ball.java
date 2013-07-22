@@ -325,10 +325,11 @@ public class Ball {
 			}	
 		}
 		
-//		velMag -= (float)delta / 1000f;//uncomment this because it's funny
-		vel[0]+=curveAcc[0]*delta*curveMag;
-		vel[1]+=curveAcc[1]*delta*curveMag;
-		unit(vel);
+		if(!slowingDown && velTarget>=0){//Don't curve if you're going backwards 
+			vel[0]+=curveAcc[0]*delta*curveMag;
+			vel[1]+=curveAcc[1]*delta*curveMag;
+			unit(vel);
+		}
 		
 		if(speedingUp){
 			if(velMag<=velTarget){
@@ -346,6 +347,14 @@ public class Ball {
 				if(velMag < velTarget){
 					velMag = velTarget;
 					slowingDown = false;
+				}
+				if(velMag<0 && velTarget<0){
+					velMag*=-1;
+					vel[0]*=-1;
+					vel[1]*=-1;
+					velTarget*=-1;
+					slowingDown = false;
+					speedingUp = true;
 				}
 			}
 		}
