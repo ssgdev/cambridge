@@ -8,6 +8,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 import paulscode.sound.SoundSystem;
+import paulscode.sound.SoundSystemConfig;
 
 public class PlayerNeutron extends Player {
 
@@ -28,6 +29,7 @@ public class PlayerNeutron extends Player {
 	float orbitDir;
 	float orbitOmega;
 	float orbitRadius;
+	float orbitCounter;//Used for playing the whoosh sound effect per orbit
 	float OMEGALOW;
 	float ORBITVEL = .7f;
 	
@@ -38,7 +40,7 @@ public class PlayerNeutron extends Player {
 	public PlayerNeutron(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 
-		NORMALKICK = 1f;		
+		NORMALKICK = 1f;
 		KICKRANGE *= .7f;
 		
 		ball = b;
@@ -61,6 +63,7 @@ public class PlayerNeutron extends Player {
 		orbitOmega = 0f;
 		orbitDir = 0f;
 		orbitRadius = 0f;
+		orbitCounter = 0f;
 		pushCoolDown = false;
 		pullCoolDown = false;
 		
@@ -81,7 +84,7 @@ public class PlayerNeutron extends Player {
 			g.setColor(getColor(2f*(1f-gravRange/GRAVRANGE)));
 			g.drawOval(pos[0]-gravRange/2f, pos[1]-gravRange/2f, gravRange, gravRange);
 		}else if(gravDir == -1){
-			g.setColor(getColor(1f));
+			g.setColor(getColor(ball.locked(playerNum)? 1f: .4f));
 			g.drawOval(pos[0]-gravRange/2f, pos[1]-gravRange/2f, gravRange, gravRange);
 		}
 //		g.setColor(getColor());
@@ -163,6 +166,7 @@ public class PlayerNeutron extends Player {
 				ball.setCurve(new float[]{-tempArr[0], -tempArr[1]}, 1f);
 			}
 			pullCoolDown = true;
+			mySoundSystem.quickPlay( true, "NeutronCatch.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 		}
 		
 		if(ball.locked(playerNum)){
@@ -178,15 +182,20 @@ public class PlayerNeutron extends Player {
 					orbitOmega = ball.getVelMag()/mag(tempArr)*orbitDir;
 					orbitRadius = mag(tempArr);
 					orbiting = true;
+					orbitCounter = (float)Math.PI;
 					ball.setVel(ball.getVel(), 0);
 					ball.cancelAcc();
 				}
 			}else{
-				//Have it spiral in?
+				orbitCounter+=delta*orbitOmega;
+				if(orbitCounter>(float)Math.PI*2f || orbitCounter < 0){
+					orbitCounter -= Math.PI*2f*orbitDir;
+					mySoundSystem.quickPlay( true, "NeutronSwing.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+				}
 				orbitAngle+=delta*orbitOmega;
 				if(Math.abs(orbitOmega*orbitRadius)<ORBITVEL)
 					orbitOmega+=orbitDir*(float)delta*.000005f;
-				if(orbitRadius > KICKRANGE/2f+30)
+				if(orbitRadius > KICKRANGE/2f+15)
 					orbitRadius -= (float)delta/80f;
 				ball.setPos(pos[0]+(float)Math.cos(orbitAngle)*orbitRadius, pos[1]+(float)Math.sin(orbitAngle)*orbitRadius);
 				if(ball.getX()<=0 || ball.getX()>=field[0] || ball.getY()<=0 || ball.getY()>=field[1]){
@@ -198,8 +207,11 @@ public class PlayerNeutron extends Player {
 						ball.setPos(ball.getX(), 0);
 					if(ball.getY()>field[1])
 						ball.setPos(ball.getX(), field[1]);
-					tempf = orbitAngle+(float)Math.PI/2f*orbitDir;
-					ball.setVel(new float[]{-(float)Math.cos(tempf), -(float)Math.sin(tempf)}, orbitOmega*orbitRadius);
+					if(!((ball.getX()<=0 || ball.getX()>=field[0]) && ball.betweenGoals(ball.getX(),  ball.getY(),  ball.getVel()))){//If it's not a goal
+						mySoundSystem.quickPlay( true, "BallBounce.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+						tempf = orbitAngle+(float)Math.PI/2f*orbitDir;
+						ball.setVel(new float[]{-(float)Math.cos(tempf), -(float)Math.sin(tempf)}, orbitOmega*orbitRadius);	
+					}
 					ball.setLocked(playerNum, false);
 					orbiting = false;
 				}
@@ -225,6 +237,7 @@ public class PlayerNeutron extends Player {
 		gravRange = 0;
 		targetVelMag = VELMAG/3f;
 		pushCoolDown = false;
+		mySoundSystem.quickPlay( true, "NeutronPush.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 	}
 
 	@Override
@@ -239,6 +252,7 @@ public class PlayerNeutron extends Player {
 		gravDir = -1;
 		targetVelMag = 0;
 		pullCoolDown = false;
+		mySoundSystem.quickPlay( true, "NeutronPull.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 	}
 	
 	public void powerKey2Released(){
@@ -258,12 +272,12 @@ public class PlayerNeutron extends Player {
 	
 	@Override
 	public boolean isKicking() {
-		return !buttonPressed && kickingCoolDown == 0;
+		return !buttonPressed && !orbiting && kickingCoolDown == 0;
 	}
 
 	@Override
 	public boolean flashKick() {
-		return orbiting;
+		return false;
 	}
 
 	//@Override setKicking() to cancel orbit after a flash kick

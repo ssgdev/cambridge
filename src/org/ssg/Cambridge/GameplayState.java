@@ -313,6 +313,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		mySoundSystem.backgroundMusic("BGM", "BGMHotline.ogg", true);
+		mySoundSystem.setVolume("BGM", .3f);
 	}
 	
 	@Override

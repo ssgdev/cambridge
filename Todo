@@ -184,7 +184,9 @@ running back
 		Both seem to be resolved by removing the buttonPressed requirement in power activation.
 	TODO: Test Back vs TwoTouch and Enforcer interaction
 		DONE Now they get kicked away from the ball
-	
+neutron star
+	Possible bug with ball possession not being correct? Can't reproduce at moment
+
 pau gazul
 shaquille o'teal
 Foger Rederer

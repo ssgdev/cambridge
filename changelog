@@ -1,5 +1,9 @@
 Changelog:
 
+7.23.13
+PlayerNeutron graphics and sound effects
+PlayerNeutron can now swing the ball into a goal
+
 7.22.13
 PlayerNeutron Prototype completed
 Ball can have negative velmag targets, will flip the velocity vector when negative velocities are reached
