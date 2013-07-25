@@ -16,11 +16,8 @@ public class PlayerDash extends Player{
 
 	Polygon poly;
 	//Theta is between -pi and pi, theta2 is 0 to 2pi
-	float theta2, thetaTarget, thetaTarget2;
+	float thetaTarget;
 	float[] prevPostPos;
-	boolean buttonPressed;
-	boolean button2Pressed;
-	Component actionButton2;
 	
 	//The vector between Charge and the ball, divided into components || and normal to Charge's velocity
 	float[] ballParallel, ballOrth;
@@ -28,6 +25,7 @@ public class PlayerDash extends Player{
 	Image hemicircle;
 	Image slice_tri;
 	
+	float velTarget;
 	float[] dashVel;
 	float dashDist;
 	float DASHDURATION = 500;//The time window in which the trail can "catch" the ball
@@ -37,14 +35,15 @@ public class PlayerDash extends Player{
 	float[] gustVel;
 	float[] gustCurve;
 	
+	boolean dashCoolDown;//Flag so keyboard has to unpress key and then press to initiate dash
+	
 	//Used to draw the ghost kicker
 	float[] lastBallPos;
 	float[] lastGustVel;
 	
-	boolean shortDash;
 	float shortDashCoolDown;
 	float SHORTDASHCOOLDOWN = 500;
-	
+
 	Ball ball;
 	
 	public PlayerDash(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_t, Ball b, Image hc) {
@@ -57,22 +56,18 @@ public class PlayerDash extends Player{
 		poly = new Polygon(new float[]{0,0,-PLAYERSIZE/3, -PLAYERSIZE/2, PLAYERSIZE*2/3, 0, -PLAYERSIZE/3, PLAYERSIZE/2});
 		ballParallel = new float[2];
 		ballOrth = new float[2];
-		theta2 = theta;
 		thetaTarget = theta;
-		thetaTarget2 = theta;
 		prevPostPos = new float[4];
-		
-		buttonPressed = false;
-		if (cExist) {
-			actionButton2 = this.c.getComponent(Component.Identifier.Button._4); 
-		}
-		button2Pressed = false;
 		
 		hemicircle = hc.getScaledCopy(KICKRANGE/hc.getHeight());
 		slice_tri = slc_t;
 		
+		velTarget = 0;
+		
 		dashVel = new float[2];
 		powerCoolDown = 0;
+		
+		dashCoolDown = false;
 		
 		dashDist = 0;
 		gustCountDown = 0;
@@ -82,7 +77,6 @@ public class PlayerDash extends Player{
 		lastBallPos = new float[2];
 		lastGustVel = new float[2];
 		
-		shortDash = false;
 		shortDashCoolDown = 0;
 		
 		ball = b;
@@ -178,30 +172,38 @@ public class PlayerDash extends Player{
 					powerKeyReleased();
 					buttonPressed = false;
 			}
-			
-			if (actionButton2.getPollData() == 1.0 && !button2Pressed && shortDashCoolDown == 0){
-				button2Pressed = true;
-				shortDash();
-			}else if(actionButton2.getPollData() == 0 && button2Pressed){
-				button2Pressed = false;
-				shortDashReleased();
-			}
 		
+		}else{
+			
+			if(shortDashCoolDown == 0)
+				pollKeys(delta);
+			
+			if(buttonPressed && !dashCoolDown){
+				activatePower();
+				dashCoolDown = true;
+			}
+			if(buttonReleased){
+				powerKeyReleased();
+				buttonReleased = false;
+				buttonPressed = false;
+				dashCoolDown = false;
+			}
+			
 		}
 		
-		if(power>0){
-			velMag = 0;
-		}else if(shortDash){
-			velMag = 0;
+		if(buttonPressed){
+			velTarget = 0;
 		}else if(shortDashCoolDown>0){
-			velMag = VELMAG*shortDashCoolDown/SHORTDASHCOOLDOWN;
+			velTarget = VELMAG*shortDashCoolDown/SHORTDASHCOOLDOWN;
 		}else{
-			velMag = VELMAG;
+			velTarget = VELMAG;
 		}
 		
 		updatePos(delta);
 
 		updateCounters(delta);
+		
+		velMag = approachTarget(velMag, velTarget, (float)delta/240f);
 		
 		powerCoolDown -= delta;
 		if(powerCoolDown<0)
@@ -223,8 +225,7 @@ public class PlayerDash extends Player{
 		if(power>0){
 			power -= delta/12f;
 			if(power<=0){
-				powerKeyReleased();
-				
+				//powerKeyReleased();
 				if(mag(vel)>0){
 					mySoundSystem.quickPlay( true, "ChargeDash.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 					lastKickAlpha = 1f;
@@ -301,8 +302,8 @@ public class PlayerDash extends Player{
 		if(gustCountDown>0){
 			//Shortdash direction can change the gust direction.
 			//The second part of the condition is so shortdashing can't slow down the gust countdown before the ball has touched the trail
-			if(shortDash && gustCountDown<GUSTCOUNTDOWN){
-				gustCountDown -= delta/2f;
+			if(buttonPressed && gustCountDown<GUSTCOUNTDOWN){
+				gustCountDown -= delta;
 				gustVel[0] = vel[0];
 				gustVel[1] = vel[1];
 			}else{
@@ -323,27 +324,26 @@ public class PlayerDash extends Player{
 		}
 		
 		//Angle code
-		if(power>0 || shortDash){
-			if(mag(vel)!=0)
+		if(buttonPressed){
+			if(vel[0]== 1f && vel[1] == 0)
+				thetaTarget = 0f;
+			else if(vel[0] == -1f && vel[1] == 0)
+				thetaTarget = (float)Math.PI;
+			else if(mag(vel)!=0)
 				thetaTarget = (float)Math.atan2(vel[1],vel[0]);
-			
-			theta2 = theta;
-			if(theta2<0)
-				theta2 += 2f*(float)Math.PI;
-			thetaTarget2 = thetaTarget;
-			if(thetaTarget2<0)
-				thetaTarget2 += 2f*(float)Math.PI;
-	
-			//Choose the direction of shortest rotation
-			if(Math.abs(thetaTarget-theta)-Math.abs(thetaTarget2-theta2) >= 0){
-				theta = approachTarget(theta2, thetaTarget2, delta/120f);
+
+			if(Math.abs(theta-thetaTarget)<delta/80f || Math.abs(Math.abs(theta-thetaTarget)-Math.PI*2f)<delta/80f){
+				theta=thetaTarget;
 			}else{
-				theta = approachTarget(theta, thetaTarget, delta/120f);
+				tempf = (float)(Math.cos(theta)*Math.sin(thetaTarget)-Math.cos(thetaTarget)*Math.sin(theta));
+				if(Math.abs(tempf)>0)
+					tempf/=Math.abs(tempf);
+				
+				theta+=delta/80f*tempf;
 			}
 			
-			//Set theta between -pi and pi, for the next round of calculation
-			if(theta>(float)Math.PI)
-				theta-=(float)Math.PI*2f;
+			if(theta>2f*(float)Math.PI)
+				theta-=2f*(float)Math.PI;
 			
 		}else{
 			theta += omega*delta/60f*Math.PI;
@@ -359,19 +359,9 @@ public class PlayerDash extends Player{
 		mySoundSystem.quickPlay( true, "ChargeCharging.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 //		velMag = 0;//Unneeded, as velMag is set in update anyway
 	}
-
-	@Override
-	public void powerKeyReleased() {
+	
+	public void powerKeyReleased(){//More of a teleport
 		power = 0;
-//		velMag = VELMAG;
-	}
-	
-	public void shortDash(){
-//		velMag = 0;
-		shortDash = true;
-	}
-	
-	public void shortDashReleased(){//More of a teleport
 		if(mag(vel)>0){
 			mySoundSystem.quickPlay( true, "ChargeShortDash.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			
@@ -445,7 +435,6 @@ public class PlayerDash extends Player{
 				}
 			}
 		}
-		shortDash = false;
 //		velMag = VELMAG;
 	}
 	
