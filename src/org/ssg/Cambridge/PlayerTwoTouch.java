@@ -10,8 +10,6 @@ import paulscode.sound.SoundSystemConfig;
 
 public class PlayerTwoTouch extends Player{
 
-	boolean buttonPressed;//The power button, that is
-	
 	float DEFAULTKICK;
 	float EXTRAKICK;
 	float[] ballPos;
@@ -110,7 +108,7 @@ public class PlayerTwoTouch extends Player{
 		
 		predictionVelMag = (mag(vel)>0 ? EXTRAKICK : DEFAULTKICK) * VELMAG;
 		
-		predictionCurveAcc = normal(cExist ? curve : zeroes, predictionVel);
+		predictionCurveAcc = normal(curve, predictionVel);
 
 		if (ball.CURVESCALE == 0)
 			predictionCurveMag = 0;
@@ -206,6 +204,80 @@ public class PlayerTwoTouch extends Player{
 					buttonPressed = false;
 			}
 		
+		}else{
+			
+			prevVel[0] = vel[0];
+			prevVel[1] = vel[1];
+			
+			if(ball.locked(playerNum)){
+				tempArr[0] = (float)Math.atan2(vel[1],  vel[0]);
+				tempArr[1] = (float)Math.atan2(curve[1], curve[0]);
+				
+				//Rotate around with left and right
+				if(left&&!right){
+					tempf = tempArr[0]+delta/240f;
+					vel[0] = (float)Math.cos(tempf);
+					vel[1] = (float)Math.sin(tempf);
+					tempf = tempArr[1]+delta/240f;
+					curve[0] = (float)Math.cos(tempf);
+					curve[1] = (float)Math.sin(tempf);
+				}else if(!left && right){
+					tempf = tempArr[0]-delta/240f;
+					vel[0] = (float)Math.cos(tempf);
+					vel[1] = (float)Math.sin(tempf);
+					tempf = tempArr[1]-delta/240f;
+					curve[0] = (float)Math.cos(tempf);
+					curve[1] = (float)Math.sin(tempf);
+				}
+				
+				//Set curve with up and down
+				if(up && !down){
+					if(vel[0]<0){
+						if(tempArr[0]<0)
+							tempArr[0]+=(float)Math.PI*2f;
+						if(tempArr[1]<0)
+							tempArr[1]+=(float)Math.PI*2f;
+						tempf = tempArr[1]+delta/240f;
+						if(tempf>tempArr[0]+(float)Math.PI/2f)
+							tempf = tempArr[0]+(float)Math.PI/2f;
+					}else{
+						tempf = tempArr[1]-delta/240f;
+						if(tempf < tempArr[0]-(float)Math.PI/2f)
+							tempf = tempArr[0]-(float)Math.PI/2f;
+					}
+					curve[0] = (float)Math.cos(tempf);
+					curve[1] = (float)Math.sin(tempf);
+				}else if(!up && down){
+					if(vel[0]<0){
+						if(tempArr[0]<0)
+							tempArr[0]+=(float)Math.PI*2f;
+						if(tempArr[1]<0)
+							tempArr[1]+=(float)Math.PI*2f;
+						tempf = tempArr[1]-delta/240f;
+						if(tempf<tempArr[0]-(float)Math.PI/2f)
+							tempf = tempArr[0]-(float)Math.PI/2f;
+					}else{
+						tempf = tempArr[1]+delta/240f;
+						if(tempf> tempArr[0]+(float)Math.PI/2f)
+							tempf = tempArr[0]+(float)Math.PI/2f;
+					}
+					curve[0] = (float)Math.cos(tempf);
+					curve[1] = (float)Math.sin(tempf);
+				}
+
+			}else{
+				pollKeys(delta);
+			}
+			
+			if(buttonPressed){
+				activatePower();
+				buttonPressed = false;
+			}
+			if(buttonReleased){
+				powerKeyReleased();
+				buttonReleased = false;
+			}
+			
 		}
 		
 		predictionVDelta = delta;
@@ -372,6 +444,10 @@ public class PlayerTwoTouch extends Player{
 		power = MAXPOWER;
 		velMag = VELMAG * 0.5f;
 		mySoundSystem.quickPlay( true, "TwoTouchActivate.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+		if(!cExist){
+			curve[0] = 0;
+			curve[1] = 0;
+		}
 	}
 	
 	@Override
@@ -392,6 +468,13 @@ public class PlayerTwoTouch extends Player{
 		if(power>0)
 			return new float[]{0,0};
 		return vel;
+	}
+	
+	@Override
+	public float[] getCurve() {
+		if(cExist || ball.locked(playerNum))
+			return curve;
+		return zeroes;
 	}
 	
 	@Override

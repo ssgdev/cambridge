@@ -23,6 +23,15 @@ public class PlayerNeo extends Player {
 			if (actionButton.getPollData() == 1.0){
 				activatePower();
 			}
+			
+		}else{
+			
+			pollKeys(delta);
+			
+			if(buttonPressed){
+				activatePower();
+				buttonPressed = false;
+			}
 		}
 
 		updatePos(delta);

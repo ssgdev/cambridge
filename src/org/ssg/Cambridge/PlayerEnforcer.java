@@ -11,9 +11,10 @@ import paulscode.sound.SoundSystemConfig;
 
 public class PlayerEnforcer extends Player{
 
-	Ball ball;
+	boolean firstPress;//For the first time the actionbutton is pressed
 	
-	boolean buttonPressed;
+	Ball ball;
+
 	float MINVELMAG;//The velocity you're set to when you start charging
 	float MAXVELMAG;
 	float targetVelmag;
@@ -31,6 +32,8 @@ public class PlayerEnforcer extends Player{
 	
 	public PlayerEnforcer(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
+		
+		firstPress = true;
 		
 		MINVELMAG = .2f*VELMAG;
 		MAXVELMAG = VELMAG * 2.5f;
@@ -100,8 +103,23 @@ public class PlayerEnforcer extends Player{
 			}else if(actionButton.getPollData() == 0 && buttonPressed){
 					powerKeyReleased();
 					buttonPressed = false;
+					firstPress = true;
 			}
 		
+		}else{
+			
+			pollKeys(delta);
+			
+			if(buttonPressed){
+				activatePower();
+			}
+			if(buttonReleased){
+				powerKeyReleased();
+				buttonPressed = false;
+				buttonReleased = false;
+				firstPress = true;
+			}
+			
 		}
 		
 		if(power>0){
@@ -289,9 +307,10 @@ public class PlayerEnforcer extends Player{
 				launchVel[1] = vel[1];
 				//STEPCOOLDOWN = MAXPOWER;
 			}else{//From a standstill
-				if(!buttonPressed){
+				if(firstPress){
 					mySoundSystem.quickPlay( true, "EnforcerActivate.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 					powerAlpha = 1f;
+					firstPress = false;
 				}
 				power = 1;
 				velMag = MINVELMAG;

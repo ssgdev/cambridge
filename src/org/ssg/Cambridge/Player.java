@@ -35,7 +35,7 @@ public abstract class Player implements KeyListener {
 	float POWERVELMAG;// = 1f;
 	int[] field;//fieldWidth, fieldHeight
 	int[] xyLimit;//p1 can only be on left half, p2 can only be on right half
-	boolean up,down,left,right;
+	boolean up,down,left,right, buttonPressed, buttonReleased, button2Pressed, button2Released;
 	float theta;//Angle at which is tilted
 	float omega;//Angular velocity – spins faster when strong shot is charged
 	float kickingCoolDown;
@@ -112,6 +112,10 @@ public abstract class Player implements KeyListener {
 		down = false;
 		left = false;
 		right = false;
+		buttonPressed = false;
+		buttonReleased = false;
+		button2Pressed = false;
+		button2Released = false;
 		kickingCoolDown = 0;
 		power = 0;
 		powerCoolDown = -500;
@@ -183,6 +187,25 @@ public abstract class Player implements KeyListener {
 			curve[0] = 0f;
 			curve[1] = 0f;
 		}
+	}
+	
+	public void pollKeys(float delta){
+		if(left && !right){
+			vel[0] = -1f;
+		}else if(!left && right){
+			vel[0] = 1f;
+		}else{
+			vel[0] = 0;
+		}
+		if(up && !down){
+			vel[1] = -1f;
+		}else if(!up && down){
+			vel[1] = 1f;
+		}else{
+			vel[1] = 0;
+		}
+		
+		unit(vel);
 	}
 	
 	public void updatePos(float delta){
@@ -530,18 +553,16 @@ public abstract class Player implements KeyListener {
 		if (!cExist) {
 			if(input == controls[0]){
 				up = true;
-				vel[1] = -1;
 			}else if(input == controls[1]){
 				down = true;
-				vel[1] = 1;
 			}else if(input == controls[2]){
 				left = true;
-				vel[0] = -1;
 			}else if(input == controls[3]){
 				right = true;
-				vel[0] = 1;
 			}else if(input == controls[4]){
-				activatePower();
+				buttonPressed = true;
+			}else if(input == controls[5]){
+				button2Pressed = true;
 			}
 		}
 	}
@@ -551,34 +572,16 @@ public abstract class Player implements KeyListener {
 		if (!cExist) {
 			if(input == controls[0]){
 				up = false;
-				if(down){
-					vel[1] = 1;
-				}else{
-					vel[1] = 0;
-				}
 			}else if(input == controls[1]){
 				down = false;
-				if(up){
-					vel[1] = -1;
-				}else{
-					vel[1] = 0;
-				}
 			}else if(input == controls[2]){
 				left = false;
-				if(right){
-					vel[0] = 1;
-				}else{
-					vel[0] = 0;
-				}
 			}else if(input == controls[3]){
 				right = false;
-				if(left){
-					vel[0] = -1;
-				}else{
-					vel[0] = 0;
-				}
 			}else if(input == controls[4]){
-				powerKeyReleased();
+				buttonReleased = true;
+			}else if(input == controls[5]){
+				button2Released = true;
 			}
 		}
 	}

@@ -64,5 +64,15 @@ public class PlayerDummy extends Player{
 	public void setPower() {
 		
 	}
+	
+	@Override
+	public void keyPressed(int a, char b){
+		
+	}
+	
+	@Override
+	public void keyReleased(int a, char b){
+		
+	}
 
 }

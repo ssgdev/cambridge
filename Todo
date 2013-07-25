@@ -1,17 +1,18 @@
 TODO:
 
+Kicking magnitudes needs tweaking, powerkick is way too strong. (Check TwoTouch predictor afterwards)
 Ball in wall failsafe
 White bars on outside, so don't draw gameplay outside the black playing field?
 HMM: Kick trails get jaggy
 Implement/Revamp Keyboard Controls for each character? For example
-	PlayerNeo: Good for now
-	PlayerTwin: The second twin is a mirror
-	PlayerTwoTouch: Holding left or right rotates the Player around the ball, up and down change curve.
-	PlayerEnforcer: Doesn't work at all atm.
-	PlayerTricky: Fake ball is random, fake player is somewhat AIed.
-	PlayerDash: Holding and charging through does big dash, releasing it does the short dash.
+	PlayerNeo: Good for now DONE
+	PlayerTwin: The second twin is a mirror?
+	PlayerTwoTouch: Holding left or right rotates the Player around the ball, up and down change curve. DONE
+	PlayerEnforcer: Doesn't work at all atm. DONE
+	PlayerTricky: Fake ball is random, fake player is somewhat AIed. DONE
+	PlayerDash: Holding and charging through does big dash, releasing it does the short dash. Is also a rotator
+	PlayerNeutron: Good for now DONE
 	PlayerBack: Hold off until main gameplay is set.
-	Last Player: Hold off until main gameplay is set
 BUG: Changing the size of puffer changes the size of the kick trail when it shouldn't DONE
 BUG: Holding ActionButton with Enforcer on wall hammers the sounds DONE
 BUG: Reactivating the power on Enforcer by holding down after the wall doesn't sound good MEH

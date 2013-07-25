@@ -15,7 +15,6 @@ public class PlayerNeutron extends Player {
 	Ball ball;
 	
 	Component actionButton2;
-	boolean buttonPressed, button2Pressed;
 
 	float targetVelMag;
 	
@@ -48,10 +47,7 @@ public class PlayerNeutron extends Player {
 		if(cExist){
 			actionButton2 = this.c.getComponent(Component.Identifier.Button._4); 
 		}
-		
-		buttonPressed = false;
-		button2Pressed = false;
-	
+
 		targetVelMag = VELMAG;
 		
 		GRAVRANGE = 250f;
@@ -112,6 +108,24 @@ public class PlayerNeutron extends Player {
 				button2Pressed = false;
 				powerKey2Released();
 			}
+		}else{
+			
+			pollKeys(delta);
+			
+			if(buttonPressed){
+				activatePower();
+				buttonPressed = false;
+			}
+
+			if(button2Pressed){
+				activatePower2();
+				button2Pressed = false;
+			}
+			if(button2Released){
+				powerKey2Released();
+				button2Released = false;
+			}
+			
 		}
 
 		updatePos(delta);

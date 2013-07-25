@@ -16,7 +16,8 @@ public class PlayerTricky extends Player{
 	BallFake fakeball;
 	float fakeballAlpha;
 	float[] fakeKickPos;
-	float fakeCounter;
+	float fakeCounter;//counts the lifetime of the fakes
+	float fakeMoveCounter;//counts the intervals between direction changes of the fake player
 	float FAKECOUNTER;
 	
 	//For the decoy
@@ -26,24 +27,23 @@ public class PlayerTricky extends Player{
 	
 	PlayerDummy dummy;
 	
-	boolean buttonPressed;
 	Component actionButton2;
-	boolean button2Pressed;
 	
 	public PlayerTricky(int n, float[] consts, int[] f, int[] c, Controller c1,	boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
-
+		
+		MAXPOWER = 1;
+		
 		ball = b;
 		fakeballAlpha = 0f;
 		fakeKickPos = new float[2];
 		fakeCounter = 0;
+		fakeMoveCounter = 0;
 		FAKECOUNTER = 5000f;
 		
 		fakePos = new float[2];
 		fakeAlpha = 0f;
 		
-		buttonPressed = false;
-		button2Pressed = false;
 		if(cExist){
 			actionButton2 = this.c.getComponent(Component.Identifier.Button._4);
 		}
@@ -61,7 +61,7 @@ public class PlayerTricky extends Player{
 	//Don't draw the slice if you're in power, since that gives away which is the real one
 	@Override
 	public void drawSlice(Graphics g){
-		if(power==0)
+		if(power==0 && fakeAlpha == 0)
 			super.drawSlice(g);
 	}
 	
@@ -115,6 +115,17 @@ public class PlayerTricky extends Player{
 	}
 	
 	@Override
+	public void drawPowerCircle(Graphics g){
+		//Draw power circle
+		if(isPower() && fakeAlpha <= 0){
+			g.setColor(getColor3());
+			g.drawOval(pos[0]-KICKRANGE/2f-power/2f, pos[1]-KICKRANGE/2f-power/2f, KICKRANGE+power, KICKRANGE+power);
+			g.setColor(Color.white);
+		}
+	}
+	
+	
+	@Override
 	public void drawNameTag(Graphics g, Image triangle, AngelCodeFont font_small){
 		g.drawImage(triangle, getX()-triangle.getWidth()/2, getY()-getKickRange()/2-25, getColor());
 		g.setColor(getColor());
@@ -148,11 +159,47 @@ public class PlayerTricky extends Player{
 				powerKeyReleased();
 			}
 			
+			//This doesn't do anything right now
 			if(actionButton2.getPollData() == 1.0 && !button2Pressed){
 				button2Pressed = true;
 			}else if(actionButton2.getPollData() == 0 && button2Pressed){
 				button2Pressed = false;
 			}
+		}else{
+			
+			pollKeys(delta);
+			
+			if(buttonPressed){
+				activatePower();
+				buttonPressed = false;
+			}
+			if(buttonReleased){
+				powerKeyReleased();
+				buttonReleased = false;
+			}
+			
+			if(fakeAlpha <= 0){//Haven't kicked it yet
+				tempf = (float)(Math.random()*Math.PI*2.0);
+				curve[0] = (float)Math.cos(tempf);
+				curve[1] = (float)Math.sin(tempf);
+			}else{
+				if(fakeMoveCounter>0){
+					fakeMoveCounter -= delta;
+				}else{
+					tempArr[0] = fakeball.getX()+fakeball.getVelX()*5f-fakePos[0];
+					tempArr[1] = fakeball.getY()+fakeball.getVelY()*5f-fakePos[1];
+					tempf = (float)(Math.round(Math.atan2(tempArr[1], tempArr[0])/Math.PI*4.0)*Math.PI/4.0);//Round to 8dirs
+					curve[0] = (float)Math.cos(tempf);
+					curve[1] = (float)Math.sin(tempf);
+					
+					unit(curve);
+					
+					fakeMoveCounter = 400;
+					if(dist(fakeball.getX(), fakeball.getY(), fakePos[0], fakePos[1]) < KICKRANGE)
+						fakeMoveCounter = 700;
+				}
+			}
+			
 		}
 
 		updatePos(delta);
@@ -202,7 +249,7 @@ public class PlayerTricky extends Player{
 			bool = true;
 		}
 	
-		//player on player collision handling and also the fake ball collision code goes here for convenience
+		//player on player collision handling and also the fake ball on player collision code goes here for convenience
 		for(Player otherPlayer: players){
 			if(otherPlayer != this && otherPlayer != dummy){
 				tempf = dist(fakePos[0], fakePos[1], otherPlayer.getX(), otherPlayer.getY());
