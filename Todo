@@ -6,7 +6,7 @@ White bars on outside, so don't draw gameplay outside the black playing field?
 HMM: Kick trails get jaggy
 Implement/Revamp Keyboard Controls for each character? For example
 	PlayerNeo: Good for now DONE
-	PlayerTwin: The second twin is a mirror?
+	PlayerTwin: One button for each twin DONE
 	PlayerTwoTouch: Holding left or right rotates the Player around the ball, up and down change curve. DONE
 	PlayerEnforcer: Doesn't work at all atm. DONE
 	PlayerTricky: Fake ball is random, fake player is somewhat AIed. DONE

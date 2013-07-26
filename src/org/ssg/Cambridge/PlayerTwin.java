@@ -22,8 +22,6 @@ public class PlayerTwin extends Player{
 	
 	Ball ball;
 	
-	boolean buttonPressed;
-	
 	float DEFAULTKICKRANGE;
 	float DESIREDKICKRANGE;
 	float DEFAULTPLAYERSIZE;
@@ -56,15 +54,14 @@ public class PlayerTwin extends Player{
 		theta2 = 0;
 		
 		twinNum = tn;
+		nukes = 1;
 		if(twinNum== 0 && cExist){
-			nukes = 1;
 			moveStickX = lStickX;
 			moveStickY = lStickY;
 			otherStickX = rStickX;
 			otherStickY = rStickY;
 			//actionButton = this.c.getComponent(Component.Identifier.Button._5);
 		}else if(twinNum==1 && cExist){
-			nukes = 1;
 			actionButton = this.c.getComponent(Component.Identifier.Button._4);
 			moveStickX = rStickX;
 			moveStickY = rStickY;
@@ -74,8 +71,7 @@ public class PlayerTwin extends Player{
 		}
 		
 		hemicircle = hc;
-		
-		buttonPressed = false;
+
 	}
 
 	public void setTwin(PlayerTwin p){
@@ -116,6 +112,27 @@ public class PlayerTwin extends Player{
 					powerKeyReleased();
 					buttonPressed = false;
 			}
+		}else{
+			
+			vel[0] = 0;
+			vel[1] = 0;
+			
+			if(twinNum == 0 && buttonPressed || !(buttonPressed || button2Pressed)){
+				pollKeys(delta);
+			}
+			if(buttonReleased){
+				buttonPressed = false;
+				buttonReleased = false;
+			}
+			
+			if(twinNum ==  1 && button2Pressed  || !(buttonPressed || button2Pressed)){
+				pollKeys(delta);
+			}
+			if(button2Released){
+				button2Pressed = false;
+				button2Released = false;
+			}			
+			
 		}
 		
 		updatePos(delta);
@@ -302,61 +319,6 @@ public class PlayerTwin extends Player{
 	
 	public int getTwinNum(){
 		return twinNum;
-	}
-	
-	//Keyboard not really supported for this character
-	@Override
-	public void keyPressed(int input, char arg1) {
-		if (!cExist) {
-			if(input == controls[0]){
-				up = true;
-				vel[1] = -1;
-			}else if(input == controls[1]){
-				down = true;
-				vel[1] = 1;
-			}else if(input == controls[2]){
-				left = true;
-				vel[0] = -1;
-			}else if(input == controls[3]){
-				right = true;
-				vel[0] = 1;
-			}
-		}
-	}
-
-	@Override
-	public void keyReleased(int input, char arg1) {
-		if (!cExist) {
-			if(input == controls[0]){
-				up = false;
-				if(down){
-					vel[1] = 1;
-				}else{
-					vel[1] = 0;
-				}
-			}else if(input == controls[1]){
-				down = false;
-				if(up){
-					vel[1] = -1;
-				}else{
-					vel[1] = 0;
-				}
-			}else if(input == controls[2]){
-				left = false;
-				if(right){
-					vel[0] = 1;
-				}else{
-					vel[0] = 0;
-				}
-			}else if(input == controls[3]){
-				right = false;
-				if(left){
-					vel[0] = -1;
-				}else{
-					vel[0] = 0;
-				}
-			}
-		}
 	}
 	
 }
