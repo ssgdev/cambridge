@@ -164,7 +164,7 @@ public class PlayerEnforcer extends Player{
 					STEPCOOLDOWN = 180;
 				if(STEPCOOLDOWN > MAXPOWER)
 					STEPCOOLDOWN = MAXPOWER;
-				mySoundSystem.quickPlay( true, "EnforcerStep.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+				mySoundSystem.quickPlay( true, "EnforcerStep.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			}
 		}
 		
@@ -217,7 +217,7 @@ public class PlayerEnforcer extends Player{
 				targetVelmag = MINVELMAG;
 				wallCoolingDown = true;
 				if(velMag>.1f)
-					mySoundSystem.quickPlay( true, "EnforcerWallBounce.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+					mySoundSystem.quickPlay( true, "EnforcerWallBounce.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				STEPCOOLDOWN = MAXPOWER;
 			}
 		}
@@ -235,7 +235,7 @@ public class PlayerEnforcer extends Player{
 							otherPlayer.setLockCoolDown(true);
 							ball.setLocked(otherPlayer.getPlayerNum(), false);
 						}
-						mySoundSystem.quickPlay( true, "EnforcerBump.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+						mySoundSystem.quickPlay( true, "EnforcerBump.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						
 					}else{
 						tempArr[0] = otherPlayer.getX()-pos[0];
@@ -295,7 +295,7 @@ public class PlayerEnforcer extends Player{
 	public void activatePower() {
 		if(power==0 && !wallCoolingDown){
 			if(coolingDown && velMag>.5f){//If you've let go of the button previously and still have speed
-				mySoundSystem.quickPlay( true, "EnforcerTurn.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+				mySoundSystem.quickPlay( true, "EnforcerTurn.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				lastPos[0] = pos[0];
 				lastPos[1] = pos[1];
 				lastVel[0] = vel[0];
@@ -308,7 +308,7 @@ public class PlayerEnforcer extends Player{
 				//STEPCOOLDOWN = MAXPOWER;
 			}else{//From a standstill
 				if(firstPress){
-					mySoundSystem.quickPlay( true, "EnforcerActivate.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+					mySoundSystem.quickPlay( true, "EnforcerActivate.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 					powerAlpha = 1f;
 					firstPress = false;
 				}

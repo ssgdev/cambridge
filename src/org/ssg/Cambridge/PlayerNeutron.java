@@ -180,7 +180,7 @@ public class PlayerNeutron extends Player {
 				ball.setCurve(new float[]{-tempArr[0], -tempArr[1]}, 1f);
 			}
 			pullCoolDown = true;
-			mySoundSystem.quickPlay( true, "NeutronCatch.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			mySoundSystem.quickPlay( true, "NeutronCatch.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 		}
 		
 		if(ball.locked(playerNum)){
@@ -204,7 +204,7 @@ public class PlayerNeutron extends Player {
 				orbitCounter+=delta*orbitOmega;
 				if(orbitCounter>(float)Math.PI*2f || orbitCounter < 0){
 					orbitCounter -= Math.PI*2f*orbitDir;
-					mySoundSystem.quickPlay( true, "NeutronSwing.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+					mySoundSystem.quickPlay( true, "NeutronSwing.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				}
 				orbitAngle+=delta*orbitOmega;
 				if(Math.abs(orbitOmega*orbitRadius)<ORBITVEL)
@@ -222,7 +222,7 @@ public class PlayerNeutron extends Player {
 					if(ball.getY()>field[1])
 						ball.setPos(ball.getX(), field[1]);
 					if(!((ball.getX()<=0 || ball.getX()>=field[0]) && ball.betweenGoals(ball.getX(),  ball.getY(),  ball.getVel()))){//If it's not a goal
-						mySoundSystem.quickPlay( true, "BallBounce.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+						mySoundSystem.quickPlay( true, "BallBounce.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						tempf = orbitAngle+(float)Math.PI/2f*orbitDir;
 						ball.setVel(new float[]{-(float)Math.cos(tempf), -(float)Math.sin(tempf)}, orbitOmega*orbitRadius);	
 					}
@@ -251,7 +251,7 @@ public class PlayerNeutron extends Player {
 		gravRange = 0;
 		targetVelMag = VELMAG/3f;
 		pushCoolDown = false;
-		mySoundSystem.quickPlay( true, "NeutronPush.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+		mySoundSystem.quickPlay( true, "NeutronPush.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 	}
 
 	@Override
@@ -266,7 +266,7 @@ public class PlayerNeutron extends Player {
 		gravDir = -1;
 		targetVelMag = 0;
 		pullCoolDown = false;
-		mySoundSystem.quickPlay( true, "NeutronPull.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+		mySoundSystem.quickPlay( true, "NeutronPull.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 	}
 	
 	public void powerKey2Released(){

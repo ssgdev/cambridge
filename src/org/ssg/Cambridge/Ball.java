@@ -290,9 +290,9 @@ public class Ball {
 			}else{
 				if(soundCoolDown<=0 && !scored){
 					if(slowOn){
-						mySoundSystem.quickPlay( true, "BallBounceSlow.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+						mySoundSystem.quickPlay( true, "BallBounceSlow.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 					}else{
-						mySoundSystem.quickPlay( true, "BallBounce.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+						mySoundSystem.quickPlay( true, "BallBounce.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 					}
 				}
 				if(tempX<=0 && sameDir(vel[0], -1)){

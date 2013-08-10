@@ -128,7 +128,7 @@ public class PlayerBack extends Player {
 			tempArr[1] = ball.getY()-pos[1];
 			angle = (float)Math.atan2(tempArr[1], tempArr[0]);
 			angleTarget = (float)Math.atan2(tempArr[1], tempArr[0]);
-			mySoundSystem.quickPlay( true, "BackLock.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			mySoundSystem.quickPlay( true, "BackLock.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			
 			kickingCoolDown = KICKCOOLDOWN;//visual effect
 		}
@@ -141,6 +141,8 @@ public class PlayerBack extends Player {
 		}
 		
 		if(ball.locked(playerNum) && !ball.scored()){
+			
+			ball.setLastKicker(playerNum);
 			
 			radius-=delta/2f;
 			if(radius<0)
@@ -164,7 +166,7 @@ public class PlayerBack extends Player {
 //			System.out.println(angle/2/Math.PI*360+"->  "+angleTarget/2/Math.PI*360);
 
 			if(Math.abs(angleTarget-prevAngleTarget) > .1f){//If you've moved the stick a non negligible amount
-				rotateDir = angleTarget>prevAngleTarget ? 1 : -1;
+				rotateDir = (angleTarget>prevAngleTarget ? 1 : -1);
 			}
 			
 			//Set them back to -pi to pi values so the rest of math works
@@ -262,7 +264,7 @@ public class PlayerBack extends Player {
 	public void activatePower() {
 		power = 1;
 		if(!buttonPressed)
-			mySoundSystem.quickPlay( true, "BackActivate.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			mySoundSystem.quickPlay( true, "BackActivate.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 	}
 
 	@Override

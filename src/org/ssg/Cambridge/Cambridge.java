@@ -81,45 +81,45 @@ public class Cambridge extends StateBasedGame {
 	}
 	
 	public void initSounds() throws SlickException{
-		mySoundSystem.loadSound("KickBump.wav");
-		mySoundSystem.loadSound("KickBumpSlow.wav");
-		mySoundSystem.loadSound("BallBounce.wav");
-		mySoundSystem.loadSound("BallBounceSlow.wav");
-		mySoundSystem.loadSound("GoalScored.wav");
-		mySoundSystem.loadSound("GoalOwnScored.wav");
-		mySoundSystem.loadSound("BallLaunch.wav");
-		mySoundSystem.loadSound("PowerKick.wav");
-		mySoundSystem.loadSound("Rumble.wav");
-		mySoundSystem.loadSound("PowerRecharged.wav");
-		mySoundSystem.loadSound("PowerRechargedSlow.wav");
-		mySoundSystem.loadSound("MenuThud.wav");
-		mySoundSystem.loadSound("NeoSlowOut.wav");
-		mySoundSystem.loadSound("NeoSlowIn.wav");
-		mySoundSystem.loadSound("TwoTouchActivate.wav");
-		mySoundSystem.loadSound("TwoTouchLockOn.wav");
-		mySoundSystem.loadSound("TwinsLtoR.wav");
-		mySoundSystem.loadSound("TwinsRtoL.wav");
-		mySoundSystem.loadSound("PufferPuffUp.wav");
-		mySoundSystem.loadSound("PufferPuffDown.wav");
-		mySoundSystem.loadSound("EnforcerBump.wav");
-		mySoundSystem.loadSound("EnforcerStep.wav");
-		mySoundSystem.loadSound("EnforcerActivate.wav");
-		mySoundSystem.loadSound("EnforcerTurn.wav");
-		mySoundSystem.loadSound("EnforcerWallBounce.wav");
-		mySoundSystem.loadSound("ChargeCharging.wav");
-		mySoundSystem.loadSound("ChargeDash.wav");
-		mySoundSystem.loadSound("ChargeGust.wav");
-		mySoundSystem.loadSound("ChargeWindingDown.wav");
-		mySoundSystem.loadSound("ChargeShortDash.wav");
-		mySoundSystem.loadSound("BackLock.wav");
-		mySoundSystem.loadSound("BackActivate.wav");
-		mySoundSystem.loadSound("NeutronPush.wav");
-		mySoundSystem.loadSound("NeutronPull.wav");
-		mySoundSystem.loadSound("NeutronCatch.wav");
-		mySoundSystem.loadSound("NeutronSwing.wav");
+		mySoundSystem.loadSound("KickBump.ogg");
+		mySoundSystem.loadSound("KickBumpSlow.ogg");
+		mySoundSystem.loadSound("BallBounce.ogg");
+		mySoundSystem.loadSound("BallBounceSlow.ogg");
+		mySoundSystem.loadSound("GoalScored.ogg");
+		mySoundSystem.loadSound("GoalOwnScored.ogg");
+		mySoundSystem.loadSound("BallLaunch.ogg");
+		mySoundSystem.loadSound("PowerKick.ogg");
+		mySoundSystem.loadSound("Rumble.ogg");
+		mySoundSystem.loadSound("PowerRecharged.ogg");
+		mySoundSystem.loadSound("PowerRechargedSlow.ogg");
+		mySoundSystem.loadSound("MenuThud.ogg");
+		mySoundSystem.loadSound("NeoSlowOut.ogg");
+		mySoundSystem.loadSound("NeoSlowIn.ogg");
+		mySoundSystem.loadSound("TwoTouchActivate.ogg");
+		mySoundSystem.loadSound("TwoTouchLockOn.ogg");
+		mySoundSystem.loadSound("TwinsLtoR.ogg");
+		mySoundSystem.loadSound("TwinsRtoL.ogg");
+		mySoundSystem.loadSound("PufferPuffUp.ogg");
+		mySoundSystem.loadSound("PufferPuffDown.ogg");
+		mySoundSystem.loadSound("EnforcerBump.ogg");
+		mySoundSystem.loadSound("EnforcerStep.ogg");
+		mySoundSystem.loadSound("EnforcerActivate.ogg");
+		mySoundSystem.loadSound("EnforcerTurn.ogg");
+		mySoundSystem.loadSound("EnforcerWallBounce.ogg");
+		mySoundSystem.loadSound("ChargeCharging.ogg");
+		mySoundSystem.loadSound("ChargeDash.ogg");
+		mySoundSystem.loadSound("ChargeGust.ogg");
+		mySoundSystem.loadSound("ChargeWindingDown.ogg");
+		mySoundSystem.loadSound("ChargeShortDash.ogg");
+		mySoundSystem.loadSound("BackLock.ogg");
+		mySoundSystem.loadSound("BackActivate.ogg");
+		mySoundSystem.loadSound("NeutronPush.ogg");
+		mySoundSystem.loadSound("NeutronPull.ogg");
+		mySoundSystem.loadSound("NeutronCatch.ogg");
+		mySoundSystem.loadSound("NeutronSwing.ogg");
 		//TODO: Have streams created after character selection?
-		mySoundSystem.newStreamingSource(false, "slow1", "Rumble.wav", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);
-		mySoundSystem.newStreamingSource(false, "slow2", "Rumble.wav", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);
+		mySoundSystem.newStreamingSource(false, "slow1", "Rumble.ogg", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);
+		mySoundSystem.newStreamingSource(false, "slow2", "Rumble.ogg", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);
 	}
 	
 	public static void main(String[] args) throws SlickException{

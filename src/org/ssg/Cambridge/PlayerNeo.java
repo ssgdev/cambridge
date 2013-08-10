@@ -46,7 +46,7 @@ public class PlayerNeo extends Player {
 			if(power<=0){
 				power = 0;
 				velMag = VELMAG;
-				mySoundSystem.quickPlay( true, "NeoSlowOut.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+				mySoundSystem.quickPlay( true, "NeoSlowOut.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				if(mySoundSystem.playing(slowName))
 					mySoundSystem.pause(slowName);
 				for(Player player: players){
@@ -59,9 +59,9 @@ public class PlayerNeo extends Player {
 			powerCoolDown -= delta;
 			if(powerCoolDown<=0 && !playedPowerDing){
 				if(slowMo){
-					mySoundSystem.quickPlay( true, "PowerRechargedSlow.wav", false, 0,0,0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+					mySoundSystem.quickPlay( true, "PowerRechargedSlow.ogg", false, 0,0,0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				}else{
-					mySoundSystem.quickPlay( true, "PowerRecharged.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+					mySoundSystem.quickPlay( true, "PowerRecharged.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				}
 				playedPowerDing = true;
 			}
@@ -78,7 +78,7 @@ public class PlayerNeo extends Player {
 			powerCoolDown = MAXPOWER+POWERCOOLDOWN;
 			velMag = POWERVELMAG;
 			playedPowerDing = false;
-			mySoundSystem.quickPlay( true, "NeoSlowIn.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			mySoundSystem.quickPlay( true, "NeoSlowIn.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			mySoundSystem.play(slowName);
 			for(Player p: players){
 				p.setSlowMo(true);

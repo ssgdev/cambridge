@@ -1,5 +1,6 @@
 TODO:
 
+Kicking the ball out of the hands of Back and TwoTouch doesn't work
 Kicking magnitudes needs tweaking, powerkick is way too strong. (Check TwoTouch predictor afterwards)
 Ball in wall failsafe
 White bars on outside, so don't draw gameplay outside the black playing field?
@@ -74,7 +75,7 @@ Decide: Should TwoTouch's velocity vector (from the right stick) continue to aff
 Make TwoTouch velocity sticky in lock mode so if you let go of the stick the kick is still powerful, or just have visual indication of what's going on
 Add TwoTouch powercircle effects – DONE
 Don't create variables in update
-Xbox Controller Support
+Xbox Controller Support DONE
 Menus and stuff
 	Play to certain time or certain score, have winner screen
 	Controller Select
@@ -185,6 +186,9 @@ running back
 		Both seem to be resolved by removing the buttonPressed requirement in power activation.
 	TODO: Test Back vs TwoTouch and Enforcer interaction
 		DONE Now they get kicked away from the ball
+	SOLVED BUG: Holding ball and then running into the other player will make the ball be "last kicked" by the other player, and have the wrong goal effects
+	BUG: Ball can't be kicked away anymore
+	
 neutron star
 	Possible bug with ball possession not being correct? Can't reproduce at moment
 
