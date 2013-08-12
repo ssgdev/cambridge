@@ -227,14 +227,14 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		
 		int[] p1Controls = new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_LSHIFT, Input.KEY_LCONTROL};
 		int[] p2Controls = new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT, Input.KEY_RCONTROL};
-		PlayerTwoTouch p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
+		//PlayerTwoTouch p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
 //		PlayerTwin p1L = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, 0, hemicircleL, ball);
 //		PlayerTwin p1R = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, p1Controls, c1, c1Exist, new float[]{p1L.getX(),p1L.getY()+1}, p1lim, Color.orange, mySoundSystem, "slow1", slice, 1, hemicircleR, ball);
 //		p1L.setTwin(p1R);
 //		p1R.setTwin(p1L);
 		//PlayerNeo p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
 		//PlayerNeutron p1 = new PlayerNeutron(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
-		//PlayerBack p1 = new PlayerBack(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
+		PlayerBack p1 = new PlayerBack(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
 		//PlayerDash p1 = new PlayerDash(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_tri, ball, hemicircleL);
 		//PlayerEnforcer p1 = new PlayerEnforcer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
 //		PlayerTricky p1 = new PlayerTricky(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
@@ -341,13 +341,6 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		//Draw Field
 		drawField(g);
 		
-		//Draw goals
-		for(Goal goal: goals){
-			g.setColor(teamColors[goal.getPlayer()].darker());
-			g.fillRect(goal.getX(), goal.getMinY(), goal.getWidth(), goal.getHeight());
-		}
-		//g.fillRect(FIELDWIDTH-10, FIELDHEIGHT/2-GOALWIDTH/2, 15, GOALWIDTH);
-
 		//Draw Players
 		for(Player p: players){
 			p.render( g, BALLSIZE, triangle, font_small);
@@ -367,6 +360,23 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		//draw goal scroll
 		g.drawImage(goalScroll, scrollX, scrollY);
 		
+		//draw bars
+		g.setColor(Color.white);
+		g.fillRect(-700, -700, FIELDWIDTH+1400, 700);
+		g.fillRect(-700, 0, 700, FIELDHEIGHT);
+		g.fillRect(-700, FIELDHEIGHT, FIELDWIDTH+1400, 700);
+		g.fillRect(FIELDWIDTH, 0, 700, FIELDHEIGHT);
+		
+		//Draw goals
+		for(Goal goal: goals){
+			g.setColor(teamColors[goal.getPlayer()].darker());
+			g.fillRect(goal.getX(), goal.getMinY(), goal.getWidth(), goal.getHeight());
+		}
+		//g.fillRect(FIELDWIDTH-10, FIELDHEIGHT/2-GOALWIDTH/2, 15, GOALWIDTH);
+		
+		//Draw Header
+		drawHeader(g);
+		
 		//draw gamemode
 		if(gameModeAlpha>0){
 			g.setFont(font_white);
@@ -377,7 +387,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		g.resetTransform();
 	}
 	
-	public void drawField(Graphics g){
+	public void drawHeader(Graphics g){
 		//Draw Text
 		g.setFont(font);
 		if(GOALTYPE == 1 || GOALTYPE == -1){//Squash or FourSquare
@@ -411,7 +421,9 @@ public class GameplayState extends BasicGameState implements KeyListener{
 			g.drawString(""+scores[0], FIELDWIDTH/2+20,  -font.getHeight("0")-10);
 			g.drawString(":", FIELDWIDTH/2-font.getWidth(":")/2, -font.getHeight("0")-14);
 		}
-		
+	}
+	
+	public void drawField(Graphics g){
 		//Draw the field markings
 		g.setColor(Color.white);
 		g.setLineWidth(1);
