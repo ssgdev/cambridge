@@ -2,6 +2,7 @@ Changelog:
 
 8.12.13
 Fixed Back and TwoTouch "ball kicked out of lock" behaviour.
+Added white bars around field so power kick flashes and other gameplay elements aren't drawn outside of the field
 
 8.9.13
 All sounds are now ogg files. Sounds folder 1/7th the size.
