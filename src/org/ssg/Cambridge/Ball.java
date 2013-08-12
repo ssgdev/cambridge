@@ -198,16 +198,18 @@ public class Ball {
 	
 	public void clearLocked(){
 		for(int i=0;i<players.length;i++){
-			locked[i] = false;
 			if(players[i] instanceof PlayerTwoTouch && locked[i]) {
+				locked[i] = false;
 				((PlayerTwoTouch) players[i]).setLockCoolDown(true);
 				//setCanBeKicked(players[i].getPlayerNum(), true);
 				((PlayerTwoTouch) players[i]).powerKeyReleased();
 			}else if(players[i] instanceof PlayerBack && locked[i]){
+				locked[i] = false;
 				((PlayerBack) players[i]).setLockCoolDown(true);
 				((PlayerBack) players[i]).powerKeyReleased();
+			}else{
+				locked[i] = false;
 			}
-				
 		}
 	}
 	

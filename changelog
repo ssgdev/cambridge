@@ -1,5 +1,8 @@
 Changelog:
 
+8.12.13
+Fixed Back and TwoTouch "ball kicked out of lock" behaviour.
+
 8.9.13
 All sounds are now ogg files. Sounds folder 1/7th the size.
 

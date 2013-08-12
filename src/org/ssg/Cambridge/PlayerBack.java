@@ -92,6 +92,8 @@ public class PlayerBack extends Player {
 	@Override
 	public void update(float delta) {
 		
+//		System.out.println(ball.locked(playerNum));
+
 		if(cExist){
 			
 			prevVel[0] = vel[0];
@@ -312,7 +314,7 @@ public class PlayerBack extends Player {
 	@Override
 	public boolean isKicking() {
 		//return false;
-		if(power>0)
+		if(buttonPressed)
 			return false;
 		return kickingCoolDown == 0;
 	}
