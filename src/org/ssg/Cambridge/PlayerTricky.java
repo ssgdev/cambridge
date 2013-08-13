@@ -29,6 +29,9 @@ public class PlayerTricky extends Player{
 	
 	Component actionButton2;
 	
+	float camoAlpha;
+	float camoAlphaTarget;
+	
 	public PlayerTricky(int n, float[] consts, int[] f, int[] c, Controller c1,	boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 		
@@ -47,6 +50,9 @@ public class PlayerTricky extends Player{
 		if(cExist){
 			actionButton2 = this.c.getComponent(Component.Identifier.Button._4);
 		}
+		
+		camoAlpha = 1f;
+		camoAlphaTarget = 1f;
 	}
 	
 	public void setFakeBall(BallFake b){
@@ -141,9 +147,35 @@ public class PlayerTricky extends Player{
 		
 	}
 	
+	//These colors are overridden to fade away if active camo is on
+	@Override
+	public Color getColor(){
+		return getColor6(1f);
+	}
+
+	@Override
+	public Color getColor(float f){
+		return new Color(color.getRed(), color.getGreen(), color.getBlue(), f*camoAlpha);
+	}
+
+	@Override
+	public Color getColor3(){//return color of powercircle
+		return new Color(color.getRed(), color.getGreen(), color.getBlue(), ((power/MAXPOWER))*camoAlpha);
+	}
+
+	@Override
+	public Color getColor4(){
+		return new Color(color.getRed(), color.getGreen(), color.getBlue(), (powerCoolDown+500f)/500f*camoAlpha);
+	}
+
+	@Override
+	public Color getColor5(){//powerkick bar
+		return new Color(color.getRed(), color.getGreen(), color.getBlue(), lastKickAlpha*camoAlpha);
+	}
+	
 	//Returns the actual "color" scaled by the float, instead of a weird alternate color
 	public Color getColor6(float f){
-		return new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(256f*f));
+		return new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(256f*f*camoAlpha));
 	}
 	
 	@Override
@@ -162,8 +194,10 @@ public class PlayerTricky extends Player{
 			//This doesn't do anything right now
 			if(actionButton2.getPollData() == 1.0 && !button2Pressed){
 				button2Pressed = true;
+				camoAlphaTarget = 0f;
 			}else if(actionButton2.getPollData() == 0 && button2Pressed){
 				button2Pressed = false;
+				camoAlphaTarget = 1f;
 			}
 		}else{
 			
@@ -206,6 +240,8 @@ public class PlayerTricky extends Player{
 
 		updateCounters(delta);
 
+		camoAlpha = approachTarget(camoAlpha, camoAlphaTarget, delta/600f);
+		
 		if(fakeAlpha>0){
 			updateFakePos(delta);
 			
