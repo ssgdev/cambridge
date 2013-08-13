@@ -1,5 +1,8 @@
 Changelog:
 
+8.13.13
+Slow-mo versions of all sounds, minor sound tweaks besides
+
 8.12.13
 Fixed Back and TwoTouch "ball kicked out of lock" behaviour.
 Added white bars around field so power kick flashes and other gameplay elements aren't drawn outside of the field

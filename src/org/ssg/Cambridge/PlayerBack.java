@@ -130,8 +130,7 @@ public class PlayerBack extends Player {
 			tempArr[1] = ball.getY()-pos[1];
 			angle = (float)Math.atan2(tempArr[1], tempArr[0]);
 			angleTarget = (float)Math.atan2(tempArr[1], tempArr[0]);
-			mySoundSystem.quickPlay( true, "BackLock.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
-			
+			mySoundSystem.quickPlay( true, slowMo? "BackLockSlow.ogg" : "BackLock.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			kickingCoolDown = KICKCOOLDOWN;//visual effect
 		}
 
@@ -266,7 +265,7 @@ public class PlayerBack extends Player {
 	public void activatePower() {
 		power = 1;
 		if(!buttonPressed)
-			mySoundSystem.quickPlay( true, "BackActivate.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			mySoundSystem.quickPlay( true, slowMo? "BackActivateSlow.ogg":"BackActivate.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 	}
 
 	@Override

@@ -227,7 +227,7 @@ public class PlayerDash extends Player{
 			if(power<=0){
 				//powerKeyReleased();
 				if(mag(vel)>0){
-					mySoundSystem.quickPlay( true, "ChargeDash.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+					mySoundSystem.quickPlay( true, slowMo? "DashDashSlow.ogg":"DashDash.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 					lastKickAlpha = 1f;
 					
 					parallelComponent(new float[] {ball.getX()-pos[0], ball.getY()-pos[1]}, vel, ballParallel);
@@ -293,7 +293,7 @@ public class PlayerDash extends Player{
 					
 					//powerCoolDown = POWERCOOLDOWN;
 				}else{
-					mySoundSystem.quickPlay( true, "ChargeWindingDown.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+					mySoundSystem.quickPlay( true,slowMo? "DashWindingDownSlow.ogg": "DashWindingDown.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				}
 			}
 		}
@@ -315,7 +315,7 @@ public class PlayerDash extends Player{
 					ball.setVel(new float[]{gustVel[0], gustVel[1]}, .1f);
 					ball.speedUp(POWERKICK+VELMAG*2f, 0, .02f);
 					kickingCoolDown = KICKCOOLDOWN;
-					mySoundSystem.quickPlay( true, "ChargeGust.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+					mySoundSystem.quickPlay( true, slowMo?"DashGustSlow.ogg":"DashGust.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 					lastKickAlpha = 1f;//or maybe kickingCoolDown = KICKCOOLDOWN;
 					
 					gustCoolDown = GUSTCOUNTDOWN;
@@ -356,14 +356,14 @@ public class PlayerDash extends Player{
 	@Override
 	public void activatePower() {
 		power = MAXPOWER;
-		mySoundSystem.quickPlay( true, "ChargeCharging.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+		mySoundSystem.quickPlay( true, slowMo?"DashChargingSlow.ogg":"DashCharging.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 //		velMag = 0;//Unneeded, as velMag is set in update anyway
 	}
 	
 	public void powerKeyReleased(){//More of a teleport
 		power = 0;
 		if(mag(vel)>0){
-			mySoundSystem.quickPlay( true, "ChargeShortDash.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			mySoundSystem.quickPlay( true, slowMo?"DashShortDashSlow.ogg":"DashShortDash.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			
 			parallelComponent(new float[]{ball.getX()-pos[0], ball.getY()-pos[1]}, vel, ballParallel);
 			ballOrth[0] = ball.getX()-pos[0]-ballParallel[0];
@@ -428,11 +428,7 @@ public class PlayerDash extends Player{
 				ball.cancelAcc();
 				ball.clearLocked();
 				kickingCoolDown = KICKCOOLDOWN;
-				if(slowMo){
-					mySoundSystem.quickPlay( true, "KickBumpSlow.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
-				}else{
-					mySoundSystem.quickPlay( true, "KickBump.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
-				}
+				mySoundSystem.quickPlay( true, slowMo?"KickBumpSlow.ogg":"KickBump.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			}
 		}
 //		velMag = VELMAG;

@@ -248,9 +248,9 @@ public class PlayerTwin extends Player{
 			twin.addNukes(+1);
 			nukes--;
 			if(twinNum == 0){
-				mySoundSystem.quickPlay( true, "TwinsLtoR.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+				mySoundSystem.quickPlay( true, slowMo?"TwinsLtoRSlow.ogg":"TwinsLtoR.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			}else{
-				mySoundSystem.quickPlay( true, "TwinsRtoL.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+				mySoundSystem.quickPlay( true, slowMo?"TwinsRtoLSlow.ogg":"TwinsRtoL.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			}
 		}
 	}

@@ -1,6 +1,8 @@
 TODO:
 
-Kicking the ball out of the hands of Back and TwoTouch doesn't work
+Stop having invalid lwjgl alpha parameters
+Kicking the ball while not moving as Neo doesn't do a powerful enough kick (not a bug, but flaw) Basically kicking needs work
+Kicking the ball out of the hands of Back and TwoTouch doesn't work DONE
 Kicking magnitudes needs tweaking, powerkick is way too strong. (Check TwoTouch predictor afterwards)
 Ball in wall failsafe
 White bars on outside, so don't draw gameplay outside the black playing field?

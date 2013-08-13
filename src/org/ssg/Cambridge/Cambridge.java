@@ -81,42 +81,78 @@ public class Cambridge extends StateBasedGame {
 	}
 	
 	public void initSounds() throws SlickException{
-		mySoundSystem.loadSound("KickBump.ogg");
-		mySoundSystem.loadSound("KickBumpSlow.ogg");
+		mySoundSystem.loadSound("BackLock.ogg");
+		mySoundSystem.loadSound("BackLockSlow.ogg");
+		mySoundSystem.loadSound("BackActivate.ogg");
+		mySoundSystem.loadSound("BackActivateSlow.ogg");
+		
+		mySoundSystem.loadSound("BallLaunch.ogg");
+		mySoundSystem.loadSound("BallLaunchSlow.ogg");
 		mySoundSystem.loadSound("BallBounce.ogg");
 		mySoundSystem.loadSound("BallBounceSlow.ogg");
+
+		mySoundSystem.loadSound("DashCharging.ogg");
+		mySoundSystem.loadSound("DashChargingSlow.ogg");
+		mySoundSystem.loadSound("DashDash.ogg");
+		mySoundSystem.loadSound("DashDashSlow.ogg");
+		mySoundSystem.loadSound("DashGust.ogg");
+		mySoundSystem.loadSound("DashGustSlow.ogg");
+		mySoundSystem.loadSound("DashWindingDown.ogg");
+		mySoundSystem.loadSound("DashWindingDownSlow.ogg");
+		mySoundSystem.loadSound("DashShortDash.ogg");
+		mySoundSystem.loadSound("DashShortDashSlow.ogg");
+		
+		mySoundSystem.loadSound("EnforcerBump.ogg");
+		mySoundSystem.loadSound("EnforcerBumpSlow.ogg");
+		mySoundSystem.loadSound("EnforcerStep.ogg");
+		mySoundSystem.loadSound("EnforcerStepSlow.ogg");
+		mySoundSystem.loadSound("EnforcerActivate.ogg");
+		mySoundSystem.loadSound("EnforcerActivateSlow.ogg");
+		mySoundSystem.loadSound("EnforcerTurn.ogg");
+		mySoundSystem.loadSound("EnforcerTurnSlow.ogg");
+		mySoundSystem.loadSound("EnforcerWallBounce.ogg");
+		mySoundSystem.loadSound("EnforcerWallBounceSlow.ogg");
+		
+		mySoundSystem.loadSound("KickBump.ogg");
+		mySoundSystem.loadSound("KickBumpSlow.ogg");
+		
 		mySoundSystem.loadSound("GoalScored.ogg");
 		mySoundSystem.loadSound("GoalOwnScored.ogg");
-		mySoundSystem.loadSound("BallLaunch.ogg");
-		mySoundSystem.loadSound("PowerKick.ogg");
-		mySoundSystem.loadSound("Rumble.ogg");
-		mySoundSystem.loadSound("PowerRecharged.ogg");
-		mySoundSystem.loadSound("PowerRechargedSlow.ogg");
-		mySoundSystem.loadSound("MenuThud.ogg");
+
 		mySoundSystem.loadSound("NeoSlowOut.ogg");
 		mySoundSystem.loadSound("NeoSlowIn.ogg");
-		mySoundSystem.loadSound("TwoTouchActivate.ogg");
-		mySoundSystem.loadSound("TwoTouchLockOn.ogg");
-		mySoundSystem.loadSound("TwinsLtoR.ogg");
-		mySoundSystem.loadSound("TwinsRtoL.ogg");
-		mySoundSystem.loadSound("PufferPuffUp.ogg");
-		mySoundSystem.loadSound("PufferPuffDown.ogg");
-		mySoundSystem.loadSound("EnforcerBump.ogg");
-		mySoundSystem.loadSound("EnforcerStep.ogg");
-		mySoundSystem.loadSound("EnforcerActivate.ogg");
-		mySoundSystem.loadSound("EnforcerTurn.ogg");
-		mySoundSystem.loadSound("EnforcerWallBounce.ogg");
-		mySoundSystem.loadSound("ChargeCharging.ogg");
-		mySoundSystem.loadSound("ChargeDash.ogg");
-		mySoundSystem.loadSound("ChargeGust.ogg");
-		mySoundSystem.loadSound("ChargeWindingDown.ogg");
-		mySoundSystem.loadSound("ChargeShortDash.ogg");
-		mySoundSystem.loadSound("BackLock.ogg");
-		mySoundSystem.loadSound("BackActivate.ogg");
+		mySoundSystem.loadSound("NeoRecharged.ogg");
+		mySoundSystem.loadSound("NeoRechargedSlow.ogg");
+		
 		mySoundSystem.loadSound("NeutronPush.ogg");
+		mySoundSystem.loadSound("NeutronPushSlow.ogg");
 		mySoundSystem.loadSound("NeutronPull.ogg");
+		mySoundSystem.loadSound("NeutronPullSlow.ogg");
 		mySoundSystem.loadSound("NeutronCatch.ogg");
+		mySoundSystem.loadSound("NeutronCatchSlow.ogg");
 		mySoundSystem.loadSound("NeutronSwing.ogg");
+		mySoundSystem.loadSound("NeutronSwingSlow.ogg");
+		
+		mySoundSystem.loadSound("PowerKick.ogg");
+		mySoundSystem.loadSound("PowerKickSlow.ogg");
+		
+		mySoundSystem.loadSound("Rumble.ogg");
+		
+		mySoundSystem.loadSound("MenuThud.ogg");
+
+		mySoundSystem.loadSound("TwinsLtoR.ogg");
+		mySoundSystem.loadSound("TwinsLtoRSlow.ogg");
+		mySoundSystem.loadSound("TwinsRtoL.ogg");
+		mySoundSystem.loadSound("TwinsRtoLSlow.ogg");
+		
+		mySoundSystem.loadSound("TwoTouchActivate.ogg");
+		mySoundSystem.loadSound("TwoTouchActivateSlow.ogg");
+		mySoundSystem.loadSound("TwoTouchLockOn.ogg");
+		mySoundSystem.loadSound("TwoTouchLockOnSlow.ogg");
+
+
+
+
 		//TODO: Have streams created after character selection?
 		mySoundSystem.newStreamingSource(false, "slow1", "Rumble.ogg", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);
 		mySoundSystem.newStreamingSource(false, "slow2", "Rumble.ogg", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);

@@ -58,11 +58,7 @@ public class PlayerNeo extends Player {
 		if(powerCoolDown>-500f){
 			powerCoolDown -= delta;
 			if(powerCoolDown<=0 && !playedPowerDing){
-				if(slowMo){
-					mySoundSystem.quickPlay( true, "PowerRechargedSlow.ogg", false, 0,0,0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
-				}else{
-					mySoundSystem.quickPlay( true, "PowerRecharged.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
-				}
+				mySoundSystem.quickPlay( true, slowMo?"NeoRechargedSlow.ogg":"NeoRecharged.ogg", false, 0,0,0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				playedPowerDing = true;
 			}
 			if(powerCoolDown <=-500f){
