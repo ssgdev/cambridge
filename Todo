@@ -5,7 +5,7 @@ Kicking the ball while not moving as Neo doesn't do a powerful enough kick (not 
 Kicking the ball out of the hands of Back and TwoTouch doesn't work DONE
 Kicking magnitudes needs tweaking, powerkick is way too strong. (Check TwoTouch predictor afterwards)
 Ball in wall failsafe
-White bars on outside, so don't draw gameplay outside the black playing field?
+White bars on outside, so don't draw gameplay outside the black playing field? DONE
 HMM: Kick trails get jaggy
 Implement/Revamp Keyboard Controls for each character? For example
 	PlayerNeo: Good for now DONE
@@ -15,7 +15,7 @@ Implement/Revamp Keyboard Controls for each character? For example
 	PlayerTricky: Fake ball is random, fake player is somewhat AIed. DONE
 	PlayerDash: Holding and charging through does big dash, releasing it does the short dash. DONE
 	PlayerNeutron: Good for now DONE
-	PlayerBack: Hold off until main gameplay is set.
+	PlayerBack: Hold off until main gameplay is set. DONE
 BUG: Changing the size of puffer changes the size of the kick trail when it shouldn't DONE
 BUG: Holding ActionButton with Enforcer on wall hammers the sounds DONE
 BUG: Reactivating the power on Enforcer by holding down after the wall doesn't sound good MEH

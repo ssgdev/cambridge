@@ -97,10 +97,10 @@ public class PlayerBack extends Player {
 		
 //		System.out.println(ball.locked(playerNum));
 
+		prevVel[0] = vel[0];
+		prevVel[1] = vel[1];
+		
 		if(cExist){
-			
-			prevVel[0] = vel[0];
-			prevVel[1] = vel[1];
 			
 			pollController(delta);
 			
@@ -117,6 +117,19 @@ public class PlayerBack extends Player {
 			}else if(actionButton2.getPollData() == 0.0){
 
 			}
+		}else{
+			
+			pollKeys(delta);
+
+			if(buttonPressed){
+				activatePower();
+			}
+			if(buttonReleased){
+				powerKeyReleased();
+				buttonPressed = false;
+				buttonReleased = false;
+			}
+			
 		}
 		
 		updatePos(delta);
@@ -209,6 +222,7 @@ public class PlayerBack extends Player {
 			ball.setVel(new float[]{(float)Math.cos(angle), (float)Math.sin(angle)}, 0f);
 //			System.out.println(ball.getVelX()+", "+ball.getVelY()+":"+ball.getVelMag());
 			
+			//Prevent ball going out of bounds
 			if(!ball.betweenGoals(ball.getX(), ball.getY(), ball.getVel())){
 				if(ball.getX()<0){
 					tempf = ball.getX()-1;
@@ -249,8 +263,9 @@ public class PlayerBack extends Player {
 		if((dist(pos[0],pos[1],ball.getX(),ball.getY())>=KICKRANGE/2f+3f || ball.scored())){
 			ball.setLocked(playerNum, false);
 			lockCoolDown = false;
+			radius = RADIUS;
 //			buttonPressed = false;
-			power = 0;
+//			power = 0;
 		}
 		
 		updateCounters(delta);
@@ -266,15 +281,14 @@ public class PlayerBack extends Player {
 
 	@Override
 	public void activatePower() {
-		power = 1;
-		if(!buttonPressed)
+		if(power == 0)
 			mySoundSystem.quickPlay( true, slowMo? "BackActivateSlow.ogg":"BackActivate.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+		power = 1;
 	}
 
 	@Override
 	public void powerKeyReleased() {
 		power = 0;
-		radius = RADIUS;
 		if(ball.locked(playerNum)){
 			ball.setLocked(playerNum, false);
 			lockCoolDown = false;

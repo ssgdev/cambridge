@@ -212,6 +212,16 @@ public class PlayerTricky extends Player{
 				buttonReleased = false;
 			}
 			
+			if(button2Pressed){
+				camoAlphaTarget = 0f;
+			}
+			if(button2Released){
+				button2Pressed = false;
+				button2Released = false;
+				camoAlphaTarget = 1f;
+			}
+			
+			//Fake player AI code
 			if(fakeAlpha <= 0){//Haven't kicked it yet
 				tempf = (float)(Math.random()*Math.PI*2.0);
 				curve[0] = (float)Math.cos(tempf);

@@ -202,11 +202,11 @@ public class Ball {
 				locked[i] = false;
 				((PlayerTwoTouch) players[i]).setLockCoolDown(true);
 				//setCanBeKicked(players[i].getPlayerNum(), true);
-				((PlayerTwoTouch) players[i]).powerKeyReleased();
+//				((PlayerTwoTouch) players[i]).powerKeyReleased();
 			}else if(players[i] instanceof PlayerBack && locked[i]){
 				locked[i] = false;
 				((PlayerBack) players[i]).setLockCoolDown(true);
-				((PlayerBack) players[i]).powerKeyReleased();
+//				((PlayerBack) players[i]).powerKeyReleased();
 			}else{
 				locked[i] = false;
 			}
