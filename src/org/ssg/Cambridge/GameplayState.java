@@ -126,9 +126,16 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		c3Exist = (c3 != null);
 		c4Exist = (c4 != null);
 		
-		font = data.font();
-		font_white = data.whiteFont();
-		font_small = data.smallFont();
+		try {
+			font = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0.png"));
+			font_white = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0_white.png"));
+			font_small = new AngelCodeFont(RESDIR + "8bitoperator_small.fnt", new Image(RESDIR + "8bitoperator_small_0.png"));
+		} catch (SlickException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Fonts not loaded properly. Uh oh. Spaghettio.");
+			e.printStackTrace();
+		}
+		
 		triangle = new Image(RESDIR + "triangle.png");
 		hemicircleL = new Image(RESDIR + "hemicircleL.png");
 		hemicircleR = new Image(RESDIR + "hemicircleR.png");

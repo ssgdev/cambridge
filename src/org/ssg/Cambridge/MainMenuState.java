@@ -61,9 +61,15 @@ public class MainMenuState extends BasicGameState implements KeyListener{
 		back = false;
 		inputDelay = 0;
 		
-		font = data.font();
-		font_white = data.whiteFont();
-		font_small = data.smallFont();
+		try {
+			font = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0.png"));
+			font_white = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0_white.png"));
+			font_small = new AngelCodeFont(RESDIR + "8bitoperator_small.fnt", new Image(RESDIR + "8bitoperator_small_0.png"));
+		} catch (SlickException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Fonts not loaded properly. Uh oh. Spaghettio.");
+			e.printStackTrace();
+		}
 		
 		selected = 0;
 		
@@ -131,7 +137,7 @@ public class MainMenuState extends BasicGameState implements KeyListener{
 				selected = 2;
 		} else if (input.isKeyPressed(Input.KEY_S) || input.isKeyPressed(Input.KEY_DOWN) || down) {
 			selected = ++selected % 3;
-		} else if(input.isKeyPressed(Input.KEY_ESCAPE)){
+		} else if(input.isKeyPressed(Input.KEY_ESCAPE) || back){
 			gc.exit();
 			mySoundSystem.cleanup();
 		} else if (input.isKeyPressed(Input.KEY_ENTER) || enter) {
