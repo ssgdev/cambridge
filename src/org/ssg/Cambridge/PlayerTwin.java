@@ -19,6 +19,7 @@ public class PlayerTwin extends Player{
 	PlayerTwin twin;
 	int twinNum;
 	Image hemicircle;
+	Image slice_twin;
 	
 	Ball ball;
 	
@@ -32,6 +33,8 @@ public class PlayerTwin extends Player{
 	float DESIREDORBITRADIUS;
 	float orbitRadius;
 
+	float syncFactor;
+	
 	Component moveStickX, moveStickY;
 	Component otherStickX, otherStickY;
 	
@@ -39,7 +42,7 @@ public class PlayerTwin extends Player{
 	
 	boolean actionButton;
 	
-	public PlayerTwin(int n, float[] consts, int[] f, int[] c, CambridgeController c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, int tn, Image hc, Ball b) throws SlickException {
+	public PlayerTwin(int n, float[] consts, int[] f, int[] c, CambridgeController c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_t, int tn, Image hc, Ball b) throws SlickException {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 		
 		ball = b;
@@ -70,6 +73,9 @@ public class PlayerTwin extends Player{
 		}
 		
 		hemicircle = hc;
+		slice_twin = slc_t;
+		
+		syncFactor = 1f;
 
 	}
 
@@ -192,6 +198,8 @@ public class PlayerTwin extends Player{
 		theta2 += -1*omega*.002f*delta;
 		if(theta2>360) theta2-=360;
 		
+		syncFactor = dot(vel, twin.getVel());
+		
 	}
 	
 	@Override
@@ -205,10 +213,16 @@ public class PlayerTwin extends Player{
 		g.drawOval(pos[0]-KICKRANGE/2f, pos[1]-KICKRANGE/2f, KICKRANGE, KICKRANGE);
 	}
 	
-	//Repurposed to draw synchro
+	//Repurposed to draw synchronization rating. More sync means harder kicks
 	@Override
 	public void drawSlice(Graphics g){
+		if(nukes == 2)
+			super.drawSlice(g);
 		
+		tempf = 360f/2f/(float)Math.PI*(float)Math.atan2(vel[1], vel[0]);
+		g.rotate(pos[0], pos[1], tempf);
+		g.drawImage(slice_twin, pos[0]-slice_twin.getWidth()/2f, pos[1]-slice_twin.getHeight()/2f, getColor(syncFactor*.75f));
+		g.rotate(pos[0], pos[1], -tempf);
 	}
 	
 	@Override
@@ -216,18 +230,18 @@ public class PlayerTwin extends Player{
 		g.drawImage(hemicircle.getScaledCopy(KICKRANGE/hemicircle.getHeight()), pos[0]-KICKRANGE/2+twinNum*KICKRANGE/2, pos[1]-KICKRANGE/2, getColor(.2f));
 
 		if(PLAYERSIZE>0){
-			g.setColor(getColor());
-			
 			g.rotate(pos[0]+(float)Math.cos(theta2)*orbitRadius, pos[1]+(float)Math.sin(theta2)*orbitRadius, getTheta());
+			g.setColor(Color.black);
+			g.fillRect(pos[0]+(float)Math.cos(theta2)*orbitRadius-PLAYERSIZE/2, pos[1]+(float)Math.sin(theta2)*orbitRadius-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
+			g.setColor(getColor());
 			g.drawRect(pos[0]+(float)Math.cos(theta2)*orbitRadius-PLAYERSIZE/2, pos[1]+(float)Math.sin(theta2)*orbitRadius-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
-			if(ball.assistTwin()[0] == playerNum && ball.assistTwin()[1] == twinNum)
-				g.fillRect(pos[0]+(float)Math.cos(theta2)*orbitRadius-PLAYERSIZE/2, pos[1]+(float)Math.sin(theta2)*orbitRadius-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
 			g.rotate(pos[0]+(float)Math.cos(theta2)*orbitRadius, pos[1]+(float)Math.sin(theta2)*orbitRadius, -getTheta());
 			
 			g.rotate(pos[0]-(float)Math.cos(theta2)*orbitRadius, pos[1]-(float)Math.sin(theta2)*orbitRadius, getTheta());
+			g.setColor(Color.black);
+			g.fillRect(pos[0]-(float)Math.cos(theta2)*orbitRadius-PLAYERSIZE/2, pos[1]-(float)Math.sin(theta2)*orbitRadius-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
+			g.setColor(getColor());
 			g.drawRect(pos[0]-(float)Math.cos(theta2)*orbitRadius-PLAYERSIZE/2, pos[1]-(float)Math.sin(theta2)*orbitRadius-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
-			if(ball.assistTwin()[0] == playerNum && ball.assistTwin()[1] == twinNum)
-				g.fillRect(pos[0]-(float)Math.cos(theta2)*orbitRadius-PLAYERSIZE/2, pos[1]-(float)Math.sin(theta2)*orbitRadius-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
 			g.rotate(pos[0]-(float)Math.cos(theta2)*orbitRadius, pos[1]-(float)Math.sin(theta2)*orbitRadius, -getTheta());
 		}
 	}
@@ -271,11 +285,6 @@ public class PlayerTwin extends Player{
 	public void setKicking(Ball b){
 //		b.setCanBeKicked(playerNum, false);
 		kickingCoolDown = KICKCOOLDOWN;
-		if(ball.assistTwin()[0] == playerNum && ball.assistTwin()[1] == twinNum){//If you got assisted, clear the ball assist
-			ball.setAssistTwin(-1,-1);
-		}else{//Set up the assist
-			ball.setAssistTwin(twin.getPlayerNum(), twin.getTwinNum());
-		}
 	}
 	
 	@Override
@@ -283,15 +292,15 @@ public class PlayerTwin extends Player{
 		if(mag(vel)==0){
 			return .5f;
 		}else if(flashKick()){
-			return POWERKICK;
+			return POWERKICK*(1f+syncFactor);
 		}else{
-			return NORMALKICK;
+			return NORMALKICK*(1f+syncFactor);
 		}
 	}
 	
 	@Override
 	public boolean flashKick() {
-		if(ball.assistTwin()[0] == playerNum && ball.assistTwin()[1] == twinNum){
+		if(syncFactor>=.9f){
 			return true;
 		}else{
 			return false;
@@ -300,7 +309,7 @@ public class PlayerTwin extends Player{
 
 	@Override
 	public void setPower() {
-
+		
 	}
 	
 	@Override
