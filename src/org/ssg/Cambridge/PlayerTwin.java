@@ -42,8 +42,8 @@ public class PlayerTwin extends Player{
 	
 	boolean actionButton;
 	
-	public PlayerTwin(int n, float[] consts, int[] f, int[] c, CambridgeController c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_t, int tn, Image hc, Ball b) throws SlickException {
-		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
+	public PlayerTwin(int n, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_t, int tn, Image hc, Ball b) throws SlickException {
+		super(n, consts, f, c, c1, p, xyL, se, ss, sn, slc);
 		
 		ball = b;
 		

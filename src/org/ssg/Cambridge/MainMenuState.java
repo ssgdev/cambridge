@@ -26,11 +26,10 @@ public class MainMenuState extends BasicGameState implements KeyListener{
 	private boolean focus;
 	private final int menuHeight = 80;
 	
-	CambridgeController c1, c2, c3, c4;
 	CambridgeController[] controllers;
-	boolean c1Exist, c2Exist, c3Exist, c4Exist;
+	
 	private final float deadzone = 0.28f;
-	private boolean down, up, enter;
+	private boolean down, up, left, right, enter, back;
 	private int inputDelay;
 	private final int inputDelayConst = 10;
 	
@@ -52,24 +51,19 @@ public class MainMenuState extends BasicGameState implements KeyListener{
 		data = ((Cambridge) sbg).getData();
 		mySoundSystem = data.mySoundSystem();
 		
-		c1 = data.getC()[0];
-		c2 = data.getC()[1];
-		c3 = data.getC()[2];
-		c4 = data.getC()[3];
-		c1Exist = (c1 != null);
-		c2Exist = (c2 != null);
-		c3Exist = (c3 != null);
-		c4Exist = (c4 != null);
 		controllers = data.getC();
 		
 		up = false;
 		down = false;
+		left = false;
+		right = false;
 		enter = false;
+		back = false;
 		inputDelay = 0;
 		
-		font = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0.png"));
-		font_white = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0_white.png"));
-		font_small = new AngelCodeFont(RESDIR + "8bitoperator_small.fnt", new Image(RESDIR + "8bitoperator_small_0.png"));
+		font = data.font();
+		font_white = data.whiteFont();
+		font_small = data.smallFont();
 		
 		selected = 0;
 		
@@ -104,6 +98,9 @@ public class MainMenuState extends BasicGameState implements KeyListener{
 		
 		up = false;
 		down = false;
+		left = false;
+		right = false;
+		back = false;
 		enter = false;
 		if (inputDelay <= 0) {
 			for (CambridgeController c: controllers) {
@@ -113,10 +110,16 @@ public class MainMenuState extends BasicGameState implements KeyListener{
 					} else if (c.getLeftStickY() < -deadzone) {
 						up = true;
 					}
-					enter = c.getAction();
+					if (c.getLeftStickX() > deadzone) {
+						right = true;
+					} else if (c.getLeftStickX() < -deadzone) {
+						left = true;
+					}
+					back = c.getMenuBack();
+					enter = c.getMenuSelect();
 				}
 			}
-			if (up || down || enter)
+			if (up || down || left || right || enter || back)
 				inputDelay = inputDelayConst;
 		} else {
 			inputDelay--;
@@ -135,10 +138,12 @@ public class MainMenuState extends BasicGameState implements KeyListener{
 			switch (selected) {
 				case 0:
 					((GameplayState)sbg.getState(data.GAMEPLAYSTATE)).setShouldRender(true);
+					setShouldRender(false);
 					sbg.enterState(data.GAMEPLAYSTATE);
 					break;
 				case 1:
 					((OptionsMenuState)sbg.getState(data.OPTIONSMENUSTATE)).setShouldRender(true);
+					setShouldRender(false);
 					sbg.enterState(data.OPTIONSMENUSTATE);
 					break;
 				case 2:

@@ -23,19 +23,31 @@ import paulscode.sound.SoundSystem;
 
 public class PlayerSelectMenuState extends BasicGameState implements KeyListener{
 	private GlobalData data;
+	private String[] menuOptions;
 	private Ini ini;
 	private int stateID;
 	SoundSystem mySoundSystem;
+	Ini.Section display, sound, gameplay;
+	
+	private int selected;
+	private boolean focus;
+	private final int menuHeight = 30;
+	private int tempHeight, tempWidth;
+
+	CambridgeController[] controllers;
+	
+	private final float deadzone = 0.28f;
+	private boolean down, up, left, right, back, enter;
+	private int inputDelay;
+	private final int inputDelayConst = 10;
 	
 	private boolean shouldRender;
-
+	
+	final static String RESDIR = "res/";
 	private AngelCodeFont font, font_white, font_small;
 	
 	private Cambridge cambridge;
 	private AppGameContainer appGc;
-	
-	CambridgeController c1, c2, c3, c4;
-	boolean c1Exist, c2Exist, c3Exist, c4Exist;
 	
 	//Constructor
 	public PlayerSelectMenuState(int i, boolean renderon) {
@@ -50,14 +62,7 @@ public class PlayerSelectMenuState extends BasicGameState implements KeyListener
 		data = ((Cambridge) sbg).getData();
 		mySoundSystem = data.mySoundSystem();
 		
-		c1 = data.getC()[0];
-		c2 = data.getC()[1];
-		c3 = data.getC()[2];
-		c4 = data.getC()[3];
-		c1Exist = (c1 != null);
-		c2Exist = (c2 != null);
-		c3Exist = (c3 != null);
-		c4Exist = (c4 != null);
+		controllers = data.getC();
 		
 		font = new AngelCodeFont(data.RESDIR + "8bitoperator.fnt", new Image(data.RESDIR + "8bitoperator_0.png"));
 		font_white = new AngelCodeFont(data.RESDIR + "8bitoperator.fnt", new Image(data.RESDIR + "8bitoperator_0_white.png"));

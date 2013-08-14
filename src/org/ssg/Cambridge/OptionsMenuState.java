@@ -32,9 +32,14 @@ public class OptionsMenuState extends BasicGameState implements KeyListener{
 	private int selected;
 	private boolean focus;
 	private final int menuHeight = 30;
+	private int tempHeight, tempWidth;
+
+	CambridgeController[] controllers;
 	
-	CambridgeController c1, c2, c3, c4;
-	boolean c1Exist, c2Exist, c3Exist, c4Exist;
+	private final float deadzone = 0.28f;
+	private boolean down, up, left, right, back, enter;
+	private int inputDelay;
+	private final int inputDelayConst = 10;
 	
 	private boolean shouldRender;
 	
@@ -60,18 +65,22 @@ public class OptionsMenuState extends BasicGameState implements KeyListener{
 		sound = data.soundConfig();
 		gameplay = data.gameplayConfig();
 		
-		c1 = data.getC()[0];
-		c2 = data.getC()[1];
-		c3 = data.getC()[2];
-		c4 = data.getC()[3];
-		c1Exist = (c1 != null);
-		c2Exist = (c2 != null);
-		c3Exist = (c3 != null);
-		c4Exist = (c4 != null);
+		controllers = data.getC();
 		
-		font = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0.png"));
-		font_white = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0_white.png"));
-		font_small = new AngelCodeFont(RESDIR + "8bitoperator_small.fnt", new Image(RESDIR + "8bitoperator_small_0.png"));
+		up = false;
+		down = false;
+		left = false;
+		right = false;
+		enter = false;
+		back = false;
+		inputDelay = 0;
+		
+		tempWidth = data.screenWidth();
+		tempHeight = data.screenHeight();
+		
+		font = data.font();
+		font_white = data.whiteFont();
+		font_small = data.smallFont();
 		
 		menuOptions = new String[] {
 			"Screen Width",
@@ -110,10 +119,10 @@ public class OptionsMenuState extends BasicGameState implements KeyListener{
 			g.drawString(menuOptions[i], data.screenWidth()/6, data.screenHeight()*0.4f+menuHeight*i);
 			switch(i) {
 				case 0:
-					g.drawString(data.screenWidth()+"", data.screenWidth()/5*3, data.screenHeight()*0.4f+menuHeight*i);
+					g.drawString(tempWidth+"", data.screenWidth()/5*3, data.screenHeight()*0.4f+menuHeight*i);
 					break;
 				case 1:
-					g.drawString(data.screenHeight()+"", data.screenWidth()/5*3, data.screenHeight()*0.4f+menuHeight*i);
+					g.drawString(tempHeight+"", data.screenWidth()/5*3, data.screenHeight()*0.4f+menuHeight*i);
 					break;
 				case 2:
 					g.drawString((data.fullscreen() ? "On" : "off"), data.screenWidth()/5*3, data.screenHeight()*0.4f+menuHeight*i);
@@ -155,25 +164,55 @@ public class OptionsMenuState extends BasicGameState implements KeyListener{
 	public void update(GameContainer gc, StateBasedGame sbg, int delta)
 			throws SlickException {
 		Input input = gc.getInput();
-		if (input.isKeyPressed(Input.KEY_W) || input.isKeyPressed(Input.KEY_UP)) {
+		
+		up = false;
+		down = false;
+		left = false;
+		right = false;
+		back = false;
+		enter = false;
+		if (inputDelay <= 0) {
+			for (CambridgeController c: controllers) {
+				if (c.exists() && c.poll()) {
+					if (c.getLeftStickY() > deadzone) {
+						down = true;
+					} else if (c.getLeftStickY() < -deadzone) {
+						up = true;
+					}
+					if (c.getLeftStickX() > deadzone) {
+						right = true;
+					} else if (c.getLeftStickX() < -deadzone) {
+						left = true;
+					}
+					back = c.getMenuBack();
+					enter = c.getMenuSelect();
+				}
+			}
+			if (up || down || left || right || enter || back)
+				inputDelay = inputDelayConst;
+		} else {
+			inputDelay--;
+		}
+		
+		if (input.isKeyPressed(Input.KEY_W) || input.isKeyPressed(Input.KEY_UP) || up) {
 			if (!focus) {
 				selected = --selected % menuOptions.length;
 				if (selected == -1) {
 					selected = menuOptions.length-1;
 				}
 			}
-		} else if (input.isKeyPressed(Input.KEY_S) || input.isKeyPressed(Input.KEY_DOWN)) {
+		} else if (input.isKeyPressed(Input.KEY_S) || input.isKeyPressed(Input.KEY_DOWN) || down) {
 			if (!focus) {
 				selected = ++selected % menuOptions.length;
 			}
-		} else if (input.isKeyPressed(Input.KEY_A) || input.isKeyPressed(Input.KEY_LEFT)) {
+		} else if (input.isKeyPressed(Input.KEY_A) || input.isKeyPressed(Input.KEY_LEFT) || left) {
 			if (focus) {
 				switch(selected) {
 					case 0:
-						data.setScreenWidth(data.screenWidth()-50);
+						tempWidth -= 50;
 						break;
 					case 1:
-						data.setScreenHeight(data.screenHeight()-50);
+						tempHeight -= 50;
 						break;
 					case 2:
 						data.setFullscreen(!data.fullscreen());
@@ -196,14 +235,14 @@ public class OptionsMenuState extends BasicGameState implements KeyListener{
 						break;
 				}
 			}
-		} else if (input.isKeyPressed(Input.KEY_D) || input.isKeyPressed(Input.KEY_RIGHT)) {
+		} else if (input.isKeyPressed(Input.KEY_D) || input.isKeyPressed(Input.KEY_RIGHT) || right) {
 			if (focus) {
 				switch(selected) {
 					case 0:
-						data.setScreenWidth(data.screenWidth()+50);
+						tempWidth += 50;
 						break;
 					case 1:
-						data.setScreenHeight(data.screenHeight()+50);
+						tempHeight += 50;
 						break;
 					case 2:
 						data.setFullscreen(!data.fullscreen());
@@ -226,15 +265,17 @@ public class OptionsMenuState extends BasicGameState implements KeyListener{
 						break;
 				}
 			}
-		} else if(input.isKeyPressed(Input.KEY_ESCAPE)){
+		} else if(input.isKeyPressed(Input.KEY_ESCAPE) || back) {
 			if (focus) {
 				focus = false;
 				switch(selected) {
 					case 0:
 						data.setScreenWidth(display.get("SCREENWIDTH", int.class));
+						tempWidth = data.screenWidth();
 						break;
 					case 1:
 						data.setScreenHeight(display.get("SCREENHEIGHT", int.class));
+						tempHeight = data.screenHeight();
 						break;
 					case 2:
 						data.setFullscreen(display.get("FULLSCREEN", boolean.class));
@@ -257,17 +298,20 @@ public class OptionsMenuState extends BasicGameState implements KeyListener{
 				}
 			} else {
 				((MainMenuState)sbg.getState(data.MAINMENUSTATE)).setShouldRender(true);
+				setShouldRender(false);
 				sbg.enterState(data.MAINMENUSTATE);
 			}
-		} else if (input.isKeyPressed(Input.KEY_ENTER)) {
+		} else if (input.isKeyPressed(Input.KEY_ENTER) || enter) {
 			if (focus) {
 				focus = false;
 				switch(selected) {
 					case 0:
+						data.setScreenWidth(tempWidth);
 						display.put("SCREENWIDTH", data.screenWidth());
 						appGc.setDisplayMode(data.screenWidth(), data.screenHeight(), data.fullscreen());
 						break;
 					case 1:
+						data.setScreenHeight(tempHeight);
 						display.put("SCREENHEIGHT", data.screenHeight());
 						appGc.setDisplayMode(data.screenWidth(), data.screenHeight(), data.fullscreen());
 						break;
@@ -298,6 +342,8 @@ public class OptionsMenuState extends BasicGameState implements KeyListener{
 				}
 			} else {
 				focus = true;
+				tempHeight = data.screenHeight();
+				tempWidth = data.screenWidth();
 			}
 		}
 	}

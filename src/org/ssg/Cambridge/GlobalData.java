@@ -10,6 +10,9 @@ import net.java.games.input.ControllerListener;
 
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
+import org.newdawn.slick.AngelCodeFont;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 
 import paulscode.sound.SoundSystem;
 
@@ -35,6 +38,8 @@ public class GlobalData {
 	private ControllerEnvironment controllerEnv;
 	private CambridgeController[] controllers;
 	private ControllerListener cListener;
+	
+	private AngelCodeFont font, fontWhite, fontSmall;
 
 	private boolean loaded;
 	
@@ -55,6 +60,15 @@ public class GlobalData {
 		this.controllerEnv = ControllerEnvironment.getDefaultEnvironment();
 		controllers = new CambridgeController[4];
 		cListener = null;
+		try {
+			font = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0.png"));
+			fontWhite = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0_white.png"));
+			fontSmall = new AngelCodeFont(RESDIR + "8bitoperator_small.fnt", new Image(RESDIR + "8bitoperator_small_0.png"));
+		} catch (SlickException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Fonts not loaded properly. Uh oh. Spaghettio.");
+			e.printStackTrace();
+		}
 		initializeControllers();
 		loadConfig();
 		getControllers();
@@ -139,6 +153,18 @@ public class GlobalData {
 				cTemp = new CambridgeController();
 			}
 		}
+	}
+	
+	public AngelCodeFont font() {
+		return font;
+	}
+	
+	public AngelCodeFont smallFont() {
+		return fontSmall;
+	}
+	
+	public AngelCodeFont whiteFont() {
+		return fontWhite;
 	}
 
 	public CambridgeController[] getC() {
