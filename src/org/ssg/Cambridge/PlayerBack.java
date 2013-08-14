@@ -12,9 +12,10 @@ import paulscode.sound.SoundSystemConfig;
 
 public class PlayerBack extends Player {
 
-	Ball ball;
-	boolean buttonPressed;
+	Image slice_wide;
 	
+	Ball ball;
+
 	Component actionButton2;
 	
 	float[] prevVel;
@@ -34,11 +35,13 @@ public class PlayerBack extends Player {
 	float radius;//Used for drawing the shoulders
 	float RADIUS;
 	
-	public PlayerBack(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
+	public PlayerBack(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_w, Ball b) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 		
 		NORMALKICK *= .2f;
 		POWERKICK *= .2f;
+		
+		slice_wide = slc_w;
 		
 		ball = b;
 		
@@ -76,9 +79,9 @@ public class PlayerBack extends Player {
 				tempArr[0] = .5f;
 			}
 			g.rotate(pos[0], pos[1], tempf);
-			g.drawImage(slice.getScaledCopy(KICKRANGE/slice.getWidth()), pos[0]-KICKRANGE/2+radius, pos[1]-KICKRANGE/2, getColor(tempArr[0]));
+			g.drawImage(slice_wide.getScaledCopy(KICKRANGE/slice_wide.getWidth()), pos[0]-KICKRANGE/2+radius, pos[1]-KICKRANGE/2, getColor(tempArr[0]));
 			g.rotate(pos[0], pos[1], 180f);
-			g.drawImage(slice.getScaledCopy(KICKRANGE/slice.getWidth()), pos[0]-KICKRANGE/2+radius, pos[1]-KICKRANGE/2, getColor(tempArr[0]));
+			g.drawImage(slice_wide.getScaledCopy(KICKRANGE/slice_wide.getWidth()), pos[0]-KICKRANGE/2+radius, pos[1]-KICKRANGE/2, getColor(tempArr[0]));
 			g.rotate(pos[0], pos[1], -180f);
 			g.rotate(pos[0], pos[1], -tempf);
 		}else if(cExist && mag(curve)>0){
