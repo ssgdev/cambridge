@@ -78,9 +78,9 @@ public class OptionsMenuState extends BasicGameState implements KeyListener{
 		tempWidth = data.screenWidth();
 		tempHeight = data.screenHeight();
 		
-		font = data.font();
-		font_white = data.whiteFont();
-		font_small = data.smallFont();
+		font = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0.png"));
+		font_white = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0_white.png"));
+		font_small = new AngelCodeFont(RESDIR + "8bitoperator_small.fnt", new Image(RESDIR + "8bitoperator_small_0.png"));
 		
 		menuOptions = new String[] {
 			"Screen Width",
