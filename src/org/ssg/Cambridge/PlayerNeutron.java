@@ -87,10 +87,10 @@ public class PlayerNeutron extends Player {
 		if (c.exists()) {
 			pollController(delta);
 			
-			if (actionButton.getPollData() == 1.0 && !buttonPressed){
+			if (c.getAction() && !buttonPressed){
 				buttonPressed = true;
 				activatePower();
-			}else if(actionButton.getPollData() == 0 && buttonPressed){
+			}else if(!c.getAction() && buttonPressed){
 				buttonPressed = false;
 				powerKeyReleased();
 			}
