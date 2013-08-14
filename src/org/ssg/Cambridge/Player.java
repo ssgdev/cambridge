@@ -25,7 +25,7 @@ public abstract class Player implements KeyListener {
 	
 	int[] controls;//up down left right kick
 	CambridgeController c; //gamepad controller
-	boolean cExist; //gamepad exist boolean
+	
 	Component lStickX, lStickY, rStickX, rStickY, actionButton; //gamepad buttons
 	float[] pos;//ition
 	float[] vel;// [xvel, yvel]
@@ -74,7 +74,7 @@ public abstract class Player implements KeyListener {
 	boolean bool;
 	float[] zeroes = {0,0};
 	
-	public Player(int n, float[] consts, int f[], int[] c, CambridgeController c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc){
+	public Player(int n, float[] consts, int f[], int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc){
 
 		playerNum = n;
 		PLAYERSIZE = 20;

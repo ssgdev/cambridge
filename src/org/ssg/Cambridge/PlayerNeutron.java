@@ -34,8 +34,8 @@ public class PlayerNeutron extends Player {
 	boolean pullCoolDown;
 	boolean lockCoolDown;
 	
-	public PlayerNeutron(int n, float[] consts, int[] f, int[] c, CambridgeController c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
-		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
+	public PlayerNeutron(int n, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
+		super(n, consts, f, c, c1, p, xyL, se, ss, sn, slc);
 
 		NORMALKICK = 1f;
 		KICKRANGE *= .7f;

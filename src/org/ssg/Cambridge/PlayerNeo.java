@@ -10,11 +10,9 @@ import paulscode.sound.SoundSystemConfig;
 
 public class PlayerNeo extends Player {
 
-	public PlayerNeo(int n, float[] consts, int[] f, int[] c, CambridgeController c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc) {
-		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
-		
+	public PlayerNeo(int n, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc) {
+	super(n, consts, f, c, c1, p, xyL, se, ss, sn, slc);
 		POWERKICK = 1.1f;
-		
 	}
 
 	@Override

@@ -14,9 +14,9 @@ import paulscode.sound.SoundSystem;
 public class PlayerDummy extends Player{
 
 	public PlayerDummy(int n, float[] consts, int[] f, int[] c, CambridgeController c1,
-			boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss,
+			float[] p, int[] xyL, Color se, SoundSystem ss,
 			String sn, Image slc) {
-		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
+		super(n, consts, f, c, c1, p, xyL, se, ss, sn, slc);
 		
 		KICKRANGE = 0;
 		PLAYERSIZE = 0;

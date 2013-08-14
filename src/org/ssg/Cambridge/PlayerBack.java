@@ -33,8 +33,8 @@ public class PlayerBack extends Player {
 	float radius;//Used for drawing the shoulders
 	float RADIUS;
 	
-	public PlayerBack(int n, float[] consts, int[] f, int[] c, CambridgeController c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_w, Ball b) {
-		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
+	public PlayerBack(int n, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_w, Ball b) {
+		super(n, consts, f, c, c1, p, xyL, se, ss, sn, slc);
 		
 		NORMALKICK *= .2f;
 		POWERKICK *= .2f;

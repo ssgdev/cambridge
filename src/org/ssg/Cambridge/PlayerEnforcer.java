@@ -30,8 +30,8 @@ public class PlayerEnforcer extends Player{
 	float stepCoolDown;//used for playing the walking sound
 	float STEPCOOLDOWN;
 	
-	public PlayerEnforcer(int n, float[] consts, int[] f, int[] c, CambridgeController c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
-		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
+	public PlayerEnforcer(int n, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
+		super(n, consts, f, c, c1, p, xyL, se, ss, sn, slc);
 		
 		firstPress = true;
 		

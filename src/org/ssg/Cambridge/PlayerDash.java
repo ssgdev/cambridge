@@ -46,8 +46,8 @@ public class PlayerDash extends Player{
 
 	Ball ball;
 	
-	public PlayerDash(int n, float[] consts, int[] f, int[] c, CambridgeController c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_t, Ball b, Image hc) {
-		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
+	public PlayerDash(int n, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_t, Ball b, Image hc) {
+		super(n, consts, f, c, c1, p, xyL, se, ss, sn, slc);
 
 		MAXPOWER = 100;
 		POWERCOOLDOWN = 500;

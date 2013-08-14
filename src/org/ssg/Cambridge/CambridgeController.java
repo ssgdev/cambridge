@@ -3,7 +3,7 @@ import net.java.games.input.*;
 
 public class CambridgeController {
 	private Controller c;
-	private Component lStickX, lStickY, rStickX, rStickY, action, action2;
+	private Component lStickX, lStickY, rStickX, rStickY, action, action2, menuSelect, menuBack, start, select;
 	private boolean exist;
 	
 	public CambridgeController() {
@@ -14,6 +14,10 @@ public class CambridgeController {
 		rStickY = null;
 		action = null;
 		action2 = null;
+		menuSelect = null;
+		menuBack = null;
+		start = null;
+		select = null;
 		exist = false;
 	}
 	
@@ -25,6 +29,10 @@ public class CambridgeController {
 		rStickX = this.c.getComponent(Component.Identifier.Axis.RX);
 		action = this.c.getComponent(Component.Identifier.Button._5);
 		action2 = this.c.getComponent(Component.Identifier.Button._4);
+		menuSelect = this.c.getComponent(Component.Identifier.Button._0);
+		menuBack = this.c.getComponent(Component.Identifier.Button._1);
+		start = this.c.getComponent(Component.Identifier.Button._7);
+		select = this.c.getComponent(Component.Identifier.Button._6);
 		exist = c.poll();
 	}
 	
@@ -50,6 +58,22 @@ public class CambridgeController {
 	
 	public boolean getAction2() {
 		return action2.getPollData() == 1;
+	}
+	
+	public boolean getMenuSelect() {
+		return menuSelect.getPollData() == 1;
+	}
+	
+	public boolean getMenuBack() {
+		return menuBack.getPollData() == 1;
+	}
+	
+	public boolean getStart() {
+		return start.getPollData() == 1;
+	}
+	
+	public boolean getSelect() {
+		return select.getPollData() == 1;
 	}
 	
 	public boolean exists() {

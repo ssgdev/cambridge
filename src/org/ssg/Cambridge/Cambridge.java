@@ -145,9 +145,6 @@ public class Cambridge extends StateBasedGame {
 		mySoundSystem.loadSound("TwoTouchLockOn.ogg");
 		mySoundSystem.loadSound("TwoTouchLockOnSlow.ogg");
 
-
-
-
 		//TODO: Have streams created after character selection?
 		mySoundSystem.newStreamingSource(false, "slow1", "Rumble.ogg", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);
 		mySoundSystem.newStreamingSource(false, "slow2", "Rumble.ogg", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);
