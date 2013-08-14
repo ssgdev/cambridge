@@ -45,8 +45,8 @@ public class PlayerTwin extends Player{
 		
 		DEFAULTKICKRANGE = KICKRANGE;
 		DESIREDKICKRANGE = KICKRANGE;
-		DEFAULTPLAYERSIZE = PLAYERSIZE;
-		DESIREDPLAYERSIZE = PLAYERSIZE;
+		DEFAULTPLAYERSIZE = PLAYERSIZE*.8f;
+		DESIREDPLAYERSIZE = PLAYERSIZE*.8f;
 		DEFAULTKICK = NORMALKICK;		
 		orbitRadius = 0; 
 		DESIREDORBITRADIUS = 20;
@@ -139,10 +139,10 @@ public class PlayerTwin extends Player{
 
 		updateCounters(delta);
 		
-		velMag = VELMAG * (.5f+.5f*(float)nukes);
+		velMag = VELMAG * (.7f+.3f*(float)nukes);
 //		NORMALKICK = DEFAULTKICK * (.5f+.5f*(float)nukes);
 		
-		DESIREDKICKRANGE = DEFAULTKICKRANGE * (1f + .2f*(float)(nukes*nukes));
+		DESIREDKICKRANGE = DEFAULTKICKRANGE * (.8f + .2f*(float)(nukes*nukes));
 		
 		if(KICKRANGE < DESIREDKICKRANGE){
 			KICKRANGE+=2;
@@ -204,10 +204,10 @@ public class PlayerTwin extends Player{
 		g.drawOval(pos[0]-KICKRANGE/2f, pos[1]-KICKRANGE/2f, KICKRANGE, KICKRANGE);
 	}
 	
+	//Repurposed to draw synchro
 	@Override
 	public void drawSlice(Graphics g){
-		if(nukes==2)
-			super.drawSlice(g);
+		
 	}
 	
 	@Override

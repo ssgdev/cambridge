@@ -183,13 +183,13 @@ running back
 			SOLVED: Use ball.getX() instead of ball.getPrevX() in ball shoving code
 	For him and twotouch, angle's CW or CCW rotation should be determined not by which angletarget is closest, but the direction of rotation of the stick
 		That way rotating too fast in one direction won't have it flip out in the other direction DONE
-	BUG: Pushing the button and releasing it then walking into the ball activates lock
-	BUG: Holding the ball and walking into another player has the ball go through them
+	BUG: Pushing the button and releasing it then walking into the ball activates lock SOLVED
+	BUG: Holding the ball and walking into another player has the ball go through them SOLVED
 		Both seem to be resolved by removing the buttonPressed requirement in power activation.
 	TODO: Test Back vs TwoTouch and Enforcer interaction
 		DONE Now they get kicked away from the ball
-	SOLVED BUG: Holding ball and then running into the other player will make the ball be "last kicked" by the other player, and have the wrong goal effects
-	BUG: Ball can't be kicked away anymore
+	BUG: Holding ball and then running into the other player will make the ball be "last kicked" by the other player, and have the wrong goal effects SOLVED 
+	BUG: Ball can't be kicked away anymore SOLVED
 	
 neutron star
 	Possible bug with ball possession not being correct? Can't reproduce at moment

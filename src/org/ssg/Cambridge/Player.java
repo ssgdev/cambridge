@@ -475,7 +475,7 @@ public abstract class Player implements KeyListener {
 	}
 
 	public Color getColor(float f){
-		return new Color(color.getRed(), color.getGreen(), color.getBlue(), f);
+		return new Color(color.getRed(), color.getGreen(), color.getBlue(), f);		
 	}
 
 	public Color getColor2(){//Returns color of the circle
