@@ -46,7 +46,7 @@ public class PlayerDash extends Player{
 
 	Ball ball;
 	
-	public PlayerDash(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_t, Ball b, Image hc) {
+	public PlayerDash(int n, float[] consts, int[] f, int[] c, CambridgeController c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_t, Ball b, Image hc) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 
 		MAXPOWER = 100;
@@ -159,11 +159,11 @@ public class PlayerDash extends Player{
 	@Override
 	public void update(float delta) {
 
-		if (cExist) {
+		if (c.exists()) {
 			if(shortDashCoolDown==0)
 				pollController(delta);
 			
-			if (actionButton.getPollData() == 1.0){
+			if (c.getAction()){
 				if(!buttonPressed){
 					activatePower();
 					buttonPressed = true;

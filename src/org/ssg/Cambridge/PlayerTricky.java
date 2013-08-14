@@ -27,12 +27,10 @@ public class PlayerTricky extends Player{
 	
 	PlayerDummy dummy;
 	
-	Component actionButton2;
-	
 	float camoAlpha;
 	float camoAlphaTarget;
 	
-	public PlayerTricky(int n, float[] consts, int[] f, int[] c, Controller c1,	boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
+	public PlayerTricky(int n, float[] consts, int[] f, int[] c, CambridgeController c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 		
 		MAXPOWER = 1;
@@ -46,10 +44,6 @@ public class PlayerTricky extends Player{
 		
 		fakePos = new float[2];
 		fakeAlpha = 0f;
-		
-		if(cExist){
-			actionButton2 = this.c.getComponent(Component.Identifier.Button._4);
-		}
 		
 		camoAlpha = 1f;
 		camoAlphaTarget = 1f;
@@ -180,22 +174,22 @@ public class PlayerTricky extends Player{
 	
 	@Override
 	public void update(float delta) {
-		if (cExist) {
+		if (c.exists()) {
 			pollController(delta);
 			
-			if(actionButton.getPollData() == 1.0 && !buttonPressed){
+			if(c.getAction() && !buttonPressed){
 				buttonPressed = true;
 				activatePower();
-			}else if(actionButton.getPollData() == 0.0 && buttonPressed){
+			}else if(!c.getAction() && buttonPressed){
 				buttonPressed = false;
 				powerKeyReleased();
 			}
 			
 			//This doesn't do anything right now
-			if(actionButton2.getPollData() == 1.0 && !button2Pressed){
+			if(c.getAction2() && !button2Pressed){
 				button2Pressed = true;
 				camoAlphaTarget = 0f;
-			}else if(actionButton2.getPollData() == 0 && button2Pressed){
+			}else if(!c.getAction2() && button2Pressed){
 				button2Pressed = false;
 				camoAlphaTarget = 1f;
 			}

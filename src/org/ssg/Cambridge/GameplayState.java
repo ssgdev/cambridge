@@ -26,7 +26,8 @@ import org.newdawn.slick.state.StateBasedGame;
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
 
-public class GameplayState extends BasicGameState implements KeyListener{
+public class GameplayState extends BasicGameState implements KeyListener {
+	private GlobalData data;
 
 	final String RESDIR = "res/";
 	
@@ -65,6 +66,7 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	private float viewX, viewY;//Top left corner of the camera
 	private float scaleFactor, targetScaleFactor;
 	private int boundingWidth = 100;
+	private boolean shouldRender;
 	
 	AngelCodeFont font, font_white, font_small;
 	Image triangle, hemicircleL, hemicircleR, slice, slice_tri, slice_wide;
@@ -91,28 +93,45 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	boolean scored;//Did a goal just get scored
 	
 	SoundSystem mySoundSystem;
-	Controller c1, c2;
-	boolean c1Exist, c2Exist;
+	CambridgeController c1, c2, c3, c4;
+	boolean c1Exist, c2Exist, c3Exist, c4Exist;
 	
 	float deltaf;
 	boolean temp;
 	float tempf;
 	float[] tempArr;
 	
-	public GameplayState(int i, boolean renderoff, int gt){
+	public GameplayState(int i, boolean renderon, int gt) {
 		stateID = i;
 		gameType = gt;
+		shouldRender = renderon;
 	}
 	
-	public void getControllers(Controller c1, Controller c2) {
-		this.c1 = c1;
-		this.c2 = c2;
-		c1Exist = (c1 != null);
-		c2Exist = (c2 != null);
+	public void setShouldRender(boolean shouldRender) {
+		this.shouldRender = shouldRender;
 	}
+
+//	public void getControllers(Controller c1, Controller c2) {
+//		this.c1 = c1;
+//		this.c2 = c2;
+//		c1Exist = (c1 != null);
+//		c2Exist = (c2 != null);
+//	}
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		
+		data = ((Cambridge) sbg).getData();
+		mySoundSystem = data.mySoundSystem();
+		
+		c1 = data.getC()[0];
+		c2 = data.getC()[1];
+		c3 = data.getC()[2];
+		c4 = data.getC()[3];
+		c1Exist = (c1 != null);
+		c2Exist = (c2 != null);
+		c3Exist = (c3 != null);
+		c4Exist = (c4 != null);
 		
 		font = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0.png"));
 		font_white = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0_white.png"));
@@ -132,19 +151,20 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		initFields(gc);
 	}
 
-	public void initFields(GameContainer gc) throws SlickException{
+	public void initFields(GameContainer gc) throws SlickException {
 		
-		Ini ini;
+		Ini ini, userIni;
 		
 		float[] playerConsts = new float[8];
 		float[] ballConsts = new float[3];
 		
 		try {
 			ini = new Ini(new File(RESDIR + "config.cfg"));
+			userIni = new Ini(new File(RESDIR + "user_config.cfg"));
 			
 			NUMGAMES = ini.get("CONF","NUMGAMES", int.class);
-			SCREENWIDTH = ini.get("CONF", "SCREENWIDTH", float.class);
-			SCREENHEIGHT = ini.get("CONF", "SCREENHEIGHT", float.class);
+			SCREENWIDTH = userIni.get("DISPLAY", "SCREENWIDTH", float.class);
+			SCREENHEIGHT = userIni.get("DISPLAY", "SCREENHEIGHT", float.class);
 			ACTIONCAM = ini.get("CONF", "ACTIONCAM", int.class);
 			
 			Ini.Section section = ini.get(""+gameType);
@@ -229,26 +249,26 @@ public class GameplayState extends BasicGameState implements KeyListener{
 		int[] p1Controls = new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_LSHIFT, Input.KEY_LCONTROL};
 		int[] p2Controls = new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT, Input.KEY_RCONTROL};
 		//PlayerTwoTouch p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
-		PlayerTwin p1L = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, 0, hemicircleL, ball);
-		PlayerTwin p1R = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, p1Controls, c1, c1Exist, new float[]{p1L.getX(),p1L.getY()+1}, p1lim, Color.orange, mySoundSystem, "slow1", slice, 1, hemicircleR, ball);
-		p1L.setTwin(p1R);
-		p1R.setTwin(p1L);
+//		PlayerTwin p1L = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, 0, hemicircleL, ball);
+//		PlayerTwin p1R = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, p1Controls, c1, c1Exist, new float[]{p1L.getX(),p1L.getY()+1}, p1lim, Color.orange, mySoundSystem, "slow1", slice, 1, hemicircleR, ball);
+//		p1L.setTwin(p1R);
+//		p1R.setTwin(p1L);
 		//PlayerNeo p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
 		//PlayerNeutron p1 = new PlayerNeutron(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
 		//PlayerBack p1 = new PlayerBack(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_wide, ball);
 		//PlayerDash p1 = new PlayerDash(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_tri, ball, hemicircleL);
 		//PlayerEnforcer p1 = new PlayerEnforcer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
-//		PlayerTricky p1 = new PlayerTricky(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
-//		p1.setFakeBall(new BallFake(ballConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, goals, new float[]{FIELDWIDTH/2, FIELDHEIGHT/2}, GOALSIZE,  mySoundSystem));
-//		PlayerDummy p1D1 = new PlayerDummy(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
-//		p1.setDummy(p1D1);
+		PlayerTricky p1 = new PlayerTricky(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
+		p1.setFakeBall(new BallFake(ballConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, goals, new float[]{FIELDWIDTH/2, FIELDHEIGHT/2}, GOALSIZE,  mySoundSystem));
+		PlayerDummy p1D1 = new PlayerDummy(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, c1Exist, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
+		p1.setDummy(p1D1);
 		//PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, ball);
 		PlayerNeo p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice);
 		//PlayerDash p2 = new PlayerDash(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, slice_tri, ball, hemicircleL);
 		//PlayerEnforcer p2 = new PlayerEnforcer(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow1", slice, ball);
 //		PlayerBack p2 = new PlayerBack(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, c2Exist, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, slice_wide, ball);
 		
-		players = new Player[]{p1L, p1R, p2};
+		players = new Player[]{p1, p1D1, p2};
 		for(Player p: players)
 			p.setPlayers(players);
 		
@@ -316,11 +336,13 @@ public class GameplayState extends BasicGameState implements KeyListener{
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		mySoundSystem.backgroundMusic("BGM", "BGMHotline.ogg", true);
-		mySoundSystem.setVolume("BGM", .3f);
+		mySoundSystem.setVolume("BGM", data.ambientSound()/10f);
 	}
 	
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+		if (!shouldRender)
+			return;
 		
 		g.setAntiAlias(true);
 
@@ -885,9 +907,6 @@ public class GameplayState extends BasicGameState implements KeyListener{
 			f[0]/= tempf;
 			f[1]/= tempf;
 		}
-	}
-	public void setSoundSystem(SoundSystem ss){
-		mySoundSystem=ss;
 	}
 	
 	@Override

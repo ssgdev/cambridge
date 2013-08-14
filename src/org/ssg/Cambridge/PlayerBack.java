@@ -13,11 +13,9 @@ import paulscode.sound.SoundSystemConfig;
 public class PlayerBack extends Player {
 
 	Image slice_wide;
-	
+
 	Ball ball;
 
-	Component actionButton2;
-	
 	float[] prevVel;
 	
 	boolean lockCoolDown;//True if you can't lock ball
@@ -35,7 +33,7 @@ public class PlayerBack extends Player {
 	float radius;//Used for drawing the shoulders
 	float RADIUS;
 	
-	public PlayerBack(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_w, Ball b) {
+	public PlayerBack(int n, float[] consts, int[] f, int[] c, CambridgeController c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_w, Ball b) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 		
 		NORMALKICK *= .2f;
@@ -60,10 +58,6 @@ public class PlayerBack extends Player {
 		
 		targetVelMag = VELMAG;
 		
-		if (cExist) {
-			actionButton2 = this.c.getComponent(Component.Identifier.Button._4); 
-		}
-		
 		RADIUS = 20f;
 		radius = RADIUS;
 	}
@@ -84,7 +78,7 @@ public class PlayerBack extends Player {
 			g.drawImage(slice_wide.getScaledCopy(KICKRANGE/slice_wide.getWidth()), pos[0]-KICKRANGE/2+radius, pos[1]-KICKRANGE/2, getColor(tempArr[0]));
 			g.rotate(pos[0], pos[1], -180f);
 			g.rotate(pos[0], pos[1], -tempf);
-		}else if(cExist && mag(curve)>0){
+		}else if(c.exists() && mag(curve)>0){
 			tempf = 360f/2f/(float)Math.PI*(float)Math.atan2(curve[1], curve[0]);
 			g.rotate(pos[0], pos[1], tempf);
 			g.drawImage(slice.getScaledCopy(KICKRANGE/slice.getWidth()), pos[0]-KICKRANGE/2, pos[1]-KICKRANGE/2, getColor(.5f));
@@ -100,11 +94,11 @@ public class PlayerBack extends Player {
 		prevVel[0] = vel[0];
 		prevVel[1] = vel[1];
 		
-		if(cExist){
+		if(c.exists()){
 			
 			pollController(delta);
 			
-			if(actionButton.getPollData() == 1.0){
+			if(c.getAction()){
 				activatePower();
 				buttonPressed = true;
 			}else{
@@ -112,9 +106,9 @@ public class PlayerBack extends Player {
 				buttonPressed = false;
 			}
 			
-			if (actionButton2.getPollData() == 1.0){
+			if (c.getAction2()){
 
-			}else if(actionButton2.getPollData() == 0.0){
+			} else {
 
 			}
 		}else{

@@ -30,7 +30,7 @@ public class PlayerEnforcer extends Player{
 	float stepCoolDown;//used for playing the walking sound
 	float STEPCOOLDOWN;
 	
-	public PlayerEnforcer(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
+	public PlayerEnforcer(int n, float[] consts, int[] f, int[] c, CambridgeController c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 		
 		firstPress = true;
@@ -93,14 +93,14 @@ public class PlayerEnforcer extends Player{
 	
 	@Override
 	public void update(float delta) {
-		if (cExist) {
+		if (c.exists()) {
 			
 			pollController(delta);				
 			
-			if (actionButton.getPollData() == 1.0){
+			if (c.getAction()){
 					activatePower();
 					buttonPressed = true;
-			}else if(actionButton.getPollData() == 0 && buttonPressed){
+			}else if(!c.getAction() && buttonPressed){
 					powerKeyReleased();
 					buttonPressed = false;
 					firstPress = true;

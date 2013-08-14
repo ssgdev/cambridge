@@ -24,7 +24,7 @@ public abstract class Player implements KeyListener {
 	float PLAYERSIZE;
 	
 	int[] controls;//up down left right kick
-	Controller c; //gamepad controller
+	CambridgeController c; //gamepad controller
 	boolean cExist; //gamepad exist boolean
 	Component lStickX, lStickY, rStickX, rStickY, actionButton; //gamepad buttons
 	float[] pos;//ition
@@ -74,7 +74,7 @@ public abstract class Player implements KeyListener {
 	boolean bool;
 	float[] zeroes = {0,0};
 	
-	public Player(int n, float[] consts, int f[], int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc){
+	public Player(int n, float[] consts, int f[], int[] c, CambridgeController c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc){
 
 		playerNum = n;
 		PLAYERSIZE = 20;
@@ -91,14 +91,6 @@ public abstract class Player implements KeyListener {
 		field = f;
 		controls = c;
 		this.c = c1;
-		cExist = c1Exist;
-		if (cExist) {
-			lStickX = this.c.getComponent(Component.Identifier.Axis.X);
-			lStickY = this.c.getComponent(Component.Identifier.Axis.Y);
-			rStickY = this.c.getComponent(Component.Identifier.Axis.RY);
-			rStickX = this.c.getComponent(Component.Identifier.Axis.RX);
-			actionButton = this.c.getComponent(Component.Identifier.Button._5);
-		}
 		pos = p;
 		xyLimit = xyL;
 		color = se;
@@ -172,20 +164,22 @@ public abstract class Player implements KeyListener {
 	//Three methods called in most updates
 	
 	public void pollController(float delta){
-		vel[0] = lStickX.getPollData();
-		vel[1] = lStickY.getPollData();
-		
-		if (mag(vel) < 0.28f) {
-			vel[0] = 0f;
-			vel[1] = 0f;
-		}
-		
-		curve[0] = rStickX.getPollData();
-		curve[1] = rStickY.getPollData();
-		
-		if (mag(curve) < 0.28f) {
-			curve[0] = 0f;
-			curve[1] = 0f;
+		if (c.exists()) {
+			vel[0] = c.getLeftStickX();
+			vel[1] = c.getLeftStickY();
+			
+			if (mag(vel) < 0.28f) {
+				vel[0] = 0f;
+				vel[1] = 0f;
+			}
+			
+			curve[0] = c.getRightStickX();
+			curve[1] = c.getRightStickY();
+			
+			if (mag(curve) < 0.28f) {
+				curve[0] = 0f;
+				curve[1] = 0f;
+			}
 		}
 	}
 	
@@ -350,7 +344,7 @@ public abstract class Player implements KeyListener {
 	}
 	
 	public void drawSlice(Graphics g){
-		if(cExist && mag(curve)>0){
+		if(c.exists() && mag(curve)>0){
 			tempf = 360f/2f/(float)Math.PI*(float)Math.atan2(curve[1], curve[0]);
 			g.rotate(pos[0], pos[1], tempf);
 			g.drawImage(slice.getScaledCopy(KICKRANGE/slice.getWidth()), pos[0]-KICKRANGE/2, pos[1]-KICKRANGE/2, getColor(.2f));
@@ -457,7 +451,7 @@ public abstract class Player implements KeyListener {
 	}
 	
 	public float[] getCurve() {
-		if(cExist)
+		if(c.exists())
 			return curve;
 		return zeroes;
 	}
@@ -550,7 +544,7 @@ public abstract class Player implements KeyListener {
 	
 	@Override
 	public void keyPressed(int input, char arg1) {
-		if (!cExist) {
+		if (!c.exists()) {
 			if(input == controls[0]){
 				up = true;
 			}else if(input == controls[1]){
@@ -569,7 +563,7 @@ public abstract class Player implements KeyListener {
 
 	@Override
 	public void keyReleased(int input, char arg1) {
-		if (!cExist) {
+		if (!c.exists()) {
 			if(input == controls[0]){
 				up = false;
 			}else if(input == controls[1]){

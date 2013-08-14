@@ -31,14 +31,15 @@ public class PlayerTwin extends Player{
 	float theta2;
 	float DESIREDORBITRADIUS;
 	float orbitRadius;
-	
-	Component actionButton2;
+
 	Component moveStickX, moveStickY;
 	Component otherStickX, otherStickY;
 	
 	int nukes;//nucleii
 	
-	public PlayerTwin(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, int tn, Image hc, Ball b) throws SlickException {
+	boolean actionButton;
+	
+	public PlayerTwin(int n, float[] consts, int[] f, int[] c, CambridgeController c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, int tn, Image hc, Ball b) throws SlickException {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 		
 		ball = b;
@@ -47,26 +48,24 @@ public class PlayerTwin extends Player{
 		DESIREDKICKRANGE = KICKRANGE;
 		DEFAULTPLAYERSIZE = PLAYERSIZE*.8f;
 		DESIREDPLAYERSIZE = PLAYERSIZE*.8f;
-		DEFAULTKICK = NORMALKICK;		
-		orbitRadius = 0; 
+		DEFAULTKICK = NORMALKICK;
+		orbitRadius = 0;
 		DESIREDORBITRADIUS = 20;
 		
 		theta2 = 0;
 		
 		twinNum = tn;
 		nukes = 1;
-		if(twinNum== 0 && cExist){
-			moveStickX = lStickX;
-			moveStickY = lStickY;
-			otherStickX = rStickX;
-			otherStickY = rStickY;
-			//actionButton = this.c.getComponent(Component.Identifier.Button._5);
-		}else if(twinNum==1 && cExist){
-			actionButton = this.c.getComponent(Component.Identifier.Button._4);
-			moveStickX = rStickX;
-			moveStickY = rStickY;
-			otherStickX = lStickX;
-			otherStickY = lStickY;
+		if(twinNum== 0 && c1.exists()){
+			moveStickX = c1.leftStickX();
+			moveStickY = c1.leftStickY();
+			otherStickX = c1.rightStickX();
+			otherStickY = c1.rightStickY();
+		}else if(twinNum==1 && c1.exists()){
+			moveStickX = c1.rightStickX();
+			moveStickY = c1.rightStickY();
+			otherStickX = c1.leftStickX();
+			otherStickY = c1.leftStickY();
 			omega *= -1;
 		}
 		
@@ -80,7 +79,7 @@ public class PlayerTwin extends Player{
 	
 	@Override
 	public void update(float delta) {
-		if(cExist){
+		if(c.exists()){
 			
 			if(nukes>0){
 				vel[0] = moveStickX.getPollData();
@@ -103,7 +102,9 @@ public class PlayerTwin extends Player{
 					curve[1] = 0;
 			}
 			
-			if (actionButton.getPollData() == 1.0){
+			actionButton = (twinNum == 0) ? c.getAction() : c.getAction2();
+			
+			if (actionButton){
 				if(!buttonPressed){
 					activatePower();
 					buttonPressed = true;
@@ -320,5 +321,4 @@ public class PlayerTwin extends Player{
 	public int getTwinNum(){
 		return twinNum;
 	}
-	
 }

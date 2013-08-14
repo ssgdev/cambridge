@@ -35,7 +35,7 @@ public class PlayerTwoTouch extends Player{
 	float predictionVDelta, predictionDelta;
 	float predictionTempX, predictionTempY;
 	
-	public PlayerTwoTouch(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
+	public PlayerTwoTouch(int n, float[] consts, int[] f, int[] c, CambridgeController c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 
 		DEFAULTKICK = NORMALKICK;
@@ -187,14 +187,14 @@ public class PlayerTwoTouch extends Player{
 	@Override
 	public void update(float delta){
 		
-		if (cExist) {
+		if (c.exists()) {
 			
 			prevVel[0] = vel[0];
 			prevVel[1] = vel[1];
 			
 			pollController(delta);
 			
-			if (actionButton.getPollData() == 1.0){
+			if (c.getAction()){
 				if(!buttonPressed){
 					activatePower();
 					buttonPressed = true;
@@ -444,7 +444,7 @@ public class PlayerTwoTouch extends Player{
 		power = MAXPOWER;
 		velMag = VELMAG * 0.5f;
 		mySoundSystem.quickPlay( true, slowMo?"TwoTouchActivateSlow.ogg":"TwoTouchActivate.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
-		if(!cExist){
+		if(!c.exists()){
 			curve[0] = 0;
 			curve[1] = 0;
 		}
@@ -472,7 +472,7 @@ public class PlayerTwoTouch extends Player{
 	
 	@Override
 	public float[] getCurve() {
-		if(cExist || ball.locked(playerNum))
+		if(c.exists() || ball.locked(playerNum))
 			return curve;
 		return zeroes;
 	}

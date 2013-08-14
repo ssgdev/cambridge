@@ -13,8 +13,6 @@ import paulscode.sound.SoundSystemConfig;
 public class PlayerNeutron extends Player {
 
 	Ball ball;
-	
-	Component actionButton2;
 
 	float targetVelMag;
 	
@@ -36,17 +34,13 @@ public class PlayerNeutron extends Player {
 	boolean pullCoolDown;
 	boolean lockCoolDown;
 	
-	public PlayerNeutron(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
+	public PlayerNeutron(int n, float[] consts, int[] f, int[] c, CambridgeController c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 
 		NORMALKICK = 1f;
 		KICKRANGE *= .7f;
 		
 		ball = b;
-		
-		if(cExist){
-			actionButton2 = this.c.getComponent(Component.Identifier.Button._4); 
-		}
 
 		targetVelMag = VELMAG;
 		
@@ -90,7 +84,7 @@ public class PlayerNeutron extends Player {
 	
 	@Override
 	public void update(float delta) {
-		if (cExist) {
+		if (c.exists()) {
 			pollController(delta);
 			
 			if (actionButton.getPollData() == 1.0 && !buttonPressed){
@@ -101,10 +95,10 @@ public class PlayerNeutron extends Player {
 				powerKeyReleased();
 			}
 			
-			if (actionButton2.getPollData() == 1.0 && !button2Pressed){
+			if (c.getAction2() && !button2Pressed){
 				button2Pressed = true;
 				activatePower2();
-			}else if(actionButton2.getPollData() == 0.0 && button2Pressed){
+			}else if(!c.getAction2() && button2Pressed){
 				button2Pressed = false;
 				powerKey2Released();
 			}

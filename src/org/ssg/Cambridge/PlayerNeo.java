@@ -10,17 +10,17 @@ import paulscode.sound.SoundSystemConfig;
 
 public class PlayerNeo extends Player {
 
-	public PlayerNeo(int n, float[] consts, int[] f, int[] c, Controller c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc) {
+	public PlayerNeo(int n, float[] consts, int[] f, int[] c, CambridgeController c1, boolean c1Exist, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc) {
 		super(n, consts, f, c, c1, c1Exist, p, xyL, se, ss, sn, slc);
 	}
 
 	@Override
 	public void update(float delta){
 
-		if (cExist) {
+		if (c.exists()) {
 			pollController(delta);
 			
-			if (actionButton.getPollData() == 1.0){
+			if (c.getAction()){
 				activatePower();
 			}
 			
