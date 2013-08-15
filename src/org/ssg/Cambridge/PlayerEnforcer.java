@@ -228,7 +228,7 @@ public class PlayerEnforcer extends Player{
 				tempf = dist(pos[0], pos[1], otherPlayer.getX(), otherPlayer.getY());
 				if(tempf < (KICKRANGE + otherPlayer.getKickRange())/2){
 					if(power > 0 && !otherPlayer.stunned()){
-						otherPlayer.setStunned(MAXSTUN, new float[]{otherPlayer.getX()-pos[0]+vel[0]*vel[0],otherPlayer.getY()-pos[1]+vel[1]*vel[1]}, NORMALKICK+VELMAG);
+						otherPlayer.setStunned(MAXSTUN, new float[]{otherPlayer.getX()-pos[0]+vel[0]*vel[0],otherPlayer.getY()-pos[1]+vel[1]*vel[1]}, .2f+POWERKICK*velMag);
 						kickingCoolDown = KICKCOOLDOWN;
 						if(ball.locked(otherPlayer.getPlayerNum())){//Should only be true for TwoTouch and Back
 							otherPlayer.powerKeyReleased();

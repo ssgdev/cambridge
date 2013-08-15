@@ -1,9 +1,11 @@
 TODO:
 
+TwoTouch needs more curve
+Enforcer needs scaled enforcement DONE
 Stop having invalid lwjgl alpha parameters
-Kicking the ball while not moving as Neo doesn't do a powerful enough kick (not a bug, but flaw) Basically kicking needs work
+Kicking the ball while not moving as Neo doesn't do a powerful enough kick (not a bug, but flaw) Basically kicking needs work DONE
 Kicking the ball out of the hands of Back and TwoTouch doesn't work DONE
-Kicking magnitudes needs tweaking, powerkick is way too strong. (Check TwoTouch predictor afterwards)
+Kicking magnitudes needs tweaking, powerkick is way too strong. (Check TwoTouch predictor afterwards) DONE
 Ball in wall failsafe
 White bars on outside, so don't draw gameplay outside the black playing field? DONE
 HMM: Kick trails get jaggy

@@ -281,9 +281,6 @@ public class PlayerTwoTouch extends Player{
 			
 		}
 		
-		curve[0]*=5f;
-		curve[1]*=5f;
-		
 		predictionVDelta = delta;
 		predictionDelta = delta;
 		

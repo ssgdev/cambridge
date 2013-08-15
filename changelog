@@ -9,6 +9,7 @@ PlayerBack graphical updates
 PlayerTricky and PlayerBack keyboard controls.
 PlayerBack and PlayerTwoTouch getting kicked out of lock no longer has Ball call powerKeyReleased()
 PlayerTwin assist mechanic removed, replaced by sychronization mechanic
+PlayerEnforcer enforcement is scaled by actual velocity.
 
 8.13.13
 Slow-mo versions of all sounds, minor sound tweaks besides
