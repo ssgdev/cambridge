@@ -249,7 +249,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		int[] p1Controls = new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_LSHIFT, Input.KEY_LCONTROL};
 		int[] p2Controls = new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT, Input.KEY_RCONTROL};
-		//PlayerTwoTouch p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
+		Ball predictor  = new Ball(ballConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, goals, new float[]{FIELDWIDTH/2, FIELDHEIGHT/2}, GOALSIZE,  mySoundSystem);
+		PlayerTwoTouch p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball, predictor);
 //		PlayerTwin p1L = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_twin, 0, hemicircleL, ball);
 //		PlayerTwin p1R = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, p1Controls, c1, new float[]{p1L.getX(),p1L.getY()+1}, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_twin, 1, hemicircleR, ball);
 //		p1L.setTwin(p1R);
@@ -258,7 +259,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		//PlayerNeutron p1 = new PlayerNeutron(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
 		//PlayerBack p1 = new PlayerBack(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_wide, ball);
 		//PlayerDash p1 = new PlayerDash(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_tri, ball, hemicircleL);
-		PlayerEnforcer p1 = new PlayerEnforcer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
+		//PlayerEnforcer p1 = new PlayerEnforcer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
 //		PlayerTricky p1 = new PlayerTricky(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
 //		p1.setFakeBall(new BallFake(ballConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, goals, new float[]{FIELDWIDTH/2, FIELDHEIGHT/2}, GOALSIZE,  mySoundSystem));
 //		PlayerDummy p1D1 = new PlayerDummy(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
@@ -721,6 +722,11 @@ public class GameplayState extends BasicGameState implements KeyListener {
 					//System.out.println(p.kickStrength() + "-" + (p.kickStrength()*0.5f+(float)Math.sqrt(tempf)*0.5f));
 					ball.setCurve(spinFloat, mag(spinFloat));
 					
+//					System.out.println("kickFloat:"+kickFloat[0]+", "+kickFloat[1]);
+//					System.out.println("spinFloat:"+spinFloat[0]+", "+spinFloat[1]);
+					
+//					System.out.println("Ball:"+ball.curveMag+", "+ball.curveAcc[0]+", "+ball.curveAcc[1]);
+					
 					if(p.flashKick()){//If you want the kick flash and sound effect
 						p.setLastKick(ball.getPrevX(), ball.getPrevY(), ball.getPrevX()+kickFloat[0], ball.getPrevY()+kickFloat[1], 1f);//player stores coordinates of itself and ball at last kicking event;
 						p.setPower();
@@ -732,7 +738,6 @@ public class GameplayState extends BasicGameState implements KeyListener {
 					p.setKicking(ball);//really this does resetKicking()
 					ball.cancelAcc();//Cancels any speeding up or slowing down. Does not affect curve
 					ball.setReadyForGust(false);
-					if(!(p instanceof PlayerTwin)) ball.setAssistTwin(-1,-1);
 					ball.setLastKicker(p.getPlayerNum());
 					ball.clearLocked();
 					
@@ -873,8 +878,12 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	}
 	
 	public float[] normal(float[] v, float[] w){
-		tempX = dot(v,w)/mag(w);//Repurposing this as a temp calculation holder
-		return new float[]{v[0]-tempX*w[0], v[1]-tempX*w[1]};
+		if(mag(w)>0){
+			tempX = dot(v,w)/mag(w);//Repurposing this as a temp calculation holder
+			return new float[]{v[0]-tempX*w[0], v[1]-tempX*w[1]};
+		}else{
+			return new float[]{0,0};
+		}
 	}
 	
 	//Parallel component of u on v, written to w

@@ -28,6 +28,7 @@ public class PlayerTwoTouch extends Player{
 	int rotateDir;
 	
 	//only used during lock for prediction
+	Ball predictor;
 	int predictionCount;
 	int PREDICTIONCOUNT = 150;
 	float[] predictionPos, predictionVel, predictionCurveAcc;
@@ -35,9 +36,11 @@ public class PlayerTwoTouch extends Player{
 	float predictionVDelta, predictionDelta;
 	float predictionTempX, predictionTempY;
 	
-	public PlayerTwoTouch(int n, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
+	float[] predictionKickFloat;
+	float[] predictionSpinFloat;
+	
+	public PlayerTwoTouch(int n, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b, Ball pb) {
 		super(n, consts, f, c, c1, p, xyL, se, ss, sn, slc);
-
 		
 		DEFAULTKICK = NORMALKICK;
 		EXTRAKICK = POWERKICK;
@@ -52,6 +55,8 @@ public class PlayerTwoTouch extends Player{
 		
 		ball = b;
 		ballPos = new float[2];
+		
+		predictor = pb;
 		
 		MAXPOWER = 10;
 		
@@ -71,6 +76,9 @@ public class PlayerTwoTouch extends Player{
 		predictionDelta = 0f;
 		predictionTempX = 0f;
 		predictionTempY = 0f;
+		
+		predictionKickFloat = new float[2];
+		predictionSpinFloat = new float[2];
 	}
 	
 	@Override
@@ -88,101 +96,138 @@ public class PlayerTwoTouch extends Player{
 		}
 	};
 	
-	//Calculates and draws dotted trail for ball prediction
-	public void drawBallPrediction(Graphics g) {
-		g.setColor(getColor());
-		predictionCount = PREDICTIONCOUNT;
+//	//Calculates and draws dotted trail for ball prediction
+//	public void drawBallPrediction(Graphics g) {
+//		g.setColor(getColor());
+//		predictionCount = PREDICTIONCOUNT;
+//
+//		predictionPos[0] = ball.getX();
+//		predictionPos[1] = ball.getY();
+//		
+//		predictionVel[0] = (ball.getPrevX()-pos[0]);
+//		predictionVel[1] = (ball.getPrevY()-pos[1]);
+//		unit(predictionVel);
+//		if(sameDir(vel[0], predictionVel[0]))
+//			predictionVel[0] += vel[0];
+//		if(sameDir(vel[1], predictionVel[1]))
+//			predictionVel[1] += vel[1];
+//		
+//		if (mag(predictionVel) == 0)
+//			return;
+//		
+//		predictionVelMag = (mag(vel)>0 ? EXTRAKICK : DEFAULTKICK) * VELMAG;
+//		
+//		predictionCurveAcc = normal(curve, predictionVel);
+//
+//		if (ball.CURVESCALE == 0)
+//			predictionCurveMag = 0;
+//		else
+//			predictionCurveMag = mag(predictionCurveAcc) * ball.CURVESCALE;
+//		
+//		unit(predictionVel);
+//		unit(predictionCurveAcc);
+//		
+//		while (predictionCount > 0) {
+//			predictionVDelta = predictionDelta;
+//			
+//			while(predictionVDelta>0){
+//
+//				predictionTempX = predictionPos[0]+(predictionVelMag*predictionVel[0]*predictionVDelta);
+//				predictionTempY = predictionPos[1]+(predictionVelMag*predictionVel[1]*predictionVDelta);
+//
+//				//System.out.println(vel[0]);
+//				//goalArr is {goal x, goal y, goal width, goal thickness, direction to go in
+//				if((predictionTempX>0 && predictionTempX<(float)field[0] && predictionTempY>0 && predictionTempY<(float)field[1])
+//						|| ball.betweenGoals(predictionTempX, predictionTempY, predictionVel)){//If it's in bounds or between goalposts
+//					predictionPos[0]=predictionTempX;
+//					predictionPos[1]=predictionTempY;
+//					predictionVDelta = 0;
+//					
+//					//ending trail if out of bounds -> only possible if through goals due to collision code
+//					if (predictionPos[0] > (float)field[0] || predictionPos[0] < 0 
+//							|| predictionPos[1] > (float)field[1] || predictionPos[1] < 0) {
+//						predictionCount = 0;
+//					}
+//				}else{
+//					if(predictionTempX<=0 && ball.sameDir(predictionVel[0], -1)){
+//						predictionPos[0] = 0;
+//						predictionVel[0]*=-1;
+//						predictionVDelta -= -1f*predictionPos[0]/(predictionVelMag*predictionVel[0]);
+//					}else if(predictionTempX>=(float)field[0] && ball.sameDir(predictionVel[0], 1)){
+//						predictionPos[0]=(float)field[0];
+//						predictionVel[0]*=-1;
+//						predictionVDelta -= ((float)field[0]-predictionPos[0])/(predictionVelMag*predictionVel[0]);
+//					}else if(predictionTempY<=0 && ball.sameDir(predictionVel[1], -1)){
+//						predictionPos[1]=0;
+//						predictionVel[1]*=-1;
+//						predictionVDelta -= -1f*predictionPos[1]/(predictionVelMag*predictionVel[1]);
+//					}else if(predictionTempY>=(float)field[1] && ball.sameDir(predictionVel[1], 1)){
+//						predictionPos[1]=(float)field[1];
+//						predictionVel[1]*=-1;
+//						predictionVDelta -= ((float)field[1]-predictionPos[1])/(predictionVelMag*predictionVel[1]);
+//					}
+//					predictionCurveAcc[0]=0f;//Take off curve after first ricochet
+//					predictionCurveAcc[1]=0f;
+//					predictionCurveMag=0f;
+//					predictionVelMag-=ball.BOUNCEDAMP;
+//					if(predictionVelMag<.1f){
+//						predictionVelMag = .1f;
+//					} 
+//				}//end if-else block
+//			
+//			}//end vDelta loop
+//			
+//			predictionVel[0]+=predictionCurveAcc[0]*predictionDelta*predictionCurveMag;
+//			predictionVel[1]+=predictionCurveAcc[1]*predictionDelta*predictionCurveMag;
+//			unit(predictionVel);
+//			
+//			if(predictionVelMag>0) predictionVelMag -= predictionVelMag*predictionDelta * ball.FLOORFRICTION;
+//			
+//			if (predictionCount % 5 == 0 && predictionCount > 0) {
+////				System.out.println("Beep! " + vel[0] + " " + vel[1] + " " + (mag(vel) > 0 ? mag(vel)*0.5f : 0f));
+//				g.setColor(getColor((float)predictionCount/(float)PREDICTIONCOUNT));
+//				g.fillRect(predictionPos[0]-3, predictionPos[1]-3, 6, 6);
+//			}
+//			
+//			predictionCount--;
+//		}//end while predictionCount loop
+//	}
 
-		predictionPos[0] = ball.getX();
-		predictionPos[1] = ball.getY();
+	public void drawBallPrediction(Graphics g){
+		predictor.setPos(ball.getX(), ball.getY());
 		
-		predictionVel[0] = (ball.getPrevX()-pos[0]);
-		predictionVel[1] = (ball.getPrevY()-pos[1]);
-		unit(predictionVel);
-		if(sameDir(vel[0], predictionVel[0]))
-			predictionVel[0] += vel[0];
-		if(sameDir(vel[1], predictionVel[1]))
-			predictionVel[1] += vel[1];
-		
-		if (mag(predictionVel) == 0)
-			return;
-		
-		predictionVelMag = (mag(vel)>0 ? EXTRAKICK : DEFAULTKICK) * VELMAG;
-		
-		predictionCurveAcc = normal(curve, predictionVel);
+		predictionKickFloat[0] = (ball.getPrevX()-getX());
+		predictionKickFloat[1] = (ball.getPrevY()-getY());
 
-		if (ball.CURVESCALE == 0)
-			predictionCurveMag = 0;
-		else
-			predictionCurveMag = mag(predictionCurveAcc) * ball.CURVESCALE;
-		
-		unit(predictionVel);
-		unit(predictionCurveAcc);
-		
-		while (predictionCount > 0) {
-			predictionVDelta = predictionDelta;
-			
-			while(predictionVDelta>0){
+		unit(predictionKickFloat);
+		if(sameDir(getVel()[0], predictionKickFloat[0])){
+			predictionKickFloat[0] += getKick()[0];
+		}
+		if(sameDir(getVel()[1], predictionKickFloat[1])){
+			predictionKickFloat[1] += getKick()[1];
+		}
+		unit(predictionKickFloat);
+		tempf = Math.abs(dot(getVel(), predictionKickFloat)); 
+		predictor.setVel(new float[]{predictionKickFloat[0], predictionKickFloat[1]}, .2f+VELMAG*tempf*kickStrength());
 
-				predictionTempX = predictionPos[0]+(predictionVelMag*predictionVel[0]*predictionVDelta);
-				predictionTempY = predictionPos[1]+(predictionVelMag*predictionVel[1]*predictionVDelta);
-
-				//System.out.println(vel[0]);
-				//goalArr is {goal x, goal y, goal width, goal thickness, direction to go in
-				if((predictionTempX>0 && predictionTempX<(float)field[0] && predictionTempY>0 && predictionTempY<(float)field[1])
-						|| ball.betweenGoals(predictionTempX, predictionTempY, predictionVel)){//If it's in bounds or between goalposts
-					predictionPos[0]=predictionTempX;
-					predictionPos[1]=predictionTempY;
-					predictionVDelta = 0;
-					
-					//ending trail if out of bounds -> only possible if through goals due to collision code
-					if (predictionPos[0] > (float)field[0] || predictionPos[0] < 0 
-							|| predictionPos[1] > (float)field[1] || predictionPos[1] < 0) {
-						predictionCount = 0;
-					}
-				}else{
-					if(predictionTempX<=0 && ball.sameDir(predictionVel[0], -1)){
-						predictionPos[0] = 0;
-						predictionVel[0]*=-1;
-						predictionVDelta -= -1f*predictionPos[0]/(predictionVelMag*predictionVel[0]);
-					}else if(predictionTempX>=(float)field[0] && ball.sameDir(predictionVel[0], 1)){
-						predictionPos[0]=(float)field[0];
-						predictionVel[0]*=-1;
-						predictionVDelta -= ((float)field[0]-predictionPos[0])/(predictionVelMag*predictionVel[0]);
-					}else if(predictionTempY<=0 && ball.sameDir(predictionVel[1], -1)){
-						predictionPos[1]=0;
-						predictionVel[1]*=-1;
-						predictionVDelta -= -1f*predictionPos[1]/(predictionVelMag*predictionVel[1]);
-					}else if(predictionTempY>=(float)field[1] && ball.sameDir(predictionVel[1], 1)){
-						predictionPos[1]=(float)field[1];
-						predictionVel[1]*=-1;
-						predictionVDelta -= ((float)field[1]-predictionPos[1])/(predictionVelMag*predictionVel[1]);
-					}
-					predictionCurveAcc[0]=0f;//Take off curve after first ricochet
-					predictionCurveAcc[1]=0f;
-					predictionCurveMag=0f;
-					predictionVelMag-=ball.BOUNCEDAMP;
-					if(predictionVelMag<.1f){
-						predictionVelMag = .1f;
-					} 
-				}//end if-else block
+		predictionSpinFloat = normal(getCurve(), predictionKickFloat);
+		predictor.setCurve(predictionSpinFloat, mag(predictionSpinFloat));
+		
+//		System.out.println("Predicted kickfloat:"+predictionKickFloat[0]+", "+predictionKickFloat[1]);
+//		System.out.println("Predicted spinfloat:"+tempBrr[0]+", "+tempBrr[1]);
+		
+//		System.out.println("Predicted:"+predictor.curveMag+", "+predictor.curveAcc[0]+", "+predictor.curveAcc[1]);
+		
+		for(int i=0; i<PREDICTIONCOUNT; i++){
+			predictor.update(24f);
 			
-			}//end vDelta loop
-			
-			predictionVel[0]+=predictionCurveAcc[0]*predictionDelta*predictionCurveMag;
-			predictionVel[1]+=predictionCurveAcc[1]*predictionDelta*predictionCurveMag;
-			unit(predictionVel);
-			
-			if(predictionVelMag>0) predictionVelMag -= predictionVelMag*predictionDelta * ball.FLOORFRICTION;
-			
-			if (predictionCount % 5 == 0 && predictionCount > 0) {
-//				System.out.println("Beep! " + vel[0] + " " + vel[1] + " " + (mag(vel) > 0 ? mag(vel)*0.5f : 0f));
-				g.setColor(getColor((float)predictionCount/(float)PREDICTIONCOUNT));
-				g.fillRect(predictionPos[0]-3, predictionPos[1]-3, 6, 6);
+			if (i > 0) {
+				g.setColor(getColor(1f-(float)i/(float)PREDICTIONCOUNT));
+				g.fillRect(predictor.getX()-3, predictor.getY()-3, 6, 6);
 			}
 			
-			predictionCount--;
-		}//end while predictionCount loop
+		}
+		
 	}
 	
 	@Override

@@ -162,13 +162,15 @@ public class Ball {
 	}
 
 	public void setVel(float[] f, float mag){
-		vel = f;
+		vel[0] = f[0];
+		vel[1] = f[1];
 		unit(vel);
 		velMag = mag;
 	}
 
 	public void setCurve(float[] f, float cm){
-		curveAcc = f;
+		curveAcc[0] = f[0];
+		curveAcc[1] = f[1];
 		unit(curveAcc);
 		if(CURVESCALE == 0){
 			curveMag = 0;
@@ -358,7 +360,7 @@ public class Ball {
 		}
 		
 		
-		if(velMag>0) velMag -= velMag*delta * FLOORFRICTION;
+		if(velMag>0) velMag -= velMag * delta * FLOORFRICTION;
 
 		theta+=velMag*delta;
 	}
