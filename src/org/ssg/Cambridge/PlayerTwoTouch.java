@@ -218,10 +218,10 @@ public class PlayerTwoTouch extends Player{
 		
 //		System.out.println("Predicted:"+predictor.curveMag+", "+predictor.curveAcc[0]+", "+predictor.curveAcc[1]);
 		
-		for(int i=0; i<PREDICTIONCOUNT; i++){
+		for(int i=0; i<PREDICTIONCOUNT && (predictor.getX()>0 && predictor.getX()<field[0] && predictor.getY()>0 && predictor.getY()<field[1]); i++){
 			predictor.update(24f);
 			
-			if (i > 0) {
+			if (i%2 == 0 && i > 0) {
 				g.setColor(getColor(1f-(float)i/(float)PREDICTIONCOUNT));
 				g.fillRect(predictor.getX()-3, predictor.getY()-3, 6, 6);
 			}
