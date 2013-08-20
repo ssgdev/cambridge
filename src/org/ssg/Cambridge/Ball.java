@@ -7,6 +7,8 @@ import paulscode.sound.SoundSystemConfig;
 
 public class Ball {
 	
+	int ballID;
+	
 	Player[] players;
 
 	float[] pos;
@@ -47,8 +49,10 @@ public class Ball {
 	
 	float tempf;
 
-	public Ball(float[] consts, int[] f, Goal[] g, float[] p, int gw, SoundSystem ss){
+	public Ball(int bID, float[] consts, int[] f, Goal[] g, float[] p, int gw, SoundSystem ss){
 
+		ballID = bID;//0 for real, 123 etc for fakes
+		
 		CURVESCALE = consts[0];
 		BOUNCEDAMP = consts[1];
 		FLOORFRICTION = consts[2];
@@ -69,7 +73,7 @@ public class Ball {
 		speedingUp = false;
 		slowingDown = false;
 		gustReady = false;
-		locked = new boolean[10];
+		locked = new boolean[5];
 		
 		assistTwin = new int[2];
 		assistTwin[0] = -1;
@@ -292,7 +296,7 @@ public class Ball {
 				pos[1]=tempY;
 				vDelta = 0;
 			}else{
-				if(soundCoolDown<=0 && !scored){
+				if(soundCoolDown<=0 && !scored && ballID == 0){
 					mySoundSystem.quickPlay( true, slowOn ?"BallBounceSlow.ogg":"BallBounce.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				}
 				if(tempX<=0 && sameDir(vel[0], -1)){

@@ -9,8 +9,8 @@ import paulscode.sound.SoundSystemConfig;
 
 public class BallFake extends Ball {
 	
-	public BallFake(float[] consts, int[] f, Goal[] g, float[] p, int gw, SoundSystem ss) {
-		super(consts, f, g, p, gw, ss);
+	public BallFake(int bID, float[] consts, int[] f, Goal[] g, float[] p, int gw, SoundSystem ss) {
+		super(bID, consts, f, g, p, gw, ss);
 	}
 
 	@Override

@@ -211,7 +211,7 @@ public class PlayerTwoTouch extends Player{
 		predictor.setVel(new float[]{predictionKickFloat[0], predictionKickFloat[1]}, .2f+VELMAG*tempf*kickStrength());
 
 		predictionSpinFloat = normal(getCurve(), predictionKickFloat);
-		predictor.setCurve(predictionSpinFloat, mag(predictionSpinFloat));
+		predictor.setCurve(predictionSpinFloat, mag(predictionSpinFloat)*curveStrength());
 		
 //		System.out.println("Predicted kickfloat:"+predictionKickFloat[0]+", "+predictionKickFloat[1]);
 //		System.out.println("Predicted spinfloat:"+tempBrr[0]+", "+tempBrr[1]);
@@ -537,6 +537,11 @@ public class PlayerTwoTouch extends Player{
 		}else{
 			return NORMALKICK;
 		}
+	}
+	
+	@Override
+	public float curveStrength(){
+		return 2f;
 	}
 	
 	@Override

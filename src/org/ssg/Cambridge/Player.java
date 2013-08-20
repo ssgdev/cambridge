@@ -498,6 +498,10 @@ public abstract class Player implements KeyListener {
 		}
 	}
 	
+	public float curveStrength(){
+		return 1f;
+	}
+	
 	public float getKickRange(){
 		return KICKRANGE;
 	}

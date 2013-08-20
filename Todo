@@ -192,7 +192,6 @@ running back
 		DONE Now they get kicked away from the ball
 	BUG: Holding ball and then running into the other player will make the ball be "last kicked" by the other player, and have the wrong goal effects SOLVED 
 	BUG: Ball can't be kicked away anymore SOLVED
-	
 neutron star
 	Possible bug with ball possession not being correct? Can't reproduce at moment
 
