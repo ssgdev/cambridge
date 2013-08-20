@@ -12,6 +12,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Shape;
+import org.newdawn.slick.geom.Transform;
 
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
@@ -22,6 +23,7 @@ public abstract class Player implements KeyListener {
 
 	int playerNum;
 	float PLAYERSIZE;
+	Polygon poly;
 	
 	int[] controls;//up down left right kick
 	CambridgeController c; //gamepad controller
@@ -168,7 +170,7 @@ public abstract class Player implements KeyListener {
 			vel[0] = c.getLeftStickX();
 			vel[1] = c.getLeftStickY();
 			
-			if (mag(vel) < 0.28f) {
+			if (mag(vel) < 0.4f) {
 				vel[0] = 0f;
 				vel[1] = 0f;
 			}
@@ -176,7 +178,7 @@ public abstract class Player implements KeyListener {
 			curve[0] = c.getRightStickX();
 			curve[1] = c.getRightStickY();
 			
-			if (mag(curve) < 0.28f) {
+			if (mag(curve) < 0.4f) {
 				curve[0] = 0f;
 				curve[1] = 0f;
 			}
@@ -361,6 +363,7 @@ public abstract class Player implements KeyListener {
 	}
 	
 	public void drawKickCircle(Graphics g){
+		g.setLineWidth(5);
 		//Draw kicking circle
 		g.setColor(getColor(.5f).darker());
 		g.drawOval(pos[0]-KICKRANGE/2, pos[1]-KICKRANGE/2, KICKRANGE, KICKRANGE);
@@ -370,12 +373,30 @@ public abstract class Player implements KeyListener {
 		g.drawOval(pos[0]-KICKRANGE/2f, pos[1]-KICKRANGE/2f, KICKRANGE, KICKRANGE);
 	}
 	
+//	public void drawPlayer(Graphics g){
+//		g.setColor(getColor());
+//		g.rotate(pos[0], pos[1], theta);
+//		g.drawRect(pos[0]-PLAYERSIZE/2, pos[1]-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
+//		g.rotate(pos[0], pos[1], -theta);
+//		//g.drawOval(getX()-getKickRange()/2f+BALLSIZE/2f, getY()-getKickRange()/2f+BALLSIZE/2f, getKickRange()-BALLSIZE, getKickRange()-BALLSIZE);//Draw kicking circle;
+//	}
+//	
+
 	public void drawPlayer(Graphics g){
 		g.setColor(getColor());
-		g.rotate(pos[0], pos[1], theta);
-		g.drawRect(pos[0]-PLAYERSIZE/2, pos[1]-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
-		g.rotate(pos[0], pos[1], -theta);
-		//g.drawOval(getX()-getKickRange()/2f+BALLSIZE/2f, getY()-getKickRange()/2f+BALLSIZE/2f, getKickRange()-BALLSIZE, getKickRange()-BALLSIZE);//Draw kicking circle;
+		g.setLineWidth(2f);
+		g.translate(pos[0],pos[1]);
+		poly = (Polygon) poly.transform(Transform.createRotateTransform(theta));
+		g.draw(poly);
+		poly = (Polygon) poly.transform(Transform.createRotateTransform(-theta));
+		g.translate(-pos[0], -pos[1]);
+		g.setLineWidth(5f);
+		
+		//Debugging
+//		g.setColor(getColor());
+//		g.drawLine(pos[0], pos[1], pos[0]+ballParallel[0], pos[1]+ballParallel[1]);
+//		g.drawLine(pos[0], pos[1], pos[0]+ballOrth[0], pos[1]+ballOrth[1]);
+		
 	}
 	
 	public void drawPowerCircle(Graphics g){

@@ -264,8 +264,9 @@ public class GameplayState extends BasicGameState implements KeyListener {
 //		p1.setFakeBall(new BallFake(1, ballConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, goals, new float[]{FIELDWIDTH/2, FIELDHEIGHT/2}, GOALSIZE,  mySoundSystem));
 //		PlayerDummy p1D1 = new PlayerDummy(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
 //		p1.setDummy(p1D1);
-		//PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, ball);
-		PlayerNeo p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice);
+		Ball predictor2  = new Ball(1, ballConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, goals, new float[]{FIELDWIDTH/2, FIELDHEIGHT/2}, GOALSIZE,  mySoundSystem);
+		PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, ball, predictor2);
+		//PlayerNeo p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice);
 		//PlayerDash p2 = new PlayerDash(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, slice_tri, ball, hemicircleL);
 		//PlayerEnforcer p2 = new PlayerEnforcer(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow1", slice, ball);
 //		PlayerBack p2 = new PlayerBack(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, slice_wide, ball);
@@ -387,10 +388,10 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		//draw bars
 		g.setColor(Color.white);
-		g.fillRect(-700, -700, FIELDWIDTH+1400, 700);
-		g.fillRect(-700, 0, 700, FIELDHEIGHT);
-		g.fillRect(-700, FIELDHEIGHT, FIELDWIDTH+1400, 700);
-		g.fillRect(FIELDWIDTH, 0, 700, FIELDHEIGHT);
+		g.fillRect(-1000, -1000, FIELDWIDTH+2000, 1000);
+		g.fillRect(-1000, 0, 1000, FIELDHEIGHT);
+		g.fillRect(-1000, FIELDHEIGHT, FIELDWIDTH+2000, 1000);
+		g.fillRect(FIELDWIDTH, 0, 1000, FIELDHEIGHT);
 		
 		//Draw goals
 		for(Goal goal: goals){
@@ -570,7 +571,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			if(maxZoom<2)
 				maxZoom+=.2f;
 		}else if( input.isKeyPressed(Input.KEY_COMMA)){
-			if(maxZoom>.6)
+			if(maxZoom>.8)
 				maxZoom-=.2f;
 		}else if(input.isKeyPressed(Input.KEY_ESCAPE)){
 			gc.exit();

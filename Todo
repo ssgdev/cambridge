@@ -1,6 +1,9 @@
 TODO:
 
-TwoTouch needs more curve
+Sound/Visual Effect for when Twins enters max sync
+Balance Back (more juking)
+Balance Enforcer (more control)
+TwoTouch needs more curve DONE
 Enforcer needs scaled enforcement DONE
 Stop having invalid lwjgl alpha parameters
 Kicking the ball while not moving as Neo doesn't do a powerful enough kick (not a bug, but flaw) Basically kicking needs work DONE
@@ -64,7 +67,7 @@ Sounds
 	Less shitty sound names – DONE
 	Slowmo versions of all sounds DONE
 Visual Effects
-	Different Shapes
+	Different Shapes DONE
 	Enforcer Activation Effect DONE
 Edit config usage to reflect that neo is not the only player
 Maybe have players be arraylist?

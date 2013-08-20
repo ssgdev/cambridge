@@ -1,8 +1,5 @@
 package org.ssg.Cambridge;
 
-import net.java.games.input.Component;
-import net.java.games.input.Controller;
-
 import org.newdawn.slick.AngelCodeFont;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -47,6 +44,8 @@ public class PlayerTricky extends Player{
 		
 		camoAlpha = 1f;
 		camoAlphaTarget = 1f;
+		
+		omega = .8f;
 	}
 	
 	public void setFakeBall(BallFake b){
@@ -91,6 +90,7 @@ public class PlayerTricky extends Player{
 	@Override
 	public void drawPlayer(Graphics g){
 		g.setColor(getColor());
+		g.setLineWidth(2);
 		g.rotate(pos[0], pos[1], theta);
 		g.drawRect(pos[0]-PLAYERSIZE/2, pos[1]-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
 		g.rotate(pos[0], pos[1], -theta);
@@ -111,7 +111,7 @@ public class PlayerTricky extends Player{
 			g.setColor(getColor(.5f*fakeAlpha).darker());
 			g.drawOval(fakePos[0]-KICKRANGE/2, fakePos[1]-KICKRANGE/2, KICKRANGE, KICKRANGE);
 		}
-		
+		g.setLineWidth(5);
 	}
 	
 	@Override

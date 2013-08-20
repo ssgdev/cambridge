@@ -1,10 +1,9 @@
 package org.ssg.Cambridge;
 
-import net.java.games.input.Controller;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.geom.Polygon;
 
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
@@ -33,6 +32,16 @@ public class PlayerEnforcer extends Player{
 	public PlayerEnforcer(int n, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
 		super(n, consts, f, c, c1, p, xyL, se, ss, sn, slc);
 		
+		PLAYERSIZE *= .8f;
+		
+		//Unused
+		tempf = PLAYERSIZE/2;
+		poly = new Polygon(new float[]{
+				tempf, tempf,
+				tempf, -tempf,
+				-tempf, -tempf,
+				-tempf, tempf});
+		
 		firstPress = true;
 		
 		MINVELMAG = .2f*VELMAG;
@@ -54,8 +63,13 @@ public class PlayerEnforcer extends Player{
 	
 	@Override
 	public void drawPlayer(Graphics g){
-		g.setColor(getColor());
+		g.setColor(getColor(.8f));
 		g.rotate(pos[0], pos[1], theta);
+		g.drawLine(pos[0]-PLAYERSIZE, pos[1], pos[0]+PLAYERSIZE, pos[1]);
+		g.drawLine(pos[0], pos[1]-PLAYERSIZE, pos[0], pos[1]+PLAYERSIZE);
+		g.setColor(Color.black);
+		g.fillRect(pos[0]-PLAYERSIZE/2, pos[1]-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
+		g.setColor(getColor());
 		g.drawRect(pos[0]-PLAYERSIZE/2, pos[1]-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
 		if(power>0 || coolingDown){//Speed glow
 			g.setColor(getColor4());
@@ -181,8 +195,8 @@ public class PlayerEnforcer extends Player{
 		//lastPos[1] += delta*lastVel[1]*.5f;
 		
 		theta += omega * delta * 2f * velMag/MAXVELMAG;
-		if(theta>360f)
-			theta-=360f;
+		if(theta>360)
+			theta-=360;
 	}
 	
 	//Can kick other players

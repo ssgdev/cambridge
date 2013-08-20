@@ -3,13 +3,13 @@
 package org.ssg.Cambridge;
 
 import net.java.games.input.Component;
-import net.java.games.input.Controller;
 
 import org.newdawn.slick.AngelCodeFont;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Polygon;
 
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
@@ -44,6 +44,9 @@ public class PlayerTwin extends Player{
 	
 	public PlayerTwin(int n, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_t, int tn, Image hc, Ball b) throws SlickException {
 		super(n, consts, f, c, c1, p, xyL, se, ss, sn, slc);
+		
+		//unused
+		poly = new Polygon(new float[]{PLAYERSIZE/2, PLAYERSIZE/2, PLAYERSIZE/2, -PLAYERSIZE/2, -PLAYERSIZE/2, -PLAYERSIZE/2, -PLAYERSIZE/2, PLAYERSIZE/2});
 		
 		ball = b;
 		
@@ -221,12 +224,13 @@ public class PlayerTwin extends Player{
 		
 		tempf = 360f/2f/(float)Math.PI*(float)Math.atan2(vel[1], vel[0]);
 		g.rotate(pos[0], pos[1], tempf);
-		g.drawImage(slice_twin, pos[0]-slice_twin.getWidth()/2f, pos[1]-slice_twin.getHeight()/2f, getColor(syncFactor*.75f));
+		g.drawImage(slice_twin, pos[0]-slice_twin.getWidth()/2f, pos[1]-slice_twin.getHeight()/2f, getColor(syncFactor*.85f));
 		g.rotate(pos[0], pos[1], -tempf);
 	}
 	
 	@Override
 	public void drawPlayer(Graphics g){
+		g.setLineWidth(2);
 		g.drawImage(hemicircle.getScaledCopy(KICKRANGE/hemicircle.getHeight()), pos[0]-KICKRANGE/2+twinNum*KICKRANGE/2, pos[1]-KICKRANGE/2, getColor(.2f));
 
 		if(PLAYERSIZE>0){
@@ -244,6 +248,7 @@ public class PlayerTwin extends Player{
 			g.drawRect(pos[0]-(float)Math.cos(theta2)*orbitRadius-PLAYERSIZE/2, pos[1]-(float)Math.sin(theta2)*orbitRadius-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
 			g.rotate(pos[0]-(float)Math.cos(theta2)*orbitRadius, pos[1]-(float)Math.sin(theta2)*orbitRadius, -getTheta());
 		}
+		g.setLineWidth(5);
 	}
 	
 	@Override

@@ -1,8 +1,5 @@
 package org.ssg.Cambridge;
 
-import net.java.games.input.Component;
-import net.java.games.input.Controller;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -60,6 +57,20 @@ public class PlayerNeutron extends Player {
 		lockCoolDown = false;
 	}
 
+	@Override
+	public void drawPlayer(Graphics g){
+		g.rotate(pos[0], pos[1], theta);
+		g.setColor(getColor());
+		g.setLineWidth(2);
+		g.drawOval(pos[0]-PLAYERSIZE/2, pos[1]-PLAYERSIZE/2,  PLAYERSIZE,  PLAYERSIZE);
+		g.setLineWidth(1f);
+		for(int i=0; i<6; i++){
+			g.drawLine(pos[0]+(float)Math.cos(i*Math.PI/3)*PLAYERSIZE/2, pos[1]+(float)Math.sin(i*Math.PI/3)*PLAYERSIZE/2,
+					pos[0]+(float)Math.cos(i*Math.PI/3+Math.PI*.6f)*PLAYERSIZE/2, pos[1]+(float)Math.sin(i*Math.PI/3+Math.PI*.6f)*PLAYERSIZE/2);
+		}
+		g.rotate(pos[0], pos[1], -theta);
+	}
+	
 	@Override
 	public void drawKickCircle(Graphics g){
 		//Draw kicking circle
@@ -235,6 +246,8 @@ public class PlayerNeutron extends Player {
 			orbiting = false;
 		}
 		
+		omega = approachTarget(omega, gravDir*.4f, delta/1000f);
+		
 		theta+= omega*delta;
 		if(theta>360) theta-=360;
 	}
@@ -264,6 +277,7 @@ public class PlayerNeutron extends Player {
 	}
 	
 	public void powerKey2Released(){
+		gravDir = 0;
 		gravRange = 0;
 		targetVelMag = VELMAG;
 		if(ball.locked(playerNum)){

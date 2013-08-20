@@ -2,12 +2,11 @@
 
 package org.ssg.Cambridge;
 
-import net.java.games.input.Controller;
-
 import org.newdawn.slick.AngelCodeFont;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.geom.Polygon;
 
 import paulscode.sound.SoundSystem;
 
@@ -17,6 +16,8 @@ public class PlayerDummy extends Player{
 			float[] p, int[] xyL, Color se, SoundSystem ss,
 			String sn, Image slc) {
 		super(n, consts, f, c, c1, p, xyL, se, ss, sn, slc);
+		
+		poly = new Polygon(new float[]{0,0});
 		
 		KICKRANGE = 0;
 		PLAYERSIZE = 0;

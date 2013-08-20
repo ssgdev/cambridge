@@ -6,6 +6,7 @@ import net.java.games.input.Controller;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.geom.Polygon;
 
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
@@ -35,6 +36,21 @@ public class PlayerBack extends Player {
 	
 	public PlayerBack(int n, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_w, Ball b) {
 		super(n, consts, f, c, c1, p, xyL, se, ss, sn, slc);
+		
+		tempf = PLAYERSIZE/5f;
+		poly = new Polygon(new float[]{
+				tempf*2, tempf*2,
+				tempf*2, -tempf*2,
+				tempf, -tempf*2,
+				tempf, -tempf*3,
+				-tempf, -tempf*3,
+				-tempf, -tempf*2,
+				-tempf*2, -tempf*2,
+				-tempf*2, tempf*2,
+				-tempf, tempf*2,
+				-tempf, tempf*3,
+				tempf, tempf*3,
+				tempf, tempf*2});
 		
 		NORMALKICK *= .2f;
 		POWERKICK *= .2f;
@@ -264,8 +280,12 @@ public class PlayerBack extends Player {
 		
 		updateCounters(delta);
 		
-		theta+= omega*delta;
-		if(theta>360) theta-=360;		
+		if(power>0){
+			theta = angleTarget;
+		}else{
+			theta+= omega*delta/60f*(float)Math.PI;
+			if(theta>2f*(float)Math.PI) theta-=2f*(float)Math.PI;
+		}
 	}
 	
 	@Override

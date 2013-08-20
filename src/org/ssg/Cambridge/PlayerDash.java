@@ -14,7 +14,6 @@ import paulscode.sound.SoundSystemConfig;
 
 public class PlayerDash extends Player{
 
-	Polygon poly;
 	//Theta is between -pi and pi, theta2 is 0 to 2pi
 	float thetaTarget;
 	float[] prevPostPos;
@@ -49,11 +48,14 @@ public class PlayerDash extends Player{
 	public PlayerDash(int n, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_t, Ball b, Image hc) {
 		super(n, consts, f, c, c1, p, xyL, se, ss, sn, slc);
 
+		PLAYERSIZE*=.9f;
+		
+		poly = new Polygon(new float[]{-PLAYERSIZE*2/3,0,-PLAYERSIZE/3, -PLAYERSIZE/2, PLAYERSIZE*2/3, 0, -PLAYERSIZE/3, PLAYERSIZE/2});
+		
 		MAXPOWER = 100;
 		POWERCOOLDOWN = 500;
 		TRAILRANGE = KICKRANGE*1.4f;
 		
-		poly = new Polygon(new float[]{0,0,-PLAYERSIZE/3, -PLAYERSIZE/2, PLAYERSIZE*2/3, 0, -PLAYERSIZE/3, PLAYERSIZE/2});
 		ballParallel = new float[2];
 		ballOrth = new float[2];
 		thetaTarget = theta;

@@ -4,6 +4,7 @@ import net.java.games.input.Controller;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.geom.Polygon;
 
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
@@ -41,6 +42,8 @@ public class PlayerTwoTouch extends Player{
 	
 	public PlayerTwoTouch(int n, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b, Ball pb) {
 		super(n, consts, f, c, c1, p, xyL, se, ss, sn, slc);
+		
+		poly = new Polygon(new float[]{0,0,-PLAYERSIZE/3, -PLAYERSIZE/2, PLAYERSIZE*2/3, 0, -PLAYERSIZE/3, PLAYERSIZE/2});
 		
 		DEFAULTKICK = NORMALKICK;
 		EXTRAKICK = POWERKICK;
@@ -475,8 +478,12 @@ public class PlayerTwoTouch extends Player{
 		
 		updateCounters(delta);
 		
-		theta+= (1f-(power/MAXPOWER*.8f))*omega*delta;
-		if(theta>360) theta-=360;
+		if(ball.locked(playerNum)){
+			theta = angleTarget;
+		}else {
+			theta+= omega*delta/15f;
+			if(theta>(float)Math.PI*2f) theta-=(float)Math.PI*2f;
+		}
 		
 	}
 	
