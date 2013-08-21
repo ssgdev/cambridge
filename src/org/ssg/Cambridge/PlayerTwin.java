@@ -34,6 +34,8 @@ public class PlayerTwin extends Player{
 	float orbitRadius;
 
 	float syncFactor;
+	float syncAlpha;
+	boolean maxSynced;//Entering flash kickable state flag
 	
 	Component moveStickX, moveStickY;
 	Component otherStickX, otherStickY;
@@ -79,7 +81,8 @@ public class PlayerTwin extends Player{
 		slice_twin = slc_t;
 		
 		syncFactor = 1f;
-
+		syncAlpha = 1f;
+		maxSynced = false;
 	}
 
 	public void setTwin(PlayerTwin p){
@@ -202,7 +205,7 @@ public class PlayerTwin extends Player{
 		if(theta2>360) theta2-=360;
 		
 		syncFactor = dot(vel, twin.getVel());
-		
+		syncAlpha = syncFactor*Math.abs(syncFactor)*.85f;
 	}
 	
 	@Override
@@ -224,7 +227,7 @@ public class PlayerTwin extends Player{
 		
 		tempf = 360f/2f/(float)Math.PI*(float)Math.atan2(vel[1], vel[0]);
 		g.rotate(pos[0], pos[1], tempf);
-		g.drawImage(slice_twin, pos[0]-slice_twin.getWidth()/2f, pos[1]-slice_twin.getHeight()/2f, getColor(syncFactor*.85f));
+		g.drawImage(slice_twin, pos[0]-slice_twin.getWidth()/2f, pos[1]-slice_twin.getHeight()/2f, getColor(syncAlpha));
 		g.rotate(pos[0], pos[1], -tempf);
 	}
 	

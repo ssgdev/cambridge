@@ -1,0 +1,50 @@
+TITLE
+	Name
+	"Name"
+	Style
+	Powers
+
+BACK
+	No. 82
+	"The Spirit of Game"
+	R1 (Hold): Grab and Go
+	
+DASH
+	Kitamura Yahei
+	"The Lightspeed Unbreakable"
+	R1 (Hold): Lightning God Flash
+	R1 (Tap): Lesser Lightning Deity Flash
+
+ENFORCER
+	Ramdel Garth
+	"The Stampede"
+	R1 (Hold): Miura Charge
+	R1 (During Miura Charge): Toreador Pivot 
+
+NEO
+	Lucas Taniels
+	"The Mercurial"
+	R1: Hummingbird Waltz
+
+NEUTRON
+	Anomaly XIII
+	"The Anomalous"
+	R1: Gravitation Hill
+	L1 (Hold): Gravitation Well
+
+TRICKY
+	Aldobrandi
+	"The Deceptive Man"
+	R1 (Hold, Aim): Blue Shins Shuffle 
+	L1 (Hold): Glib Divide
+
+TWINS
+	Liem & Riem
+	"The Brothers"
+	Passive: Fraternal Bond
+	R1/L1: Let's Do This Together
+	
+TWOTOUCH
+	Franco Fortes
+	"The Alacritous"
+	R1 (Hold, Aim): Magnificent Destiny

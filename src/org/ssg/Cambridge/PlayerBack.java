@@ -29,7 +29,7 @@ public class PlayerBack extends Player {
 	float prevAngle;
 	int rotateDir;
 	
-	float targetVelMag;
+	float velMagTarget;
 	
 	float radius;//Used for drawing the shoulders
 	float RADIUS;
@@ -72,7 +72,7 @@ public class PlayerBack extends Player {
 		prevAngle = 0f;
 		rotateDir = 1;
 		
-		targetVelMag = VELMAG;
+		velMagTarget = VELMAG;
 		
 		RADIUS = 20f;
 		radius = RADIUS;
@@ -223,9 +223,13 @@ public class PlayerBack extends Player {
 							angle-=tempf;
 						}
 					}
+					velMagTarget = VELMAG/2f;
 				}else{
 					angle = angleTarget;
+					velMagTarget = VELMAG;
 				}
+			}else{
+				velMagTarget = VELMAG;
 			}
 			
 			ball.setPos(pos[0]+(float)Math.cos(angle)*(KICKRANGE/2f+2f), pos[1]+(float)Math.sin(angle)*(KICKRANGE/2f+2f));
@@ -274,11 +278,14 @@ public class PlayerBack extends Player {
 			ball.setLocked(playerNum, false);
 			lockCoolDown = false;
 			radius = RADIUS;
+			velMagTarget = VELMAG;
 //			buttonPressed = false;
 //			power = 0;
 		}
 		
 		updateCounters(delta);
+		
+		velMag = approachTarget(velMag, velMagTarget, delta/1000f);
 		
 		if(power>0){
 			theta = angleTarget;

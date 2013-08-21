@@ -1,8 +1,11 @@
 TODO:
 
+Soccer needs to be slower paced, right now kicks are really powerful
+Something important that I forgot
 Sound/Visual Effect for when Twins enters max sync
-Balance Back (more juking)
-Balance Enforcer (more control)
+	Tried it, doesn't really work. Audio at least. Too intrusive, as the player goes in and out of sync a lot.
+Balance Back (more juking) Idea: Slow when turn, turn extra DONE
+Balance Enforcer (more control) Less wall penalty?
 TwoTouch needs more curve DONE
 Enforcer needs scaled enforcement DONE
 Stop having invalid lwjgl alpha parameters
@@ -152,7 +155,6 @@ two touch – DONE
 enforcer - DONE
 	faster charge-up and much faster recovery DONE
 	Less slippery turning DONE
-	BUG: Keyboard controls bugged
 lightbike dash
 	must dash all the way to a wall	hold charge until it pops, if released, charge fizzles. More charge the further the wall.
 	faster chargeup time
