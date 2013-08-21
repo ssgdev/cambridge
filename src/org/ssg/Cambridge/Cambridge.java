@@ -157,8 +157,8 @@ public class Cambridge extends StateBasedGame {
 		kickerung.mySoundSystem.setMasterVolume(kickerung.data.masterSound() / 10f);
 		System.out.println(kickerung.data.masterSound() / 10f);
 		app.setDisplayMode(kickerung.data.screenWidth(), kickerung.data.screenHeight(), false);
-		app.setVSync(true);
-		app.setTargetFrameRate(60);
+//		app.setVSync(true);
+		//app.setTargetFrameRate(60);
 		app.setAlwaysRender(true);
 		app.setShowFPS(true);
 		app.setTitle("Kick Kickerung");

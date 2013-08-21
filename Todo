@@ -1,8 +1,20 @@
 TODO:
 
+Balance Enforcer (more control) Less wall penalty?
+Tricky's fakeplayer's kicking circle is the wrong line width
+Enforcer nubs are green for some reasons
+Make Dash shortdash able to change direction
 Experiment with non fixed delta (This might be the thing I forgot?)
+	Lock delta at 4 instead of 24? Turn off vsync.
+	Things that are too slow
+		Goal Scroll
+	Things that are too fast
+		Menu scrolling
+	Things that don't work
+		Back and slowing down
+		Enforcer and turn reduction
+		Back and TwoTouch rotation 
 Soccer needs to be slower paced, right now kicks are really powerful
-Something important that I forgot
 Sound/Visual Effect for when Twins enters max sync MEH
 	Tried it, doesn't really work. Audio at least. Too intrusive, as the player goes in and out of sync a lot.
 Balance Back (more juking) Idea: Slow when turn, turn extra DONE
@@ -15,7 +27,6 @@ Balance Back (more juking) Idea: Slow when turn, turn extra DONE
 	maybe top speed slight increase?
 TwoTouch pilot tilt as visual effect for curve when locked DONE
 TwoTouch might have the 'extra spin' bug, not sure reproduction conditions at the moment FIXED
-Balance Enforcer (more control) Less wall penalty?
 TwoTouch needs more curve DONE
 Enforcer needs scaled enforcement DONE
 Stop having invalid lwjgl alpha parameters
