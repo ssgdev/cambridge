@@ -209,7 +209,7 @@ public class PlayerBack extends Player {
 				}
 			}
 			
-			System.out.println(velMag);	
+//			System.out.println(velMag);	
 			
 			ball.setPos(pos[0]+(float)Math.cos(angle)*(KICKRANGE/2f+2f), pos[1]+(float)Math.sin(angle)*(KICKRANGE/2f+2f));
 			ball.setVel(new float[]{(float)Math.cos(angle), (float)Math.sin(angle)}, 0f);
@@ -292,7 +292,7 @@ public class PlayerBack extends Player {
 		power = 0;
 		if(ball.locked(playerNum)){
 			
-			System.out.println(rotateDir+", "+angleTarget*180/Math.PI+": "+prevAngleTarget*180/Math.PI);
+//			System.out.println(rotateDir+", "+angleTarget*180/Math.PI+": "+prevAngleTarget*180/Math.PI);
 			
 			ball.setLocked(playerNum, false);
 			lockCoolDown = false;
@@ -344,21 +344,6 @@ public class PlayerBack extends Player {
 	@Override
 	public void setPower() {
 
-	}
-	
-	//Gives the difference in radians, between two angles
-	//theta1 and theta2 are assumed to be from -pi to pi
-	public float angleDist(float t1, float t2){
-		tempArr[0] = Math.abs(t1-t2);
-		
-		//Now try the 0 to 2pi
-		if(t1<0)
-			t1+= 2f*(float)Math.PI;
-		if(t2<0)
-			t2+= 2f*(float)Math.PI;
-		
-		tempArr[1] = Math.abs(t1-t2);
-		return Math.min(tempArr[0], tempArr[1]);
 	}
 
 }

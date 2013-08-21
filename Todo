@@ -1,21 +1,20 @@
 TODO:
 
+Experiment with non fixed delta (This might be the thing I forgot?)
 Soccer needs to be slower paced, right now kicks are really powerful
 Something important that I forgot
 Sound/Visual Effect for when Twins enters max sync MEH
 	Tried it, doesn't really work. Audio at least. Too intrusive, as the player goes in and out of sync a lot.
-Balance Back (more juking) Idea: Slow when turn, turn extra
+Balance Back (more juking) Idea: Slow when turn, turn extra DONE
 	The PI to -PI transition area results in bugs, distance weirdness.
 		Make new method that just compares the 0-2pi or pi--pi distance and takes the smaller DONE WORKS
 		Rotating in place is really juddery now though FIXED
 		Throwing wrong way bug might be back FIXED
 			Yeah. If you cross -90 (say, angleTarget is -91 and prevAngleTarget is -70, then it'll do -91+360 and subtracting wont work) FIXED
-	gradated slowing, not just snagging on empty. 90 deg is a full stop, 10 deg is just gradually slower, etc
-	slowing down and only slowing down uses angletarget, will only overwrite prev angletarget is new one is slower
-	simpler idea: speed lost = angle turned, default is to refill speed
+	simpler idea: speed lost = angle turned, default is to refill speed DONE
 	maybe top speed slight increase?
-TwoTouch pilot tilt as visual effect for curve when locked
-TwoTouch might have the 'extra spin' bug, not sure reproduction conditions at the moment
+TwoTouch pilot tilt as visual effect for curve when locked DONE
+TwoTouch might have the 'extra spin' bug, not sure reproduction conditions at the moment FIXED
 Balance Enforcer (more control) Less wall penalty?
 TwoTouch needs more curve DONE
 Enforcer needs scaled enforcement DONE

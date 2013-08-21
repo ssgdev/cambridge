@@ -1,10 +1,10 @@
 package org.ssg.Cambridge;
 
-import net.java.games.input.Controller;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Polygon;
+import org.newdawn.slick.geom.Transform;
 
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
@@ -85,6 +85,21 @@ public class PlayerTwoTouch extends Player{
 	}
 	
 	@Override
+	public void drawPlayer(Graphics g){
+		g.setColor(getColor());
+		g.setLineWidth(2f);
+		g.translate(pos[0],pos[1]);
+		tempf = (float)Math.atan2(curve[1], curve[0]);
+		tempArr[0] = mag(curve)*(float)(Math.cos(tempf)*Math.sin(theta)-Math.cos(theta)*Math.sin(tempf));
+		poly = (Polygon) poly.transform(Transform.createRotateTransform(theta+tempArr[0]));
+		g.draw(poly);
+		poly = (Polygon) poly.transform(Transform.createRotateTransform(-theta-tempArr[0]));
+		g.translate(-pos[0], -pos[1]);
+		g.setLineWidth(5f);
+			
+	}
+	
+	@Override
 	public void drawPowerCircle(Graphics g){
 		//Draw power circle
 		if(ball.locked(playerNum)){
@@ -97,104 +112,7 @@ public class PlayerTwoTouch extends Player{
 			g.drawOval(getX()-getKickRange()/2f-getPower()/2f, getY()-getKickRange()/2f-getPower()/2f, getKickRange()+getPower(), getKickRange()+getPower());
 			g.setColor(Color.white);
 		}
-	};
-	
-//	//Calculates and draws dotted trail for ball prediction
-//	public void drawBallPrediction(Graphics g) {
-//		g.setColor(getColor());
-//		predictionCount = PREDICTIONCOUNT;
-//
-//		predictionPos[0] = ball.getX();
-//		predictionPos[1] = ball.getY();
-//		
-//		predictionVel[0] = (ball.getPrevX()-pos[0]);
-//		predictionVel[1] = (ball.getPrevY()-pos[1]);
-//		unit(predictionVel);
-//		if(sameDir(vel[0], predictionVel[0]))
-//			predictionVel[0] += vel[0];
-//		if(sameDir(vel[1], predictionVel[1]))
-//			predictionVel[1] += vel[1];
-//		
-//		if (mag(predictionVel) == 0)
-//			return;
-//		
-//		predictionVelMag = (mag(vel)>0 ? EXTRAKICK : DEFAULTKICK) * VELMAG;
-//		
-//		predictionCurveAcc = normal(curve, predictionVel);
-//
-//		if (ball.CURVESCALE == 0)
-//			predictionCurveMag = 0;
-//		else
-//			predictionCurveMag = mag(predictionCurveAcc) * ball.CURVESCALE;
-//		
-//		unit(predictionVel);
-//		unit(predictionCurveAcc);
-//		
-//		while (predictionCount > 0) {
-//			predictionVDelta = predictionDelta;
-//			
-//			while(predictionVDelta>0){
-//
-//				predictionTempX = predictionPos[0]+(predictionVelMag*predictionVel[0]*predictionVDelta);
-//				predictionTempY = predictionPos[1]+(predictionVelMag*predictionVel[1]*predictionVDelta);
-//
-//				//System.out.println(vel[0]);
-//				//goalArr is {goal x, goal y, goal width, goal thickness, direction to go in
-//				if((predictionTempX>0 && predictionTempX<(float)field[0] && predictionTempY>0 && predictionTempY<(float)field[1])
-//						|| ball.betweenGoals(predictionTempX, predictionTempY, predictionVel)){//If it's in bounds or between goalposts
-//					predictionPos[0]=predictionTempX;
-//					predictionPos[1]=predictionTempY;
-//					predictionVDelta = 0;
-//					
-//					//ending trail if out of bounds -> only possible if through goals due to collision code
-//					if (predictionPos[0] > (float)field[0] || predictionPos[0] < 0 
-//							|| predictionPos[1] > (float)field[1] || predictionPos[1] < 0) {
-//						predictionCount = 0;
-//					}
-//				}else{
-//					if(predictionTempX<=0 && ball.sameDir(predictionVel[0], -1)){
-//						predictionPos[0] = 0;
-//						predictionVel[0]*=-1;
-//						predictionVDelta -= -1f*predictionPos[0]/(predictionVelMag*predictionVel[0]);
-//					}else if(predictionTempX>=(float)field[0] && ball.sameDir(predictionVel[0], 1)){
-//						predictionPos[0]=(float)field[0];
-//						predictionVel[0]*=-1;
-//						predictionVDelta -= ((float)field[0]-predictionPos[0])/(predictionVelMag*predictionVel[0]);
-//					}else if(predictionTempY<=0 && ball.sameDir(predictionVel[1], -1)){
-//						predictionPos[1]=0;
-//						predictionVel[1]*=-1;
-//						predictionVDelta -= -1f*predictionPos[1]/(predictionVelMag*predictionVel[1]);
-//					}else if(predictionTempY>=(float)field[1] && ball.sameDir(predictionVel[1], 1)){
-//						predictionPos[1]=(float)field[1];
-//						predictionVel[1]*=-1;
-//						predictionVDelta -= ((float)field[1]-predictionPos[1])/(predictionVelMag*predictionVel[1]);
-//					}
-//					predictionCurveAcc[0]=0f;//Take off curve after first ricochet
-//					predictionCurveAcc[1]=0f;
-//					predictionCurveMag=0f;
-//					predictionVelMag-=ball.BOUNCEDAMP;
-//					if(predictionVelMag<.1f){
-//						predictionVelMag = .1f;
-//					} 
-//				}//end if-else block
-//			
-//			}//end vDelta loop
-//			
-//			predictionVel[0]+=predictionCurveAcc[0]*predictionDelta*predictionCurveMag;
-//			predictionVel[1]+=predictionCurveAcc[1]*predictionDelta*predictionCurveMag;
-//			unit(predictionVel);
-//			
-//			if(predictionVelMag>0) predictionVelMag -= predictionVelMag*predictionDelta * ball.FLOORFRICTION;
-//			
-//			if (predictionCount % 5 == 0 && predictionCount > 0) {
-////				System.out.println("Beep! " + vel[0] + " " + vel[1] + " " + (mag(vel) > 0 ? mag(vel)*0.5f : 0f));
-//				g.setColor(getColor((float)predictionCount/(float)PREDICTIONCOUNT));
-//				g.fillRect(predictionPos[0]-3, predictionPos[1]-3, 6, 6);
-//			}
-//			
-//			predictionCount--;
-//		}//end while predictionCount loop
-//	}
+	}	
 
 	public void drawBallPrediction(Graphics g){
 		predictor.setPos(ball.getX(), ball.getY());
@@ -359,68 +277,26 @@ public class PlayerTwoTouch extends Player{
 				unit(vel);	
 				angleTarget = (float)Math.atan2(vel[1],vel[0]);
 			}
-			
-//Shortest distance based rotation
-//			
-//			angle2 = angle;
-//			if(angle2<0)
-//				angle2 += 2f*(float)Math.PI;
-//			prevAngleTarget = angleTarget;
-//			if(prevAngleTarget<0)
-//				prevAngleTarget += 2f*(float)Math.PI;
-//
-//			tempf = angle;//Store the angle in case we need to roll back, in case of the rotation putting you into a wall
-//			//Choose the direction of shortest rotation
-//			if(Math.abs(angleTarget-angle)-Math.abs(prevAngleTarget-angle2) >= 0){
-//				angle = approachTarget(angle2, prevAngleTarget, (float)delta/120f);
-//			}else{
-//				angle = approachTarget(angle, angleTarget, (float)delta/120f);
-//			}
 
 //Joystick rotation based rotation
 			
 			prevAngleTarget = (float)Math.atan2(prevVel[1], prevVel[0]);
 		
-			//So they're in the same range (-pi to pi or 0 to 2pi) and subtraction works
-			if(angleTarget< -(float)Math.PI/2f)
-				angleTarget+=(float)Math.PI*2f;
-			if(prevAngleTarget< -(float)Math.PI/2f)
-				prevAngleTarget+=(float)Math.PI*2f;
-//			if(angle < -(float)Math.PI/2f)
-//				angle+=(float)Math.PI*2f;
-			
 //			System.out.println(angle/2/Math.PI*360+"->  "+angleTarget/2/Math.PI*360);
 
-			if(Math.abs(angleTarget-prevAngleTarget) > .1f){//If you've moved the stick a non negligible amount
-				rotateDir = angleTarget>prevAngleTarget ? 1 : -1;
+			if(angleDist(angleTarget, prevAngleTarget) > .1f){//If you've moved the stick a non negligible amount
+				tempf = (float)(Math.cos(angleTarget)*Math.sin(prevAngleTarget)-Math.cos(prevAngleTarget)*Math.sin(angleTarget));
+				tempf/= -Math.abs(tempf);
+				rotateDir = (int)tempf;
 			}
-			
-			//Set them back to -pi to pi values so the rest of math works
-			if(angleTarget>(float)Math.PI)
-				angleTarget-=(float)Math.PI*2f;
-			if(prevAngleTarget>(float)Math.PI)
-				prevAngleTarget-=(float)Math.PI*2f;
 			
 			tempf = delta/80f;//The step interval
 			if(angle != angleTarget){
-				if(Math.abs(angle-angleTarget)>tempf){//If it's actual turning and not a microscopic slip of the finger
+				if(angleDist(angle, angleTarget)>tempf){//If it's actual turning and not a microscopic slip of the finger
 					if(rotateDir > 0){
-						if(angle > angleTarget)
-							angle-=(float)Math.PI*2f;
-						if(angle + tempf >= angleTarget){
-							angle = angleTarget;
-						}else{
-							angle+=tempf;
-						}
-//						System.out.println(angle/2/Math.PI*360+"->  "+angleTarget/2/Math.PI*360);
+						angle+=tempf;
 					}else if(rotateDir < 0){
-						if(angle < angleTarget)
-							angle += (float)Math.PI*2f;
-						if(angle - tempf <= angleTarget){
-							angle = angleTarget;
-						}else{
 							angle-=tempf;
-						}
 					}
 				}else{
 					angle = angleTarget;
@@ -459,8 +335,7 @@ public class PlayerTwoTouch extends Player{
 //				vel[0] = (float)Math.cos(angle);
 //				vel[1] = (float)Math.sin(angle);
 //			}
-//			
-
+			
 			//Keeps angle between -pi and pi for next round of calculations
 			if(angle>(float)Math.PI)
 				angle-=(float)Math.PI*2f;

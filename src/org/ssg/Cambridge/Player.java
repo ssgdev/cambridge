@@ -668,6 +668,22 @@ public abstract class Player implements KeyListener {
 		}
 	}
 	
+	
+	//Gives the difference in radians, between two angles
+	//theta1 and theta2 are assumed to be from -pi to pi
+	public float angleDist(float t1, float t2){
+		tempArr[0] = Math.abs(t1-t2);
+		
+		//Now try the 0 to 2pi
+		if(t1<0)
+			t1+= 2f*(float)Math.PI;
+		if(t2<0)
+			t2+= 2f*(float)Math.PI;
+		
+		tempArr[1] = Math.abs(t1-t2);
+		return Math.min(tempArr[0], tempArr[1]);
+	}
+	
 	public boolean sameDir(float vx, float dir){
 		if(vx == 0)
 			return false;
