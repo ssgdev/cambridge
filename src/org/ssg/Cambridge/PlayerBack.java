@@ -28,8 +28,8 @@ public class PlayerBack extends Player {
 	float prevAngleTarget;
 	float prevAngle;
 	int rotateDir;
-	
-	float velMagTarget;
+
+	boolean turning;
 	
 	float radius;//Used for drawing the shoulders
 	float RADIUS;
@@ -72,7 +72,7 @@ public class PlayerBack extends Player {
 		prevAngle = 0f;
 		rotateDir = 1;
 		
-		velMagTarget = VELMAG;
+		turning = false;
 		
 		RADIUS = 20f;
 		radius = RADIUS;
@@ -142,8 +142,8 @@ public class PlayerBack extends Player {
 			
 		}
 		
-		updatePos(delta);
-	
+		updatePos(delta);		
+		
 		//Entering Lock
 		if(!lockCoolDown && power>0 && !ball.locked(playerNum) && dist(pos[0],pos[1],ball.getX(),ball.getY())<KICKRANGE/2f && !ball.scored()){
 			ball.setLocked(playerNum, true);
@@ -174,63 +174,42 @@ public class PlayerBack extends Player {
 			radius-=delta/2f;
 			if(radius<0)
 				radius = 0;
-			
-//			velMag = .1f;
-			
+
 			//angle = (float)Math.atan2(ball.getY()-pos[1], ball.getX()-pos[0]);
 //			System.out.println(angle/2/Math.PI*360);
 			
 			prevAngleTarget = (float)Math.atan2(prevVel[1], prevVel[0]);
-		
-			//So they're in the same range (-pi to pi or 0 to 2pi) and subtraction works
-			if(angleTarget< -(float)Math.PI/2f)
-				angleTarget+=(float)Math.PI*2f;
-			if(prevAngleTarget< -(float)Math.PI/2f)
-				prevAngleTarget+=(float)Math.PI*2f;
-//			if(angle < -(float)Math.PI/2f)
-//				angle+=(float)Math.PI*2f;
-			
+					
 //			System.out.println(angle/2/Math.PI*360+"->  "+angleTarget/2/Math.PI*360);
 
-			if(Math.abs(angleTarget-prevAngleTarget) > .1f){//If you've moved the stick a non negligible amount
-				rotateDir = (angleTarget>prevAngleTarget ? 1 : -1);
+			//Determine direction of stick rotation
+			if(angleDist(angleTarget, prevAngleTarget) > .1f){//If you've moved the stick a non negligible amount
+				tempf = (float)(Math.cos(angleTarget)*Math.sin(prevAngleTarget)-Math.cos(prevAngleTarget)*Math.sin(angleTarget));
+				tempf/= -Math.abs(tempf);
+				rotateDir = (int)tempf;
 			}
 			
-			//Set them back to -pi to pi values so the rest of math works
-			if(angleTarget>(float)Math.PI)
-				angleTarget-=(float)Math.PI*2f;
-			if(prevAngleTarget>(float)Math.PI)
-				prevAngleTarget-=(float)Math.PI*2f;
-			
-			tempf = delta/80f;//The step interval
-			if(angle != angleTarget){
-				if(Math.abs(angle-angleTarget)>tempf){//If it's actual turning and not a microscopic slip of the finger
+			tempf = delta/100f;//The step interval
+			if(angle != angleTarget){				
+				if(angleDist(angle, angleTarget)>tempf){//If it's actual turning and not a microscopic slip of the finger
 					if(rotateDir > 0){
-						if(angle > angleTarget)
-							angle-=(float)Math.PI*2f;
-						if(angle + tempf >= angleTarget){
-							angle = angleTarget;
-						}else{
 							angle+=tempf;
-						}
 //						System.out.println(angle/2/Math.PI*360+"->  "+angleTarget/2/Math.PI*360);
 					}else if(rotateDir < 0){
-						if(angle < angleTarget)
-							angle += (float)Math.PI*2f;
-						if(angle - tempf <= angleTarget){
-							angle = angleTarget;
-						}else{
 							angle-=tempf;
-						}
 					}
-					velMagTarget = VELMAG/2f;
+					velMag -= tempf*delta/80f;	
+					if(velMag < 0)
+						velMag = 0;
 				}else{
+					velMag -= angleDist(angle, angleTarget)*delta/80f;			
+					if(velMag < 0)
+						velMag = 0;
 					angle = angleTarget;
-					velMagTarget = VELMAG;
 				}
-			}else{
-				velMagTarget = VELMAG;
 			}
+			
+			System.out.println(velMag);	
 			
 			ball.setPos(pos[0]+(float)Math.cos(angle)*(KICKRANGE/2f+2f), pos[1]+(float)Math.sin(angle)*(KICKRANGE/2f+2f));
 			ball.setVel(new float[]{(float)Math.cos(angle), (float)Math.sin(angle)}, 0f);
@@ -278,15 +257,16 @@ public class PlayerBack extends Player {
 			ball.setLocked(playerNum, false);
 			lockCoolDown = false;
 			radius = RADIUS;
-			velMagTarget = VELMAG;
+			turning = false;
 //			buttonPressed = false;
 //			power = 0;
 		}
 		
 		updateCounters(delta);
 		
-		velMag = approachTarget(velMag, velMagTarget, delta/1000f);
-		
+		if(velMag<VELMAG)
+			velMag = approachTarget(velMag, VELMAG, delta/800f);
+
 		if(power>0){
 			theta = angleTarget;
 		}else{
@@ -311,24 +291,13 @@ public class PlayerBack extends Player {
 	public void powerKeyReleased() {
 		power = 0;
 		if(ball.locked(playerNum)){
+			
+			System.out.println(rotateDir+", "+angleTarget*180/Math.PI+": "+prevAngleTarget*180/Math.PI);
+			
 			ball.setLocked(playerNum, false);
 			lockCoolDown = false;
 			
-			if(angle<0)
-				angle+=2f*(float)Math.PI;
-			if(prevAngle<0)
-				prevAngle+=2f*(float)Math.PI;
-			
-			//This should keep angles subtracting in the correct direction
-			if((angle<(float)Math.PI/2f || angle>(float)Math.PI*1.5f) && (prevAngle>(float)Math.PI*1.5f || prevAngle<(float)Math.PI/2f)){
-				if(angle>(float)Math.PI)
-					angle-=2f*(float)Math.PI;
-				if(prevAngle>(float)Math.PI)
-					prevAngle-=2f*(float)Math.PI;
-			}
-			
-			tempf = (angle-prevAngle);
-			if(mag(vel)>0 && tempf!=0){
+			if(mag(vel)>0 && angleDist(angle, prevAngle)!=0){
 				//Should send the ball off tangentially
 //				tempf/=Math.abs(tempf);
 				tempArr[0] = (float)Math.cos(angle+(float)Math.PI/2f*(float)rotateDir);
@@ -375,6 +344,21 @@ public class PlayerBack extends Player {
 	@Override
 	public void setPower() {
 
+	}
+	
+	//Gives the difference in radians, between two angles
+	//theta1 and theta2 are assumed to be from -pi to pi
+	public float angleDist(float t1, float t2){
+		tempArr[0] = Math.abs(t1-t2);
+		
+		//Now try the 0 to 2pi
+		if(t1<0)
+			t1+= 2f*(float)Math.PI;
+		if(t2<0)
+			t2+= 2f*(float)Math.PI;
+		
+		tempArr[1] = Math.abs(t1-t2);
+		return Math.min(tempArr[0], tempArr[1]);
 	}
 
 }
