@@ -1,8 +1,5 @@
 package org.ssg.Cambridge;
 
-import net.java.games.input.Component;
-import net.java.games.input.Controller;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -41,7 +38,7 @@ public class PlayerDash extends Player{
 	float[] lastGustVel;
 	
 	float shortDashCoolDown;
-	float SHORTDASHCOOLDOWN = 500;
+	float SHORTDASHCOOLDOWN = 350;
 
 	Ball ball;
 	
@@ -162,7 +159,7 @@ public class PlayerDash extends Player{
 	public void update(float delta) {
 
 		if (c.exists()) {
-			if(shortDashCoolDown==0)
+			if(shortDashCoolDown == 0)
 				pollController(delta);
 			
 			if (c.getAction()){
@@ -364,7 +361,7 @@ public class PlayerDash extends Player{
 	
 	public void powerKeyReleased(){//More of a teleport
 		power = 0;
-		if(mag(vel)>0){
+		if(mag(vel)>0 && shortDashCoolDown == 0){
 			mySoundSystem.quickPlay( true, slowMo?"DashShortDashSlow.ogg":"DashShortDash.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			
 			parallelComponent(new float[]{ball.getX()-pos[0], ball.getY()-pos[1]}, vel, ballParallel);

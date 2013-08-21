@@ -1,11 +1,12 @@
 TODO:
 
-Balance Enforcer (more control) Less wall penalty?
-Tricky's fakeplayer's kicking circle is the wrong line width
-Enforcer nubs are green for some reasons
-Make Dash shortdash able to change direction
+Tricky's fakeplayer's kicking circle is the wrong line width FIXED
+Enforcer nubs are green for some reasons OPTICAL ILLUSION but I made it darker so FIXED
+Make Dash shortdash able to change direction DONE
 Experiment with non fixed delta (This might be the thing I forgot?)
-	Lock delta at 4 instead of 24? Turn off vsync.
+	Lock delta at 4 instead of 24?
+		4 is hyperspeed for some reason
+	Turn off vsync.
 	Things that are too slow
 		Goal Scroll
 	Things that are too fast
@@ -220,6 +221,10 @@ running back
 	BUG: Ball can't be kicked away anymore SOLVED
 neutron star
 	Possible bug with ball possession not being correct? Can't reproduce at moment
+
+BALANCE ISSUES:
+Balance Dash: Length of trail "catch"
+Balance Enforcer (more control) Less wall penalty?
 
 pau gazul
 shaquille o'teal

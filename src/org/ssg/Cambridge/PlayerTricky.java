@@ -109,6 +109,7 @@ public class PlayerTricky extends Player{
 			g.drawRect(fakePos[0]-PLAYERSIZE/2, fakePos[1]-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
 			g.rotate(fakePos[0], fakePos[1], -theta);	
 			g.setColor(getColor(.5f*fakeAlpha).darker());
+			g.setLineWidth(5);
 			g.drawOval(fakePos[0]-KICKRANGE/2, fakePos[1]-KICKRANGE/2, KICKRANGE, KICKRANGE);
 		}
 		g.setLineWidth(5);

@@ -63,7 +63,7 @@ public class PlayerEnforcer extends Player{
 	
 	@Override
 	public void drawPlayer(Graphics g){
-		g.setColor(getColor(.8f));
+		g.setColor(getColor(.4f));
 		g.rotate(pos[0], pos[1], theta);
 		g.drawLine(pos[0]-PLAYERSIZE, pos[1], pos[0]+PLAYERSIZE, pos[1]);
 		g.drawLine(pos[0], pos[1]-PLAYERSIZE, pos[0], pos[1]+PLAYERSIZE);

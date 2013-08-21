@@ -5,6 +5,8 @@ PlayerBack slows when turning. Speed lost directly proportional to degrees turne
 PlayerBack rotation code made incredibly smarter. Should have no more direction switches when rotating too fast or wrong way throws.
 PlayerTwoTouch's "pilot" tilts to indicate the current amount of curve
 PlayerTwoTouch rotation code similarly improved
+PlayerTricky and PlayerEnforcer graphical bugfixes
+PlayerDash short dash can no longer be activated during the cooldown of a previous shortdash
 
 8.20.13
 PlayerTwoTouch has a little extra curve
