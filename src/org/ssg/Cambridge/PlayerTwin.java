@@ -158,7 +158,7 @@ public class PlayerTwin extends Player{
 		DESIREDKICKRANGE = DEFAULTKICKRANGE * (.8f + .2f*(float)(nukes*nukes));
 		
 		if(KICKRANGE < DESIREDKICKRANGE){
-			KICKRANGE+=2;
+			KICKRANGE+=delta/12f;
 			
 			if(pos[0]-KICKRANGE/2 < xyLimit[0]){
 				pos[0]+= xyLimit[0] - pos[0] + KICKRANGE/2;
@@ -173,7 +173,7 @@ public class PlayerTwin extends Player{
 			}
 		}
 		if(KICKRANGE > DESIREDKICKRANGE)
-			KICKRANGE-=2;
+			KICKRANGE-=delta/12f;
 
 		
 		if(nukes==0){
@@ -183,9 +183,9 @@ public class PlayerTwin extends Player{
 		}
 		
 		if(PLAYERSIZE < DESIREDPLAYERSIZE )
-			PLAYERSIZE++;
+			PLAYERSIZE+= delta/20f;
 		if(PLAYERSIZE > DESIREDPLAYERSIZE )
-			PLAYERSIZE--;
+			PLAYERSIZE-= delta/20f;
 		
 		if(nukes<=1){
 			DESIREDORBITRADIUS = 0;
@@ -194,9 +194,9 @@ public class PlayerTwin extends Player{
 		}
 		
 		if(orbitRadius < DESIREDORBITRADIUS)
-			orbitRadius++;
+			orbitRadius+= delta/20f;
 		if(orbitRadius > DESIREDORBITRADIUS)
-			orbitRadius--;
+			orbitRadius-= delta/20f;
 
 		theta+= (1f-(powerCoolDown/POWERCOOLDOWN))*omega*delta;
 		if(theta>360) theta-=360;

@@ -63,7 +63,7 @@ public class PlayerEnforcer extends Player{
 	
 	@Override
 	public void drawPlayer(Graphics g){
-		g.setColor(getColor(.4f));
+		g.setColor(getColorActual(.8f));
 		g.rotate(pos[0], pos[1], theta);
 		g.drawLine(pos[0]-PLAYERSIZE, pos[1], pos[0]+PLAYERSIZE, pos[1]);
 		g.drawLine(pos[0], pos[1]-PLAYERSIZE, pos[0], pos[1]+PLAYERSIZE);
@@ -145,8 +145,8 @@ public class PlayerEnforcer extends Player{
 				tempArr = normal(vel, launchVel);
 				unit(tempArr);
 				velMag = approachTarget(velMag,targetVelmag, delta/1600f);
-				vel[0] = launchVel[0]+tempArr[0]*.05f*(1.5f-velMag/targetVelmag);
-				vel[1] = launchVel[1]+tempArr[1]*.05f*(1.5f-velMag/targetVelmag);
+				vel[0] = launchVel[0]+tempArr[0]*delta*.005f*(1.5f-velMag/targetVelmag);
+				vel[1] = launchVel[1]+tempArr[1]*delta*.005f*(1.5f-velMag/targetVelmag);
 				unit(vel);
 				launchVel[0] = vel[0];
 				launchVel[1] = vel[1];

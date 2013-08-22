@@ -166,8 +166,8 @@ public class Cambridge extends StateBasedGame {
 //		if (app.supportsMultiSample())
 //			app.setMultiSample(2);
 		app.setFullscreen((kickerung.data.fullscreen()));
-		app.setMaximumLogicUpdateInterval(24);
-		app.setMinimumLogicUpdateInterval(24);
+//		app.setMaximumLogicUpdateInterval(24);
+//		app.setMinimumLogicUpdateInterval(24);
 		app.start();
 	}
 

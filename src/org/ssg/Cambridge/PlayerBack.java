@@ -189,16 +189,16 @@ public class PlayerBack extends Player {
 				rotateDir = (int)tempf;
 			}
 			
-			tempf = delta/100f;//The step interval
-			if(angle != angleTarget){				
-				if(angleDist(angle, angleTarget)>tempf){//If it's actual turning and not a microscopic slip of the finger
+			tempf = delta/80f;//The step interval
+			if(angle != angleTarget){
+				if(angleDist(angle, angleTarget)>.1f){//If it's actual turning and not a microscopic slip of the finger
 					if(rotateDir > 0){
 							angle+=tempf;
 //						System.out.println(angle/2/Math.PI*360+"->  "+angleTarget/2/Math.PI*360);
 					}else if(rotateDir < 0){
 							angle-=tempf;
 					}
-					velMag -= tempf*delta/80f;	
+					velMag -= tempf*delta/10f;	
 					if(velMag < 0)
 						velMag = 0;
 				}else{

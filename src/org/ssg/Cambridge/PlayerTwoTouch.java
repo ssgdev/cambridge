@@ -31,7 +31,7 @@ public class PlayerTwoTouch extends Player{
 	//only used during lock for prediction
 	Ball predictor;
 	int predictionCount;
-	int PREDICTIONCOUNT = 150;
+	int PREDICTIONCOUNT = 300;
 	float[] predictionPos, predictionVel, predictionCurveAcc;
 	float predictionVelMag, predictionCurveMag;
 	float predictionVDelta, predictionDelta;
@@ -140,9 +140,9 @@ public class PlayerTwoTouch extends Player{
 //		System.out.println("Predicted:"+predictor.curveMag+", "+predictor.curveAcc[0]+", "+predictor.curveAcc[1]);
 		
 		for(int i=0; i<PREDICTIONCOUNT && (predictor.getX()>0 && predictor.getX()<field[0] && predictor.getY()>0 && predictor.getY()<field[1]); i++){
-			predictor.update(24f);
+			predictor.update(6f);
 			
-			if (i%2 == 0 && i > 0) {
+			if (i%10 == 0 && i > 0) {
 				g.setColor(getColor(1f-(float)i/(float)PREDICTIONCOUNT));
 				g.fillRect(predictor.getX()-3, predictor.getY()-3, 6, 6);
 			}
@@ -292,7 +292,7 @@ public class PlayerTwoTouch extends Player{
 			
 			tempf = delta/80f;//The step interval
 			if(angle != angleTarget){
-				if(angleDist(angle, angleTarget)>tempf){//If it's actual turning and not a microscopic slip of the finger
+				if(angleDist(angle, angleTarget)>.1f){//If it's actual turning and not a microscopic slip of the finger
 					if(rotateDir > 0){
 						angle+=tempf;
 					}else if(rotateDir < 0){

@@ -213,9 +213,9 @@ public class PlayerNeutron extends Player {
 				}
 				orbitAngle+=delta*orbitOmega;
 				if(Math.abs(orbitOmega*orbitRadius)<ORBITVEL)
-					orbitOmega+=orbitDir*(float)delta*.000005f;
+					orbitOmega+=orbitDir*delta*.000005f;
 				if(orbitRadius > KICKRANGE/2f+15)
-					orbitRadius -= (float)delta/80f;
+					orbitRadius -= delta/80f;
 				ball.setPos(pos[0]+(float)Math.cos(orbitAngle)*orbitRadius, pos[1]+(float)Math.sin(orbitAngle)*orbitRadius);
 				if(ball.getX()<=0 || ball.getX()>=field[0] || ball.getY()<=0 || ball.getY()>=field[1]){
 					if(ball.getX()<0)
@@ -281,7 +281,7 @@ public class PlayerNeutron extends Player {
 		gravRange = 0;
 		targetVelMag = VELMAG;
 		if(ball.locked(playerNum)){
-			if(orbiting){
+			if(orbiting && (ball.getVelX()!=0 || ball.getVelY()!=0)){
 				tempf = orbitAngle+(float)Math.PI/2f*orbitDir;
 				ball.setVel(new float[]{(float)Math.cos(tempf), (float)Math.sin(tempf)}, Math.abs(orbitOmega)*orbitRadius);
 				ball.speedUp((1f-orbitRadius/GRAVRANGE)*2f*VELMAG+NORMALKICK, 0.05f, 0);

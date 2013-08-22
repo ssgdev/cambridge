@@ -1,20 +1,25 @@
 TODO:
 
+Players with black cores like Twin are drawing the black cores over the power kick flash
+PlayerNeo should not make slow powerkick sound when kicking out of slowmo
+Activating Neutron Pull on the motionless ball at the start of a round sends it flying FIXED
 Tricky's fakeplayer's kicking circle is the wrong line width FIXED
 Enforcer nubs are green for some reasons OPTICAL ILLUSION but I made it darker so FIXED
-Make Dash shortdash able to change direction DONE
+Make Dash shortdash able to change direction DONE Well really he actually has a cooldown on repeated shortdashes now. Otherwise felt too much like Enforcer
 Experiment with non fixed delta (This might be the thing I forgot?)
 	Lock delta at 4 instead of 24?
 		4 is hyperspeed for some reason
-	Turn off vsync.
+	Turn off vsync. DONE
 	Things that are too slow
-		Goal Scroll
+		Goal Scroll I WAS MISTAKEN
 	Things that are too fast
-		Menu scrolling
+		Menu scrolling DONE
 	Things that don't work
-		Back and slowing down
-		Enforcer and turn reduction
-		Back and TwoTouch rotation 
+		Back and slowing down DONE
+		Enforcer and turn reduction DONE
+		Neutron grabs too fast
+		Twins nuke switching animation too fast DONE
+		Back and TwoTouch rotation DONE
 Soccer needs to be slower paced, right now kicks are really powerful
 Sound/Visual Effect for when Twins enters max sync MEH
 	Tried it, doesn't really work. Audio at least. Too intrusive, as the player goes in and out of sync a lot.

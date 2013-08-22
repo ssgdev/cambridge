@@ -509,6 +509,10 @@ public abstract class Player implements KeyListener {
 		return new Color(color.getRed(), color.getGreen(), color.getBlue(), lastKickAlpha);
 	}
 
+	public Color getColorActual(float f){
+		return new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(256f*f));
+	}
+	
 	public float kickStrength(){
 		if(mag(vel)==0){
 			return .5f;

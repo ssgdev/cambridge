@@ -104,7 +104,7 @@ public class PlayerTricky extends Player{
 			g.rotate(fakeball.getX(), fakeball.getY(), -fakeball.getTheta());
 			
 			//Draw fake player
-			g.setColor(getColor6(fakeAlpha));
+			g.setColor(getColorActual(fakeAlpha));
 			g.rotate(fakePos[0], fakePos[1], theta);
 			g.drawRect(fakePos[0]-PLAYERSIZE/2, fakePos[1]-PLAYERSIZE/2, PLAYERSIZE, PLAYERSIZE);
 			g.rotate(fakePos[0], fakePos[1], -theta);	
@@ -134,8 +134,8 @@ public class PlayerTricky extends Player{
 		g.drawString("P"+(playerNum+1), pos[0]-font_small.getWidth("P"+(playerNum+1))/2, pos[1]-font_small.getHeight("P")-KICKRANGE/2-30);
 		
 		//Fake nametag for the fake
-		g.drawImage(triangle, fakePos[0]-triangle.getWidth()/2, fakePos[1]-getKickRange()/2-25, getColor6(fakeAlpha));
-		g.setColor(getColor6(fakeAlpha));
+		g.drawImage(triangle, fakePos[0]-triangle.getWidth()/2, fakePos[1]-getKickRange()/2-25, getColorActual(fakeAlpha));
+		g.setColor(getColorActual(fakeAlpha));
 		g.setFont(font_small);
 		g.drawString("P"+(playerNum+1), fakePos[0]-font_small.getWidth("P"+(playerNum+1))/2, fakePos[1]-font_small.getHeight("P")-KICKRANGE/2-30);
 		
@@ -145,7 +145,7 @@ public class PlayerTricky extends Player{
 	//These colors are overridden to fade away if active camo is on
 	@Override
 	public Color getColor(){
-		return getColor6(1f);
+		return getColorActual(1f);
 	}
 
 	@Override
@@ -169,7 +169,8 @@ public class PlayerTricky extends Player{
 	}
 	
 	//Returns the actual "color" scaled by the float, instead of a weird alternate color
-	public Color getColor6(float f){
+	@Override
+	public Color getColorActual(float f){
 		return new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(256f*f*camoAlpha));
 	}
 	

@@ -31,7 +31,7 @@ public class MainMenuState extends BasicGameState implements KeyListener{
 	private final float deadzone = 0.28f;
 	private boolean down, up, left, right, enter, back;
 	private int inputDelay;
-	private final int inputDelayConst = 10;
+	private final int inputDelayConst = 200;
 	
 	private boolean shouldRender;
 	
@@ -128,7 +128,7 @@ public class MainMenuState extends BasicGameState implements KeyListener{
 			if (up || down || left || right || enter || back)
 				inputDelay = inputDelayConst;
 		} else {
-			inputDelay--;
+			inputDelay-=delta;
 		}
 		
 		if (input.isKeyPressed(Input.KEY_W) || input.isKeyPressed(Input.KEY_UP) || up) {

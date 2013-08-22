@@ -1,5 +1,9 @@
 Changelog:
 
+8.22.13
+Removed vsync and set minimum delta to 1 (previous was 24). Vastly increased framerate and smoothness.
+Sorted out attendant bugs, mostly related to not scaling by delta correctly in update methods.
+
 8.21.13
 PlayerBack slows when turning. Speed lost directly proportional to degrees turned. Values might be too nerfed now, needs balancing.
 PlayerBack rotation code made incredibly smarter. Should have no more direction switches when rotating too fast or wrong way throws.
