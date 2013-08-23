@@ -88,7 +88,7 @@ public class MainMenuState extends BasicGameState implements KeyListener{
 		
 		g.setColor(Color.white);
 		g.setFont(font_white);
-		g.drawString("Main Menu", data.screenWidth()/6, data.screenHeight()*0.1f);
+		g.drawString("MAIN MENU", data.screenWidth()/6, data.screenHeight()*0.1f);
 		
 		g.drawString(menuOptions[0], data.screenWidth()/6, data.screenHeight()*0.5f);
 		g.drawString(menuOptions[1], data.screenWidth()/6, data.screenHeight()*0.5f+menuHeight);

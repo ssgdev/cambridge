@@ -4,6 +4,7 @@ Changelog:
 Removed vsync and set minimum delta to 1 (previous was 24). Vastly increased framerate and smoothness.
 Sorted out attendant bugs, mostly related to not scaling by delta correctly in update methods.
 Minor audiovisual bugfixes
+Added lore
 
 8.21.13
 PlayerBack slows when turning. Speed lost directly proportional to degrees turned. Values might be too nerfed now, needs balancing.

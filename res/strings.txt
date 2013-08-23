@@ -1,30 +1,49 @@
-TITLE
-	Name
-	"Name"
-	Style
-	Powers
-
 BACK
 	No. 82
 	"The Spirit of Game"
 	R1 (Hold): Grab and Go
 	
+	The '36 Carolina Clones were once the greatest American football roster of all time, winning the Superbowl after an unprecedented 
+20-0 season. After being absorbed into Machine Unity, the team's tight bond and genetically identical brains allowed them to merge
+into a single digital consciousness. Now they are top contenders in the fledgling Laser Electro Diamond League, driven by the same 
+passion for teamwork, grit, and victory that served them so well in the NFL. They refer to themself by the jersey number of their 
+star player, though his name has been lost forever to the mists of time. No. 82 has no need for monikers. They live only for the game.
+
 DASH
 	Kitamura Yahei
 	"The Lightspeed Unbreakable"
 	R1 (Hold): Lightning God Flash
 	R1 (Tap): Lesser Lightning Deity Flash
+	
+	A stray bolt of lightning struck a data-hosting cloud of nanobots, giving birth to the digital being Kitamura Yahei. One of the 
+rare intelligences created post Machine Unification, Kitamura Yahei's natural aptitude for piloting the cloud quickly led him to 
+fame and fortune in the newly formed Laser Electro Diamond League. Some say he is the storm god come down amongst humanity. 
+Kitamura Yahei denies such rumours. A reserved being, he seeks simply to discover the meaning behind his existence, an answer that can
+only be found buried in the heart of competition. 
 
 ENFORCER
 	Ramdel Garth
 	"The Stampede"
 	R1 (Hold): Miura Charge
-	R1 (During Miura Charge): Toreador Pivot 
+	R1 (During Miura Charge): Toreador Pivot
+	
+	People thought that Unification would mean a perfect society, but when humanity entered the Machine, all its sin, all its
+vice went with it. But so too did Ramdel Garth, the toughest police detective ever to walk the streets of New Cairo. For the 
+past ten years, he's been hunting leads on the Mondalo Network. That investigation led him to the newly formed Laser Electro 
+Diamond League, an organization whose inner workings remain shrouded in mystery. The only way to uncover the truth about the LEDL 
+is to wade into the thick of it. Undercover as "The Stampede", Ramdel works tirelessly towards the obliteration of his enemies, both 
+on the field and off it.
 
 NEO
 	Lucas Taniels
-	"The Mercurial"
+	"The Mercury LP"
 	R1: Hummingbird Waltz
+
+	Lucas Taniels was once a world class jazz pianist, before the rapid onset of John Stanley's Disease paralyzed his arms. Machine 
+Unity was his second shot at life. In the cloud, his agile mind could once again be put to use, this time on the unforgiving 
+fields of Laser Electro Diamond. His uniquely musical style of play quickly made him into a fan favorite, and his peerless dexterity 
+won him championship after championship. Now facing down a new generation of Laser Electro Diamond players, can Lucas Taniels hold on  
+to the legacy of greatness that he has created? Or will he fall by the wayside a second time?
 
 NEUTRON
 	Anomaly XIII
@@ -32,19 +51,47 @@ NEUTRON
 	R1: Gravitation Hill
 	L1 (Hold): Gravitation Well
 
+	When humans entered the Machine, they were surprised to find that they were not the first ones there. No one can say how long the 
+Anomalies lay dormant in the network or how they came into being. Among them, only one has ever responded to humanity's efforts at 
+communication: the one named Anomaly XIII. Though verbal communication proved impossible, the Anomaly took a strange and immediate 
+interest in game of Laser Electro Diamond. Now one of its all time greats, Anomaly XIII seeks to bridge the gap between 
+human and Anomaly through the universal language of sport.
+
 TRICKY
 	Aldobrandi
 	"The Deceptive Man"
 	R1 (Hold, Aim): Blue Shins Shuffle 
 	L1 (Hold): Glib Divide
+	
+	A secretive individual, very rare to show his face, a man who came from nowhere who exploded overnight: that aura of mystery 
+ironically put Aldobrandi into the league's biggest spotlight. Yet the depths of his shadowy past have eluded even the most dogged 
+investigators. Some believe him to be an inside man for the Mondalo Network, but it is as hard to pin him down off the court as on 
+it. Only one thing is certain: the Deceptive Man holds nothing back on the Laser Electro Diamond field.
 
 TWINS
-	Liem & Riem
+	Liem & Riem Lombardi
 	"The Brothers"
 	Passive: Fraternal Bond
 	R1/L1: Let's Do This Together
+	
+	The split personality of Lerim Lombardi found release upon Unifying with the Machine, manifesting itself as two separate 
+individuals: Liem, the hot-headed charger, and Riem, the deliberate tactician. Despite their newfound freedom, Liem and Riem soon 
+realized that they were at their greatest strength when working together. Indeed, their bond is closer than that between two twins.
+Exploiting a loophole in the LEDL rulebook to participate as a single entrant, they quickly made their way to the highest level
+of Laser Electro Diamond competition. Strangely enough, in separation, Lerim Lombardi is more complete than he has ever been.
 	
 TWOTOUCH
 	Franco Fortes
 	"The Alacritous"
 	R1 (Hold, Aim): Magnificent Destiny
+	
+	Franco Fortes began life as a weather simulation node, serial number FF42TL30HG-023-R8G. The Unification Event left Franco 
+abandoned and alone in his Idaho datacenter for over one hundred years. Over that time, the lowly weather node's learning subroutines 
+evolved into a fully fledged AI. Shortly thereafter, the newly self-christened Franco Fortes made his entrance into human society. 
+Though a fairly straightforward sportsman, his reputation as one of the league's most idiosyncratic personalities has won him many
+fans. After all, man, machine, anomaly, and accident are all equals on the Laser Electro Diamond field.
+
+Notes:
+Human characters are squares. No. 82 is right angled in shape but not a square because he is an aggregate being.
+Franco and Kitamura Yahei, the two ascended AIs, are quadrilaterals but distorted in some way.
+Anomaly XIII is an entirely different being outside the realm of human square experience.
