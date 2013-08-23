@@ -54,7 +54,7 @@ NEUTRON
 	When humans entered the Machine, they were surprised to find that they were not the first ones there. No one can say how long the 
 Anomalies lay dormant in the network or how they came into being. Among them, only one has ever responded to humanity's efforts at 
 communication: the one named Anomaly XIII. Though verbal communication proved impossible, the Anomaly took a strange and immediate 
-interest in game of Laser Electro Diamond. Now one of its all time greats, Anomaly XIII seeks to bridge the gap between 
+interest in the game of Laser Electro Diamond. Now one of its all time greats, Anomaly XIII seeks to bridge the gap between 
 human and Anomaly through the universal language of sport.
 
 TRICKY
@@ -74,11 +74,11 @@ TWINS
 	Passive: Fraternal Bond
 	R1/L1: Let's Do This Together
 	
-	The split personality of Lerim Lombardi found release upon Unifying with the Machine, manifesting itself as two separate 
+	The split personality of Lerim Lombardi found release upon Unifying with the Machine, manifesting itself as two separate digital 
 individuals: Liem, the hot-headed charger, and Riem, the deliberate tactician. Despite their newfound freedom, Liem and Riem soon 
-realized that they were at their greatest strength when working together. Indeed, their bond is closer than that between two twins.
-Exploiting a loophole in the LEDL rulebook to participate as a single entrant, they quickly made their way to the highest level
-of Laser Electro Diamond competition. Strangely enough, in separation, Lerim Lombardi is more complete than he has ever been.
+realized that they were at their greatest strength when working together. Exploiting a loophole in the LEDL rulebook to participate 
+as a single entrant, they quickly made their way to the highest level of Laser Electro Diamond competition. Strangely enough, 
+in separation, Lerim Lombardi is more complete than he has ever been.
 	
 TWOTOUCH
 	Franco Fortes
