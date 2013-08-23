@@ -314,9 +314,7 @@ public abstract class Player implements KeyListener {
 	
 	//If players have custom effects they can override individual methods
 	public void render(Graphics g, float BALLSIZE, Image triangle, AngelCodeFont font_small){
-		
-		drawKickTrail(g);
-		
+				
 		drawSlice(g);//Draws the arc sector which describes the direction of the right stick
 		
 		drawRechargeFlash(g);
@@ -324,6 +322,8 @@ public abstract class Player implements KeyListener {
 		drawKickCircle(g);
 		
 		drawPlayer(g);
+		
+		drawKickTrail(g);
 		
 		drawPowerCircle(g);
 		

@@ -1,7 +1,7 @@
 TODO:
 
-Players with black cores like Twin are drawing the black cores over the power kick flash
-PlayerNeo should not make slow powerkick sound when kicking out of slowmo
+Players with black cores like Twin are drawing the black cores over the power kick flash FIXED
+PlayerNeo should not make slow powerkick sound when kicking out of slowmo FIXED (HACKY)
 Activating Neutron Pull on the motionless ball at the start of a round sends it flying FIXED
 Tricky's fakeplayer's kicking circle is the wrong line width FIXED
 Enforcer nubs are green for some reasons OPTICAL ILLUSION but I made it darker so FIXED
