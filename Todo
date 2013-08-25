@@ -1,150 +1,153 @@
 TODO:
 
-TEAM NUMBER NEEDS TO NOT BE STUPID. SORRY.
+!!!! TEAM NUMBER NEEDS TO NOT BE STUPID. SORRY.
 
-GameOver transition DONE
-GameStart transition
-Make font_large for GAME OVER and the like
-Players with black cores like Twin are drawing the black cores over the power kick flash FIXED
-PlayerNeo should not make slow powerkick sound when kicking out of slowmo FIXED (HACKY)
-Activating Neutron Pull on the motionless ball at the start of a round sends it flying FIXED
-Tricky's fakeplayer's kicking circle is the wrong line width FIXED
-Enforcer nubs are green for some reasons OPTICAL ILLUSION but I made it darker so FIXED
-Make Dash shortdash able to change direction DONE Well really he actually has a cooldown on repeated shortdashes now. Otherwise felt too much like Enforcer
-Experiment with non fixed delta (This might be the thing I forgot?)
-	Lock delta at 4 instead of 24?
-		4 is hyperspeed for some reason
-	Turn off vsync. DONE
-	Things that are too slow
-		Goal Scroll I WAS MISTAKEN
-	Things that are too fast
-		Menu scrolling DONE
-	Things that don't work
-		Back and slowing down DONE
-		Enforcer and turn reduction DONE
-		Neutron grabs too fast
-		Twins nuke switching animation too fast DONE
-		Back and TwoTouch rotation DONE
-Soccer needs to be slower paced, right now kicks are really powerful
-Sound/Visual Effect for when Twins enters max sync MEH
-	Tried it, doesn't really work. Audio at least. Too intrusive, as the player goes in and out of sync a lot.
-Balance Back (more juking) Idea: Slow when turn, turn extra DONE
-	The PI to -PI transition area results in bugs, distance weirdness.
-		Make new method that just compares the 0-2pi or pi--pi distance and takes the smaller DONE WORKS
-		Rotating in place is really juddery now though FIXED
-		Throwing wrong way bug might be back FIXED
-			Yeah. If you cross -90 (say, angleTarget is -91 and prevAngleTarget is -70, then it'll do -91+360 and subtracting wont work) FIXED
-	simpler idea: speed lost = angle turned, default is to refill speed DONE
-	maybe top speed slight increase?
-TwoTouch pilot tilt as visual effect for curve when locked DONE
-TwoTouch might have the 'extra spin' bug, not sure reproduction conditions at the moment FIXED
-TwoTouch needs more curve DONE
-Enforcer needs scaled enforcement DONE
-Stop having invalid lwjgl alpha parameters
-Kicking the ball while not moving as Neo doesn't do a powerful enough kick (not a bug, but flaw) Basically kicking needs work DONE
-Kicking the ball out of the hands of Back and TwoTouch doesn't work DONE
-Kicking magnitudes needs tweaking, powerkick is way too strong. (Check TwoTouch predictor afterwards) DONE
-Ball in wall failsafe
-White bars on outside, so don't draw gameplay outside the black playing field? DONE
-HMM: Kick trails get jaggy
-Implement/Revamp Keyboard Controls for each character? For example
-	PlayerNeo: Good for now DONE
-	PlayerTwin: One button for each twin DONE
-	PlayerTwoTouch: Holding left or right rotates the Player around the ball, up and down change curve. DONE
-	PlayerEnforcer: Doesn't work at all atm. DONE
-	PlayerTricky: Fake ball is random, fake player is somewhat AIed. DONE
-	PlayerDash: Holding and charging through does big dash, releasing it does the short dash. DONE
-	PlayerNeutron: Good for now DONE
-	PlayerBack: Hold off until main gameplay is set. DONE
-BUG: Changing the size of puffer changes the size of the kick trail when it shouldn't DONE
-BUG: Holding ActionButton with Enforcer on wall hammers the sounds DONE
-BUG: Reactivating the power on Enforcer by holding down after the wall doesn't sound good MEH
-TODO: Give Charge the half and half like stun victims DONE
-TODO: Create UpdateCounters method DONE
-TODO: Stick direction visual guide DONE
-TODO: Visuals for charge's trail DONE
-Go through all the code and see if it can be less horrible
-	Save memory by casting delta to float at the top of update DONE
-	TODO: Organize Player constructor
-	More abstract classing: Maybe everyone has buttonpressed and actionbutton2 but just leave it empty if unused.
-	render() has submethod drawSpecial()
-	Reorganize getColors() so you're not wasting memory making new color objects every frame?
-	find a better way to pass by value than making new float arrays every time
-Enforcer: Has to build up momentum – DONE
-	TODO: Test Enfocer vs everyone else collision and see what happens
-Figure out dashing while against a wall
-TODO: Velocity add component scaled by angle coincidence DONE
-Ball should decelerate into TwoTouch's lock DONE
-	What happens if a ball gets knocked out of TwoTouch's hands? Seems to work
-		Test if NORMALKICK, DEFAULTKICK and EXTRAKICK are all the correct values
-	What happens if two twotouches both try to lock the ball? Seems to work
-BUG: TwoTouch gets stuck to the ball
-	Resolved: Ball can be kicked out of TwoTouch's hands
-PlayerCharge should bounce off wall? DONE Feels a lot better
-PlayerCharge dash chaining DONE (Still in testing)
-Ball should accelerate into gust DONE
-Should the gust reset if the ball is kicked/the ball bounces? DONE
-	Sound Effect for this
-Sounds
-	Charge Charging DONE
-	Charge Dashing DONE
-	Charge Gusting DONE
-	Enforcer PlayerBumping DONE
-	Enforcer Charging DONE
-	Enforcer Wallbouncing DONE
-	Enforcer Activating DONE
-		Needs visual effect
-	Puffer Puffingup DONE
-	Puffer Puffingdown DONE
-	Twin Twinning DONE
-	TwoTouch Activate DONE
-	TwoTouch Lock activate DONE
-	Less shitty sound names – DONE
-	Slowmo versions of all sounds DONE
-Visual Effects
-	Different Shapes DONE
-	Enforcer Activation Effect DONE
-Edit config usage to reflect that neo is not the only player
-Maybe have players be arraylist?
-Something to help get ball out of corners/away from walls, prevent rapid bounceback or getting stuck in a corner
-Dash trail end nub not drawn correctly? DONE Problem with ints
-Width of kick trail not consistently aesthetic – DONE
-Make velocity add component only in positive direction – DONE
-Twins goal colour bug – DONE
-Make TwoTouch rotate in the correct direction – DONE
-Make TwoTouch not go through walls in lock DONE
-Decide: Should TwoTouch's velocity vector (from the right stick) continue to affect the kick even if the angle is frozen by a wall collision?
-Make TwoTouch velocity sticky in lock mode so if you let go of the stick the kick is still powerful, or just have visual indication of what's going on
-Add TwoTouch powercircle effects – DONE
-Don't create variables in update
-Xbox Controller Support DONE
-Menus and stuff
-	Play to certain time or certain score, have winner screen
-	Controller Select
-	Character Select
-	intro screen
-	help/controls screen
-	round over screen – winners, score, time etc, menu options
-Draw arena differently based on gameMode? – DONE
-More game modes
-	FOURSQUARE
-Squash mode – DONE
-Have config variables: goal layout, player x and y halves – DONE
-Neon Neon Particles
-Slow-mo + effects – DONE
-Spinning indicates charge level – DONE
-Power coolDown Indicator – DONE
-Have velocity of player affect ball trajectory? (not just position)? Spin – orthogonal vel becomes acc? – DONE. Not sure how efficable in regular gameplay
-ball trail?
-Load configs: Air hockey, soccer – DONE
-Have slowdown factor be part of config?
-Make Player abstract – DONE
-Player On Player Collision handling – DONE
-Make KickCoolDown only a visual effect, and have kicking basically be instant – DONE
-make setPlayer set the whole array of players, for case of 4P – DONE
-Make actioncam less intense
-	Have targets for pos and scale but ease into them much more gradually  – DONE
-	Increase size of bounding box DONE
+!!!! Menus and stuff
+	DONE Play to certain time or certain score
+	DONE Character+Controller Select
+		!!!! Some kind of bug is there in character select, if someone backs out something something they can't sign back in
+		!!!! Graphics
+	!!!! intro screen
+	???? help/controls screen (Part of char select)
+	!!!! round over screen – winners, score, time etc, menu options
+		DONE GameOver fade to black
+		!!!! Final whistle for the transition
+		!!!! GameOver colours/graphics
+		!!!! GameOver functionalities
+	!!!! Graphics in general
+!!!! GameStart transition
+!!!! Make font_large for GAME OVER and the like
+!!!! Implement game modes in menus
+	!!!! TENNIS (Spawn locations)
+	!!!! SQUASH
+	!!!! FOURSQUARE
+DONE Players with black cores like Twin are drawing the black cores over the power kick flash FIXED
+DONE PlayerNeo should not make slow powerkick sound when kicking out of slowmo FIXED (HACKY)
+DONE Activating Neutron Pull on the motionless ball at the start of a round sends it flying FIXED
+DONE Tricky's fakeplayer's kicking circle is the wrong line width FIXED
+DONE Enforcer nubs are green for some reasons OPTICAL ILLUSION but I made it darker so FIXED
+DONE Make Dash shortdash able to change direction DONE Well really he actually has a cooldown on repeated shortdashes now. Otherwise felt too much like Enforcer
+DONE Experiment with non fixed delta (This might be the thing I forgot?)
+	DONE Turn off vsync. DONE
+	DONE Things that are too slow
+		DONE Goal Scroll I WAS MISTAKEN
+	DONE Things that are too fast
+		DONE Menu scrolling DONE
+	DONE Things that don't work
+		DONE Back and slowing down DONE
+		DONE Enforcer and turn reduction DONE
+		!!!! Neutron grabs too fast
+		DONE Twins nuke switching animation too fast DONE
+		DONE Back and TwoTouch rotation DONE
+DONE Soccer needs to be slower paced, right now kicks are really powerful
+DONE Sound/Visual Effect for when Twins enters max sync MEH
+	DONE Tried it, doesn't really work. Audio at least. Too intrusive, as the player goes in and out of sync a lot.
+DONE Balance Back (more juking) Idea: Slow when turn, turn extra DONE
+	DONE The PI to -PI transition area results in bugs, distance weirdness.
+		DONE Make new method that just compares the 0-2pi or pi--pi distance and takes the smaller DONE WORKS
+		DONE Rotating in place is really juddery now though FIXED
+		DONE Throwing wrong way bug might be back FIXED
+			DONE Yeah. If you cross -90 (say, angleTarget is -91 and prevAngleTarget is -70, then it'll do -91+360 and subtracting wont work) FIXED
+	DONE simpler idea: speed lost = angle turned, default is to refill speed DONE
+	???? maybe top speed slight increase?
+DONE TwoTouch pilot tilt as visual effect for curve when locked DONE
+DONE TwoTouch might have the 'extra spin' bug, not sure reproduction conditions at the moment FIXED
+DONE TwoTouch needs more curve DONE
+DONE Enforcer needs scaled enforcement DONE
+DONE Kicking the ball while not moving as Neo doesn't do a powerful enough kick (not a bug, but flaw) Basically kicking needs work DONE
+DONE Kicking the ball out of the hands of Back and TwoTouch doesn't work DONE
+DONE Kicking magnitudes needs tweaking, powerkick is way too strong. (Check TwoTouch predictor afterwards) DONE
+!!!! Ball in wall failsafe
+DONE White bars on outside, so don't draw gameplay outside the black playing field? DONE
+????: Kick trails get jaggy
+DONE Implement/Revamp Keyboard Controls for each character? For example
+	DONE PlayerNeo: Good for now DONE
+	DONE PlayerTwin: One button for each twin DONE
+	DONE PlayerTwoTouch: Holding left or right rotates the Player around the ball, up and down change curve. DONE
+	DONE PlayerEnforcer: Doesn't work at all atm. DONE
+	DONE PlayerTricky: Fake ball is random, fake player is somewhat AIed. DONE
+	DONE PlayerDash: Holding and charging through does big dash, releasing it does the short dash. DONE
+	DONE PlayerNeutron: Good for now DONE
+	DONE PlayerBack: Hold off until main gameplay is set. DONE
+DONE BUG: Changing the size of puffer changes the size of the kick trail when it shouldn't DONE
+DONE BUG: Holding ActionButton with Enforcer on wall hammers the sounds DONE
+DONE BUG: Reactivating the power on Enforcer by holding down after the wall doesn't sound good MEH
+DONE TODO: Give Charge the half and half like stun victims DONE
+DONE TODO: Create UpdateCounters method DONE
+DONE TODO: Stick direction visual guide DONE
+DONE TODO: Visuals for charge's trail DONE
+!!!!Go through all the code and see if it can be less horrible
+	DONE Save memory by casting delta to float at the top of update DONE
+	!!!! TODO: Organize Player constructor
+	???? More abstract classing: Maybe everyone has buttonpressed and actionbutton2 but just leave it empty if unused.
+	???? render() has submethod drawSpecial()
+	!!!! Reorganize getColors() so you're not wasting memory making new color objects every frame?
+	!!!! find a better way to pass by value than making new float arrays every time
+	!!!! Stop having invalid lwjgl alpha parameters
+	!!!! Edit config usage to reflect that neo is not the only player
+	!!!! Don't create variables in update
+DONE Enforcer: Has to build up momentum – DONE
+	DONE TODO: Test Enfocer vs everyone else collision and see what happens
+!!!! Figure out dashing while against a wall
+DONE TODO: Velocity add component scaled by angle coincidence DONE
+DONE Ball should decelerate into TwoTouch's lock DONE
+	DONE What happens if a ball gets knocked out of TwoTouch's hands? Seems to work
+		DONE Test if NORMALKICK, DEFAULTKICK and EXTRAKICK are all the correct values
+	DONE What happens if two twotouches both try to lock the ball? Seems to work
+DONE BUG: TwoTouch gets stuck to the ball
+	DONE Resolved: Ball can be kicked out of TwoTouch's hands
+DONE PlayerCharge should bounce off wall? DONE Feels a lot better
+DONE PlayerCharge dash chaining DONE (Still in testing)
+DONE Ball should accelerate into gust DONE
+DONE Should the gust reset if the ball is kicked/the ball bounces? DONE
+	???? Sound Effect for this
+DONE Sounds
+	DONE Charge Charging DONE
+	DONE Charge Dashing DONE
+	DONE Charge Gusting DONE
+	DONE Enforcer PlayerBumping DONE
+	DONE Enforcer Charging DONE
+	DONE Enforcer Wallbouncing DONE
+	DONE Enforcer Activating DONE
+		DONE Needs visual effect
+	DONE Puffer Puffingup DONE
+	DONE Puffer Puffingdown DONE
+	DONE Twin Twinning DONE
+	DONE TwoTouch Activate DONE
+	DONE TwoTouch Lock activate DONE
+	DONE Less shitty sound names – DONE
+	DONE Slowmo versions of all sounds DONE
+DONE Visual Effects
+	DONE Different Shapes DONE
+	DONE Enforcer Activation Effect DONE
+DONE Maybe have players be arraylist?
+???? Something to help get ball out of corners/away from walls, prevent rapid bounceback or getting stuck in a corner
+DONE Dash trail end nub not drawn correctly? DONE Problem with ints
+DONE Width of kick trail not consistently aesthetic – DONE
+DONE Make velocity add component only in positive direction – DONE
+DONE Twins goal colour bug – DONE
+DONE Make TwoTouch rotate in the correct direction – DONE
+DONE Make TwoTouch not go through walls in lock DONE
+DONE Make TwoTouch velocity sticky in lock mode so if you let go of the stick the kick is still powerful, or just have visual indication of what's going on
+DONE Add TwoTouch powercircle effects – DONE
+DONE Xbox Controller Support DONE
+DONE Draw arena differently based on gameMode? – DONE
+DONE Squash mode – DONE
+DONE Have config variables: goal layout, player x and y halves – DONE
+!!!! Neon Neon Particles
+DONE Slow-mo + effects – DONE
+DONE Spinning indicates charge level – DONE
+DONE Power coolDown Indicator – DONE
+DONE Have velocity of player affect ball trajectory? (not just position)? Spin – orthogonal vel becomes acc? – DONE. Not sure how efficable in regular gameplay
+DONE ball trail? NO
+DONE Load configs: Air hockey, soccer – DONE
+???? Have slowdown factor be part of config?
+DONE Make Player abstract – DONE
+DONE Player On Player Collision handling – DONE
+DONE make setPlayer set the whole array of players, for case of 4P – DONE
+DONE Make actioncam less intense
+	DONE Have targets for pos and scale but ease into them much more gradually  – DONE
+	DONE Increase size of bounding box DONE
 
 BUG: Game crash on charge trailing ball into goal
 BUG: Thetatargets tend towards pi/2 multiples if stick is neutral
