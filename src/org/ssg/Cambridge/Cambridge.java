@@ -46,11 +46,14 @@ public class Cambridge extends StateBasedGame {
 		mySoundSystem = new SoundSystem();
 		data.setMySoundSystem(mySoundSystem);
 
+		//The first one to add is the one you enter by default
+		this.addState(new MainMenuState(data.MAINMENUSTATE, true));
 		this.addState(new GameplayState(data.GAMEPLAYSTATE, false, 0));
 		this.addState(new OptionsMenuState(data.OPTIONSMENUSTATE, false));
 		this.addState(new PlayerSelectMenuState(data.PLAYERSELECTMEUNSTATE, false));
-		this.addState(new MainMenuState(data.MAINMENUSTATE, true));
-		this.enterState(data.MAINMENUSTATE);
+		this.addState(new GameOverState(data.GAMEOVERSTATE, false));
+		
+//		this.enterState(data.MAINMENUSTATE);
 	}
 	
 	public GlobalData getData() {

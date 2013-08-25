@@ -164,7 +164,8 @@ public class MainMenuState extends BasicGameState implements KeyListener{
 	
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
-		
+		mySoundSystem.backgroundMusic("BGM", "BGMHotline.ogg" , true);
+		mySoundSystem.setVolume("BGM", data.ambientSound()/10f);
 	}
 	
 	public void setShouldRender(boolean shouldRender) {

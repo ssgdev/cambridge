@@ -189,7 +189,7 @@ public class PlayerBack extends Player {
 				rotateDir = (int)tempf;
 			}
 			
-			tempf = delta/80f;//The step interval
+			tempf = delta/60f;//The step interval
 			if(angle != angleTarget){
 				if(angleDist(angle, angleTarget)>.1f){//If it's actual turning and not a microscopic slip of the finger
 					if(rotateDir > 0){
@@ -265,7 +265,7 @@ public class PlayerBack extends Player {
 		updateCounters(delta);
 		
 		if(velMag<VELMAG)
-			velMag = approachTarget(velMag, VELMAG, delta/800f);
+			velMag = approachTarget(velMag, VELMAG, delta/400f);
 
 		if(power>0){
 			theta = angleTarget;

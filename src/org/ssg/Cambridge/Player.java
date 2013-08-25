@@ -437,6 +437,11 @@ public abstract class Player implements KeyListener {
 		return pos[1];
 	}
 
+	public void setPos(float x, float y){
+		pos[0] = x;
+		pos[1] = y;
+	}
+	
 	public void shiftX(float f){
 		pos[0]+=f;
 	}
@@ -611,16 +616,19 @@ public abstract class Player implements KeyListener {
 
 	@Override
 	public void inputEnded() {
+//		System.out.println("ENDED "+this.toString() +' '+ left);
 		inputOn = false;
 	}
 
 	@Override
 	public void inputStarted() {
+//		System.out.println("STARTED "+this.toString() + ' '+ left);
 		inputOn = true;
 	}
 
 	@Override
 	public boolean isAcceptingInput() {
+//		System.out.println("IsAccepting: "+this.toString()+" "+inputOn + ' ' + left);
 		return inputOn;
 	}
 

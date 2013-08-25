@@ -1,5 +1,8 @@
 TODO:
 
+GameOver transition DONE
+GameStart transition
+Make font_large for GAME OVER and the like
 Players with black cores like Twin are drawing the black cores over the power kick flash FIXED
 PlayerNeo should not make slow powerkick sound when kicking out of slowmo FIXED (HACKY)
 Activating Neutron Pull on the motionless ball at the start of a round sends it flying FIXED
@@ -230,6 +233,10 @@ neutron star
 BALANCE ISSUES:
 Balance Dash: Length of trail "catch"
 Balance Enforcer (more control) Less wall penalty?
+
+Website
+Trailer
+Art pass
 
 pau gazul
 shaquille o'teal

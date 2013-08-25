@@ -24,6 +24,7 @@ public class GlobalData {
 	public final int MAINMENUSTATE = 11;
 	public final int OPTIONSMENUSTATE = 12;
 	public final int PLAYERSELECTMEUNSTATE = 13;
+	public final int GAMEOVERSTATE = 17;
 	private int screenHeight;
 	private int screenWidth;
 	private boolean fullscreen;

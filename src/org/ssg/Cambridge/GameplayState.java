@@ -43,6 +43,13 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	String NAME;
 	float gameModeAlpha;
 	
+	//-1 for unlimited
+	int scoreLimit = 1;
+	int timeLimit = 10000;//in ms
+	int time;
+	int GAMEOVERCOUNTDOWN = 3000;
+	int gameOverCountdown;
+	
 	public float SCREENWIDTH;
 	public float SCREENHEIGHT;
 	public int ACTIONCAM;
@@ -77,7 +84,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	float resetVelocity[], targetX, targetY;
 	
 	Ball ball;
-	//Player p1, p2;
+	Player p1, p2;
 	Player[] players;
 	
 	boolean slowMo;
@@ -113,7 +120,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-		
+
 		data = ((Cambridge) sbg).getData();
 		mySoundSystem = data.mySoundSystem();
 		
@@ -149,7 +156,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		goalScroll2v = new Image(RESDIR + "goal_own_v.png");
 		goalScroll = goalScroll1;
 		
-		initFields(gc);
+//		initFields(gc);
 	}
 
 	public void initFields(GameContainer gc) throws SlickException {
@@ -199,6 +206,9 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		time = timeLimit;
+		gameOverCountdown = GAMEOVERCOUNTDOWN;
 		
 		minX = FIELDWIDTH/2-(int)SCREENWIDTH/2;
 		minY = FIELDHEIGHT/2-(int)SCREENHEIGHT/2;
@@ -255,9 +265,9 @@ public class GameplayState extends BasicGameState implements KeyListener {
 //		PlayerTwin p1R = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, p1Controls, c1, new float[]{p1L.getX(),p1L.getY()+1}, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_twin, 1, hemicircleR, ball);
 //		p1L.setTwin(p1R);
 //		p1R.setTwin(p1L);
-		PlayerNeo p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
+		//PlayerNeo p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
 		//PlayerNeutron p1 = new PlayerNeutron(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
-		//PlayerBack p1 = new PlayerBack(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_wide, ball);
+		p1 = new PlayerBack(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_wide, ball);
 		//PlayerDash p1 = new PlayerDash(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_tri, ball, hemicircleL);
 		//PlayerEnforcer p1 = new PlayerEnforcer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
 //		PlayerTricky p1 = new PlayerTricky(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
@@ -266,14 +276,17 @@ public class GameplayState extends BasicGameState implements KeyListener {
 //		p1.setDummy(p1D1);
 //		Ball predictor2  = new Ball(1, ballConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, goals, new float[]{FIELDWIDTH/2, FIELDHEIGHT/2}, GOALSIZE,  mySoundSystem);
 //		PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, ball, predictor2);
-		PlayerNeo p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice);
+		p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice);
 		//PlayerDash p2 = new PlayerDash(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, slice_tri, ball, hemicircleL);
 		//PlayerEnforcer p2 = new PlayerEnforcer(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow1", slice, ball);
 //		PlayerBack p2 = new PlayerBack(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, slice_wide, ball);
 		
+//		System.out.println(p1+" "+p2);
+		
 		players = new Player[]{p1, p2};
-		for(Player p: players)
+		for(Player p: players){
 			p.setPlayers(players);
+		}
 		
 		ball.setPlayers(players);
 		
@@ -336,10 +349,49 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		}
 	}
 	
+	public void resetPositions(){
+		
+		int randomNum = (int)(Math.random()*2);
+
+		float[] p1Start = {FIELDWIDTH/2-250, FIELDHEIGHT/2};
+		float[] p2Start = {FIELDWIDTH/2+250, FIELDHEIGHT/2};
+		
+		if(NAME.equals(TENNIS)){
+			p1Start = new float[]{120, FIELDHEIGHT/2};
+			p2Start = new float[]{FIELDWIDTH-120, FIELDHEIGHT/2};
+			ball.setPos(350+randomNum*(FIELDWIDTH-700), FIELDHEIGHT/2+150-300*randomNum);
+		}else if(NAME.equals(SQUASH)){
+			p1Start = new float[]{100, FIELDHEIGHT/2-300};
+			p2Start = new float[]{100, FIELDHEIGHT/2+300};
+			ball.setPos(FIELDWIDTH/2-200, FIELDHEIGHT/2-300+600*randomNum);
+		}else{
+			ball.setPos(FIELDWIDTH/2, FIELDHEIGHT/2);
+		}
+		
+		ball.setVel(ball.getVel(), 0);
+		scored = false;
+		ball.setScored(false);
+		ball.cancelAcc();
+		ball.clearLocked();
+		ball.setReadyForGust(false);
+		
+		p1.setPos(p1Start[0], p1Start[1]);
+		p2.setPos(p2Start[0], p2Start[1]);
+
+		scores[0] = 0;
+		scores[1] = 0;
+		
+		time = timeLimit;
+		gameOverCountdown = GAMEOVERCOUNTDOWN;
+		
+	}
+	
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
-		mySoundSystem.backgroundMusic("BGM", "BGMHotline.ogg", true);
+		mySoundSystem.backgroundMusic("BGM", "BGMMenu.ogg" , true);
 		mySoundSystem.setVolume("BGM", data.ambientSound()/10f);
+		initFields(gc);
+
 	}
 	
 	@Override
@@ -384,7 +436,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		}
 		
 		//draw goal scroll
-		g.drawImage(goalScroll, scrollX, scrollY);
+		if(gameOverCountdown >= GAMEOVERCOUNTDOWN)
+			g.drawImage(goalScroll, scrollX, scrollY);
 		
 		//draw bars
 		g.setColor(Color.white);
@@ -408,6 +461,15 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			g.setFont(font_white);
 			g.setColor(new Color(1f, 1f, 1f, gameModeAlpha));
 			g.drawString(NAME, FIELDWIDTH/2-font.getWidth(NAME)/2, FIELDHEIGHT/2-font.getHeight("0")/2);
+		}
+		
+		//draw game over
+		if(gameOverCountdown < GAMEOVERCOUNTDOWN){//If the gameover countdown has started
+			g.setColor(new Color(0,0,0, 1f - (float)(gameOverCountdown-50)/(float)GAMEOVERCOUNTDOWN));
+			g.fillRect(viewX, viewY, SCREENWIDTH/scaleFactor, SCREENHEIGHT/scaleFactor);
+			g.setFont(font_white);
+			g.setColor(Color.white);
+			g.drawString("GAME OVER", SCREENWIDTH/scaleFactor/2-font.getWidth("GAME OVER")/2+viewX, SCREENHEIGHT/scaleFactor/2 - font.getHeight("0")/2 + viewY);
 		}
 		
 		g.resetTransform();
@@ -443,9 +505,22 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			g.drawString("DIDIER DROGBLUE", FIELDWIDTH - font.getWidth("DIDIER DROGBLUE"), -font.getHeight("0")-10);
 			
 			//Draw scores
-			g.drawString(""+scores[1], FIELDWIDTH/2-font.getWidth(""+scores[1])-20 , -font.getHeight("0")-10);
-			g.drawString(""+scores[0], FIELDWIDTH/2+20,  -font.getHeight("0")-10);
-			g.drawString(":", FIELDWIDTH/2-font.getWidth(":")/2, -font.getHeight("0")-14);
+			g.drawString(""+scores[1], FIELDWIDTH/2-font.getWidth(""+scores[1])-20-100, -font.getHeight("0")-10);
+			g.drawString(""+scores[0], FIELDWIDTH/2+20+100,  -font.getHeight("0")-10);
+//			g.drawString(":", FIELDWIDTH/2-font.getWidth(":")/2, -font.getHeight("0")-14);
+			
+			//Draw Timer
+			if(timeLimit>0){
+				g.drawString(""+(time/1000), FIELDWIDTH/2-font.getWidth(""+time/1000)/2, -font.getHeight("0")-32);
+				g.setFont(font_small);
+				g.setColor(Color.black);
+				g.drawString(String.format("%03d",(time-time/1000*1000)), FIELDWIDTH/2-font_small.getWidth(String.format("%03d",(time-time/1000*1000)))/2, -font_small.getHeight("0")-8);
+			}else{ 
+				g.drawString(""+0, FIELDWIDTH/2-font.getWidth(""+0)/2, -font.getHeight("0")-32);
+				g.setFont(font_small);
+				g.setColor(Color.black);
+				g.drawString(String.format("%03d",0), FIELDWIDTH/2-font_small.getWidth(String.format("%03d",0))/2, -font_small.getHeight("0")-8);
+			}
 		}
 	}
 	
@@ -514,6 +589,24 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 //		System.out.println(delta);
 		
+//		System.out.println(time);
+		
+		time -= delta;
+		if(time<0)
+			time=0;
+		
+		if((timeLimit > 0 && time == 0) || (scoreLimit > 0 && (scores[0] == scoreLimit || scores[1] == scoreLimit))){
+			gameOverCountdown -= delta;
+		}
+		
+		if(gameOverCountdown <= 0){
+//			System.out.println("SCOREEND");
+			setShouldRender(false);
+			((GameOverState)sbg.getState(data.GAMEOVERSTATE)).setScores(scores);
+			((GameOverState)sbg.getState(data.GAMEOVERSTATE)).setShouldRender(true);
+			sbg.enterState(data.GAMEOVERSTATE);
+		}
+
 		deltaf = (float)delta;
 		
 		slowMo = false;
@@ -700,7 +793,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 
 		//Kicking the ball
 		for(Player p: players){
-			p.update(deltaf);
+			if(gameOverCountdown >= GAMEOVERCOUNTDOWN)//if the game over countdown has started, no more player movement
+				p.update(deltaf);
 			if(p.isKicking() && !scored ){
 				if(dist(p)<p.getKickRange()/2 /* && ball.canBeKicked(p.getPlayerNum())*/) {//Perform a kick
 					//Use prevX to prevent going through the player
@@ -861,7 +955,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			mySoundSystem.pause("slow2");
 		mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 		gameModeAlpha = 1f;
-		initFields(gc);
+//		initFields(gc);
+		resetPositions();
 	}
 	
 	public float dist(Player p){//dist to ball

@@ -1,5 +1,9 @@
 Changelog:
 
+8.24.13
+Added time and score limits in GameplayState
+Added placeholder GameOverState
+
 8.22.13
 Removed vsync and set minimum delta to 1 (previous was 24). Vastly increased framerate and smoothness.
 Sorted out attendant bugs, mostly related to not scaling by delta correctly in update methods.
