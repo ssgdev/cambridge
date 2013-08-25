@@ -1,5 +1,8 @@
 Changelog:
 
+8.25.13
+PlayerNeo now slows game timer
+
 8.24.13
 PlayerSetupMenu, GamemodeSetupMenu, TeamSetupMenu now all are functional and have prototyped UI.
 Gameplaystate now is initialized based on data set in GlobalData from the setup menus.

@@ -46,6 +46,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	//-1 for unlimited
 //	int scoreLimit = 1;
 //	int timeLimit = 10000;//in ms
+	float timef;
 	int time;
 	int GAMEOVERCOUNTDOWN = 3000;
 	int gameOverCountdown;
@@ -608,7 +609,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		scores[0] = 0;
 		scores[1] = 0;
 		
-		time = data.timeLimit()*1000;
+		timef = (float)data.timeLimit()*1000f;
+		time = (int)timef;
 		gameOverCountdown = GAMEOVERCOUNTDOWN;
 		
 	}
@@ -822,11 +824,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 //		System.out.println(delta);
 		
 //		System.out.println(time);
-		
-		time -= delta;
-		if(time<0)
-			time=0;
-		
+
 		if((data.timeLimit() > 0 && time == 0) || (data.scoreLimit() > 0 && (scores[0] >= data.scoreLimit() || scores[1] >= data.scoreLimit()))){
 			gameOverCountdown -= delta;
 		}
@@ -855,6 +853,12 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		}else{
 			ball.setSlowOn(false);
 		}
+		
+		
+		timef -= deltaf;
+		if(timef<0)
+			timef=0;
+		time = (int)timef;
 		
 		gameModeAlpha -= deltaf/1200f;
 		if(gameModeAlpha < 0){
