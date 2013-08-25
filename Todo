@@ -14,13 +14,28 @@ TODO:
 		!!!! Final whistle for the transition
 		!!!! GameOver colours/graphics
 		!!!! GameOver functionalities
+	!!!! In-game pause menu
+	!!!! Draw -1 as INFINITY in game mode select
 	!!!! Graphics in general
+	!!!! Prevent crashes when changing the resolution in fullscreen (Maybe if they're fullscreen, force native res?)
+	!!!! Going to main menu should reset all menu options (no more skipping the char select)
+	!!!! DPad in menus
+	!!!! Switch keyboard controls in menus so the left key is "advance" and the right key is "back"
 !!!! GameStart transition
 !!!! Make font_large for GAME OVER and the like
-!!!! Implement game modes in menus
+!!!! Revamp gameplaystate ui
+!!!! Implement game modes with menus
 	!!!! TENNIS (Spawn locations)
 	!!!! SQUASH
 	!!!! FOURSQUARE
+!!!! Ball Possession wrong when Dash dashes a Back holding the ball
+!!!! Balance:
+	!!!! TwoTouch underpowered. Take out speed debuff on holding button?
+	!!!! Balance Dash: Length of trail "catch"
+	!!!! Balance Enforcer (more control) Less wall penalty?
+!!!! Soundtrack
+!!!! Somethings forgetting? Add as needed
+
 DONE Players with black cores like Twin are drawing the black cores over the power kick flash FIXED
 DONE PlayerNeo should not make slow powerkick sound when kicking out of slowmo FIXED (HACKY)
 DONE Activating Neutron Pull on the motionless ball at the start of a round sends it flying FIXED
@@ -234,10 +249,6 @@ running back
 	BUG: Ball can't be kicked away anymore SOLVED
 neutron star
 	Possible bug with ball possession not being correct? Can't reproduce at moment
-
-BALANCE ISSUES:
-Balance Dash: Length of trail "catch"
-Balance Enforcer (more control) Less wall penalty?
 
 Website
 Trailer
