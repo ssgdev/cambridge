@@ -42,8 +42,8 @@ public class PlayerDash extends Player{
 
 	Ball ball;
 	
-	public PlayerDash(int n, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_t, Ball b, Image hc) {
-		super(n, consts, f, c, c1, p, xyL, se, ss, sn, slc);
+	public PlayerDash(int n, int tN, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_t, Ball b, Image hc) {
+		super(n, tN, consts, f, c, c1, p, xyL, se, ss, sn, slc);
 
 		PLAYERSIZE*=.9f;
 		
@@ -241,7 +241,7 @@ public class PlayerDash extends Player{
 						}else if(mag(ballOrth)<KICKRANGE/2f + 10f){//If it's behind you, backkick relative to distance
 							ball.setVel(new float[]{ballParallel[0], ballParallel[1]}, 3f*POWERKICK);
 						}
-						ball.setLastKicker(playerNum);
+						ball.setLastKicker(teamNum);
 //						ball.setCanBeKicked(playerNum, false);
 						kickingCoolDown = KICKCOOLDOWN;
 					}else if(!ball.scored() && ball.getX()>=xyLimit[0]&&ball.getX()<=xyLimit[1]&&ball.getY()>=xyLimit[2]&&ball.getY()<=xyLimit[3]){//The second clause, for "catching" ball in the trail
@@ -255,7 +255,7 @@ public class PlayerDash extends Player{
 							if(tempf<DASHDURATION){
 								ball.setReadyForGust(true);
 								gustCountDown = GUSTCOUNTDOWN + tempf;
-								ball.setLastKicker(playerNum);
+								ball.setLastKicker(teamNum);
 //								ball.setCanBeKicked(playerNum, false);
 								kickingCoolDown = KICKCOOLDOWN;
 							}
@@ -422,7 +422,7 @@ public class PlayerDash extends Player{
 					ball.shiftY(field[1]-ball.getY());}
 				
 				ball.setVel(new float[]{ballParallel[0], ballParallel[1]}, POWERKICK*VELMAG);
-				ball.setLastKicker(playerNum);
+				ball.setLastKicker(teamNum);
 //				ball.setCanBeKicked(playerNum, false);
 				ball.cancelAcc();
 				ball.clearLocked();

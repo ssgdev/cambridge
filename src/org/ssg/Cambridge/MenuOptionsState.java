@@ -21,7 +21,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import paulscode.sound.SoundSystem;
 
-public class OptionsMenuState extends BasicGameState implements KeyListener{
+public class MenuOptionsState extends BasicGameState implements KeyListener{
 	private GlobalData data;
 	private String[] menuOptions;
 	private Ini ini;
@@ -50,7 +50,7 @@ public class OptionsMenuState extends BasicGameState implements KeyListener{
 	private AppGameContainer appGc;
 	
 	//Constructor
-	public OptionsMenuState(int i, boolean renderon) {
+	public MenuOptionsState(int i, boolean renderon) {
 		stateID = i;
 		shouldRender = renderon;
 	}
@@ -184,8 +184,11 @@ public class OptionsMenuState extends BasicGameState implements KeyListener{
 					} else if (c.getLeftStickX() < -deadzone) {
 						left = true;
 					}
-					back = c.getMenuBack();
-					enter = c.getMenuSelect();
+					if (!back)
+						back = c.getMenuBack();
+					
+					if (!enter)
+						enter = c.getMenuSelect();
 				}
 			}
 			if (up || down || left || right || enter || back)
@@ -194,25 +197,25 @@ public class OptionsMenuState extends BasicGameState implements KeyListener{
 			inputDelay-=delta;
 		}
 		
-		if (input.isKeyPressed(Input.KEY_W) || input.isKeyPressed(Input.KEY_UP) || up) {
+		if (input.isKeyPressed(Input.KEY_UP) || up) {
 			if (!focus) {
 				selected = --selected % menuOptions.length;
 				if (selected == -1) {
 					selected = menuOptions.length-1;
 				}
 			}
-		} else if (input.isKeyPressed(Input.KEY_S) || input.isKeyPressed(Input.KEY_DOWN) || down) {
+		} else if (input.isKeyPressed(Input.KEY_DOWN) || down) {
 			if (!focus) {
 				selected = ++selected % menuOptions.length;
 			}
-		} else if (input.isKeyPressed(Input.KEY_A) || input.isKeyPressed(Input.KEY_LEFT) || left) {
+		} else if (input.isKeyPressed(Input.KEY_LEFT) || left) {
 			if (focus) {
 				switch(selected) {
 					case 0:
-						tempWidth -= 50;
+						tempWidth = tempWidth <= 800 ? tempWidth : tempWidth - 50;
 						break;
 					case 1:
-						tempHeight -= 50;
+						tempHeight = tempHeight <= 600 ? tempHeight : tempHeight - 50;
 						break;
 					case 2:
 						data.setFullscreen(!data.fullscreen());
@@ -235,7 +238,7 @@ public class OptionsMenuState extends BasicGameState implements KeyListener{
 						break;
 				}
 			}
-		} else if (input.isKeyPressed(Input.KEY_D) || input.isKeyPressed(Input.KEY_RIGHT) || right) {
+		} else if (input.isKeyPressed(Input.KEY_RIGHT) || right) {
 			if (focus) {
 				switch(selected) {
 					case 0:
@@ -297,9 +300,9 @@ public class OptionsMenuState extends BasicGameState implements KeyListener{
 						break;
 				}
 			} else {
-				((MainMenuState)sbg.getState(data.MAINMENUSTATE)).setShouldRender(true);
+				((MenuMainState)sbg.getState(data.MENUMAINSTATE)).setShouldRender(true);
 				setShouldRender(false);
-				sbg.enterState(data.MAINMENUSTATE);
+				sbg.enterState(data.MENUMAINSTATE);
 			}
 		} else if (input.isKeyPressed(Input.KEY_ENTER) || enter) {
 			if (focus) {
@@ -346,10 +349,17 @@ public class OptionsMenuState extends BasicGameState implements KeyListener{
 				tempWidth = data.screenWidth();
 			}
 		}
+		
+		input.clearKeyPressedRecord();
 	}
 	
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		
+	}
+
+	@Override
+	public void leave(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		
 	}
 	

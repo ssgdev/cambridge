@@ -34,8 +34,8 @@ public class PlayerBack extends Player {
 	float radius;//Used for drawing the shoulders
 	float RADIUS;
 	
-	public PlayerBack(int n, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_w, Ball b) {
-		super(n, consts, f, c, c1, p, xyL, se, ss, sn, slc);
+	public PlayerBack(int n, int tN, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_w, Ball b) {
+		super(n, tN, consts, f, c, c1, p, xyL, se, ss, sn, slc);
 		
 		tempf = PLAYERSIZE/5f;
 		poly = new Polygon(new float[]{
@@ -148,7 +148,7 @@ public class PlayerBack extends Player {
 		if(!lockCoolDown && power>0 && !ball.locked(playerNum) && dist(pos[0],pos[1],ball.getX(),ball.getY())<KICKRANGE/2f && !ball.scored()){
 			ball.setLocked(playerNum, true);
 //			ball.setCanBeKicked(playerNum, true);
-			ball.setLastKicker(playerNum);
+			ball.setLastKicker(teamNum);
 //			ball.setVel(new float[]{ball.getVelX(),ball.getVelY()},ball.getVelMag()/4f);
 //			ball.slowDown(0, ball.getVelMag()/24f, 0);
 			//Sets vel to be relative position to ball, so you don't jump on contact
@@ -169,7 +169,7 @@ public class PlayerBack extends Player {
 		
 		if(ball.locked(playerNum) && !ball.scored()){
 			
-			ball.setLastKicker(playerNum);
+			ball.setLastKicker(teamNum);
 			
 			radius-=delta/2f;
 			if(radius<0)

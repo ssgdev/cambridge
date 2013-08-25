@@ -98,8 +98,8 @@ public class GameOverState extends BasicGameState implements KeyListener {
 		Input input = gc.getInput();
 		if(input.isKeyPressed(Input.KEY_ENTER)){
 			setShouldRender(false);
-			((MainMenuState)sbg.getState(data.MAINMENUSTATE)).setShouldRender(true);
-			sbg.enterState(data.MAINMENUSTATE);
+			((MenuMainState)sbg.getState(data.MENUMAINSTATE)).setShouldRender(true);
+			sbg.enterState(data.MENUMAINSTATE);
 		}else if(input.isKeyPressed(Input.KEY_ESCAPE)){
 			gc.exit();
 			mySoundSystem.cleanup();

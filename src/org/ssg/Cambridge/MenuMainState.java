@@ -16,7 +16,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import paulscode.sound.SoundSystem;
 
-public class MainMenuState extends BasicGameState implements KeyListener{
+public class MenuMainState extends BasicGameState implements KeyListener{
 	private GlobalData data;
 	private String[] menuOptions;
 	private int stateID;
@@ -39,7 +39,7 @@ public class MainMenuState extends BasicGameState implements KeyListener{
 	private AngelCodeFont font, font_white, font_small;
 	
 	//Constructor
-	public MainMenuState(int i, boolean renderon) {
+	public MenuMainState(int i, boolean renderon) {
 		stateID = i;
 		shouldRender = renderon;
 	}
@@ -84,6 +84,8 @@ public class MainMenuState extends BasicGameState implements KeyListener{
 		
 		g.setAntiAlias(true);
 		
+		g.setLineWidth(2f);
+		
 		g.setBackground(Color.black);
 		
 		g.setColor(Color.white);
@@ -94,7 +96,7 @@ public class MainMenuState extends BasicGameState implements KeyListener{
 		g.drawString(menuOptions[1], data.screenWidth()/6, data.screenHeight()*0.5f+menuHeight);
 		g.drawString(menuOptions[2], data.screenWidth()/6, data.screenHeight()*0.5f+menuHeight*2);
 		
-		g.drawRect(data.screenWidth()/6 - 10, data.screenHeight()*0.5f+selected*menuHeight + 7, font.getWidth(menuOptions[selected]) + 20, 70);
+		g.drawRect(data.screenWidth()/6 - 10, data.screenHeight()*0.5f+selected*menuHeight + 7, font_white.getWidth(menuOptions[selected]) + 20, 70);
 	}
 
 	@Override
@@ -121,8 +123,11 @@ public class MainMenuState extends BasicGameState implements KeyListener{
 					} else if (c.getLeftStickX() < -deadzone) {
 						left = true;
 					}
-					back = c.getMenuBack();
-					enter = c.getMenuSelect();
+					if (!back)
+						back = c.getMenuBack();
+					
+					if (!enter)
+						enter = c.getMenuSelect();
 				}
 			}
 			if (up || down || left || right || enter || back)
@@ -143,14 +148,14 @@ public class MainMenuState extends BasicGameState implements KeyListener{
 		} else if (input.isKeyPressed(Input.KEY_ENTER) || enter) {
 			switch (selected) {
 				case 0:
-					((GameplayState)sbg.getState(data.GAMEPLAYSTATE)).setShouldRender(true);
+					((MenuPlayerSetupState)sbg.getState(data.MENUPLAYERSETUPSTATE)).setShouldRender(true);
 					setShouldRender(false);
-					sbg.enterState(data.GAMEPLAYSTATE);
+					sbg.enterState(data.MENUPLAYERSETUPSTATE);
 					break;
 				case 1:
-					((OptionsMenuState)sbg.getState(data.OPTIONSMENUSTATE)).setShouldRender(true);
+					((MenuOptionsState)sbg.getState(data.MENUOPTIONSSTATE)).setShouldRender(true);
 					setShouldRender(false);
-					sbg.enterState(data.OPTIONSMENUSTATE);
+					sbg.enterState(data.MENUOPTIONSSTATE);
 					break;
 				case 2:
 					gc.exit();
@@ -160,12 +165,19 @@ public class MainMenuState extends BasicGameState implements KeyListener{
 			}
 		}
 		
+		input.clearKeyPressedRecord();
+		
 	}
 	
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		mySoundSystem.backgroundMusic("BGM", "BGMHotline.ogg" , true);
 		mySoundSystem.setVolume("BGM", data.ambientSound()/10f);
+	}
+
+	@Override
+	public void leave(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		
 	}
 	
 	public void setShouldRender(boolean shouldRender) {

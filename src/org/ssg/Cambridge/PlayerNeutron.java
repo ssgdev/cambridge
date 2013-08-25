@@ -31,8 +31,8 @@ public class PlayerNeutron extends Player {
 	boolean pullCoolDown;
 	boolean lockCoolDown;
 	
-	public PlayerNeutron(int n, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
-		super(n, consts, f, c, c1, p, xyL, se, ss, sn, slc);
+	public PlayerNeutron(int n, int tN, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b) {
+		super(n, tN, consts, f, c, c1, p, xyL, se, ss, sn, slc);
 
 		NORMALKICK = 1f;
 		KICKRANGE *= .7f;
@@ -166,7 +166,7 @@ public class PlayerNeutron extends Player {
 //				ball.setVel(new float[]{tempArr[0],  tempArr[1]}, ball.getVelMag());
 				ball.speedUp((1.5f-gravRange/GRAVRANGE)*NORMALKICK+ball.getVelMag(), .01f, 0);
 			}
-			ball.setLastKicker(playerNum);
+			ball.setLastKicker(teamNum);
 			ball.clearLocked();
 			pushCoolDown = true;
 			kickingCoolDown = KICKCOOLDOWN;
@@ -176,7 +176,7 @@ public class PlayerNeutron extends Player {
 			prevDot = dot(ball.getVel(), tempArr);
 			//System.out.println(prevDot);
 			ball.setLocked(playerNum, true);
-			ball.setLastKicker(playerNum);
+			ball.setLastKicker(teamNum);
 			parallelComponent(ball.getVel(), new float[]{ball.getX()-pos[0], ball.getY()-pos[1]}, tempArr);
 			if(sameDir(tempArr[0], pos[0]-ball.getX()) && sameDir(tempArr[1], pos[1]-ball.getY()) && ball.getVelMag()/tempf < ORBITVEL){
 				ball.speedUp(ORBITVEL, .01f, 0);

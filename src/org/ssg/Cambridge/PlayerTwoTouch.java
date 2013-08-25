@@ -40,8 +40,8 @@ public class PlayerTwoTouch extends Player{
 	float[] predictionKickFloat;
 	float[] predictionSpinFloat;
 	
-	public PlayerTwoTouch(int n, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b, Ball pb) {
-		super(n, consts, f, c, c1, p, xyL, se, ss, sn, slc);
+	public PlayerTwoTouch(int n, int tN, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Ball b, Ball pb) {
+		super(n, tN, consts, f, c, c1, p, xyL, se, ss, sn, slc);
 		
 		poly = new Polygon(new float[]{0,0,-PLAYERSIZE/3, -PLAYERSIZE/2, PLAYERSIZE*2/3, 0, -PLAYERSIZE/3, PLAYERSIZE/2});
 		
@@ -254,7 +254,7 @@ public class PlayerTwoTouch extends Player{
 		if(!lockCoolDown && power>0 && !ball.locked(playerNum) && dist(pos[0],pos[1],ball.getX(),ball.getY())<KICKRANGE/2f && !ball.scored()){
 			ball.setLocked(playerNum, true);
 //			ball.setCanBeKicked(playerNum, true);
-			ball.setLastKicker(playerNum);
+			ball.setLastKicker(teamNum);
 			ball.setVel(new float[]{ball.getVelX(),ball.getVelY()},ball.getVelMag()/4f);
 			ball.slowDown(0, ball.getVelMag()/24f, 0);
 			ballPos = new float[]{ball.getX(),ball.getY()};//TODO: Unused

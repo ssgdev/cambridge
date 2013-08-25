@@ -1,6 +1,9 @@
 Changelog:
 
 8.24.13
+PlayerSetupMenu, GamemodeSetupMenu, TeamSetupMenu now all are functional and have prototyped UI.
+Gameplaystate now is initialized based on data set in GlobalData from the setup menus.
+Terrible terrible things have happened, need to fix soon or we'll forget and the world will end. See Todo.
 Added time and score limits in GameplayState
 Added placeholder GameOverState
 

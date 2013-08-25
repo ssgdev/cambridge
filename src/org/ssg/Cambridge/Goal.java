@@ -5,24 +5,24 @@ public class Goal {
 	private int[] pos;
 	private int[] dim;//Width, height
 	private int[] dir;//Direction balls have to go in to score
-	private int playerNum;//Who owns this goal
+	private int teamNum;//Who owns this goal
 	
-	public Goal(int x, int y, int wid, int hei, int dirx, int diry, int plN){
+	public Goal(int x, int y, int wid, int hei, int dirx, int diry, int tN){
 		pos = new int[]{x,y};
 		dim = new int[]{wid,hei};
 		dir = new int[]{dirx,diry};
-		playerNum = plN;
+		teamNum = tN;
 	}
 	
-	public void setPlayerNum(int n){
-		playerNum = n;
+	public void setTeamNum(int n){
+		teamNum = n;
 	}
 	
 	public void changeSides(){
-		if(playerNum == 0){
-			playerNum = 1;
-		}else if(playerNum == 1){
-			playerNum = 0;
+		if(teamNum == -1){
+			teamNum = 1;
+		}else if(teamNum == 1){
+			teamNum = -1;
 		}
 	}
 	
@@ -62,7 +62,7 @@ public class Goal {
 		return dim[1];
 	}
 	
-	public int getPlayer(){
-		return playerNum;
+	public int getTeam(){
+		return teamNum;
 	}
 }

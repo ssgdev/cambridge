@@ -44,8 +44,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	float gameModeAlpha;
 	
 	//-1 for unlimited
-	int scoreLimit = 1;
-	int timeLimit = 10000;//in ms
+//	int scoreLimit = 1;
+//	int timeLimit = 10000;//in ms
 	int time;
 	int GAMEOVERCOUNTDOWN = 3000;
 	int gameOverCountdown;
@@ -75,6 +75,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	private int boundingWidth = 100;
 	private boolean shouldRender;
 	
+	private float[][] team1Positions, team2Positions, playerStartPositions;
+	
 	AngelCodeFont font, font_white, font_small;
 	Image triangle, hemicircleL, hemicircleR, slice, slice_tri, slice_wide, slice_twin;
 	Image goalScroll1, goalScroll2, goalScroll1v, goalScroll2v, goalScroll;
@@ -85,7 +87,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	
 	Ball ball;
 	Player p1, p2;
-	Player[] players;
+	ArrayList<Player> players;
 	
 	boolean slowMo;
 	
@@ -108,9 +110,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	float tempf;
 	float[] tempArr;
 	
-	public GameplayState(int i, boolean renderon, int gt) {
+	public GameplayState(int i, boolean renderon) {
 		stateID = i;
-		gameType = gt;
 		shouldRender = renderon;
 	}
 	
@@ -166,6 +167,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		float[] playerConsts = new float[8];
 		float[] ballConsts = new float[3];
 		
+		gameType = data.gameType();
+		
 		try {
 			ini = new Ini(new File(RESDIR + "config.cfg"));
 			userIni = new Ini(new File(RESDIR + "user_config.cfg"));
@@ -173,7 +176,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			NUMGAMES = ini.get("CONF","NUMGAMES", int.class);
 			SCREENWIDTH = userIni.get("DISPLAY", "SCREENWIDTH", float.class);
 			SCREENHEIGHT = userIni.get("DISPLAY", "SCREENHEIGHT", float.class);
-			ACTIONCAM = ini.get("CONF", "ACTIONCAM", int.class);
+			ACTIONCAM = data.actionCam() ? 1 : 0;
 			
 			Ini.Section section = ini.get(""+gameType);
 			
@@ -207,9 +210,6 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			e.printStackTrace();
 		}
 		
-		time = timeLimit;
-		gameOverCountdown = GAMEOVERCOUNTDOWN;
-		
 		minX = FIELDWIDTH/2-(int)SCREENWIDTH/2;
 		minY = FIELDHEIGHT/2-(int)SCREENHEIGHT/2;
 		maxX = FIELDWIDTH/2+(int)SCREENWIDTH/2;
@@ -229,70 +229,292 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		}
 		
 		int randomNum = (int)(Math.random()*2);
-
 		initGoals(randomNum);
-
-		//ball = new Player(new int[]{FIELDWIDTH,FIELDHEIGHT},new int[]{Input.KEY_I, Input.KEY_K, Input.KEY_J, Input.KEY_L}, new int[]{FIELDWIDTH/2, FIELDHEIGHT/2}, Color.white);
+		
+		// Creating the ball before the players
 		ball = new Ball(0, ballConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, goals, new float[]{FIELDWIDTH/2, FIELDHEIGHT/2}, GOALSIZE,  mySoundSystem);
 		
-		float[] p1Start = {FIELDWIDTH/2-250, FIELDHEIGHT/2};
-		float[] p2Start = {FIELDWIDTH/2+250, FIELDHEIGHT/2};
-		if(NAME.equals(TENNIS)){
-			p1Start = new float[]{120, FIELDHEIGHT/2};
-			p2Start = new float[]{FIELDWIDTH-120, FIELDHEIGHT/2};
-			ball.setPos(350+randomNum*(FIELDWIDTH-700), FIELDHEIGHT/2+150-300*randomNum);
-		}else if(NAME.equals(SQUASH)){
-			p1Start = new float[]{100, FIELDHEIGHT/2-300};
-			p2Start = new float[]{100, FIELDHEIGHT/2+300};
-			ball.setPos(FIELDWIDTH/2-200, FIELDHEIGHT/2-300+600*randomNum);
-		}
-		
-		int[] p1lim;
-		int[] p2lim;
+		int[] team1lim, team2lim;
 		if(FULLCOURT==1){
-			p1lim = new int[]{0,FIELDWIDTH, 0, FIELDHEIGHT};
-			p2lim = p1lim;
+			team1lim = new int[]{0,FIELDWIDTH, 0, FIELDHEIGHT};
+			team2lim = team1lim;
 		}else {
-			p1lim = new int[]{0,FIELDWIDTH/2, 0, FIELDHEIGHT};
-			p2lim = new int[]{FIELDWIDTH/2, FIELDWIDTH, 0, FIELDHEIGHT};
+			team1lim = new int[]{0,FIELDWIDTH/2, 0, FIELDHEIGHT};
+			team2lim = new int[]{FIELDWIDTH/2, FIELDWIDTH, 0, FIELDHEIGHT};
 		}
 		
-		int[] p1Controls = new int[]{Input.KEY_W, Input.KEY_S, Input.KEY_A, Input.KEY_D, Input.KEY_LSHIFT, Input.KEY_LCONTROL};
-		int[] p2Controls = new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_RSHIFT, Input.KEY_RCONTROL};
-//		Ball predictor  = new Ball(1, ballConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, goals, new float[]{FIELDWIDTH/2, FIELDHEIGHT/2}, GOALSIZE,  mySoundSystem);
-//		PlayerTwoTouch p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball, predictor);
-//		PlayerTwin p1L = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_twin, 0, hemicircleL, ball);
-//		PlayerTwin p1R = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, p1Controls, c1, new float[]{p1L.getX(),p1L.getY()+1}, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_twin, 1, hemicircleR, ball);
-//		p1L.setTwin(p1R);
-//		p1R.setTwin(p1L);
-		//PlayerNeo p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
-		//PlayerNeutron p1 = new PlayerNeutron(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
-		p1 = new PlayerBack(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_wide, ball);
-		//PlayerDash p1 = new PlayerDash(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_tri, ball, hemicircleL);
-		//PlayerEnforcer p1 = new PlayerEnforcer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
-//		PlayerTricky p1 = new PlayerTricky(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
-//		p1.setFakeBall(new BallFake(1, ballConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, goals, new float[]{FIELDWIDTH/2, FIELDHEIGHT/2}, GOALSIZE,  mySoundSystem));
-//		PlayerDummy p1D1 = new PlayerDummy(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
-//		p1.setDummy(p1D1);
-//		Ball predictor2  = new Ball(1, ballConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, goals, new float[]{FIELDWIDTH/2, FIELDHEIGHT/2}, GOALSIZE,  mySoundSystem);
-//		PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, ball, predictor2);
-		p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice);
-		//PlayerDash p2 = new PlayerDash(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, slice_tri, ball, hemicircleL);
-		//PlayerEnforcer p2 = new PlayerEnforcer(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow1", slice, ball);
-//		PlayerBack p2 = new PlayerBack(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, slice_wide, ball);
+		team1Positions = new float[][] {
+				{ FIELDWIDTH/2-250, FIELDHEIGHT/2 },
+				{ FIELDWIDTH/2-250, FIELDHEIGHT/2 - 100 },
+				{ FIELDWIDTH/2-250, FIELDHEIGHT/2 + 100 },
+		};
 		
-//		System.out.println(p1+" "+p2);
+		team2Positions = new float[][] {
+				{ FIELDWIDTH/2+250, FIELDHEIGHT/2 },
+				{ FIELDWIDTH/2+250, FIELDHEIGHT/2 - 100 },
+				{ FIELDWIDTH/2+250, FIELDHEIGHT/2 + 100 },
+		};
 		
-		players = new Player[]{p1, p2};
+		playerStartPositions = new float[4][2];
+		
+		int team1Counter = 0, team2Counter = 0, playerCounter = 0;
+		
+		// Setting start positions for each player
+		// NEED TO MAKE THIS WORK FOR TENNIS AND SQUASH
+		for (CambridgePlayerAnchor a : data.playerAnchors()) {
+			if (a.initiated()) {
+				if (a.getTeam() == -1) { //-1 is team 1
+					playerStartPositions[playerCounter] = team1Positions[team1Counter]; 
+					team1Counter++;
+				} else if (a.getTeam() == 1) { //1 is team 2
+					playerStartPositions[playerCounter] = team2Positions[team2Counter];
+					team2Counter++;
+				}
+				playerCounter++;
+			}
+		}
+		
+		// Setting player colors
+		// NEED TO COME BACK TO THIS FOR FOURSQUARE
+		Color[] playerColors = new Color[4];
+		for (int i = 0; i < data.playerAnchors().length; i++) {
+			if (data.playerAnchors()[i].getTeam() == -1) {
+				playerColors[i] = Color.cyan;
+			} else if (data.playerAnchors()[i].getTeam() == 1) {
+				playerColors[i] = Color.orange;
+			}
+		}
+		
+		// Creating player objects
+		players = new ArrayList<Player>();
+		int[] p1Controls = new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_PERIOD, Input.KEY_COMMA};
+		int[] p2Controls = new int[]{Input.KEY_T, Input.KEY_G, Input.KEY_F, Input.KEY_H, Input.KEY_2, Input.KEY_1};
+		
+		for (int i = 0; i < data.playerAnchors().length; i++) {
+			switch(data.playerAnchors()[i].getCharacter()) {
+			case 0:
+				players.add(new PlayerBack(
+						data.playerAnchors()[i].playerNum(),
+						data.playerAnchors()[i].getTeam(),
+						playerConsts,
+						new int[]{FIELDWIDTH,FIELDHEIGHT},
+						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
+						data.playerAnchors()[i].controller(),
+						playerStartPositions[i],
+						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						playerColors[i],
+						mySoundSystem,
+						"slow1",
+						slice,
+						slice_wide,
+						ball));
+				break;
+			case 1:
+				players.add(new PlayerDash(
+						data.playerAnchors()[i].playerNum(),
+						data.playerAnchors()[i].getTeam(),
+						playerConsts,
+						new int[]{FIELDWIDTH,FIELDHEIGHT},
+						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
+						data.playerAnchors()[i].controller(),
+						playerStartPositions[i],
+						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						playerColors[i],
+						mySoundSystem,
+						"slow1",
+						slice,
+						slice_tri,
+						ball,
+						hemicircleL));
+				break;
+			case 2:
+				players.add(new PlayerEnforcer(
+						data.playerAnchors()[i].playerNum(),
+						data.playerAnchors()[i].getTeam(),
+						playerConsts,
+						new int[]{FIELDWIDTH,FIELDHEIGHT},
+						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
+						data.playerAnchors()[i].controller(),
+						playerStartPositions[i],
+						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						playerColors[i],
+						mySoundSystem,
+						"slow1",
+						slice,
+						ball));
+				break;
+			case 3:
+				players.add(new PlayerNeo(
+						data.playerAnchors()[i].playerNum(),
+						data.playerAnchors()[i].getTeam(),
+						playerConsts,
+						new int[]{FIELDWIDTH,FIELDHEIGHT},
+						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
+						data.playerAnchors()[i].controller(),
+						playerStartPositions[i],
+						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						playerColors[i],
+						mySoundSystem,
+						"slow"+(i+1),
+						slice));
+				break;
+			case 4:
+				players.add(new PlayerNeutron(
+						data.playerAnchors()[i].playerNum(),
+						data.playerAnchors()[i].getTeam(),
+						playerConsts,
+						new int[]{FIELDWIDTH,FIELDHEIGHT},
+						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
+						data.playerAnchors()[i].controller(),
+						playerStartPositions[i],
+						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						playerColors[i],
+						mySoundSystem,
+						"slow1",
+						slice,
+						ball));
+				break;
+			case 5:
+				players.add(new PlayerTricky(
+						data.playerAnchors()[i].playerNum(),
+						data.playerAnchors()[i].getTeam(),
+						playerConsts,
+						new int[]{FIELDWIDTH,FIELDHEIGHT},
+						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
+						data.playerAnchors()[i].controller(),
+						playerStartPositions[i],
+						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						playerColors[i],
+						mySoundSystem,
+						"slow1",
+						slice,
+						ball));
+				((PlayerTricky)players.get(players.size()-1)).setFakeBall(new BallFake(1, ballConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, goals, new float[]{FIELDWIDTH/2, FIELDHEIGHT/2}, GOALSIZE,  mySoundSystem));
+				players.add(new PlayerDummy(
+						data.playerAnchors()[i].playerNum(),
+						data.playerAnchors()[i].getTeam(),
+						playerConsts,
+						new int[]{FIELDWIDTH,FIELDHEIGHT},
+						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
+						data.playerAnchors()[i].controller(),
+						playerStartPositions[i],
+						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						playerColors[i],
+						mySoundSystem,
+						"slow1",
+						slice));
+				((PlayerTricky)players.get(players.size()-2)).setDummy((PlayerDummy)players.get(players.size()-1));
+				break;
+			case 6:
+				players.add(new PlayerTwin(
+						data.playerAnchors()[i].playerNum(),
+						data.playerAnchors()[i].getTeam(),
+						playerConsts,
+						new int[]{FIELDWIDTH,FIELDHEIGHT},
+						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
+						data.playerAnchors()[i].controller(),
+						playerStartPositions[i],
+						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						playerColors[i],
+						mySoundSystem,
+						"slow1",
+						slice,
+						slice_twin,
+						0,
+						hemicircleL,
+						ball));
+				players.add(new PlayerTwin(
+						data.playerAnchors()[i].playerNum(),
+						data.playerAnchors()[i].getTeam(),
+						playerConsts,
+						new int[]{FIELDWIDTH,FIELDHEIGHT},
+						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
+						data.playerAnchors()[i].controller(),
+						new float[] {playerStartPositions[i][0], playerStartPositions[i][1]+1},
+						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						playerColors[i],
+						mySoundSystem,
+						"slow1",
+						slice,
+						slice_twin,
+						1,
+						hemicircleR,
+						ball));
+				((PlayerTwin)players.get(players.size()-2)).setTwin((PlayerTwin)players.get(players.size()-1));
+				((PlayerTwin)players.get(players.size()-1)).setTwin((PlayerTwin)players.get(players.size()-2));
+				break;
+			case 7:
+				players.add(new PlayerTwoTouch(
+						data.playerAnchors()[i].playerNum(),
+						data.playerAnchors()[i].getTeam(),
+						playerConsts,
+						new int[]{FIELDWIDTH,FIELDHEIGHT},
+						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
+						data.playerAnchors()[i].controller(),
+						playerStartPositions[i],
+						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						playerColors[i],
+						mySoundSystem,
+						"slow1",
+						slice,
+						ball,
+						new Ball(data.playerAnchors()[i].playerNum(), ballConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, goals, new float[]{FIELDWIDTH/2, FIELDHEIGHT/2}, GOALSIZE,  mySoundSystem)));
+				break;
+			}
+		}
+
+//<<<<<<< Updated upstream
+		
+////		Ball predictor  = new Ball(1, ballConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, goals, new float[]{FIELDWIDTH/2, FIELDHEIGHT/2}, GOALSIZE,  mySoundSystem);
+////		PlayerTwoTouch p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball, predictor);
+//=======
+//		int[] p2Controls = new int[]{Input.KEY_T, Input.KEY_G, Input.KEY_F, Input.KEY_H, Input.KEY_2, Input.KEY_1};
+//		int[] p1Controls = new int[]{Input.KEY_UP, Input.KEY_DOWN, Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_PERIOD, Input.KEY_COMMA};
+////		PlayerTwoTouch p1 = new PlayerTwoTouch(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
+//>>>>>>> Stashed changes
+////		PlayerTwin p1L = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_twin, 0, hemicircleL, ball);
+////		PlayerTwin p1R = new PlayerTwin(0, playerConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, p1Controls, c1, new float[]{p1L.getX(),p1L.getY()+1}, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_twin, 1, hemicircleR, ball);
+////		p1L.setTwin(p1R);
+////		p1R.setTwin(p1L);
+//<<<<<<< Updated upstream
+//		//PlayerNeo p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
+//		//PlayerNeutron p1 = new PlayerNeutron(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
+//		p1 = new PlayerBack(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_wide, ball);
+//		//PlayerDash p1 = new PlayerDash(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_tri, ball, hemicircleL);
+//		//PlayerEnforcer p1 = new PlayerEnforcer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
+//=======
+//		PlayerNeo p1 = new PlayerNeo(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
+////		PlayerNeutron p1 = new PlayerNeutron(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
+////		PlayerBack p1 = new PlayerBack(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_wide, ball);
+////		PlayerDash p1 = new PlayerDash(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, slice_tri, ball, hemicircleL);
+////		PlayerEnforcer p1 = new PlayerEnforcer(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
+//>>>>>>> Stashed changes
+////		PlayerTricky p1 = new PlayerTricky(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice, ball);
+////		p1.setFakeBall(new BallFake(1, ballConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, goals, new float[]{FIELDWIDTH/2, FIELDHEIGHT/2}, GOALSIZE,  mySoundSystem));
+////		PlayerDummy p1D1 = new PlayerDummy(0, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p1Controls, c1, p1Start, p1lim, Color.orange, mySoundSystem, "slow1", slice);
+////		p1.setDummy(p1D1);
+//<<<<<<< Updated upstream
+////		Ball predictor2  = new Ball(1, ballConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, goals, new float[]{FIELDWIDTH/2, FIELDHEIGHT/2}, GOALSIZE,  mySoundSystem);
+////		PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, ball, predictor2);
+//		p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice);
+//		//PlayerDash p2 = new PlayerDash(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, slice_tri, ball, hemicircleL);
+//		//PlayerEnforcer p2 = new PlayerEnforcer(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow1", slice, ball);
+//=======
+////		PlayerTwoTouch p2 = new PlayerTwoTouch(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, ball);
+//		PlayerNeo p2 = new PlayerNeo(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice);
+////		PlayerDash p2 = new PlayerDash(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, slice_tri, ball, hemicircleL);
+////		PlayerEnforcer p2 = new PlayerEnforcer(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow1", slice, ball);
+//>>>>>>> Stashed changes
+////		PlayerBack p2 = new PlayerBack(1, playerConsts, new int[]{FIELDWIDTH,FIELDHEIGHT}, p2Controls, c2, p2Start, p2lim, Color.cyan, mySoundSystem, "slow2", slice, slice_wide, ball);
+//		
+////		System.out.println(p1+" "+p2);
+		
+		
 		for(Player p: players){
 			p.setPlayers(players);
 		}
 		
 		ball.setPlayers(players);
-		
-		teamColors = new Color[2];
-		teamColors[0] = players[0].getColor();
-		teamColors[1] = players[players.length-1].getColor();
 		
 		Input input = gc.getInput();
 		//input.addKeyListener(ball);
@@ -305,7 +527,6 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		kickFloat = new float[]{0f,0f};
 		spinFloat = new float[]{0f,0f};
 		scores = new int[]{0,0};
-		scored = false;
 		
 		tempTrailArr = new float[]{0,0,0,0};
 		
@@ -323,12 +544,14 @@ public class GameplayState extends BasicGameState implements KeyListener {
 //		gc.getGraphics().setAntiAlias(true);
 		
 		tempArr = new float[2];
+		
+		resetPositions();
 	}
 	
 	public void initGoals(int randomNum){
 		if(GOALTYPE == 0){//Left and Right goals
 			goals = new Goal[2];
-			goals[0] = new Goal(0,FIELDHEIGHT/2-GOALSIZE/2, -25, GOALSIZE, -1 , 0, 0);
+			goals[0] = new Goal(0,FIELDHEIGHT/2-GOALSIZE/2, -25, GOALSIZE, -1 , 0, -1);
 			goals[1] = new Goal(FIELDWIDTH, FIELDHEIGHT/2-GOALSIZE/2, 25, GOALSIZE, 1, 0, 1);
 		}else if(GOALTYPE == 1){//One sided goals. Squash
 			goals = new Goal[1];
@@ -356,13 +579,14 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		float[] p1Start = {FIELDWIDTH/2-250, FIELDHEIGHT/2};
 		float[] p2Start = {FIELDWIDTH/2+250, FIELDHEIGHT/2};
 		
+		
 		if(NAME.equals(TENNIS)){
-			p1Start = new float[]{120, FIELDHEIGHT/2};
-			p2Start = new float[]{FIELDWIDTH-120, FIELDHEIGHT/2};
+//			p1Start = new float[]{120, FIELDHEIGHT/2};
+//			p2Start = new float[]{FIELDWIDTH-120, FIELDHEIGHT/2};
 			ball.setPos(350+randomNum*(FIELDWIDTH-700), FIELDHEIGHT/2+150-300*randomNum);
 		}else if(NAME.equals(SQUASH)){
-			p1Start = new float[]{100, FIELDHEIGHT/2-300};
-			p2Start = new float[]{100, FIELDHEIGHT/2+300};
+//			p1Start = new float[]{100, FIELDHEIGHT/2-300};
+//			p2Start = new float[]{100, FIELDHEIGHT/2+300};
 			ball.setPos(FIELDWIDTH/2-200, FIELDHEIGHT/2-300+600*randomNum);
 		}else{
 			ball.setPos(FIELDWIDTH/2, FIELDHEIGHT/2);
@@ -375,13 +599,16 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		ball.clearLocked();
 		ball.setReadyForGust(false);
 		
-		p1.setPos(p1Start[0], p1Start[1]);
-		p2.setPos(p2Start[0], p2Start[1]);
+//		p1.setPos(p1Start[0], p1Start[1]);
+//		p2.setPos(p2Start[0], p2Start[1]);
+		for (Player p : players) {
+			p.resetPos();
+		}
 
 		scores[0] = 0;
 		scores[1] = 0;
 		
-		time = timeLimit;
+		time = data.timeLimit()*1000;
 		gameOverCountdown = GAMEOVERCOUNTDOWN;
 		
 	}
@@ -392,6 +619,11 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		mySoundSystem.setVolume("BGM", data.ambientSound()/10f);
 		initFields(gc);
 
+	}
+
+	@Override
+	public void leave(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		
 	}
 	
 	@Override
@@ -448,7 +680,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		//Draw goals
 		for(Goal goal: goals){
-			g.setColor(teamColors[goal.getPlayer()].darker());
+			g.setColor((goal.getTeam() == -1 ? Color.cyan : Color.orange).darker()); //AWFUL AWFUL AWFUL.
 			g.fillRect(goal.getX(), goal.getMinY(), goal.getWidth(), goal.getHeight());
 		}
 		//g.fillRect(FIELDWIDTH-10, FIELDHEIGHT/2-GOALWIDTH/2, 15, GOALWIDTH);
@@ -510,7 +742,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 //			g.drawString(":", FIELDWIDTH/2-font.getWidth(":")/2, -font.getHeight("0")-14);
 			
 			//Draw Timer
-			if(timeLimit>0){
+			if(data.timeLimit()>0){
 				g.drawString(""+(time/1000), FIELDWIDTH/2-font.getWidth(""+time/1000)/2, -font.getHeight("0")-32);
 				g.setFont(font_small);
 				g.setColor(Color.black);
@@ -595,7 +827,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		if(time<0)
 			time=0;
 		
-		if((timeLimit > 0 && time == 0) || (scoreLimit > 0 && (scores[0] == scoreLimit || scores[1] == scoreLimit))){
+		if((data.timeLimit() > 0 && time == 0) || (data.scoreLimit() > 0 && (scores[0] >= data.scoreLimit() || scores[1] >= data.scoreLimit()))){
 			gameOverCountdown -= delta;
 		}
 		
@@ -635,38 +867,38 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		}else if(input.isKeyPressed(Input.KEY_I)){
 			gameType = (gameType+1)%NUMGAMES;
 			reset(gc);
-		}else if (input.isKeyPressed(Input.KEY_1)){
-			gameType = 0;
-			reset(gc);
-		}else if (input.isKeyPressed(Input.KEY_2) && NUMGAMES>=2){
-			gameType = 1;
-			reset(gc);
-		}else if (input.isKeyPressed(Input.KEY_3) && NUMGAMES>=3){
-			gameType = 2;
-			reset(gc);
-		}else if (input.isKeyPressed(Input.KEY_4) && NUMGAMES>=4){
-			gameType = 3;
-			reset(gc);
-		}else if (input.isKeyPressed(Input.KEY_5) && NUMGAMES>=5){
-			gameType = 4;
-			reset(gc);
-		}else if (input.isKeyPressed(Input.KEY_6) && NUMGAMES>=6){
-			gameType = 5;
-			reset(gc);
-		}else if (input.isKeyPressed(Input.KEY_7) && NUMGAMES>=7){
-			gameType = 6;
-			reset(gc);
-		}else if (input.isKeyPressed(Input.KEY_8) && NUMGAMES>=8){
-			gameType = 7;
-			reset(gc);
-		}else if (input.isKeyPressed(Input.KEY_9) && NUMGAMES>=9){
-			gameType = 8;
-			reset(gc);
-		}else if( input.isKeyPressed(Input.KEY_PERIOD)){
+//		}else if (input.isKeyPressed(Input.KEY_1)){
+//			gameType = 0;
+//			reset(gc);
+//		}else if (input.isKeyPressed(Input.KEY_2) && NUMGAMES>=2){
+//			gameType = 1;
+//			reset(gc);
+//		}else if (input.isKeyPressed(Input.KEY_3) && NUMGAMES>=3){
+//			gameType = 2;
+//			reset(gc);
+//		}else if (input.isKeyPressed(Input.KEY_4) && NUMGAMES>=4){
+//			gameType = 3;
+//			reset(gc);
+//		}else if (input.isKeyPressed(Input.KEY_5) && NUMGAMES>=5){
+//			gameType = 4;
+//			reset(gc);
+//		}else if (input.isKeyPressed(Input.KEY_6) && NUMGAMES>=6){
+//			gameType = 5;
+//			reset(gc);
+//		}else if (input.isKeyPressed(Input.KEY_7) && NUMGAMES>=7){
+//			gameType = 6;
+//			reset(gc);
+//		}else if (input.isKeyPressed(Input.KEY_8) && NUMGAMES>=8){
+//			gameType = 7;
+//			reset(gc);
+//		}else if (input.isKeyPressed(Input.KEY_9) && NUMGAMES>=9){
+//			gameType = 8;
+//			reset(gc);
+		}else if( input.isKeyPressed(Input.KEY_P)){
 			if(maxZoom<2)
 				maxZoom+=.2f;
-		}else if( input.isKeyPressed(Input.KEY_COMMA)){
-			if(maxZoom>.8)
+		}else if( input.isKeyPressed(Input.KEY_O)){
+			if(maxZoom>.6)
 				maxZoom-=.2f;
 		}else if(input.isKeyPressed(Input.KEY_ESCAPE)){
 			gc.exit();
@@ -708,14 +940,14 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			for(Goal goal: goals){
 				//For vertical goal
 				if(ball.getY()>goal.getMinY() && ball.getY()<goal.getMaxY() && sameDir(ball.getVelX(), goal.getXDir())){
-					if(ball.getLastKicker()==goal.getPlayer()){//Own Goal
+					if(ball.getLastKicker()==goal.getTeam()){//Own Goal
 						mySoundSystem.quickPlay( true, "GoalOwnScored.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						goalScroll = goalScroll2;
 					}else{
 						mySoundSystem.quickPlay( true, "GoalScored.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						goalScroll = goalScroll1;
 					}
-					scores[goal.getPlayer()]++;
+					scores[goal.getTeam() == -1 ? 0 : 1]++; //AWFUL AWFUL AWFUL.
 					scored = true;
 					scrollX = goal.getX()+((goal.getXDir() < 0 ? goalScroll.getWidth() + 100 : 100)*(goal.getXDir()));
 					scrollY = goal.getMinY()+goal.getHeight()/2-goalScroll.getHeight()/2;
@@ -724,14 +956,14 @@ public class GameplayState extends BasicGameState implements KeyListener {
 				}
 				//For horizontal goals
 				if(ball.getX()>goal.getMinX() && ball.getX()<goal.getMaxX() && sameDir(ball.getVelY(), goal.getYDir())){
-					if(ball.getLastKicker()==goal.getPlayer()){//Own Goal
+					if(ball.getLastKicker()==goal.getTeam()){//Own Goal
 						mySoundSystem.quickPlay( true, "GoalOwnScored.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						goalScroll = goalScroll2v;
 					}else{
 						mySoundSystem.quickPlay( true, "GoalScored.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						goalScroll = goalScroll1v;
 					}
-					scores[goal.getPlayer()]++;
+					scores[goal.getTeam() == -1 ? 0 : 1]++; //AWFUL AWFUL AWFUL.
 					scored = true;
 					scrollX = goal.getMinX()+goal.getWidth()/2-goalScroll.getWidth()/2;
 					scrollY = goal.getMinY()+((goal.getYDir() < 0 ? goalScroll.getHeight() + 100 : 100)*(goal.getYDir()));
@@ -848,7 +1080,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 					p.setKicking(ball);//really this does resetKicking()
 					ball.cancelAcc();//Cancels any speeding up or slowing down. Does not affect curve
 					ball.setReadyForGust(false);
-					ball.setLastKicker(p.getPlayerNum());
+					ball.setLastKicker(p.getTeamNum());
 					ball.clearLocked();
 					
 					if(GOALTYPE == 1 || GOALTYPE == -1){//Squash
@@ -857,7 +1089,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 					}
 					if(GOALTYPE == 2){//If OneSquare
 						for(Goal goal: goals){
-							goal.setPlayerNum(ball.getLastKicker());
+							goal.setTeamNum(ball.getLastKicker());
 							goal.changeSides();//Hacky ass way to set goal to opposite side as whoever kicked
 						}
 					}
@@ -875,7 +1107,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 					tempf = (float)Math.atan2(kickFloat[1], kickFloat[0]);
 					ball.setPos(p.getX()+p.getKickRange()/2f*(float)Math.cos(tempf), p.getY()+p.getKickRange()/2f*(float)Math.sin(tempf));
 //					ball.setVel(new float[]{kickFloat[0], kickFloat[1]}, ball.getVelMag());
-					ball.setLastKicker(p.getPlayerNum());
+					ball.setLastKicker(p.getTeamNum());
 					//It shouldn't reset anything because this was added to prevent players from double tapping and clearing their own powers
 				}
 			}

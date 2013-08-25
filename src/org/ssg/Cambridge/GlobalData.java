@@ -20,11 +20,14 @@ public class GlobalData {
 	final static String RESDIR = "res/";
 	public final String userconfigdir = "user_config.cfg";
 	public final String gameconfigdir = "config.cfg";
+	public final int GAMEMODES = 5;
 	public final int GAMEPLAYSTATE = 10;
-	public final int MAINMENUSTATE = 11;
-	public final int OPTIONSMENUSTATE = 12;
-	public final int PLAYERSELECTMEUNSTATE = 13;
-	public final int GAMEOVERSTATE = 17;
+	public final int MENUMAINSTATE = 11;
+	public final int MENUOPTIONSSTATE = 12;
+	public final int MENUPLAYERSETUPSTATE = 13;
+	public final int MENUGAMEMODESETUPSTATE = 14;
+	public final int MENUTEAMSETUPSTATE = 15;
+	public final int GAMEOVERSTATE = 16;
 	private int screenHeight;
 	private int screenWidth;
 	private boolean fullscreen;
@@ -38,7 +41,12 @@ public class GlobalData {
 	
 	private ControllerEnvironment controllerEnv;
 	private CambridgeController[] controllers;
-	private ControllerListener cListener;
+	private CambridgePlayerAnchor[] anchors;
+	
+	// Gamemode variables
+	private int gamemode, timeLimit, scoreLimit;
+	private int[] timeLimits, scoreLimits;
+	private boolean actionCam;
 
 	private boolean loaded;
 	
@@ -57,8 +65,45 @@ public class GlobalData {
 		this.ambientSound = 10;
 		this.playerIdDisplay = true;
 		this.controllerEnv = ControllerEnvironment.getDefaultEnvironment();
+		
+		this.gamemode = 0;
+		this.actionCam = true;
+		
+		this.timeLimits = new int[] {
+			-1,
+			30,
+			60,
+			90,
+			120,
+			180,
+			240,
+			300,
+			600,
+			900
+		};
+		
+		this.scoreLimits = new int[] {
+			-1,
+			1,
+			5,
+			10,
+			15,
+			20,
+			25,
+			50
+		};
+		
+		this.timeLimit = 3;
+		this.scoreLimit = 3;
+		
 		controllers = new CambridgeController[4];
-		cListener = null;
+		anchors = new CambridgePlayerAnchor[] {
+				new CambridgePlayerAnchor(0),
+				new CambridgePlayerAnchor(1),
+				new CambridgePlayerAnchor(2),
+				new CambridgePlayerAnchor(3)
+		};
+		
 		initializeControllers();
 		loadConfig();
 		getControllers();
@@ -106,16 +151,13 @@ public class GlobalData {
 	
 	// Method to initialize controllers and attach controller added and removed listeners.
 	public void initializeControllers() {
-		cListener = new CambridgeControllerListener();
-		
-		controllerEnv.addControllerListener(cListener);
-		
 		for (int i = 0; i < controllers.length; i++) {
 			controllers[i] = new CambridgeController();
 		}
 	}
 	
 	public void getControllers() {
+		controllerEnv = ControllerEnvironment.getDefaultEnvironment();
 		for (Controller c : controllerEnv.getControllers()) {
 //			System.out.println(c.getName() + " " + c.getType());
 			if (c.getType() == Controller.Type.GAMEPAD || c.getType() == Controller.Type.STICK) {
@@ -159,6 +201,14 @@ public class GlobalData {
 	
 	public ControllerEnvironment getControllerEnv() {
 		return this.controllerEnv;
+	}
+	
+	public CambridgePlayerAnchor[] playerAnchors() {
+		return anchors;
+	}
+	
+	public CambridgePlayerAnchor getAnchor(int n) {
+		return anchors[n];
 	}
 
 	public int screenHeight() {
@@ -259,5 +309,47 @@ public class GlobalData {
 	}
 	public void setGameConfig(Ini gameConfig) {
 		this.gameConfig = gameConfig;
+	}
+	
+	public int gameType() {
+		return gamemode;
+	}
+	
+	public void setGameType(int n) {
+		gamemode = n;
+	}
+	
+	public int timeLimit() {
+		return timeLimits[timeLimit];
+	}
+	
+	public void setTimeLimit(int n) {
+		timeLimit += n;
+		if (timeLimit < 0) {
+			timeLimit = timeLimits.length + timeLimit;
+		} else if (timeLimit >= timeLimits.length) {
+			timeLimit %= timeLimits.length;
+		}
+	}
+	
+	public int scoreLimit() {
+		return scoreLimits[scoreLimit];
+	}
+	
+	public void setScoreLimit(int n) {
+		scoreLimit += n;
+		if (scoreLimit < 0) {
+			scoreLimit = scoreLimits.length + scoreLimit;
+		} else if (scoreLimit >= scoreLimits.length) {
+			scoreLimit %= scoreLimits.length;
+		}
+	}
+	
+	public boolean actionCam() {
+		return actionCam;
+	}
+	
+	public void setActionCam(boolean b) {
+		actionCam = b;
 	}
 }

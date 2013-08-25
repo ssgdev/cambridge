@@ -1,5 +1,7 @@
 package org.ssg.Cambridge;
 
+import java.util.ArrayList;
+
 import org.ini4j.*;
 
 import paulscode.sound.SoundSystem;
@@ -9,7 +11,7 @@ public class Ball {
 	
 	int ballID;
 	
-	Player[] players;
+	ArrayList<Player> players;
 
 	float[] pos;
 	float tempX, tempY;
@@ -73,7 +75,7 @@ public class Ball {
 		speedingUp = false;
 		slowingDown = false;
 		gustReady = false;
-		locked = new boolean[5];
+		locked = new boolean[8];
 		
 		assistTwin = new int[2];
 		assistTwin[0] = -1;
@@ -94,7 +96,7 @@ public class Ball {
 		slowOn = false;
 	}
 	
-	public void setPlayers(Player[] p) {
+	public void setPlayers(ArrayList<Player> p) {
 		players = p;
 	}
 
@@ -203,15 +205,15 @@ public class Ball {
 	}
 	
 	public void clearLocked(){
-		for(int i=0;i<players.length;i++){
-			if(players[i] instanceof PlayerTwoTouch && locked[i]) {
+		for(int i=0;i<players.size();i++){
+			if(players.get(i) instanceof PlayerTwoTouch && locked[i]) {
 				locked[i] = false;
-				((PlayerTwoTouch) players[i]).setLockCoolDown(true);
+				((PlayerTwoTouch) players.get(i)).setLockCoolDown(true);
 				//setCanBeKicked(players[i].getPlayerNum(), true);
 //				((PlayerTwoTouch) players[i]).powerKeyReleased();
-			}else if(players[i] instanceof PlayerBack && locked[i]){
+			}else if(players.get(i) instanceof PlayerBack && locked[i]){
 				locked[i] = false;
-				((PlayerBack) players[i]).setLockCoolDown(true);
+				((PlayerBack) players.get(i)).setLockCoolDown(true);
 //				((PlayerBack) players[i]).powerKeyReleased();
 			}else{
 				locked[i] = false;

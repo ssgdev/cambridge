@@ -45,15 +45,15 @@ public class Cambridge extends StateBasedGame {
 
 		mySoundSystem = new SoundSystem();
 		data.setMySoundSystem(mySoundSystem);
-
-		//The first one to add is the one you enter by default
-		this.addState(new MainMenuState(data.MAINMENUSTATE, true));
-		this.addState(new GameplayState(data.GAMEPLAYSTATE, false, 0));
-		this.addState(new OptionsMenuState(data.OPTIONSMENUSTATE, false));
-		this.addState(new PlayerSelectMenuState(data.PLAYERSELECTMEUNSTATE, false));
-		this.addState(new GameOverState(data.GAMEOVERSTATE, false));
 		
-//		this.enterState(data.MAINMENUSTATE);
+		//The first one to add is the one you enter by default
+		this.addState(new MenuMainState(data.MENUMAINSTATE, true));
+		this.addState(new GameplayState(data.GAMEPLAYSTATE, false));
+		this.addState(new MenuOptionsState(data.MENUOPTIONSSTATE, false));
+		this.addState(new MenuPlayerSetupState(data.MENUPLAYERSETUPSTATE, false));
+		this.addState(new MenuGamemodeSetupState(data.MENUGAMEMODESETUPSTATE, true));
+		this.addState(new MenuTeamSetupState(data.MENUTEAMSETUPSTATE, true));
+		this.addState(new GameOverState(data.GAMEOVERSTATE, true));
 	}
 	
 	public GlobalData getData() {
@@ -71,11 +71,6 @@ public class Cambridge extends StateBasedGame {
 			String[] icons = {"res/icon16.png", "res/icon32.png"};
 			appContainer.setIcons(icons);
 		}
-
-		this.getState(data.MAINMENUSTATE).init(gc, this);
-		this.getState(data.OPTIONSMENUSTATE).init(gc, this);
-		this.getState(data.GAMEPLAYSTATE).init(gc, this);
-		this.getState(data.PLAYERSELECTMEUNSTATE).init(gc, this);
 	}
 
 	public void initSounds() throws SlickException{
@@ -151,6 +146,8 @@ public class Cambridge extends StateBasedGame {
 		//TODO: Have streams created after character selection?
 		mySoundSystem.newStreamingSource(false, "slow1", "Rumble.ogg", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);
 		mySoundSystem.newStreamingSource(false, "slow2", "Rumble.ogg", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);
+		mySoundSystem.newStreamingSource(false, "slow3", "Rumble.ogg", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);
+		mySoundSystem.newStreamingSource(false, "slow4", "Rumble.ogg", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0f);
 	}
 
 	public static void main(String[] args) throws SlickException {

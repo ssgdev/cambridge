@@ -1,5 +1,7 @@
 package org.ssg.Cambridge;
 
+import java.util.ArrayList;
+
 import net.java.games.input.Component;
 import net.java.games.input.Controller;
 
@@ -22,6 +24,7 @@ public abstract class Player implements KeyListener {
 	boolean inputOn;
 
 	int playerNum;
+	int teamNum;
 	float PLAYERSIZE;
 	Polygon poly;
 	
@@ -30,6 +33,7 @@ public abstract class Player implements KeyListener {
 	
 	Component lStickX, lStickY, rStickX, rStickY, actionButton; //gamepad buttons
 	float[] pos;//ition
+	float[] startingPos;//ition
 	float[] vel;// [xvel, yvel]
 	float[] curve; //curve control for gamepad users. Is the right stick
 	float velMag;
@@ -67,7 +71,7 @@ public abstract class Player implements KeyListener {
 	SoundSystem mySoundSystem;
 	String slowName;//The name of the rumbling sound channel (slow1 or slow2)
 
-	Player[] players;
+	ArrayList<Player> players;
 	boolean slowMo;
 	
 	int temp;//Used whenever an int is needed temporarily
@@ -76,9 +80,10 @@ public abstract class Player implements KeyListener {
 	boolean bool;
 	float[] zeroes = {0,0};
 	
-	public Player(int n, float[] consts, int f[], int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc){
+	public Player(int n, int tN, float[] consts, int f[], int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc){
 
 		playerNum = n;
+		teamNum = tN;
 		PLAYERSIZE = 20;
 		
 		VELMAG = consts[0];
@@ -94,6 +99,7 @@ public abstract class Player implements KeyListener {
 		controls = c;
 		this.c = c1;
 		pos = p;
+		startingPos = new float[] { p[0], p[1] };
 		xyLimit = xyL;
 		color = se;
 		vel = new float[]{0,0};
@@ -417,12 +423,16 @@ public abstract class Player implements KeyListener {
 	
 	////////////////////////////////////////////////////
 	
-	public void setPlayers(Player[] p){
+	public void setPlayers(ArrayList<Player> p){
 		players = p;
 	}
 	
 	public int getPlayerNum(){
 		return playerNum;
+	}
+	
+	public int getTeamNum() {
+		return teamNum;
 	}
 
 	public float getPlayerSize(){
@@ -440,6 +450,11 @@ public abstract class Player implements KeyListener {
 	public void setPos(float x, float y){
 		pos[0] = x;
 		pos[1] = y;
+	}
+	
+	public void resetPos() {
+		pos[0] = startingPos[0];
+		pos[1] = startingPos[1];
 	}
 	
 	public void shiftX(float f){

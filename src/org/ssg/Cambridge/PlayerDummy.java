@@ -12,10 +12,10 @@ import paulscode.sound.SoundSystem;
 
 public class PlayerDummy extends Player{
 
-	public PlayerDummy(int n, float[] consts, int[] f, int[] c, CambridgeController c1,
+	public PlayerDummy(int n, int tN, float[] consts, int[] f, int[] c, CambridgeController c1,
 			float[] p, int[] xyL, Color se, SoundSystem ss,
 			String sn, Image slc) {
-		super(n, consts, f, c, c1, p, xyL, se, ss, sn, slc);
+		super(n, tN, consts, f, c, c1, p, xyL, se, ss, sn, slc);
 		
 		poly = new Polygon(new float[]{0,0});
 		
