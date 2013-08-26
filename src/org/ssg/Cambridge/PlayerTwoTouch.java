@@ -104,7 +104,7 @@ public class PlayerTwoTouch extends Player{
 		//Draw power circle
 		if(ball.locked(playerNum)){
 			g.setColor(getColor(mag(vel)/velMag+.5f));
-			g.drawOval(ball.getX()-KICKRANGE-power/2f, ball.getY()-KICKRANGE-power/2f, (KICKRANGE+power/2f)*2, (KICKRANGE+power/2f)*2);
+			g.drawOval(ballPos[0]-KICKRANGE-power/2f, ballPos[1]-KICKRANGE-power/2f, (KICKRANGE+power/2f)*2, (KICKRANGE+power/2f)*2);
 			g.setColor(Color.white);
 			drawBallPrediction(g);
 		}else if(isPower()){
@@ -115,7 +115,7 @@ public class PlayerTwoTouch extends Player{
 	}	
 
 	public void drawBallPrediction(Graphics g){
-		predictor.setPos(ball.getX(), ball.getY());
+		predictor.setPos(ballPos[0], ballPos[1]);
 		
 		predictionKickFloat[0] = (ball.getPrevX()-getX());
 		predictionKickFloat[1] = (ball.getPrevY()-getY());
@@ -257,7 +257,6 @@ public class PlayerTwoTouch extends Player{
 			ball.setLastKicker(teamNum);
 			ball.setVel(new float[]{ball.getVelX(),ball.getVelY()},ball.getVelMag()/4f);
 			ball.slowDown(0, ball.getVelMag()/24f, 0);
-			ballPos = new float[]{ball.getX(),ball.getY()};//TODO: Unused
 			//Sets vel to be relative position to ball, so you don't jump on contact
 			tempArr[0] = ball.getX()-pos[0];
 			tempArr[1] = ball.getY()-pos[1];
@@ -266,6 +265,9 @@ public class PlayerTwoTouch extends Player{
 			NORMALKICK = EXTRAKICK;
 			mySoundSystem.quickPlay( true, slowMo?"TwoTouchLockOnSlow.ogg":"TwoTouchLockOn.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 		}
+		
+		ballPos[0] = ball.getX();
+		ballPos[1] = ball.getY();
 		
 		if(!ball.locked(playerNum)){
 			updatePos(delta);
@@ -305,8 +307,8 @@ public class PlayerTwoTouch extends Player{
 				
 //End rotation code
 			
-			pos[0] = ball.getX()-(float)Math.cos(angle)*(KICKRANGE/2-1);
-			pos[1] = ball.getY()-(float)Math.sin(angle)*(KICKRANGE/2-1);
+			pos[0] = ballPos[0]-(float)Math.cos(angle)*(KICKRANGE/2-1);
+			pos[1] = ballPos[1]-(float)Math.sin(angle)*(KICKRANGE/2-1);
 			
 			if(pos[0]<xyLimit[0]+KICKRANGE/2f){
 				tempf = pos[0];

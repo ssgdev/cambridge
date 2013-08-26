@@ -144,8 +144,20 @@ public class PlayerBack extends Player {
 		
 		updatePos(delta);		
 		
+		//For if the ball gets knocked out of your hands
+		if(dist(pos[0],pos[1],ball.getX(),ball.getY())>=KICKRANGE/2f+3f+velMag*delta+1f || ball.scored()){
+			ball.setLocked(playerNum, false);
+			lockCoolDown = false;
+			radius = RADIUS;
+			turning = false;
+//			buttonPressed = false;
+//			power = 0;
+		}
+		
 		//Entering Lock
 		if(!lockCoolDown && power>0 && !ball.locked(playerNum) && dist(pos[0],pos[1],ball.getX(),ball.getY())<KICKRANGE/2f && !ball.scored()){
+			ball.clearLocked();
+			ball.cancelAcc();
 			ball.setLocked(playerNum, true);
 //			ball.setCanBeKicked(playerNum, true);
 			ball.setLastKicker(teamNum);
@@ -169,7 +181,7 @@ public class PlayerBack extends Player {
 		
 		if(ball.locked(playerNum) && !ball.scored()){
 			
-			ball.setLastKicker(teamNum);
+			//ball.setLastKicker(teamNum);
 			
 			radius-=delta/2f;
 			if(radius<0)
@@ -252,15 +264,6 @@ public class PlayerBack extends Player {
 //		if(power==0)
 //			System.out.println(ball.getVelX()+" -- "+ball.getVelY());
 //		
-		//For if the ball gets knocked out of your hands
-		if((dist(pos[0],pos[1],ball.getX(),ball.getY())>=KICKRANGE/2f+3f || ball.scored())){
-			ball.setLocked(playerNum, false);
-			lockCoolDown = false;
-			radius = RADIUS;
-			turning = false;
-//			buttonPressed = false;
-//			power = 0;
-		}
 		
 		updateCounters(delta);
 		
@@ -273,6 +276,8 @@ public class PlayerBack extends Player {
 			theta+= omega*delta/60f*(float)Math.PI;
 			if(theta>2f*(float)Math.PI) theta-=2f*(float)Math.PI;
 		}
+		
+		System.out.println(ball.getLastKicker());
 	}
 	
 	@Override

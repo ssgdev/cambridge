@@ -85,7 +85,7 @@ public class PlayerNeutron extends Player {
 			g.setColor(getColor(2f*(1f-gravRange/GRAVRANGE)));
 			g.drawOval(pos[0]-gravRange/2f, pos[1]-gravRange/2f, gravRange, gravRange);
 		}else if(gravDir == -1){
-			g.setColor(getColor(ball.locked(playerNum)? 1f: .4f));
+			g.setColor(getColor(orbiting? 1f: .4f));
 			g.drawOval(pos[0]-gravRange/2f, pos[1]-gravRange/2f, gravRange, gravRange);
 		}
 //		g.setColor(getColor());
@@ -176,7 +176,7 @@ public class PlayerNeutron extends Player {
 			prevDot = dot(ball.getVel(), tempArr);
 			//System.out.println(prevDot);
 			ball.setLocked(playerNum, true);
-			ball.setLastKicker(teamNum);
+			//ball.setLastKicker(teamNum);
 			parallelComponent(ball.getVel(), new float[]{ball.getX()-pos[0], ball.getY()-pos[1]}, tempArr);
 			if(sameDir(tempArr[0], pos[0]-ball.getX()) && sameDir(tempArr[1], pos[1]-ball.getY()) && ball.getVelMag()/tempf < ORBITVEL){
 				ball.speedUp(ORBITVEL, .01f, 0);
@@ -185,7 +185,6 @@ public class PlayerNeutron extends Player {
 				ball.setCurve(new float[]{-tempArr[0], -tempArr[1]}, 1f);
 			}
 			pullCoolDown = true;
-			mySoundSystem.quickPlay( true, slowMo?"NeutronCatchSlow.ogg":"NeutronCatch.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 		}
 		
 		if(ball.locked(playerNum)){
@@ -204,6 +203,8 @@ public class PlayerNeutron extends Player {
 					orbitCounter = (float)Math.PI;
 					ball.setVel(ball.getVel(), 0);
 					ball.cancelAcc();
+					ball.setLastKicker(teamNum);
+					mySoundSystem.quickPlay( true, slowMo?"NeutronCatchSlow.ogg":"NeutronCatch.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				}
 			}else{
 				orbitCounter+=delta*orbitOmega;
@@ -217,7 +218,7 @@ public class PlayerNeutron extends Player {
 				if(orbitRadius > KICKRANGE/2f+15)
 					orbitRadius -= delta/80f;
 				ball.setPos(pos[0]+(float)Math.cos(orbitAngle)*orbitRadius, pos[1]+(float)Math.sin(orbitAngle)*orbitRadius);
-				if(ball.getX()<=0 || ball.getX()>=field[0] || ball.getY()<=0 || ball.getY()>=field[1]){
+				if(ball.getX()<=0 || ball.getX()>=field[0] || ball.getY()<=0 || ball.getY()>=field[1]){//Bounce off wall
 					if(ball.getX()<0)
 						ball.setPos(0, ball.getY());
 					if(ball.getX()>field[0])

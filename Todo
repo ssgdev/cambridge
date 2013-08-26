@@ -20,7 +20,6 @@ TODO:
 	!!!! Prevent crashes when changing the resolution in fullscreen (Maybe if they're fullscreen, force native res?)
 	!!!! Going to main menu should reset all menu options (no more skipping the char select)
 	!!!! DPad in menus
-	!!!! Switch keyboard controls in menus so the left key is "advance" and the right key is "back"
 !!!! GameStart transition
 !!!! Make font_large for GAME OVER and the like
 !!!! Revamp gameplaystate ui
@@ -28,13 +27,21 @@ TODO:
 	!!!! TENNIS (Spawn locations)
 	!!!! SQUASH
 	!!!! FOURSQUARE
-!!!! Ball Possession wrong when Dash dashes a Back holding the ball
+DONE Ball Possession wrong when Dash dashes a Back holding the ball
+DONE Ball possession wrong on back and neutron grab
 !!!! Balance:
 	!!!! TwoTouch underpowered. Take out speed debuff on holding button?
 	!!!! Balance Dash: Length of trail "catch"
 	!!!! Balance Enforcer (more control) Less wall penalty?
 !!!! Soundtrack
 !!!! Somethings forgetting? Add as needed
+DONE PlayerNeutron pulling the ball out of Back's lock will teleport back to Back when he releases grav pull
+	DONE SOLUTION: The "too far then unlock" statement was after the "set ball to this position" statement in Back, so it would never leave lock
+DONE PlayerNeutron can grav pull throw the ball+circle of twotouch after the gameover DONE The predictor and circle are drawn to the ball's position, and the ball keeps updating after gameover.
+	!!!! The ball predictor follows the ball though
+DONE PlayerBack trying to grab the ball from Neutron during the pull-orbit is futile
+	DONE SOLUTION: PlayerBack has a clearLocked() when he grabs the ball
+DONE PlayerNeutron circle glow only when orbit entered
 
 DONE Players with black cores like Twin are drawing the black cores over the power kick flash FIXED
 DONE PlayerNeo should not make slow powerkick sound when kicking out of slowmo FIXED (HACKY)
