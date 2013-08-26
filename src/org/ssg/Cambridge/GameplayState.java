@@ -869,8 +869,9 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		
 		timef -= deltaf;
-		if(timef<0)
+		if(timef<0){
 			timef=0;
+		}
 		time = (int)timef;
 		
 		gameModeAlpha -= deltaf/1200f;
