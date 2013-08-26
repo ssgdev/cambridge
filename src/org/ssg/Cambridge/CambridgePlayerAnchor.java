@@ -17,28 +17,24 @@ public class CambridgePlayerAnchor {
 	private boolean ready;
 	private CambridgeController controller;
 	
+	private boolean selectFlag, backFlag, leftFlag, rightFlag, upFlag, downFlag;
+	
 	public CambridgePlayerAnchor() {
 		character = -1;
 		playerNum = -1;
-		playerTeam = 0;
+		playerTeam = -1;
 		keyboard = -1;
-		ready = false;
-		characterSelected = false;
-		teamSelected = false;
 		controller = new CambridgeController();
-		inputDelay = inputDelayConst;
+		commonFields();
 	}
 	
 	public CambridgePlayerAnchor(int n) {
 		character = -1;
 		playerNum = n;
-		playerTeam = 0;
+		playerTeam = -1;
 		keyboard = -1;
-		ready = false;
-		characterSelected = false;
-		teamSelected = false;
 		controller = new CambridgeController();
-		inputDelay = inputDelayConst;
+		commonFields();
 	}
 	
 	public CambridgePlayerAnchor(int c, int num, int team, int k, CambridgeController contr) {
@@ -46,11 +42,25 @@ public class CambridgePlayerAnchor {
 		playerNum = num;
 		playerTeam = team;
 		keyboard = k;
+		controller = contr;
+		commonFields();
+	}
+	
+	private void commonFields() {
 		ready = false;
 		characterSelected = false;
 		teamSelected = false;
-		controller = contr;
 		inputDelay = inputDelayConst;
+		resetButtonInput();
+	}
+	
+	public void resetButtonInput() {
+//		selectFlag = true;
+//		backFlag = true;
+		leftFlag = true;
+		rightFlag = true;
+		upFlag = true;
+		downFlag = true;
 	}
 	
 	public void changeCharacter(int n) {
@@ -71,11 +81,18 @@ public class CambridgePlayerAnchor {
 	}
 	
 	public void changeTeam(int n) {
-		playerTeam += n;
-		if (playerTeam < -1) {
-			playerTeam = -1;
-		} else if (playerTeam >= 1) {
-			playerTeam = 1;
+		if (n < 0) {
+			if (playerTeam == -1) {
+				playerTeam = 0;
+			} else if (playerTeam == 1) {
+				playerTeam = -1;
+			}
+		} else {
+			if (playerTeam == -1) {
+				playerTeam = 1;
+			} else if (playerTeam == 0) {
+				playerTeam = -1;
+			}
 		}
 	}
 	
@@ -125,6 +142,16 @@ public class CambridgePlayerAnchor {
 	
 	public boolean left(GameContainer gc, int delta) {
 		if (controller.exists() && controller.poll()) {
+			if (leftFlag) {
+				if (controller.getDPad() != 1.0) {
+					leftFlag = false;
+				}
+			} else {
+				if (controller.getDPad() == 1.0) {
+					leftFlag = true;
+					return true;
+				}
+			}
 			if (inputDelay <= 0) {
 				if (controller.getLeftStickX() < -deadzone) {
 					inputDelay = inputDelayConst;
@@ -148,6 +175,16 @@ public class CambridgePlayerAnchor {
 	
 	public boolean right(GameContainer gc, int delta) {
 		if (controller.exists() && controller.poll()) {
+			if (rightFlag) {
+				if (controller.getDPad() != 0.5f) {
+					rightFlag = false;
+				}
+			} else {
+				if (controller.getDPad() == 0.5f) {
+					rightFlag = true;
+					return true;
+				}
+			}
 			if (inputDelay <= 0) {
 				if (controller.getLeftStickX() > deadzone) {
 					inputDelay = inputDelayConst;
@@ -171,6 +208,16 @@ public class CambridgePlayerAnchor {
 	
 	public boolean up(GameContainer gc, int delta) {
 		if (controller.exists() && controller.poll()) {
+			if (upFlag) {
+				if (controller.getDPad() != 0.25f) {
+					upFlag = false;
+				}
+			} else {
+				if (controller.getDPad() == 0.25f) {
+					upFlag = true;
+					return true;
+				}
+			}
 			if (inputDelay <= 0) {
 				if (controller.getLeftStickY() < -deadzone) {
 					inputDelay = inputDelayConst;
@@ -194,6 +241,16 @@ public class CambridgePlayerAnchor {
 	
 	public boolean down(GameContainer gc, int delta) {
 		if (controller.exists() && controller.poll()) {
+			if (downFlag) {
+				if (controller.getDPad() != 0.75f) {
+					downFlag = false;
+				}
+			} else {
+				if (controller.getDPad() == 0.75f) {
+					downFlag = true;
+					return true;
+				}
+			}
 			if (inputDelay <= 0) {
 				if (controller.getLeftStickY() > deadzone) {
 					inputDelay = inputDelayConst;
@@ -217,17 +274,20 @@ public class CambridgePlayerAnchor {
 	
 	public boolean select(GameContainer gc, int delta) {
 		if (controller.exists() && controller.poll()) {
-			if (inputDelay <= 0) {
-				if (controller.getMenuSelect()) {
-					inputDelay = inputDelayConst;
-					return true;
-				} else {
-					return false;
-				}
-			} else {
-				inputDelay -= delta;
-				return false;
-			}
+//			if (selectFlag) {
+//				if (!controller.getMenuSelect()) {
+//					selectFlag = false;
+//				}
+//				return false;
+//			} else {
+//				if (controller.getMenuSelect()) {
+//					selectFlag = true;
+//					return true;
+//				} else {
+//					return false;
+//				}
+//			}
+			return controller.getMenuSelect();
 		} else {
 			Input input = gc.getInput();
 			if (keyboard == 0) {
@@ -240,17 +300,20 @@ public class CambridgePlayerAnchor {
 	
 	public boolean back(GameContainer gc, int delta) {
 		if (controller.exists() && controller.poll()) {
-			if (inputDelay <= 0) {
-				if (controller.getMenuBack()) {
-					inputDelay = inputDelayConst;
-					return true;
-				} else {
-					return false;
-				}
-			} else {
-				inputDelay -= delta;
-				return false;
-			}
+//			if (backFlag) {
+//				if (!controller.getMenuBack()) {
+//					backFlag = false;
+//				}
+//				return false;
+//			} else {
+//				if (controller.getMenuBack()) {
+//					backFlag = true;
+//					return true;
+//				} else {
+//					return false;
+//				}
+//			}
+			return controller.getMenuBack();
 		} else {
 			Input input = gc.getInput();
 			if (keyboard == 0) {

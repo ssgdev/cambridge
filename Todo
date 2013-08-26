@@ -1,11 +1,11 @@
 TODO:
 
-!!!! TEAM NUMBER NEEDS TO NOT BE STUPID. SORRY.
+DONE TEAM NUMBER NEEDS TO NOT BE STUPID. SORRY.
 
 !!!! Menus and stuff
 	DONE Play to certain time or certain score
 	DONE Character+Controller Select
-		!!!! Some kind of bug is there in character select, if someone backs out something something they can't sign back in
+		DONE Some kind of bug is there in character select, if someone backs out something something they can't sign back in
 		!!!! Graphics
 	!!!! intro screen
 	???? help/controls screen (Part of char select)
@@ -15,11 +15,11 @@ TODO:
 		!!!! GameOver colours/graphics
 		!!!! GameOver functionalities
 	!!!! In-game pause menu
-	!!!! Draw -1 as INFINITY in game mode select
+	DONE Draw -1 as "Unlimited" in game mode select
 	!!!! Graphics in general
 	!!!! Prevent crashes when changing the resolution in fullscreen (Maybe if they're fullscreen, force native res?)
-	!!!! Going to main menu should reset all menu options (no more skipping the char select)
-	!!!! DPad in menus
+	DONE Going to main menu should reset all menu options (no more skipping the char select)
+	DONE DPad in menus
 !!!! GameStart transition
 !!!! Make font_large for GAME OVER and the like
 !!!! Revamp gameplaystate ui

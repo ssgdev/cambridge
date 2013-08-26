@@ -1,10 +1,14 @@
 package org.ssg.Cambridge;
 import net.java.games.input.*;
+import net.java.games.input.Component.Identifier;
+import net.java.games.input.Component.Identifier.Axis;
+import net.java.games.input.Component.Identifier.Button;
 
 public class CambridgeController {
 	private Controller c;
-	private Component lStickX, lStickY, rStickX, rStickY, action, action2, menuSelect, menuBack, start, select;
+	private Component lStickX, lStickY, rStickX, rStickY, action, action2, menuSelect, menuBack, start, select, dpad;
 	private boolean exist;
+	private boolean selectFlag, backFlag;
 	
 	public CambridgeController() {
 		c = null;
@@ -18,7 +22,10 @@ public class CambridgeController {
 		menuBack = null;
 		start = null;
 		select = null;
+		dpad = null;
 		exist = false;
+		selectFlag = true;
+		backFlag = true;
 	}
 	
 	public CambridgeController(Controller controller) {
@@ -33,7 +40,10 @@ public class CambridgeController {
 		menuBack = this.c.getComponent(Component.Identifier.Button._1);
 		start = this.c.getComponent(Component.Identifier.Button._7);
 		select = this.c.getComponent(Component.Identifier.Button._6);
+		dpad = this.c.getComponent(Component.Identifier.Axis.POV);
 		exist = c.poll();
+		selectFlag = true;
+		backFlag = true;
 	}
 	
 	public float getLeftStickX() {
@@ -61,11 +71,37 @@ public class CambridgeController {
 	}
 	
 	public boolean getMenuSelect() {
-		return menuSelect.getPollData() == 1;
+		if (selectFlag) {
+			if (menuSelect.getPollData() != 1) {
+				selectFlag = false;
+			}
+			return false;
+		} else {
+			if (menuSelect.getPollData() == 1) {
+				selectFlag = true;
+				return true;
+			} else {
+				return false;
+			}
+		}
+//		return menuSelect.getPollData() == 1;
 	}
 	
 	public boolean getMenuBack() {
-		return menuBack.getPollData() == 1;
+		if (backFlag) {
+			if (menuBack.getPollData() != 1) {
+				backFlag = false;
+			}
+			return false;
+		} else {
+			if (menuBack.getPollData() == 1) {
+				backFlag = true;
+				return true;
+			} else {
+				return false;
+			}
+		}
+//		return menuBack.getPollData() == 1;
 	}
 	
 	public boolean getStart() {
@@ -74,6 +110,10 @@ public class CambridgeController {
 	
 	public boolean getSelect() {
 		return select.getPollData() == 1;
+	}
+	
+	public float getDPad() {
+		return dpad.getPollData();
 	}
 	
 	public boolean exists() {

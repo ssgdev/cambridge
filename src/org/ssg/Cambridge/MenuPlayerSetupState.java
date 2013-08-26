@@ -85,7 +85,7 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 			return;
 
 		g.setAntiAlias(true);
-		
+
 		g.setLineWidth(2f);
 
 		g.setBackground(Color.black);
@@ -93,7 +93,7 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 		g.setColor(Color.white);
 
 		g.setFont(font_small);
-		
+
 		//Drawing Character Selection Area
 		g.drawRect(data.screenWidth() * 5/16, data.screenHeight() * 1/4, data.screenWidth() * 3/8, data.screenHeight() * 1/2);
 		g.drawLine(data.screenWidth() * 7/16, data.screenHeight() * 1/4, data.screenWidth() * 7/16, data.screenHeight() * 3/4);
@@ -152,7 +152,7 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 				g.fillRect(data.screenWidth() * 11/16, data.screenHeight() * 7/12, data.screenWidth() * 1/4, data.screenHeight() * 1/3);
 			}
 		}
-		
+
 		for (CambridgePlayerAnchor a : anchors) {
 			if (a.initiated()) {
 				g.drawRect(
@@ -186,31 +186,34 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 		}
 
 		// There are still slots to be filled
-		if (existsNum < anchors.length) {
-			if (!keyboardOneTaken && input.isKeyPressed(Input.KEY_PERIOD)) {
-				anchors[existsNum] = new CambridgePlayerAnchor(0, existsNum, 0, 0, new CambridgeController());
-				keyboardOneTaken = true;
-			} else if (!keyboardTwoTaken && input.isKeyPressed(Input.KEY_2)) {
-				anchors[existsNum] = new CambridgePlayerAnchor(0, existsNum, 0, 1, new CambridgeController());
-				keyboardTwoTaken = true;
-			} else {
-				for (CambridgeController c : controllers) {
-					boolean used = false;
-					if (inputDelay <= 0) {
-						if (c.exists() && c.poll() && c.getMenuSelect()) {
+		for (int i = 0; i < anchors.length; i++) {
+			if (!anchors[i].initiated()) {
+				if (!keyboardOneTaken && input.isKeyPressed(Input.KEY_PERIOD)) {
+					anchors[i] = new CambridgePlayerAnchor(0, i, -1, 0, new CambridgeController());
+					keyboardOneTaken = true;
+				} else if (!keyboardTwoTaken && input.isKeyPressed(Input.KEY_2)) {
+					anchors[i] = new CambridgePlayerAnchor(0, i, -1, 1, new CambridgeController());
+					keyboardTwoTaken = true;
+				} else {
+					for (CambridgeController c : controllers) {
+						boolean used = false;
+						if (c.exists() && c.poll()) {
 							for (CambridgePlayerAnchor a : anchors) {
 								if (a.controller() == c) {
-									System.out.println("Controller is already taken! :)");
 									used = true;
 								}
 							}
 							if (!used) {
-								anchors[existsNum] = new CambridgePlayerAnchor(0, existsNum, 0, -1, c);
-								inputDelay = inputDelayConst;
+								if (c.getMenuSelect()) {
+									anchors[i] = new CambridgePlayerAnchor(0, i, -1, -1, c);
+								}
+								if (c.getMenuBack()) {
+									((MenuMainState)sbg.getState(data.MENUMAINSTATE)).setShouldRender(true);
+									setShouldRender(false);
+									sbg.enterState(data.MENUMAINSTATE);
+								}
 							}
 						}
-					} else {
-						inputDelay--;
 					}
 				}
 			}
@@ -252,23 +255,6 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 							}
 							anchors[i].setCharacter(true);
 						}
-						//					} else if (!a.teamSelected()) {
-						//						if (a.left(gc)) {
-						//							a.changeTeam(-1);
-						//						} else if (a.right(gc)) {
-						//							a.changeTeam(1);
-						//						} else if (a.back(gc)) {
-						//							a.setCharacter(false);
-						//						} else if (a.select(gc)) {
-						//							a.setTeam(true);
-						//						}
-						//					} else if (!anchors[i].isReady()) {
-						//						System.out.println(anchors[i].getCharacter());
-						//						if (anchors[i].back(gc)) {
-						//							anchors[i].setCharacter(false);
-						//						} else if (anchors[i].select(gc)) {
-						//							anchors[i].ready();
-						//						}
 					} else {
 						if (anchors[i].back(gc, delta)) {
 							anchors[i].setCharacter(false);
@@ -290,7 +276,11 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
-
+		for (CambridgePlayerAnchor a : anchors) {
+			if (a.initiated() && a.characterSelected()) {
+				a.setCharacter(false);
+			}
+		}
 	}
 
 	@Override

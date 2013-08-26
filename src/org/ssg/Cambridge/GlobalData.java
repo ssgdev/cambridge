@@ -43,6 +43,11 @@ public class GlobalData {
 	private CambridgeController[] controllers;
 	private CambridgePlayerAnchor[] anchors;
 	
+	public final float DPAD_UP = 0.25f;
+	public final float DPAD_DOWN = 0.75f;
+	public final float DPAD_LEFT = 1.0f;
+	public final float DPAD_RIGHT = 0.5f;
+	
 	// Gamemode variables
 	private int gamemode, timeLimit, scoreLimit;
 	private int[] timeLimits, scoreLimits;

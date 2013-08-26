@@ -69,6 +69,16 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 
 		cambridge = (Cambridge) sbg;
 		appGc = (AppGameContainer) gc;
+		
+		reset();
+	}
+	
+	public void reset() {
+		for (CambridgePlayerAnchor a : anchors) {
+			if (a.initiated() && a.teamSelected()) {
+				a.setTeam(false);
+			}
+		}
 	}
 
 	@Override
@@ -95,7 +105,14 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 		
 		for (int i = 0; i < anchors.length; i++) {
 			if (anchors[i].initiated()) {
-				int x = data.screenWidth() * (2+anchors[i].getTeam())/4;
+				int x;
+				if (anchors[i].getTeam() == -1) {
+					x = data.screenWidth() * 2/4;
+				} else if (anchors[i].getTeam() == 0) {
+					x = data.screenWidth() * 1/4;
+				} else {
+					x = data.screenWidth() * 3/4;
+				}
 				g.drawString(anchors[i].playerNum()+"", x - font_white.getWidth(anchors[i].playerNum()+""), data.screenHeight() * 1/3 + i*50);
 				if (anchors[i].teamSelected()) {
 					g.drawRect(x - 5, data.screenHeight() * 1/3 + i*50 - 5, font_white.getWidth(anchors[i].playerNum()+"")+10, font_white.getLineHeight()+10);
@@ -126,7 +143,7 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 				existsNum++;
 			if (anchors[i].getTeam() == 1 && anchors[i].teamSelected())
 				teamCount[1]++;
-			else if (anchors[i].getTeam() == -1 && anchors[i].teamSelected()) {
+			else if (anchors[i].getTeam() == 0 && anchors[i].teamSelected()) {
 				teamCount[0]++;
 			}
 		}
@@ -145,9 +162,8 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 							setShouldRender(false);
 							sbg.enterState(data.MENUGAMEMODESETUPSTATE);
 						} else if (anchors[i].select(gc, delta)) {
-							if (anchors[i].getTeam() != 0) {
-								if (anchors[i].getTeam() == 1 && teamCount[1] != existsNum-1
-										|| anchors[i].getTeam() == -1 && teamCount[0] != existsNum-1) {
+							if (anchors[i].getTeam() != -1) {
+								if (teamCount[anchors[i].getTeam()] != existsNum-1) {
 									anchors[i].setTeam(true);
 								}
 							}
@@ -173,7 +189,7 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
-
+		reset();
 	}
 
 	@Override

@@ -78,14 +78,18 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 		cambridge = (Cambridge) sbg;
 		appGc = (AppGameContainer) gc;
 
-		selected = 0;
-
 		menuOptions = new String[] {
 				"Time Limit",
 				"Score Limit",
 				"Action Camera",
 				"Start Game"
 		};
+		
+		reset();
+	}
+	
+	public void reset() {
+		selected = 0;
 	}
 
 	@Override
@@ -129,10 +133,16 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 					);
 			switch(i) {
 			case 0:
-				g.drawString(data.timeLimit()/60 + ":" + String.format("%02d",data.timeLimit()%60), data.screenWidth()/2, data.screenHeight() * (7+i)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2);
+				g.drawString(
+						data.timeLimit() > 0 ? (data.timeLimit()/60 + ":" + String.format("%02d",data.timeLimit()%60)) : "Unlimited",
+						data.screenWidth()/2,
+						data.screenHeight() * (7+i)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2);
 				break;
 			case 1:
-				g.drawString(data.scoreLimit()+"", data.screenWidth()/2, data.screenHeight() * (7+i)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2);
+				g.drawString(
+						data.scoreLimit() > 0 ? data.scoreLimit()+"" : "Unlimited",
+						data.screenWidth()/2,
+						data.screenHeight() * (7+i)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2);
 				break;
 			case 2:
 				g.drawString((data.actionCam() ? "On" : "Off"), data.screenWidth()/2, data.screenHeight() * (7+i)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2);
@@ -235,9 +245,9 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 				break;
 			}
 		} else if(back) {
-			for (CambridgePlayerAnchor a: anchors) {
-				a.setCharacter(false);
-			}
+//			for (CambridgePlayerAnchor a: anchors) {
+//				a.setCharacter(false);
+//			}
 			((MenuPlayerSetupState)sbg.getState(data.MENUPLAYERSETUPSTATE)).setShouldRender(true);
 			setShouldRender(false);
 			sbg.enterState(data.MENUPLAYERSETUPSTATE);
@@ -262,7 +272,7 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
-
+		reset();
 	}
 
 	@Override

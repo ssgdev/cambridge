@@ -30,6 +30,7 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 	
 	private final float deadzone = 0.28f;
 	private boolean down, up, left, right, enter, back;
+	private boolean selectFlag, backFlag, leftFlag, rightFlag, upFlag, downFlag;
 	private int inputDelay;
 	private final int inputDelayConst = 200;
 	
@@ -60,6 +61,7 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 		enter = false;
 		back = false;
 		inputDelay = 0;
+		resetButtons();
 		
 		try {
 			font = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0.png"));
@@ -74,6 +76,15 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 		selected = 0;
 		
 		menuOptions = new String[] {"Start Game", "Options", "Exit"};
+	}
+	
+	public void resetButtons() {
+		selectFlag = true;
+		backFlag = true;
+		leftFlag = true;
+		rightFlag = true;
+		upFlag = true;
+		downFlag = true;
 	}
 
 	@Override
@@ -110,9 +121,11 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 		right = false;
 		back = false;
 		enter = false;
-		if (inputDelay <= 0) {
-			for (CambridgeController c: controllers) {
-				if (c.exists() && c.poll()) {
+		for (CambridgeController c: controllers) {
+			if (c.exists() && c.poll()) {
+				
+				// Analog stick checking
+				if (inputDelay <= 0) {
 					if (c.getLeftStickY() > deadzone) {
 						down = true;
 					} else if (c.getLeftStickY() < -deadzone) {
@@ -123,17 +136,77 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 					} else if (c.getLeftStickX() < -deadzone) {
 						left = true;
 					}
-					if (!back)
-						back = c.getMenuBack();
-					
-					if (!enter)
-						enter = c.getMenuSelect();
+					if (up || down || left || right) {
+						inputDelay = inputDelayConst;
+					}
+				} else {
+					inputDelay-=delta;
+				}
+				
+				// D-Pad input checking
+				if (downFlag) {
+					if (c.getDPad() != data.DPAD_DOWN) {
+						downFlag = false;
+					}
+				} else {
+					if (c.getDPad() == data.DPAD_DOWN) {
+						downFlag = true;
+						down = true;
+					}
+				}
+				if (upFlag) {
+					if (c.getDPad() != data.DPAD_UP) {
+						upFlag = false;
+					}
+				} else {
+					if (c.getDPad() == data.DPAD_UP) {
+						upFlag = true;
+						up = true;
+					}
+				}
+				if (leftFlag) {
+					if (c.getDPad() != data.DPAD_LEFT) {
+						leftFlag = false;
+					}
+				} else {
+					if (c.getDPad() == data.DPAD_LEFT) {
+						leftFlag = true;
+						left = true;
+					}
+				}
+				if (rightFlag) {
+					if (c.getDPad() != data.DPAD_RIGHT) {
+						rightFlag = false;
+					}
+				} else {
+					if (c.getDPad() == data.DPAD_RIGHT) {
+						rightFlag = true;
+						right = true;
+					}
+				}
+				
+				// A and B button checking
+				if (backFlag) {
+					if (!c.getMenuBack()) {
+						backFlag = false;
+					}
+				} else {
+					if (c.getMenuBack()) {
+						backFlag = true;
+						back = true;
+					}
+				}
+				if (selectFlag) {
+					if (!c.getMenuSelect()) {
+						selectFlag = false;
+					}
+				} else {
+					if (c.getMenuSelect()) {
+						selectFlag = true;
+						enter = true;
+					}
 				}
 			}
-			if (up || down || left || right || enter || back)
-				inputDelay = inputDelayConst;
-		} else {
-			inputDelay-=delta;
 		}
 		
 		if (input.isKeyPressed(Input.KEY_W) || input.isKeyPressed(Input.KEY_UP) || up) {
@@ -171,8 +244,11 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 	
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
-		mySoundSystem.backgroundMusic("BGM", "BGMHotline.ogg" , true);
-		mySoundSystem.setVolume("BGM", data.ambientSound()/10f);
+		if (!mySoundSystem.playing("BGM")) {
+			mySoundSystem.backgroundMusic("BGM", "BGMHotline.ogg" , true);
+			mySoundSystem.setVolume("BGM", data.ambientSound()/10f);
+		}
+		resetButtons();
 	}
 
 	@Override

@@ -19,10 +19,10 @@ public class Goal {
 	}
 	
 	public void changeSides(){
-		if(teamNum == -1){
+		if(teamNum == 0){
 			teamNum = 1;
 		}else if(teamNum == 1){
-			teamNum = -1;
+			teamNum = 0;
 		}
 	}
 	

@@ -158,6 +158,13 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		goalScroll2v = new Image(RESDIR + "goal_own_v.png");
 		goalScroll = goalScroll1;
 		
+		teamColors = new Color[] {
+				Color.white,
+				Color.white,
+				Color.white,
+				Color.white
+		};
+		
 //		initFields(gc);
 	}
 
@@ -264,7 +271,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		// NEED TO MAKE THIS WORK FOR TENNIS AND SQUASH
 		for (CambridgePlayerAnchor a : data.playerAnchors()) {
 			if (a.initiated()) {
-				if (a.getTeam() == -1) { //-1 is team 1
+				if (a.getTeam() == 0) { //0 is team 1
 					playerStartPositions[playerCounter] = team1Positions[team1Counter]; 
 					team1Counter++;
 				} else if (a.getTeam() == 1) { //1 is team 2
@@ -277,12 +284,18 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		// Setting player colors
 		// NEED TO COME BACK TO THIS FOR FOURSQUARE
+		teamColors = new Color[] {
+			Color.cyan,
+			Color.orange,
+			new Color(223, 0, 255),
+			Color.green
+		};
 		Color[] playerColors = new Color[4];
 		for (int i = 0; i < data.playerAnchors().length; i++) {
-			if (data.playerAnchors()[i].getTeam() == -1) {
-				playerColors[i] = Color.cyan;
-			} else if (data.playerAnchors()[i].getTeam() == 1) {
-				playerColors[i] = Color.orange;
+			if (data.playerAnchors()[i].getTeam() != -1) {
+				playerColors[i] = teamColors[data.playerAnchors()[i].getTeam()];
+			} else {
+				playerColors[i] = Color.white;
 			}
 		}
 		
@@ -302,7 +315,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
 						data.playerAnchors()[i].controller(),
 						playerStartPositions[i],
-						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						data.playerAnchors()[i].getTeam() == 0 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
 						playerColors[i],
 						mySoundSystem,
 						"slow1",
@@ -319,7 +332,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
 						data.playerAnchors()[i].controller(),
 						playerStartPositions[i],
-						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						data.playerAnchors()[i].getTeam() == 0 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
 						playerColors[i],
 						mySoundSystem,
 						"slow1",
@@ -337,7 +350,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
 						data.playerAnchors()[i].controller(),
 						playerStartPositions[i],
-						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						data.playerAnchors()[i].getTeam() == 0 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
 						playerColors[i],
 						mySoundSystem,
 						"slow1",
@@ -353,7 +366,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
 						data.playerAnchors()[i].controller(),
 						playerStartPositions[i],
-						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						data.playerAnchors()[i].getTeam() == 0 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
 						playerColors[i],
 						mySoundSystem,
 						"slow"+(i+1),
@@ -368,7 +381,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
 						data.playerAnchors()[i].controller(),
 						playerStartPositions[i],
-						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						data.playerAnchors()[i].getTeam() == 0 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
 						playerColors[i],
 						mySoundSystem,
 						"slow1",
@@ -384,7 +397,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
 						data.playerAnchors()[i].controller(),
 						playerStartPositions[i],
-						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						data.playerAnchors()[i].getTeam() == 0 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
 						playerColors[i],
 						mySoundSystem,
 						"slow1",
@@ -399,7 +412,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
 						data.playerAnchors()[i].controller(),
 						playerStartPositions[i],
-						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						data.playerAnchors()[i].getTeam() == 0 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
 						playerColors[i],
 						mySoundSystem,
 						"slow1",
@@ -415,7 +428,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
 						data.playerAnchors()[i].controller(),
 						playerStartPositions[i],
-						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						data.playerAnchors()[i].getTeam() == 0 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
 						playerColors[i],
 						mySoundSystem,
 						"slow1",
@@ -432,7 +445,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
 						data.playerAnchors()[i].controller(),
 						new float[] {playerStartPositions[i][0], playerStartPositions[i][1]+1},
-						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						data.playerAnchors()[i].getTeam() == 0 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
 						playerColors[i],
 						mySoundSystem,
 						"slow1",
@@ -453,7 +466,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 						data.playerAnchors()[i].getKeyboard() == 0 ? p1Controls : p2Controls, // Controller players will also get p2Controls.
 						data.playerAnchors()[i].controller(),
 						playerStartPositions[i],
-						data.playerAnchors()[i].getTeam() == -1 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
+						data.playerAnchors()[i].getTeam() == 0 ? team1lim : team2lim, //TERRIBLE TERRBILE THINGS. Default is team2lim
 						playerColors[i],
 						mySoundSystem,
 						"slow1",
@@ -552,7 +565,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	public void initGoals(int randomNum){
 		if(GOALTYPE == 0){//Left and Right goals
 			goals = new Goal[2];
-			goals[0] = new Goal(0,FIELDHEIGHT/2-GOALSIZE/2, -25, GOALSIZE, -1 , 0, -1);
+			goals[0] = new Goal(0,FIELDHEIGHT/2-GOALSIZE/2, -25, GOALSIZE, -1 , 0, 0);
 			goals[1] = new Goal(FIELDWIDTH, FIELDHEIGHT/2-GOALSIZE/2, 25, GOALSIZE, 1, 0, 1);
 		}else if(GOALTYPE == 1){//One sided goals. Squash
 			goals = new Goal[1];
@@ -682,7 +695,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		//Draw goals
 		for(Goal goal: goals){
-			g.setColor((goal.getTeam() == -1 ? Color.cyan : Color.orange).darker()); //AWFUL AWFUL AWFUL.
+			g.setColor((teamColors[goal.getTeam()]).darker());
 			g.fillRect(goal.getX(), goal.getMinY(), goal.getWidth(), goal.getHeight());
 		}
 		//g.fillRect(FIELDWIDTH-10, FIELDHEIGHT/2-GOALWIDTH/2, 15, GOALWIDTH);
@@ -951,7 +964,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 						mySoundSystem.quickPlay( true, "GoalScored.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						goalScroll = goalScroll1;
 					}
-					scores[goal.getTeam() == -1 ? 0 : 1]++; //AWFUL AWFUL AWFUL.
+					scores[goal.getTeam()]++;
 					scored = true;
 					scrollX = goal.getX()+((goal.getXDir() < 0 ? goalScroll.getWidth() + 100 : 100)*(goal.getXDir()));
 					scrollY = goal.getMinY()+goal.getHeight()/2-goalScroll.getHeight()/2;
@@ -967,7 +980,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 						mySoundSystem.quickPlay( true, "GoalScored.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						goalScroll = goalScroll1v;
 					}
-					scores[goal.getTeam() == -1 ? 0 : 1]++; //AWFUL AWFUL AWFUL.
+					scores[goal.getTeam()]++;
 					scored = true;
 					scrollX = goal.getMinX()+goal.getWidth()/2-goalScroll.getWidth()/2;
 					scrollY = goal.getMinY()+((goal.getYDir() < 0 ? goalScroll.getHeight() + 100 : 100)*(goal.getYDir()));

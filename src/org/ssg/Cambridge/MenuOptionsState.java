@@ -38,6 +38,7 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 	
 	private final float deadzone = 0.28f;
 	private boolean down, up, left, right, back, enter;
+	private boolean selectFlag, backFlag, leftFlag, rightFlag, upFlag, downFlag;
 	private int inputDelay;
 	private final int inputDelayConst = 200;
 	
@@ -74,6 +75,7 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 		enter = false;
 		back = false;
 		inputDelay = 0;
+		resetButtons();
 		
 		tempWidth = data.screenWidth();
 		tempHeight = data.screenHeight();
@@ -96,6 +98,15 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 		
 		cambridge = (Cambridge) sbg;
 		appGc = (AppGameContainer) gc;
+	}
+	
+	public void resetButtons() {
+		selectFlag = true;
+		backFlag = true;
+		leftFlag = true;
+		rightFlag = true;
+		upFlag = true;
+		downFlag = true;
 	}
 
 	@Override
@@ -125,7 +136,7 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 					g.drawString(tempHeight+"", data.screenWidth()/5*3, data.screenHeight()*0.4f+menuHeight*i);
 					break;
 				case 2:
-					g.drawString((data.fullscreen() ? "On" : "off"), data.screenWidth()/5*3, data.screenHeight()*0.4f+menuHeight*i);
+					g.drawString((data.fullscreen() ? "On" : "Off"), data.screenWidth()/5*3, data.screenHeight()*0.4f+menuHeight*i);
 					break;
 				case 3:
 				case 4:
@@ -171,9 +182,11 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 		right = false;
 		back = false;
 		enter = false;
-		if (inputDelay <= 0) {
-			for (CambridgeController c: controllers) {
-				if (c.exists() && c.poll()) {
+		for (CambridgeController c: controllers) {
+			if (c.exists() && c.poll()) {
+				
+				// Analog stick checking
+				if (inputDelay <= 0) {
 					if (c.getLeftStickY() > deadzone) {
 						down = true;
 					} else if (c.getLeftStickY() < -deadzone) {
@@ -184,17 +197,77 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 					} else if (c.getLeftStickX() < -deadzone) {
 						left = true;
 					}
-					if (!back)
-						back = c.getMenuBack();
-					
-					if (!enter)
-						enter = c.getMenuSelect();
+					if (up || down || left || right) {
+						inputDelay = inputDelayConst;
+					}
+				} else {
+					inputDelay-=delta;
+				}
+				
+				// D-Pad input checking
+				if (downFlag) {
+					if (c.getDPad() != data.DPAD_DOWN) {
+						downFlag = false;
+					}
+				} else {
+					if (c.getDPad() == data.DPAD_DOWN) {
+						downFlag = true;
+						down = true;
+					}
+				}
+				if (upFlag) {
+					if (c.getDPad() != data.DPAD_UP) {
+						upFlag = false;
+					}
+				} else {
+					if (c.getDPad() == data.DPAD_UP) {
+						upFlag = true;
+						up = true;
+					}
+				}
+				if (leftFlag) {
+					if (c.getDPad() != data.DPAD_LEFT) {
+						leftFlag = false;
+					}
+				} else {
+					if (c.getDPad() == data.DPAD_LEFT) {
+						leftFlag = true;
+						left = true;
+					}
+				}
+				if (rightFlag) {
+					if (c.getDPad() != data.DPAD_RIGHT) {
+						rightFlag = false;
+					}
+				} else {
+					if (c.getDPad() == data.DPAD_RIGHT) {
+						rightFlag = true;
+						right = true;
+					}
+				}
+				
+				// A and B button checking
+				if (backFlag) {
+					if (!c.getMenuBack()) {
+						backFlag = false;
+					}
+				} else {
+					if (c.getMenuBack()) {
+						backFlag = true;
+						back = true;
+					}
+				}
+				if (selectFlag) {
+					if (!c.getMenuSelect()) {
+						selectFlag = false;
+					}
+				} else {
+					if (c.getMenuSelect()) {
+						selectFlag = true;
+						enter = true;
+					}
 				}
 			}
-			if (up || down || left || right || enter || back)
-				inputDelay = inputDelayConst;
-		} else {
-			inputDelay-=delta;
 		}
 		
 		if (input.isKeyPressed(Input.KEY_UP) || up) {
@@ -355,7 +428,7 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 	
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
-		
+		resetButtons();
 	}
 
 	@Override
