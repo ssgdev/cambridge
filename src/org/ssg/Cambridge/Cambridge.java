@@ -156,7 +156,13 @@ public class Cambridge extends StateBasedGame {
 		AppGameContainer app = new AppGameContainer(kickerung);
 		kickerung.mySoundSystem.setMasterVolume(kickerung.data.masterSound() / 10f);
 		System.out.println(kickerung.data.masterSound() / 10f);
-		app.setDisplayMode(kickerung.data.screenWidth(), kickerung.data.screenHeight(), false);
+		if (kickerung.data.fullscreen()) {
+			app.setDisplayMode(app.getScreenWidth(), app.getScreenHeight(), kickerung.data.fullscreen());
+			kickerung.data.setScreenHeight(app.getScreenHeight());
+			kickerung.data.setScreenWidth(app.getScreenWidth());
+		} else {
+			app.setDisplayMode(kickerung.data.screenWidth(), kickerung.data.screenHeight(), kickerung.data.fullscreen());
+		}
 //		app.setVSync(true);
 		//app.setTargetFrameRate(60);
 		app.setAlwaysRender(true);

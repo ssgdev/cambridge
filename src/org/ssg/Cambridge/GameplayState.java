@@ -182,8 +182,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			userIni = new Ini(new File(RESDIR + "user_config.cfg"));
 			
 			NUMGAMES = ini.get("CONF","NUMGAMES", int.class);
-			SCREENWIDTH = userIni.get("DISPLAY", "SCREENWIDTH", float.class);
-			SCREENHEIGHT = userIni.get("DISPLAY", "SCREENHEIGHT", float.class);
+			SCREENWIDTH = data.screenWidth();
+			SCREENHEIGHT = data.screenHeight();
 			ACTIONCAM = data.actionCam() ? 1 : 0;
 			
 			Ini.Section section = ini.get(""+gameType);
@@ -748,12 +748,12 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			g.drawString("PLAY "+NAME, FIELDWIDTH/2 - font.getWidth("PLAY "+NAME)/2, FIELDHEIGHT);
 			
 			//Draw Player Names. have these be randomized for now, maybe based on character select
-			g.drawString("FERNANDO TORANGE", 0, -font.getHeight("0")-10);
-			g.drawString("DIDIER DROGBLUE", FIELDWIDTH - font.getWidth("DIDIER DROGBLUE"), -font.getHeight("0")-10);
+			g.drawString("TEAM 1", 0, -font.getHeight("0")-10);
+			g.drawString("TEAM 2", FIELDWIDTH - font.getWidth("TEAM 2"), -font.getHeight("0")-10);
 			
 			//Draw scores
-			g.drawString(""+scores[1], FIELDWIDTH/2-font.getWidth(""+scores[1])-20-100, -font.getHeight("0")-10);
-			g.drawString(""+scores[0], FIELDWIDTH/2+20+100,  -font.getHeight("0")-10);
+			g.drawString(""+scores[0], FIELDWIDTH/2-font.getWidth(""+scores[0])-20-100, -font.getHeight("0")-10);
+			g.drawString(""+scores[1], FIELDWIDTH/2+20+100,  -font.getHeight("0")-10);
 //			g.drawString(":", FIELDWIDTH/2-font.getWidth(":")/2, -font.getHeight("0")-14);
 			
 			//Draw Timer
@@ -960,11 +960,17 @@ public class GameplayState extends BasicGameState implements KeyListener {
 					if(ball.getLastKicker()==goal.getTeam()){//Own Goal
 						mySoundSystem.quickPlay( true, "GoalOwnScored.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						goalScroll = goalScroll2;
-					}else{
+						for (int i = 0; i < scores.length; i++) {
+							if (i != ball.getLastKicker()) {
+								scores[i]++;
+							}
+						}
+					}else{ //Not Own Goal
 						mySoundSystem.quickPlay( true, "GoalScored.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						goalScroll = goalScroll1;
+						scores[ball.getLastKicker()]++;
 					}
-					scores[goal.getTeam()]++;
+					
 					scored = true;
 					scrollX = goal.getX()+((goal.getXDir() < 0 ? goalScroll.getWidth() + 100 : 100)*(goal.getXDir()));
 					scrollY = goal.getMinY()+goal.getHeight()/2-goalScroll.getHeight()/2;
@@ -980,7 +986,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 						mySoundSystem.quickPlay( true, "GoalScored.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						goalScroll = goalScroll1v;
 					}
-					scores[goal.getTeam()]++;
+					scores[ball.getLastKicker()]++;
 					scored = true;
 					scrollX = goal.getMinX()+goal.getWidth()/2-goalScroll.getWidth()/2;
 					scrollY = goal.getMinY()+((goal.getYDir() < 0 ? goalScroll.getHeight() + 100 : 100)*(goal.getYDir()));

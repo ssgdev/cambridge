@@ -1,15 +1,15 @@
 TODO:
 
-DONE TEAM NUMBER NEEDS TO NOT BE STUPID. SORRY.
-
 !!!! Menus and stuff
+	!!!! Grey out and don't let users select resolution options in full screen
+	!!!! Huge resolutions break main and options menu, need responsive layouts
 	DONE Play to certain time or certain score
 	DONE Character+Controller Select
 		DONE Some kind of bug is there in character select, if someone backs out something something they can't sign back in
 		!!!! Graphics
 	!!!! intro screen
 	???? help/controls screen (Part of char select)
-	!!!! round over screen – winners, score, time etc, menu options
+	!!!! game over screen – winners, score, time etc, menu options
 		DONE GameOver fade to black
 		!!!! Final whistle for the transition
 		!!!! GameOver colours/graphics

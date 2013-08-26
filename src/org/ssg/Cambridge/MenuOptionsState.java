@@ -77,16 +77,15 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 		inputDelay = 0;
 		resetButtons();
 		
-		tempWidth = data.screenWidth();
-		tempHeight = data.screenHeight();
+		tempWidth = display.get("SCREENWIDTH", int.class);
+		tempHeight = display.get("SCREENHEIGHT", int.class);
 		
 		font = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0.png"));
 		font_white = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0_white.png"));
 		font_small = new AngelCodeFont(RESDIR + "8bitoperator_small.fnt", new Image(RESDIR + "8bitoperator_small_0.png"));
 		
 		menuOptions = new String[] {
-			"Screen Width",
-			"Screen Height",
+			"Resolution",
 			"Fullscreen",
 			"Sound - Master",
 			"Sound - Effects",
@@ -130,23 +129,20 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 			g.drawString(menuOptions[i], data.screenWidth()/6, data.screenHeight()*0.4f+menuHeight*i);
 			switch(i) {
 				case 0:
-					g.drawString(tempWidth+"", data.screenWidth()/5*3, data.screenHeight()*0.4f+menuHeight*i);
+					g.drawString(tempWidth+"x"+tempHeight, data.screenWidth()/5*3, data.screenHeight()*0.4f+menuHeight*i);
 					break;
 				case 1:
-					g.drawString(tempHeight+"", data.screenWidth()/5*3, data.screenHeight()*0.4f+menuHeight*i);
-					break;
-				case 2:
 					g.drawString((data.fullscreen() ? "On" : "Off"), data.screenWidth()/5*3, data.screenHeight()*0.4f+menuHeight*i);
 					break;
+				case 2:
 				case 3:
 				case 4:
-				case 5:
 					int volume = 0;
-					if (i == 3) {
+					if (i == 2) {
 						volume = data.masterSound();
-					} else if (i == 4) {
+					} else if (i == 3) {
 						volume = data.effectSound();
-					} else if (i == 5) {
+					} else if (i == 4) {
 						volume = data.ambientSound();
 					}
 					for (int j = 0; j < 10; j++) {
@@ -157,7 +153,7 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 						}
 					}
 					break;
-				case 6:
+				case 5:
 					g.drawString((data.playerIdDisplay() ? "On" : "off"), data.screenWidth()/5*3, data.screenHeight()*0.4f+menuHeight*i);
 					break;
 				default:
@@ -174,6 +170,8 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta)
 			throws SlickException {
+		
+		System.out.println(data.getResolution()[0] + "x" + data.getResolution()[1] + " " + data.resolutionIndex());
 		Input input = gc.getInput();
 		
 		up = false;
@@ -285,26 +283,25 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 			if (focus) {
 				switch(selected) {
 					case 0:
-						tempWidth = tempWidth <= 800 ? tempWidth : tempWidth - 50;
+						data.setResolutionIndex(data.resolutionIndex() < 1 ? data.resolutions()-1 : data.resolutionIndex()-1);
+						tempWidth = data.getResolution()[0];
+						tempHeight = data.getResolution()[1];
 						break;
 					case 1:
-						tempHeight = tempHeight <= 600 ? tempHeight : tempHeight - 50;
-						break;
-					case 2:
 						data.setFullscreen(!data.fullscreen());
 						break;
-					case 3:
+					case 2:
 						data.setMasterSound(data.masterSound() - 1 < 0 ? 0 : data.masterSound() - 1);
 						mySoundSystem.setMasterVolume(data.masterSound() / 10f);
 						break;
-					case 4:
+					case 3:
 						data.setEffectSound(data.effectSound() - 1 < 0 ? 0 : data.effectSound() - 1);
 						break;
-					case 5:
+					case 4:
 						data.setAmbientSound(data.ambientSound() - 1 < 0 ? 0 : data.ambientSound() - 1);
 						mySoundSystem.setVolume("BGM", data.ambientSound()/10f);
 						break;
-					case 6:
+					case 5:
 						data.setPlayerIdDisplay(!data.playerIdDisplay());
 						break;
 					default:
@@ -315,26 +312,25 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 			if (focus) {
 				switch(selected) {
 					case 0:
-						tempWidth += 50;
+						data.setResolutionIndex(data.resolutionIndex() >= data.resolutions()-1 ? 0 : data.resolutionIndex()+1);
+						tempWidth = data.getResolution()[0];
+						tempHeight = data.getResolution()[1];
 						break;
 					case 1:
-						tempHeight += 50;
-						break;
-					case 2:
 						data.setFullscreen(!data.fullscreen());
 						break;
-					case 3:
+					case 2:
 						data.setMasterSound(data.masterSound() + 1 > 10 ? 10 : data.masterSound() + 1);
 						mySoundSystem.setMasterVolume(data.masterSound() / 10f);
 						break;
-					case 4:
+					case 3:
 						data.setEffectSound(data.effectSound() + 1 > 10 ? 10 : data.effectSound() + 1);
 						break;
-					case 5:
+					case 4:
 						data.setAmbientSound(data.ambientSound() + 1 > 10 ? 10 : data.ambientSound() + 1);
 						mySoundSystem.setVolume("BGM", data.ambientSound()/10f);
 						break;
-					case 6:
+					case 5:
 						data.setPlayerIdDisplay(!data.playerIdDisplay());
 						break;
 					default:
@@ -346,27 +342,27 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 				focus = false;
 				switch(selected) {
 					case 0:
-						data.setScreenWidth(display.get("SCREENWIDTH", int.class));
-						tempWidth = data.screenWidth();
+						if (!data.fullscreen()) {
+							data.setScreenWidth(display.get("SCREENWIDTH", int.class));
+							data.setScreenHeight(display.get("SCREENHEIGHT", int.class));
+						}
+						tempWidth = display.get("SCREENWIDTH", int.class);
+						tempHeight = display.get("SCREENHEIGHT", int.class);
 						break;
 					case 1:
-						data.setScreenHeight(display.get("SCREENHEIGHT", int.class));
-						tempHeight = data.screenHeight();
-						break;
-					case 2:
 						data.setFullscreen(display.get("FULLSCREEN", boolean.class));
 						break;
-					case 3:
+					case 2:
 						data.setMasterSound(sound.get("MASTER", int.class));
 						mySoundSystem.setMasterVolume(data.masterSound() / 10f);
 						break;
-					case 4:
+					case 3:
 						data.setEffectSound(sound.get("EFFECTS", int.class));
 						break;
-					case 5:
+					case 4:
 						data.setAmbientSound(sound.get("AMBIENT", int.class));
 						break;
-					case 6:
+					case 5:
 						data.setPlayerIdDisplay(gameplay.get("PLAYERID", boolean.class));
 						break;
 					default:
@@ -382,29 +378,37 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 				focus = false;
 				switch(selected) {
 					case 0:
-						data.setScreenWidth(tempWidth);
-						display.put("SCREENWIDTH", data.screenWidth());
-						appGc.setDisplayMode(data.screenWidth(), data.screenHeight(), data.fullscreen());
+						tempWidth = data.getResolution()[0];
+						tempHeight = data.getResolution()[1];
+						display.put("SCREENWIDTH", tempWidth);
+						display.put("SCREENHEIGHT", tempHeight);
+						if (!data.fullscreen()) {
+							data.setScreenWidth(tempWidth);
+							data.setScreenHeight(tempHeight);
+							appGc.setDisplayMode(data.screenWidth(), data.screenHeight(), data.fullscreen());
+						}
 						break;
 					case 1:
-						data.setScreenHeight(tempHeight);
-						display.put("SCREENHEIGHT", data.screenHeight());
+						display.put("FULLSCREEN", data.fullscreen());
+						if (!data.fullscreen()) {
+							data.setScreenHeight(display.get("SCREENHEIGHT", int.class));
+							data.setScreenWidth(display.get("SCREENWIDTH", int.class));
+						} else {
+							data.setScreenHeight(gc.getScreenHeight());
+							data.setScreenWidth(gc.getScreenWidth());
+						}
 						appGc.setDisplayMode(data.screenWidth(), data.screenHeight(), data.fullscreen());
 						break;
 					case 2:
-						display.put("FULLSCREEN", data.fullscreen());
-						appGc.setFullscreen(data.fullscreen());
-						break;
-					case 3:
 						sound.put("MASTER", data.masterSound());
 						break;
-					case 4:
+					case 3:
 						sound.put("EFFECTS", data.effectSound());
 						break;
-					case 5:
+					case 4:
 						sound.put("AMBIENT", data.ambientSound());
 						break;
-					case 6:
+					case 5:
 						gameplay.put("PLAYERID", data.playerIdDisplay());
 						break;
 					default:
@@ -418,8 +422,8 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 				}
 			} else {
 				focus = true;
-				tempHeight = data.screenHeight();
-				tempWidth = data.screenWidth();
+				tempHeight = display.get("SCREENHEIGHT", int.class);
+				tempWidth = display.get("SCREENWIDTH", int.class);
 			}
 		}
 		

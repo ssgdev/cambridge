@@ -38,6 +38,8 @@ public class GlobalData {
 	private SoundSystem mySoundSystem;
 	private Ini userConfig, gameConfig;
 	private Ini.Section displayConfig, soundConfig, gameplayConfig;
+	private int[][] resolutionList;
+	private int resolutionIndex;
 	
 	private ControllerEnvironment controllerEnv;
 	private CambridgeController[] controllers;
@@ -98,6 +100,26 @@ public class GlobalData {
 			50
 		};
 		
+		this.resolutionList = new int[][] {
+				{ 640, 480 },
+				{ 800, 600 },
+				{ 960, 720 },
+				{ 1024, 768 },
+				{ 1280, 720 },
+				{ 1280, 960 },
+				{ 1366, 768 },
+				{ 1400, 1050 },
+				{ 1440, 1080 },
+				{ 1600, 900 },
+				{ 1600, 1200 },
+				{ 1920, 1080 },
+				{ 1920, 1440 },
+				{ 2560, 1440 },
+				{ 2560, 1920 }
+		};
+		
+		resolutionIndex = -1;
+		
 		this.timeLimit = 3;
 		this.scoreLimit = 3;
 		
@@ -121,6 +143,11 @@ public class GlobalData {
 			displayConfig = userConfig.get("DISPLAY");
 			setScreenWidth(displayConfig.get("SCREENWIDTH", int.class));
 			setScreenHeight(displayConfig.get("SCREENHEIGHT", int.class));
+			for (int i = 0; i < resolutionList.length; i++) {
+				if (screenWidth == resolutionList[i][0] && screenHeight == resolutionList[i][1]) {
+					resolutionIndex = i;
+				}
+			}
 			setFullscreen(displayConfig.get("FULLSCREEN", boolean.class));
 			
 			soundConfig = userConfig.get("AUDIO");
@@ -238,6 +265,22 @@ public class GlobalData {
 
 	public void setFullscreen(boolean fullscreen) {
 		this.fullscreen = fullscreen;
+	}
+	
+	public int[] getResolution() {
+		return resolutionList[resolutionIndex];
+	}
+	
+	public int resolutionIndex() {
+		return resolutionIndex;
+	}
+	
+	public void setResolutionIndex(int n) {
+		resolutionIndex = n;
+	}
+	
+	public int resolutions() {
+		return resolutionList.length;
 	}
 
 	public int masterSound() {

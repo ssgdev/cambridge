@@ -1,6 +1,10 @@
 Changelog:
 
 8.26.13
+Fixed goal scoring to make sure proper team score gets incremented
+Fixed gameplaystate to now take data values rather than config values
+Fullscreen now takes native height and width rather than resolution settings
+Implemented resolution list rather than user incrementing height and width
 Got rid of "Terrible terrible things" (see 8.24.13)!!!!! :)
 Controller buttons now work on button press instead of button down
 Controllers now take D-Pad input in menus, also working on button press
