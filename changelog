@@ -11,6 +11,7 @@ Controllers now take D-Pad input in menus, also working on button press
 Fixed bug where dropping out players would override other players when signing back in
 Gamemode Setup menu now displays "Unlimited" properly when choosing to have no time/score limit
 Bug fixes, mostly related to Back and Neutron
+Player select screen icons added
 
 8.25.13
 PlayerNeo now slows game timer

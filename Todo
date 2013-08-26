@@ -20,6 +20,7 @@ TODO:
 	!!!! Prevent crashes when changing the resolution in fullscreen (Maybe if they're fullscreen, force native res?)
 	DONE Going to main menu should reset all menu options (no more skipping the char select)
 	DONE DPad in menus
+	!!!! Effects sounds
 !!!! GameStart transition
 !!!! Make font_large for GAME OVER and the like
 !!!! Revamp gameplaystate ui
