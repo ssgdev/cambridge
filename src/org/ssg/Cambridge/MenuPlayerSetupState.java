@@ -85,8 +85,7 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 		cambridge = (Cambridge) sbg;
 		appGc = (AppGameContainer) gc;
 		
-		w = (float)data.screenWidth()/11f;
-		h = (float)data.screenHeight()/9f;
+		setWindow();
 		initPlayerPolys();
 	}
 
@@ -143,6 +142,11 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 		//TwoTouch
 		tempf = h*.7f;
 		polys[7] = new Polygon(new float[]{0,0,-tempf/3, -tempf/2, tempf*2/3, 0, -tempf/3, tempf/2});
+	}
+	
+	public void setWindow() {
+		w = (float)data.screenWidth()/11f;
+		h = (float)data.screenHeight()/9f;
 	}
 	
 	@Override
@@ -389,6 +393,8 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 				a.setCharacter(false);
 			}
 		}
+		setWindow();
+		initPlayerPolys();
 	}
 
 	@Override
