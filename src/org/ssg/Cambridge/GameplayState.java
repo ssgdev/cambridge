@@ -633,7 +633,6 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		mySoundSystem.backgroundMusic("BGM", "BGMMenu.ogg" , true);
 		mySoundSystem.setVolume("BGM", data.ambientSound()/10f);
 		initFields(gc);
-
 	}
 
 	@Override

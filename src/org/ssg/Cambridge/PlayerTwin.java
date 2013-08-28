@@ -130,20 +130,17 @@ public class PlayerTwin extends Player{
 			vel[0] = 0;
 			vel[1] = 0;
 			
-			if(twinNum == 0 && buttonPressed || !(buttonPressed || button2Pressed)){
+			if(nukes>0)
 				pollKeys(delta);
-			}
-			if(buttonReleased){
+			
+			if(twinNum == 0 && buttonPressed){
 				buttonPressed = false;
-				buttonReleased = false;
+				activatePower();
 			}
 			
-			if(twinNum ==  1 && button2Pressed  || !(buttonPressed || button2Pressed)){
-				pollKeys(delta);
-			}
-			if(button2Released){
+			if(twinNum == 1 && button2Pressed){
 				button2Pressed = false;
-				button2Released = false;
+				activatePower();
 			}			
 			
 		}

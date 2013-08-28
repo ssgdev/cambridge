@@ -81,7 +81,7 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 		menuOptions = new String[] {
 				"Time Limit",
 				"Score Limit",
-				"Action Camera",
+				"Camera",
 				"Start Game"
 		};
 		
@@ -145,7 +145,7 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 						data.screenHeight() * (7+i)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2);
 				break;
 			case 2:
-				g.drawString((data.actionCam() ? "On" : "Off"), data.screenWidth()/2, data.screenHeight() * (7+i)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2);
+				g.drawString((data.actionCam() ? "Dynamic" : "Fixed"), data.screenWidth()/2, data.screenHeight() * (7+i)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2);
 				break;
 			default:
 				break;

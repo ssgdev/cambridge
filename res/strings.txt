@@ -61,7 +61,7 @@ TRICKY
 	Aldobrandi
 	"The Deceptive Man"
 	R1 (Hold, Aim): Blue Shins Shuffle 
-	L1 (Hold): Glib Divide
+	L1 (Hold): Glib Define
 	
 	A secretive individual, very rare to show his face, a man who came from nowhere who exploded overnight: that aura of mystery 
 ironically put Aldobrandi into the league's biggest spotlight. Yet the depths of his shadowy past have eluded even the most dogged 
@@ -72,7 +72,7 @@ TWINS
 	Liem & Riem Lombardi
 	"The Brothers"
 	Passive: Fraternal Bond
-	R1/L1: Let's Do This Together
+	R1/L1: Team Up
 	
 	The split personality of Lerim Lombardi found release upon Unifying with the Machine, manifesting itself as two separate  
 individuals: Liem, the hot-headed charger, and Riem, the deliberate tactician. Despite their newfound freedom, Liem and Riem soon 

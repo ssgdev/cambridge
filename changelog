@@ -1,5 +1,8 @@
 Changelog:
 
+8.28.13
+Added many graphics to character select screen
+
 8.26.13
 Fixed goal scoring to make sure proper team score gets incremented
 Fixed gameplaystate to now take data values rather than config values

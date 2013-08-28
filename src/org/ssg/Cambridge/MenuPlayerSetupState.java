@@ -44,11 +44,26 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 
 	float w;//The minimum horizontal segment length
 	float h;//The min vertical segment length
-	Polygon[] polys;
+	Polygon[] polys;//Polygons for drawing player icons
+	float[][] corners;//coordinates of top left coordinates
+	
+	//Fields for drawing info in boxes
+	//String[] names = {"No. 82", "Kitamura Yahei", "Ramdel Garth", "Lucas Taniels", "Anomaly XIII", "Aldobrandi", "Liem & Riem", "Franco Fortes", "Random"};
+	//String[] nickname = {"Spirit of Team", "Lightspeed Unbreakable", "Stampede", "Mercury LP", "Anomalous", "Deceptive Man", "Brothers", "Alacritous", "Unchosen"};
+	//String[] statNames = {"OFF", "DEF", "SPC", "BAL"};
+//	int[][] stats = {{96,94,68,85,80,96,80,86,0},//Offense
+//					 {74,52,99,85,80,60,80,70,0},//Defense
+//					 {50,78,99,85,78,90,90,64,0},//Space Control
+//					 {99,99,52,70,88,70,70,99,0}};//Ball Control
+	//Polygon[] statPolys;//For drawing the graph of stats for each player
+	//String[] power1 = {"R1 (Hold) : Grab and Go", "R1 (Hold) : Lightning God Flash", "R1 (Hold) : Miura Charge", "R1 : Hummingbird Waltz", "R1 : Gravitation Hill", "R1 (Hold, Aim) : Blue Shins Shuffle", "Passive : Fraternal Bond", "R1 (Hold, Aim) : Magnus Destiny", ""};
+	//String[] power2 = {"", "R1 (Tap) : Lesser Deity Flash", "R1 (During Charge) : Toreador Pivot", "", "L1 (Hold) : Gravity Well", "L1 (Hold) : Glib Define", "R1/L1 : Team Up", "", ""};
 	
 	final static String RESDIR = "res/";
 	private AngelCodeFont font, font_white, font_small;
-
+	Image controls_key_arrows, controls_key_no2ndpow, controls_key_tfgh, controls_pad_base, controls_pad_lb, controls_pad_rstick;
+	Image[] portraits;
+	
 	private Cambridge cambridge;
 	private AppGameContainer appGc;
 	
@@ -82,10 +97,29 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 		font_white = new AngelCodeFont(data.RESDIR + "8bitoperator.fnt", new Image(data.RESDIR + "8bitoperator_0_white.png"));
 		font_small = new AngelCodeFont(data.RESDIR + "8bitoperator_small.fnt", new Image(data.RESDIR + "8bitoperator_small_0.png"));
 
+		controls_key_arrows = new Image(data.RESDIR+"controls_key_arrows.png");
+		controls_key_no2ndpow = new Image(data.RESDIR+"controls_key_no2ndpow.png");
+		controls_key_tfgh = new Image(data.RESDIR+ "controls_key_tfgh.png");
+		controls_pad_base = new Image(data.RESDIR+"controls_pad_base.png");
+		controls_pad_lb = new Image(data.RESDIR+"controls_pad_lb.png");
+		controls_pad_rstick = new Image(data.RESDIR+"controls_pad_rstick.png");
+		
+		portraits = new Image[9];
+		portraits[0] = new Image(data.RESDIR+"p_back.png");
+		portraits[1] = new Image(data.RESDIR+"p_dash.png");
+		portraits[2] = new Image(data.RESDIR+"p_enforcer.png");
+		portraits[3] = new Image(data.RESDIR+"p_neo.png");
+		portraits[4] = new Image(data.RESDIR+"p_neutron.png");
+		portraits[5] = new Image(data.RESDIR+"p_tricky.png");
+		portraits[6] = new Image(data.RESDIR+"p_twins.png");
+		portraits[7] = new Image(data.RESDIR+"p_twotouch.png");
+		portraits[8] = new Image(data.RESDIR+"p_random.png");
+		
 		cambridge = (Cambridge) sbg;
 		appGc = (AppGameContainer) gc;
 		
 		setWindow();
+		
 		initPlayerPolys();
 	}
 
@@ -147,6 +181,12 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 	public void setWindow() {
 		w = (float)data.screenWidth()/11f;
 		h = (float)data.screenHeight()/9f;
+		
+		corners = new float[4][];
+		corners[0] = new float[] {w, h};
+		corners[1] = new float[] {6*w, h};
+		corners[2] = new float[] {w, 5*h};
+		corners[3] = new float[] {6*w, 5*h};
 	}
 	
 	@Override
@@ -166,14 +206,18 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 		g.setFont(font_small);
 
 		//Drawing Character Selection Area
-		g.drawRect(4*w, 3*h, 3*w, 3*h);
+		g.setColor(new Color(120,120,120));
 		hLine(g, 4, 4, 3);
 		hLine(g, 4, 5, 3);
 		vLine(g, 5, 3, 3);
 		vLine(g, 6, 3, 3);
-
+		g.setLineWidth(5);
+		g.setColor(Color.white);
+		g.drawRect(4*w, 3*h, 3*w, 3*h);
+		
 		//Drawing Player Boxes
 		//P1
+
 		hLine(g, 1, 1, 4);
 		vLine(g, 5, 1, 2);
 		hLine(g, 1, 4, 3);
@@ -196,7 +240,8 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 		vLine(g, 5, 6, 2);
 		hLine(g, 1, 8, 4);
 		vLine(g, 1, 5, 3);
-		 
+		
+		g.setLineWidth(2);
 //		//Shade the tooth of the player boxes
 //		g.setColor(Color.gray);
 //		//p1
@@ -225,53 +270,58 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 		drawPlayer(g, 5.5f*w, 5.5f*h, 7);
 		drawPlayer(g, 6.5f*w, 5.5f*h, 8);
 		
-		if (anchors[0].initiated()) {
-			g.fillRect(data.screenWidth() * 1/16, data.screenHeight() * 1/12, data.screenWidth() * 1/4, data.screenHeight() * 1/9);
-			if (anchors[0].characterSelected()) {
-				g.fillRect(data.screenWidth() * 1/16, data.screenHeight() * 1/12, data.screenWidth() * 1/4, data.screenHeight() * 2/9);
-			}
-			if (anchors[0].isReady()) {
-				g.fillRect(data.screenWidth() * 1/16, data.screenHeight() * 1/12, data.screenWidth() * 1/4, data.screenHeight() * 1/3);
-			}
-		}
-
-		if (anchors[1].initiated()) {
-			g.fillRect(data.screenWidth() * 11/16, data.screenHeight() * 1/12, data.screenWidth() * 1/4, data.screenHeight() * 1/9);
-			if (anchors[1].characterSelected()) {
-				g.fillRect(data.screenWidth() * 11/16, data.screenHeight() * 1/12, data.screenWidth() * 1/4, data.screenHeight() * 2/9);
-			}
-			if (anchors[1].isReady()) {
-				g.fillRect(data.screenWidth() * 11/16, data.screenHeight() * 1/12, data.screenWidth() * 1/4, data.screenHeight() * 1/3);
-			}
-		}
-
-		if (anchors[2].initiated()) {
-			g.fillRect(data.screenWidth() * 1/16, data.screenHeight() * 7/12, data.screenWidth() * 1/4, data.screenHeight() * 1/9);
-			if (anchors[2].characterSelected()) {
-				g.fillRect(data.screenWidth() * 1/16, data.screenHeight() * 7/12, data.screenWidth() * 1/4, data.screenHeight() * 2/9);
-			}
-			if (anchors[2].isReady()) {
-				g.fillRect(data.screenWidth() * 1/16, data.screenHeight() * 7/12, data.screenWidth() * 1/4, data.screenHeight() * 1/3);
-			}
-		}
-
-		if (anchors[3].initiated()) {
-			g.fillRect(data.screenWidth() * 11/16, data.screenHeight() * 7/12, data.screenWidth() * 1/4, data.screenHeight() * 1/9);
-			if (anchors[3].characterSelected()) {
-				g.fillRect(data.screenWidth() * 11/16, data.screenHeight() * 7/12, data.screenWidth() * 1/4, data.screenHeight() * 2/9);
-			}
-			if (anchors[3].isReady()) {
-				g.fillRect(data.screenWidth() * 11/16, data.screenHeight() * 7/12, data.screenWidth() * 1/4, data.screenHeight() * 1/3);
+		//Draw player boxes
+		for(int i=0;i<anchors.length; i++){
+			if (anchors[i].initiated()) {
+				//Draw "P1" etc
+				g.setFont(font_white);
+				g.setColor(Color.white);
+				g.drawString("P"+(anchors[i].playerNum()+1), corners[i][0]+(anchors[i].playerNum()%2==0? 3.5f*w:.5f*w)-font.getWidth("P2")/2f, corners[i][1]+(anchors[i].playerNum()>1?h:0)+h/2-font.getHeight("P")/2-10);
+				//Draw controller icon
+				if(anchors[i].getKeyboard()==-1){
+					g.drawImage(controls_pad_base.getScaledCopy((int)w, (int)h), corners[i][0]+(anchors[i].playerNum()%2==0? 3f*w:0f*w), corners[i][1]+h+(anchors[i].playerNum()>1?h:0)-5);
+					if(anchors[i].getCharacter() >=5 && anchors[i].getCharacter() <= 7 )//fill in the right stick
+						g.drawImage(controls_pad_rstick.getScaledCopy((int)w+1, (int)h+1), corners[i][0]+(anchors[i].playerNum()%2==0? 3f*w:0f*w), corners[i][1]+h+(anchors[i].playerNum()>1?h:0)-5);
+					if(anchors[i].getCharacter() >=4 && anchors[i].getCharacter() <= 6)
+						g.drawImage(controls_pad_lb.getScaledCopy((int)w, (int)h), corners[i][0]+(anchors[i].playerNum()%2==0? 3f*w:0f*w), corners[i][1]+h+(anchors[i].playerNum()>1?h:0)-5);
+				}else if(anchors[i].getKeyboard()==1){
+					g.drawImage(controls_key_tfgh.getScaledCopy((int)w, (int)h), corners[i][0]+(anchors[i].playerNum()%2==0? 3f*w:0f*w), corners[i][1]+h+(anchors[i].playerNum()>1?h:0)-5);
+					if(!(anchors[i].getCharacter() >=4 && anchors[i].getCharacter() <= 6))
+						g.drawImage(controls_key_no2ndpow.getScaledCopy((int)w, (int)h), corners[i][0]+(anchors[i].playerNum()%2==0? 3f*w:0f*w), corners[i][1]+h+(anchors[i].playerNum()>1?h:0)-5);
+				}else if(anchors[i].getKeyboard()==0){
+					g.drawImage(controls_key_arrows.getScaledCopy((int)w, (int)h), corners[i][0]+(anchors[i].playerNum()%2==0? 3f*w:0f*w), corners[i][1]+h+(anchors[i].playerNum()>1?h:0)-5);
+					if(!(anchors[i].getCharacter() >=4 && anchors[i].getCharacter() <= 6))
+						g.drawImage(controls_key_no2ndpow.getScaledCopy((int)w, (int)h), corners[i][0]+(anchors[i].playerNum()%2==0? 3f*w:0f*w), corners[i][1]+h+(anchors[i].playerNum()>1?h:0)-5);
+				}
+				g.drawImage(portraits[anchors[i].getCharacter()].getScaledCopy((int)(3f*w), (int)(3f*h)),corners[i][0]+(anchors[i].playerNum()%2==0?0:w), corners[i][1]);
+				if (anchors[i].characterSelected()) {
+					g.setFont(font);
+					g.setColor(Color.white);
+					g.fillRect(corners[i][0], corners[i][1]+h, 4*w, h);
+					g.drawString("READY", corners[i][0]+2*w-font.getWidth("READY")/2, corners[i][1]+h);
+				}
+			}else{
+				g.setFont(font_white);
+				g.setColor(Color.white);
+				g.drawString("Player "+(i+1), corners[i][0]+2*w-font.getWidth("Player 1")/2, corners[i][1]+h);
 			}
 		}
 
+		//Draw the cursors
 		for (CambridgePlayerAnchor a : anchors) {
 			if (a.initiated()) {
+				g.setLineWidth(4);
 				g.drawRect(
-						data.screenWidth() * 5/16 + (a.getCharacter() % 3) * data.screenWidth() * 1/8 + 5,
-						data.screenHeight() * 1/4 + (a.getCharacter() / 3) * data.screenHeight() * 1/6 + 5,
-						data.screenWidth() * 1/8 - 10,
-						data.screenHeight() * 1/6 - 10
+						4*w + (a.getCharacter() % 3)*w+2,
+						3*h + (a.getCharacter() / 3)*h+2,
+						w-4,
+						h-4
+						);
+				g.fillRect(
+						4*w + (a.getCharacter() % 3)*w + ((a.playerNum()+1)%2==0? w*.75f:0),
+						3*h + (a.getCharacter() / 3)*h + (a.playerNum()>1 ? h*.75f:0),
+						w*.25f,
+						h*.25f
 						);
 			}
 		}

@@ -6,7 +6,9 @@ TODO:
 	DONE Play to certain time or certain score
 	DONE Character+Controller Select
 		DONE Some kind of bug is there in character select, if someone backs out something something they can't sign back in
-		!!!! Graphics
+		DONE Graphics
+		!!!! Should have a one more "press any key to advance" after all players ready up. Automatically going to next menu is jarring
+		!!!! The menu will not go back when B is pressed if any player is signed in?
 	!!!! intro screen
 	???? help/controls screen (Part of char select)
 	!!!! game over screen – winners, score, time etc, menu options
@@ -14,24 +16,29 @@ TODO:
 		!!!! Final whistle for the transition
 		!!!! GameOver colours/graphics
 		!!!! GameOver functionalities
+		!!!! Confetti
 	!!!! In-game pause menu
 	DONE Draw -1 as "Unlimited" in game mode select
-	!!!! Graphics in general
-	!!!! Prevent crashes when changing the resolution in fullscreen (Maybe if they're fullscreen, force native res?)
+	!!!! Graphics in general (Mode, Team select)
+	!!!! Prevent crashes when changing the resolution in fullscreen (Maybe if they're fullscreeng, force native res?)
 	DONE Going to main menu should reset all menu options (no more skipping the char select)
 	DONE DPad in menus
 	!!!! Effects sounds
 !!!! GameStart transition
 !!!! Make font_large for GAME OVER and the like
 !!!! Revamp gameplaystate ui
+DONE Change Twins keyboard controls to switching nukes and double move default
 !!!! Implement game modes with menus
 	!!!! TENNIS (Spawn locations)
 	!!!! SQUASH
 	!!!! FOURSQUARE
 DONE Ball Possession wrong when Dash dashes a Back holding the ball
 DONE Ball possession wrong on back and neutron grab
+!!!! Bugs when neutron grabs a twotouch holding the ball
+!!!! Current keyboard setup still has ghosting?
 !!!! Balance:
 	!!!! TwoTouch underpowered. Take out speed debuff on holding button?
+	!!!! Neutron push needs faster
 	!!!! Balance Dash: Length of trail "catch"
 	!!!! Balance Enforcer (more control) Less wall penalty?
 !!!! Soundtrack

@@ -171,7 +171,7 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 	public void update(GameContainer gc, StateBasedGame sbg, int delta)
 			throws SlickException {
 		
-		System.out.println(data.getResolution()[0] + "x" + data.getResolution()[1] + " " + data.resolutionIndex());
+		//System.out.println(data.getResolution()[0] + "x" + data.getResolution()[1] + " " + data.resolutionIndex());
 		Input input = gc.getInput();
 		
 		up = false;
