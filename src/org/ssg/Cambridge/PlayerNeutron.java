@@ -140,8 +140,8 @@ public class PlayerNeutron extends Player {
 		velMag = approachTarget(velMag, targetVelMag, .05f);
 		
 		if(gravDir == 1){
-			gravRange += (float)delta/2f;
-			if(gravRange > GRAVRANGE){
+			gravRange += (float)delta;
+			if(gravRange > GRAVRANGE*1.2f){
 				gravDir = 0;
 				gravRange = 0;
 				targetVelMag = VELMAG;

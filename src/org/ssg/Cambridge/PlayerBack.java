@@ -276,8 +276,6 @@ public class PlayerBack extends Player {
 			theta+= omega*delta/60f*(float)Math.PI;
 			if(theta>2f*(float)Math.PI) theta-=2f*(float)Math.PI;
 		}
-		
-		System.out.println(ball.getLastKicker());
 	}
 	
 	@Override

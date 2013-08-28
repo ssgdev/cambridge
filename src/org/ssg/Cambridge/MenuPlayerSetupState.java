@@ -298,12 +298,12 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 					g.setFont(font);
 					g.setColor(Color.white);
 					g.fillRect(corners[i][0], corners[i][1]+h, 4*w, h);
-					g.drawString("READY", corners[i][0]+2*w-font.getWidth("READY")/2, corners[i][1]+h);
+					g.drawString("READY", corners[i][0]+2*w-font.getWidth("READY")/2, corners[i][1]+h+(h-font.getHeight("0"))/2f-8);
 				}
 			}else{
 				g.setFont(font_white);
 				g.setColor(Color.white);
-				g.drawString("Player "+(i+1), corners[i][0]+2*w-font.getWidth("Player 1")/2, corners[i][1]+h);
+				g.drawString("Player "+(i+1), corners[i][0]+2*w-font.getWidth("Player 1")/2, corners[i][1]+h+(h-font.getHeight("0"))/2f-8);
 			}
 		}
 

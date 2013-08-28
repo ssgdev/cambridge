@@ -41,8 +41,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	int gameType;
 	int NUMGAMES;
 	String NAME;
-	float gameModeAlpha;
-	
+	float gameStartCountdown;
+	float GAMESTARTCOUNTDOWN = 2400f;
 	//-1 for unlimited
 //	int scoreLimit = 1;
 //	int timeLimit = 10000;//in ms
@@ -55,6 +55,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	public float SCREENHEIGHT;
 	public int ACTIONCAM;
 	public float maxZoom;
+	public float camWidth, camHeight;//Dimensions of the camera box
 	
 	public int FIELDWIDTH;// = 1600;
 	public int FIELDHEIGHT;// = 900;
@@ -76,9 +77,11 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	private int boundingWidth = 100;
 	private boolean shouldRender;
 	
+	boolean started;//Has the game started/the intro animation ended
+	
 	private float[][] team1Positions, team2Positions, playerStartPositions;
 	
-	AngelCodeFont font, font_white, font_small;
+	AngelCodeFont font, font_white, font_small, font_large;
 	Image triangle, hemicircleL, hemicircleR, slice, slice_tri, slice_wide, slice_twin;
 	Image goalScroll1, goalScroll2, goalScroll1v, goalScroll2v, goalScroll;
 	int scrollX;//For the "GOAL" scroll
@@ -139,6 +142,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			font = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0.png"));
 			font_white = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0_white.png"));
 			font_small = new AngelCodeFont(RESDIR + "8bitoperator_small.fnt", new Image(RESDIR + "8bitoperator_small_0.png"));
+			font_large = new AngelCodeFont(RESDIR + "8bitoperator_large.fnt", new Image(RESDIR + "8bitoperator_large_0.png"));
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Fonts not loaded properly. Uh oh. Spaghettio.");
@@ -227,6 +231,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		targetViewX = viewX;
 		targetViewY = viewY;
 		scaleFactor = 1;
+		camWidth = FIELDWIDTH;
+		camHeight = FIELDHEIGHT;
 		
 		if(maxZoom == 0){
 			if(GOALTYPE == 0){
@@ -544,7 +550,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		tempTrailArr = new float[]{0,0,0,0};
 		
-		gameModeAlpha = 1f;
+		gameStartCountdown = GAMESTARTCOUNTDOWN;//4: Ready, 3: Set: 2: Go 1: Play Ball 0
 		
 		scrollX = 2000;
 		scrollY = 2000;
@@ -702,23 +708,66 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		//Draw Header
 		drawHeader(g);
 		
-		//draw gamemode
-		if(gameModeAlpha>0){
-			g.setFont(font_white);
-			g.setColor(new Color(1f, 1f, 1f, gameModeAlpha));
-			g.drawString(NAME, FIELDWIDTH/2-font.getWidth(NAME)/2, FIELDHEIGHT/2-font.getHeight("0")/2);
-		}
+		g.resetTransform();
 		
-		//draw game over
+		//draw game over animation
 		if(gameOverCountdown < GAMEOVERCOUNTDOWN){//If the gameover countdown has started
 			g.setColor(new Color(0,0,0, 1f - (float)(gameOverCountdown-50)/(float)GAMEOVERCOUNTDOWN));
-			g.fillRect(viewX, viewY, SCREENWIDTH/scaleFactor, SCREENHEIGHT/scaleFactor);
-			g.setFont(font_white);
+			g.fillRect(0, 0, data.screenWidth(), data.screenHeight());
+			g.setFont(font_large);
 			g.setColor(Color.white);
-			g.drawString("GAME OVER", SCREENWIDTH/scaleFactor/2-font.getWidth("GAME OVER")/2+viewX, SCREENHEIGHT/scaleFactor/2 - font.getHeight("0")/2 + viewY);
+			g.drawString("¡MATCH OVER!", data.screenWidth()/2f-font_large.getWidth("¡MATCH OVER!")/2f, data.screenHeight()/2f - font_large.getHeight("0")/2 - 15);
 		}
 		
-		g.resetTransform();
+		//Draw the game start animation
+		if(gameStartCountdown > GAMESTARTCOUNTDOWN*2f/3f){
+			g.setColor(Color.white);
+			tempf = (GAMESTARTCOUNTDOWN-gameStartCountdown)/(GAMESTARTCOUNTDOWN/3f)*(data.screenWidth()+200);
+			g.fillRect(tempf ,0,data.screenWidth(), data.screenHeight()/6f);
+			g.fillRect(-tempf ,data.screenHeight(),data.screenWidth(), -data.screenHeight()/6f);
+			g.fillRect(0,data.screenHeight()/6f, data.screenWidth(), data.screenHeight()*2f/3f);
+			g.setColor(Color.black);
+			g.setFont(font_large);
+			g.drawString("READY", data.screenWidth()/2f-font_large.getWidth("READY")/2f , data.screenHeight()/2f-font_large.getHeight("0")/2-15);
+		}else if(gameStartCountdown > GAMESTARTCOUNTDOWN/3f){
+			g.setColor(Color.white);
+			tempf = -(GAMESTARTCOUNTDOWN*2f/3f-gameStartCountdown)/(GAMESTARTCOUNTDOWN/3f)*(data.screenWidth()+200);
+			g.fillRect(tempf ,data.screenHeight()/6f,data.screenWidth(), data.screenHeight()/6f);
+			g.fillRect(-tempf ,data.screenHeight()*5f/6f,data.screenWidth(), -data.screenHeight()/6f);
+			g.fillRect(0,data.screenHeight()/3f, data.screenWidth(), data.screenHeight()/3f);
+			g.setColor(Color.black);
+			g.setFont(font_large);
+			g.drawString("SET", data.screenWidth()/2f-font_large.getWidth("SET")/2f , data.screenHeight()/2f-font_large.getHeight("0")/2-15);
+		}else if(gameStartCountdown > GAMESTARTCOUNTDOWN*3f/12f){
+			g.setColor(Color.white);
+			g.fillRect(0,data.screenHeight()/3f, data.screenWidth()/2f, data.screenHeight()/3f);
+			g.fillRect(data.screenWidth()/2f,data.screenHeight()/3f, data.screenWidth()/2f, data.screenHeight()/3f);
+			g.setColor(Color.black);
+			g.setFont(font_large);
+			g.drawString("¡PLAY", data.screenWidth()/2f-font_large.getWidth("¡PLAY BALL!")/2f , data.screenHeight()/2f-font_large.getHeight("0")/2-15);
+			g.drawString("BALL!", data.screenWidth()/2f-font_large.getWidth("¡PLAY BALL!")/2f + font_large.getWidth("¡PLAY0"), data.screenHeight()/2f-font_large.getHeight("0")/2-15);
+		}else if(gameStartCountdown > 0){
+			//Vert Move
+//			tempf = -(GAMESTARTCOUNTDOWN/3f-gameStartCountdown)/(GAMESTARTCOUNTDOWN/3f)*data.screenHeight()*2f/3f*2f;
+//			g.setColor(Color.white);
+//			g.fillRect(0,data.screenHeight()/3f+tempf, data.screenWidth()/2f, data.screenHeight()/3f);
+//			g.fillRect(data.screenWidth()/2f,data.screenHeight()/3f-tempf, data.screenWidth()/2f, data.screenHeight()/3f);
+//			g.setColor(Color.black);
+//			g.setFont(font_large);
+//			g.drawString("PLAY", data.screenWidth()/2f-font_large.getWidth("PLAY BALL!")/2f , data.screenHeight()/2f-font_large.getHeight("0")/2-15+tempf);
+//			g.drawString("BALL!", data.screenWidth()/2f-font_large.getWidth("PLAY BALL!")/2f + font_large.getWidth("PLAY0") , data.screenHeight()/2f-font_large.getHeight("0")/2-15-tempf);
+			//Horizontal split
+			//tempf = (GAMESTARTCOUNTDOWN/4f-gameStartCountdown)/(GAMESTARTCOUNTDOWN/4f)*(data.screenWidth());
+			tempf = 0;
+			g.setColor(new Color(255, 255, 255, 1f-(GAMESTARTCOUNTDOWN/4f-gameStartCountdown)/(GAMESTARTCOUNTDOWN/4f)));
+			g.fillRect(-tempf,data.screenHeight()/3f, data.screenWidth()/2f, data.screenHeight()/3f);
+			g.fillRect(data.screenWidth()/2f+tempf,data.screenHeight()/3f, data.screenWidth()/2f, data.screenHeight()/3f);
+			g.setColor(new Color(1,1,1,1f-(GAMESTARTCOUNTDOWN/4f-gameStartCountdown)/(GAMESTARTCOUNTDOWN/4f)));
+			g.setFont(font_large);
+			g.drawString("¡PLAY", data.screenWidth()/2f-font_large.getWidth("¡PLAY BALL!")/2f-tempf , data.screenHeight()/2f-font_large.getHeight("0")/2-15);
+			g.drawString("BALL!", data.screenWidth()/2f-font_large.getWidth("¡PLAY BALL!")/2f + font_large.getWidth("¡PLAY0") +tempf, data.screenHeight()/2f-font_large.getHeight("0")/2-15);
+		}
+		
 	}
 	
 	public void drawHeader(Graphics g){
@@ -873,9 +922,10 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		}
 		time = (int)timef;
 		
-		gameModeAlpha -= deltaf/1200f;
-		if(gameModeAlpha < 0){
-			gameModeAlpha = 0;
+		if(gameStartCountdown>0){
+			gameStartCountdown -= delta;
+			if(gameStartCountdown < 0)
+				gameStartCountdown = 0;
 		}
 		
 		Input input = gc.getInput();
@@ -1048,7 +1098,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 
 		//Kicking the ball
 		for(Player p: players){
-			if(gameOverCountdown >= GAMEOVERCOUNTDOWN)//if the game over countdown has started, no more player movement
+			if(gameStartCountdown < GAMESTARTCOUNTDOWN/4f && gameOverCountdown >= GAMEOVERCOUNTDOWN)//if the game over countdown has started, no more player movement
 				p.update(deltaf);
 			if(p.isKicking() && !scored ){
 				if(dist(p)<p.getKickRange()/2 /* && ball.canBeKicked(p.getPlayerNum())*/) {//Perform a kick
@@ -1191,6 +1241,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			
 			if(scaleFactor != targetScaleFactor)
 				scaleFactor += (targetScaleFactor - scaleFactor)*deltaf/240f;
+			
 		}else{
 			tempX = tempX * 1.2f;
 			tempY = tempY * 1.2f;
@@ -1201,6 +1252,9 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		}
 		//System.out.println(scaleFactor);
 		
+		camWidth = tempX;
+		camHeight = tempY;
+		
 	}
 	
 	public void reset(GameContainer gc) throws SlickException{
@@ -1209,7 +1263,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		if(mySoundSystem.playing("slow2"))
 			mySoundSystem.pause("slow2");
 		mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
-		gameModeAlpha = 1f;
+		gameStartCountdown = GAMESTARTCOUNTDOWN;
 //		initFields(gc);
 		resetPositions();
 	}
