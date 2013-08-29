@@ -201,6 +201,8 @@ public class PlayerNeutron extends Player {
 					orbitRadius = mag(tempArr);
 					orbiting = true;
 					orbitCounter = (float)Math.PI;
+					ball.clearLocked();
+					ball.setLocked(playerNum, true);
 					ball.setVel(ball.getVel(), 0);
 					ball.cancelAcc();
 					ball.setLastKicker(teamNum);

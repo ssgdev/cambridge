@@ -306,19 +306,24 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 			setShouldRender(false);
 			sbg.enterState(data.MENUPLAYERSETUPSTATE);
 		} else if (enter) {
-			mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			if (selected != 4) {
 				selected = 4;
+				mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			} else {
-				if (data.gameType() == data.GAMEMODES-1) {//Foursquare
-					((GameplayState)sbg.getState(data.GAMEPLAYSTATE)).setShouldRender(true);
-					setShouldRender(false);
-					sbg.enterState(data.GAMEPLAYSTATE);
-				} else {
-					((MenuTeamSetupState)sbg.getState(data.MENUTEAMSETUPSTATE)).setStart(data.gameType(), data.screenWidth()/2-tempX/2, data.screenHeight()/3f-tempY/2, tempX, tempY);
-					((MenuTeamSetupState)sbg.getState(data.MENUTEAMSETUPSTATE)).setShouldRender(true);
-					setShouldRender(false);
-					sbg.enterState(data.MENUTEAMSETUPSTATE);
+				if(!(data.scoreLimit()<0&&data.timeLimit()<0)){//cant be unlimited time and score both
+					if (data.gameType() == data.GAMEMODES-1) {//Foursquare
+						((GameplayState)sbg.getState(data.GAMEPLAYSTATE)).setShouldRender(true);
+						setShouldRender(false);
+						sbg.enterState(data.GAMEPLAYSTATE);
+					} else {
+						((MenuTeamSetupState)sbg.getState(data.MENUTEAMSETUPSTATE)).setStart(data.gameType(), data.screenWidth()/2-tempX/2, data.screenHeight()/3f-tempY/2, tempX, tempY);
+						((MenuTeamSetupState)sbg.getState(data.MENUTEAMSETUPSTATE)).setShouldRender(true);
+						setShouldRender(false);
+						sbg.enterState(data.MENUTEAMSETUPSTATE);
+					}
+					mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+				}else{
+					mySoundSystem.quickPlay( true, "MenuFail.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				}
 			}
 		}

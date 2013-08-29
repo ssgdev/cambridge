@@ -77,6 +77,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	private float scaleFactor, targetScaleFactor;
 	private int boundingWidth = 100;
 	private boolean shouldRender;
+	private float scoreBarAlpha;
 	
 	boolean started;//Has the game started/the intro animation ended
 	
@@ -701,7 +702,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			//fill in the UI boxes at top so there's not halfwhite/halfblack ugliness
 			g.resetTransform();
 			
-			g.setColor(Color.white);
+			g.setColor(Color.white.scaleCopy(scoreBarAlpha));
 			g.fillRect(data.screenWidth()/2-data.screenWidth()/3, 25, data.screenWidth()/6, font.getHeight("0")+20);
 			g.fillRect(data.screenWidth()/2+data.screenWidth()/6, 25, data.screenWidth()/6, font.getHeight("0")+20);
 			g.fillRect(data.screenWidth()/2-data.screenWidth()/6, 15, data.screenWidth()/3, font.getHeight("0")+font_small.getHeight("0")+15);
@@ -969,6 +970,17 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		}
 	}
 	
+	public boolean scoreBarClear(){//Determines if a player is in the area of the score bars
+		boolean b = true;
+		for(Player p: players){
+			if(p.getY()-p.getKickRange()/2<(font.getHeight("0")+font_small.getHeight("0")+35)*scaleFactor)
+				b = false;
+		}
+		if(ball.getY()<(font.getHeight("0")+font_small.getHeight("0")+35)*scaleFactor)
+			b = false;
+		return b;
+	}
+	
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		
@@ -1034,6 +1046,13 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			}
 		}
 		
+		//For the score bar fill, if someone is under it
+		if(scoreBarClear()){
+			scoreBarAlpha = approachTarget(scoreBarAlpha, 1f, delta/360f);
+		}else{
+			scoreBarAlpha = approachTarget(scoreBarAlpha, 0f, delta/240f);
+		}
+		 
 		Input input = gc.getInput();
 		if(input.isKeyPressed(Input.KEY_U)){
 			reset(gc);
@@ -1374,7 +1393,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 //		initFields(gc);
 		resetPositions();
 	}
-	
+
 	public float dist(Player p){//dist to ball
 		return (float)Math.sqrt((p.getX()-ball.getX())*(p.getX()-ball.getX()) + (p.getY()-ball.getY())*(p.getY()-ball.getY()));
 	}
@@ -1446,6 +1465,21 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		}
 	}
 	
+	public float approachTarget(float val, float target, float inc){
+
+		if(val<target){
+			val+=inc;
+			if(val>target)
+				val=target;
+		}
+		if(val>target){
+			val-=inc;
+			if(val<target)
+				val=target;
+		}
+
+		return val;
+	}
 	@Override
 	public int getID() {
 		return stateID;

@@ -9,6 +9,7 @@ TODO:
 		DONE Graphics
 		!!!! Should have a one more "press any key to advance" after all players ready up. Automatically going to next menu is jarring
 		!!!! The menu will not go back when B is pressed if any player is signed in? Also keyboards can't back out of char select?
+		!!!! Bug: sometimes you sign in as the wrong anchor. I'll press A on a controller with no one signed in and it'll put me P4. Something not getting reset?
 	!!!! intro screen
 	DONE help/controls screen (Part of char select)
 	!!!! game over screen – winners, score, time etc, menu options
@@ -22,7 +23,7 @@ TODO:
 	DONE Draw -1 as "Unlimited" in game mode select
 	DONE Mode Select graphics
 	!!!! Reminder: Mode Select team colors should be consistent with gameplaystate
-	!!!! Should not be able to select both unlimited score and time limits
+	DONE Should not be able to select both unlimited score and time limits
 	DONE Team select graphics 
 		???? Only go to team select if 3+ players (not 4square)
 		???? Maybe we should let players select their square in foursquare
@@ -38,7 +39,7 @@ DONE Revamp gameplaystate ui
 DONE Change Twins keyboard controls to switching nukes and double move default
 !!!! Implement game modes with menus
 	DONE TENNIS (Spawn locations)
-	!!!! SQUASH (Spawn locations)
+	DONE SQUASH (Spawn locations) DONE BUT SQUASH IS TERRIBLE
 	!!!! FOURSQUARE
 !!!! Ball Possession/Goal color switching doesn't work for some powers in Squash
 DONE Ball Possession wrong when Dash dashes a Back holding the ball
