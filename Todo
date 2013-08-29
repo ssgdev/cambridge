@@ -37,9 +37,10 @@ DONE Make font_large for GAME OVER and the like
 DONE Revamp gameplaystate ui
 DONE Change Twins keyboard controls to switching nukes and double move default
 !!!! Implement game modes with menus
-	!!!! TENNIS (Spawn locations)
+	DONE TENNIS (Spawn locations)
 	!!!! SQUASH (Spawn locations)
 	!!!! FOURSQUARE
+!!!! Ball Possession/Goal color switching doesn't work for some powers in Squash
 DONE Ball Possession wrong when Dash dashes a Back holding the ball
 DONE Ball possession wrong on back and neutron grab
 !!!! Bugs when neutron grabs a twotouch holding the ball

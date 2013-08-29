@@ -258,17 +258,41 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			team2lim = new int[]{FIELDWIDTH/2, FIELDWIDTH, 0, FIELDHEIGHT};
 		}
 		
-		team1Positions = new float[][] {
-				{ FIELDWIDTH/2-250, FIELDHEIGHT/2 },
-				{ FIELDWIDTH/2-250, FIELDHEIGHT/2 - 100 },
-				{ FIELDWIDTH/2-250, FIELDHEIGHT/2 + 100 },
-		};
-		
-		team2Positions = new float[][] {
-				{ FIELDWIDTH/2+250, FIELDHEIGHT/2 },
-				{ FIELDWIDTH/2+250, FIELDHEIGHT/2 - 100 },
-				{ FIELDWIDTH/2+250, FIELDHEIGHT/2 + 100 },
-		};
+		//Add case for 4Square
+		if(NAME.equals(TENNIS)){
+			team1Positions = new float[][] {
+					{ 80, FIELDHEIGHT/2 },
+					{ 80, FIELDHEIGHT/2 - 150 },
+					{ 80, FIELDHEIGHT/2 + 150 },
+			};
+			team2Positions = new float[][] {
+					{ FIELDWIDTH-80, FIELDHEIGHT/2 },
+					{ FIELDWIDTH-80, FIELDHEIGHT/2 - 150 },
+					{ FIELDWIDTH-80, FIELDHEIGHT/2 + 150 },
+			};
+		}else if(NAME.equals(SQUASH)){
+			team1Positions = new float[][] {
+					{ FIELDWIDTH/2-250, FIELDHEIGHT*3/4 },
+					{ FIELDWIDTH/2-250, FIELDHEIGHT*3/4 + 120 },
+					{ FIELDWIDTH/2-250, FIELDHEIGHT*3/4 + 240 },
+			};
+			team2Positions = new float[][] {
+					{ FIELDWIDTH/2+250, FIELDHEIGHT*3/4 },
+					{ FIELDWIDTH/2+250, FIELDHEIGHT*3/4 + 120 },
+					{ FIELDWIDTH/2+250, FIELDHEIGHT*3/4 + 240 },
+			};
+		}else{
+			team1Positions = new float[][] {
+					{ FIELDWIDTH/2-250, FIELDHEIGHT/2 },
+					{ FIELDWIDTH/2-250, FIELDHEIGHT/2 - 100 },
+					{ FIELDWIDTH/2-250, FIELDHEIGHT/2 + 100 },
+			};
+			team2Positions = new float[][] {
+					{ FIELDWIDTH/2+250, FIELDHEIGHT/2 },
+					{ FIELDWIDTH/2+250, FIELDHEIGHT/2 - 100 },
+					{ FIELDWIDTH/2+250, FIELDHEIGHT/2 + 100 },
+			};
+		}
 		
 		playerStartPositions = new float[4][2];
 		
@@ -575,12 +599,12 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			goals = new Goal[2];
 			goals[0] = new Goal(0,FIELDHEIGHT/2-GOALSIZE/2, -25, GOALSIZE, -1 , 0, 0);
 			goals[1] = new Goal(FIELDWIDTH, FIELDHEIGHT/2-GOALSIZE/2, 25, GOALSIZE, 1, 0, 1);
-		}else if(GOALTYPE == 1){//One sided goals. Squash
+		}else if(GOALTYPE == -1){//One sided goals. Squash
 			goals = new Goal[1];
 			goals[0] = new Goal(0, 0, -25, FIELDHEIGHT, -1, 0, randomNum);
-		}else if(GOALTYPE == -1){//Horizontal Squash Goals
+		}else if(GOALTYPE == 1){//Horizontal Squash Goals
 			goals = new Goal[1];
-			goals[0] = new Goal(0,0, FIELDWIDTH, -25, 0, -1, 0);
+			goals[0] = new Goal(0, FIELDHEIGHT, FIELDWIDTH, -25, 0, 1, randomNum);
 		}else if(GOALTYPE == 2){//FOURSQUARE STYLE GOALS
 			goals = new Goal[4];//= new Goal[8]
 			goals[0] = new Goal(0,0,FIELDWIDTH/2,-25,0,-1,0);
@@ -597,10 +621,10 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	public void resetPositions(){
 		
 		int randomNum = (int)(Math.random()*2);
-
-		float[] p1Start = {FIELDWIDTH/2-250, FIELDHEIGHT/2};
-		float[] p2Start = {FIELDWIDTH/2+250, FIELDHEIGHT/2};
-		
+//
+//		float[] p1Start = {FIELDWIDTH/2-250, FIELDHEIGHT/2};
+//		float[] p2Start = {FIELDWIDTH/2+250, FIELDHEIGHT/2};
+//		
 		
 		if(NAME.equals(TENNIS)){
 //			p1Start = new float[]{120, FIELDHEIGHT/2};
@@ -609,7 +633,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		}else if(NAME.equals(SQUASH)){
 //			p1Start = new float[]{100, FIELDHEIGHT/2-300};
 //			p2Start = new float[]{100, FIELDHEIGHT/2+300};
-			ball.setPos(FIELDWIDTH/2-200, FIELDHEIGHT/2-300+600*randomNum);
+			//ball.setPos(HEIGHT/2-200, FIELDHEIGHT/2-300+600*randomNum);
+			ball.setPos(FIELDWIDTH/2-FIELDWIDTH*3/8+FIELDWIDTH*6/8*randomNum, FIELDHEIGHT/2+200);
 		}else{
 			ball.setPos(FIELDWIDTH/2, FIELDHEIGHT/2);
 		}
@@ -831,10 +856,15 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			g.drawRect(350,225,FIELDWIDTH-700,FIELDHEIGHT-450);
 			g.drawLine(350, FIELDHEIGHT/2, FIELDWIDTH-350, FIELDHEIGHT/2);
 		}else if(NAME.equals(SQUASH)){
-			g.drawLine(FIELDWIDTH/2-100, 0, FIELDWIDTH/2-100, FIELDHEIGHT);
-			g.drawLine(0, FIELDHEIGHT/2, FIELDWIDTH/2-100, FIELDHEIGHT/2);
-			g.drawRect(FIELDWIDTH/2-100, 0, -200, 200);
-			g.drawRect(FIELDWIDTH/2-100,FIELDHEIGHT,-200,-200);
+			g.drawLine(0, FIELDHEIGHT/2+100, FIELDWIDTH, FIELDHEIGHT/2+100);
+			g.drawLine(FIELDWIDTH/2, FIELDHEIGHT/2+100, FIELDWIDTH/2, FIELDHEIGHT);
+			g.drawRect(0, FIELDHEIGHT/2+100, 200, 200);
+			g.drawRect(FIELDWIDTH, FIELDHEIGHT/2+100, -200, 200);
+//			
+//			g.drawLine(FIELDWIDTH/2-100, 0, FIELDWIDTH/2-100, FIELDHEIGHT);
+//			g.drawLine(0, FIELDHEIGHT/2, FIELDWIDTH/2-100, FIELDHEIGHT/2);
+//			g.drawRect(FIELDWIDTH/2-100, 0, -200, 200);
+//			g.drawRect(FIELDWIDTH/2-100,FIELDHEIGHT,-200,-200);
 		}else if(NAME.equals("FOURSQUARE")){
 			g.drawLine(0, FIELDHEIGHT/2, FIELDWIDTH, FIELDHEIGHT/2);
 			g.drawLine(FIELDWIDTH/2, 0, FIELDWIDTH/2, FIELDHEIGHT);
@@ -895,7 +925,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			g.fillRect(0, 0, data.screenWidth(), data.screenHeight());
 			g.setFont(font_large);
 			g.setColor(Color.white);
-			g.drawString("¡MATCH OVER!", data.screenWidth()/2f-font_large.getWidth("¡MATCH OVER!")/2f, data.screenHeight()/2f - font_large.getHeight("0")/2 - 15);
+			g.drawString("¡FINISH!", data.screenWidth()/2f-font_large.getWidth("¡MATCH OVER!")/2f, data.screenHeight()/2f - font_large.getHeight("0")/2 - 15);
 		}
 	}
 

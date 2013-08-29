@@ -7,6 +7,7 @@ Changed cursor to full screen. Have option to slide cursor instead of teleportin
 Character portraits are cropped in 4:3 screen ratios, so they're less distorted
 Added menu sounds
 Added sounds for the start of a round
+Added proper spawn locations for Tennis
 
 8.28.13
 Added Game Start animation
