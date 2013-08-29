@@ -748,7 +748,19 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		//Draw Header
 		//drawHeader(g);
 		
+		//Debug ruler
+		g.setColor(Color.red);
+		for(int i=0;i<900; i+=50){
+			g.drawString(""+i, 100, i);
+		}
+		
 		g.resetTransform();
+		
+		//Debug Ruler 2
+		g.setColor(Color.green);
+		for(int i=0;i<900; i+=50){
+			g.drawString(""+i, 100, i);
+		}
 		
 		drawUI(g);
 		
@@ -973,10 +985,15 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	public boolean scoreBarClear(){//Determines if a player is in the area of the score bars
 		boolean b = true;
 		for(Player p: players){
-			if(p.getY()-p.getKickRange()/2<(font.getHeight("0")+font_small.getHeight("0")+35)*scaleFactor)
+//			System.out.println(p.getY());
+//			System.out.println((font.getHeight("0")+font_small.getHeight("0")+30)*scaleFactor);
+//			System.out.println("viewY " + viewY);
+//			System.out.println("scale "+scaleFactor);
+			//transform from inner coords to screen coords with (y-viewY)*scaleFactor
+			if(((p.getY()-p.getKickRange()/2)-viewY)*scaleFactor<(font.getHeight("0")+font_small.getHeight("0")+30))
 				b = false;
 		}
-		if(ball.getY()<(font.getHeight("0")+font_small.getHeight("0")+35)*scaleFactor)
+		if((ball.getY()-viewY)*scaleFactor<(font.getHeight("0")+font_small.getHeight("0")+31))
 			b = false;
 		return b;
 	}

@@ -8,6 +8,7 @@ Character portraits are cropped in 4:3 screen ratios, so they're less distorted
 Added menu sounds
 Added sounds for the start of a round
 Added proper spawn locations for Tennis
+Can't select both unlimited time and unlimited score anymore
 The new score and timer bar for gameplaystate will fade out if a player moves under it (fixed cam only) 
 
 8.28.13
