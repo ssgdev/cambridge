@@ -54,6 +54,9 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 	private float tempX;//Used for drawing the field
 	private float tempY;
 	private float tempf;
+	
+	private float cursorY, cursorYTarget;
+	
 	//Constructor
 	public MenuGamemodeSetupState(int i, boolean renderon) {
 		stateID = i;
@@ -105,6 +108,8 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 	
 	public void reset() {
 		selected = 0;
+		cursorY = data.screenHeight()/3f-font_small.getLineHeight()/2f-5;
+		cursorYTarget = cursorY;
 	}
 
 	@Override
@@ -122,7 +127,10 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 		g.setColor(Color.white);
 
 		g.setFont(font_white);
-
+		
+		//Draw cursor
+		g.drawRect(-10, cursorY, data.screenWidth()+20, font_small.getLineHeight() + 10f);
+		
 		drawField(g);
 		
 		g.drawString(
@@ -132,15 +140,6 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 				);
 
 		g.setFont(font_small);
-
-		if (selected > 0) {
-			g.drawRect(
-					data.screenWidth() * 1/4 - 5,
-					data.screenHeight() * (6.5f+selected)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2 - 5,
-					font_small.getWidth(menuOptions[selected-1]) + 10,
-					font_small.getLineHeight() + 10
-					);
-		}
 
 		for (int i = 0; i < menuOptions.length; i++) {
 			g.drawString(
@@ -188,6 +187,21 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 			throws SlickException {
 		Input input = gc.getInput();
 
+		if (selected > 0) {
+//			g.drawRect(
+//					-10,
+//					data.screenHeight() * (6.5f+selected)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2 - 5,
+//					data.screenWidth() + 20,
+//					font_small.getLineHeight() + 10
+//					);
+			cursorYTarget = data.screenHeight() * (6.5f+selected)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2 - 5;
+		}else{//Game mode
+			cursorYTarget = data.screenHeight()/3f-font_small.getLineHeight()/2f-5;
+		}
+		
+		//cursorY = approachTarget(cursorY, cursorYTarget, (float)delta/2f);
+		cursorY = cursorYTarget;
+		
 		if (input.isKeyPressed(Input.KEY_ESCAPE)) {
 			((MenuMainState)sbg.getState(data.MENUMAINSTATE)).setShouldRender(true);
 			setShouldRender(false);
@@ -307,6 +321,22 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 	@Override
 	public void leave(GameContainer gc, StateBasedGame sbg) throws SlickException {
 
+	}
+	
+	public float approachTarget(float val, float target, float inc){
+
+		if(val<target){
+			val+=inc;
+			if(val>target)
+				val=target;
+		}
+		if(val>target){
+			val-=inc;
+			if(val<target)
+				val=target;
+		}
+
+		return val;
 	}
 
 	public void setShouldRender(boolean shouldRender) {

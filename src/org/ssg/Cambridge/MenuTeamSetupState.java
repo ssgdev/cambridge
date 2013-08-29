@@ -47,7 +47,8 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 	Image[] maps;
 	
 	int gameMode;
-	float mapX, mapY, targetMapY, mapWidth, mapHeight;
+	float mapX, mapY, targetMapY, originalMapY, mapWidth, mapHeight;
+	boolean exiting;
 	//float targetMapWidth, targetMapHeight;
 	
 	//For drawing the players
@@ -254,13 +255,10 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 			throws SlickException {
 		Input input = gc.getInput();
 
-		targetMapY = data.screenHeight()/2f-mapHeight/2f;
+		if(!exiting)
+			targetMapY = data.screenHeight()/2f-mapHeight/2f;
 		
-		if(mapY < targetMapY){
-			mapY += delta;
-			if(mapY > targetMapY)
-				mapY = targetMapY;
-		}
+		mapY = approachTarget(mapY, targetMapY, delta);
 		
 		mapX = data.screenWidth()/2f-mapWidth/2f;
 		
@@ -321,15 +319,15 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 						} else if (anchors[i].right(gc, delta)) {
 							anchors[i].changeTeam(1);
 						} else if (anchors[i].back(gc, delta)) {
-							((MenuGamemodeSetupState)sbg.getState(data.MENUGAMEMODESETUPSTATE)).setShouldRender(true);
-							setShouldRender(false);
-							sbg.enterState(data.MENUGAMEMODESETUPSTATE);
+							targetMapY = originalMapY;
+							exiting = true;
 						} else if (anchors[i].select(gc, delta)) {
 							if (anchors[i].getTeam() != -1) {
 								if (teamCount[anchors[i].getTeam()] != existsNum-1) {
 									anchors[i].setTeam(true);
 								}
 							}
+							exiting = false;
 						}
 					} else {
 						if (anchors[i].back(gc, delta)) {
@@ -340,6 +338,12 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 			}
 		}
 
+		if(exiting && mapY == originalMapY){
+				setShouldRender(false);
+			((MenuGamemodeSetupState)sbg.getState(data.MENUGAMEMODESETUPSTATE)).setShouldRender(true);
+			sbg.enterState(data.MENUGAMEMODESETUPSTATE);
+		}
+		
 		// Move onto next gamestate if all initiated players are ready
 		if (readyNum == existsNum && existsNum > 1) {
 			((GameplayState)sbg.getState(data.GAMEPLAYSTATE)).setShouldRender(true);
@@ -371,8 +375,10 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 		mapX = x;
 		mapY = y;
 		targetMapY = y;
+		originalMapY = y;
 		mapWidth = w;
 		mapHeight = h;
+		exiting = false;
 	}
 	
 	@Override

@@ -370,8 +370,8 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 									anchors[i] = new CambridgePlayerAnchor(0, i, -1, -1, c);
 								}
 								if (c.getMenuBack()) {
-									((MenuMainState)sbg.getState(data.MENUMAINSTATE)).setShouldRender(true);
 									setShouldRender(false);
+									((MenuMainState)sbg.getState(data.MENUMAINSTATE)).setShouldRender(true);
 									sbg.enterState(data.MENUMAINSTATE);
 								}
 							}

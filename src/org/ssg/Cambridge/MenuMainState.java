@@ -36,6 +36,8 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 	
 	private boolean shouldRender;
 	
+	private float cursorY, cursorYTarget;
+	
 	final static String RESDIR = "res/";
 	private AngelCodeFont font, font_white, font_small;
 	
@@ -101,19 +103,25 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 		
 		g.setColor(Color.white);
 		g.setFont(font_white);
-		g.drawString("MAIN MENU", data.screenWidth()/6, data.screenHeight()*0.1f);
+		//g.drawString("MAIN MENU", data.screenWidth()/6, data.screenHeight()*0.1f);
 		
 		g.drawString(menuOptions[0], data.screenWidth()/6, data.screenHeight()*0.5f);
 		g.drawString(menuOptions[1], data.screenWidth()/6, data.screenHeight()*0.5f+menuHeight);
 		g.drawString(menuOptions[2], data.screenWidth()/6, data.screenHeight()*0.5f+menuHeight*2);
 		
-		g.drawRect(data.screenWidth()/6 - 10, data.screenHeight()*0.5f+selected*menuHeight + 7, font_white.getWidth(menuOptions[selected]) + 20, 70);
+		//draw cursor
+//		g.drawRect(data.screenWidth()/6 - 10, data.screenHeight()*0.5f+selected*menuHeight + 7, font_white.getWidth(menuOptions[selected]) + 20, 70);
+		g.drawRect(-10, cursorY, data.screenWidth()+20, 70);
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta)
 			throws SlickException {
 		Input input = gc.getInput();
+		
+		cursorYTarget = data.screenHeight()*0.5f+selected*menuHeight + 7;
+//		cursorY = approachTarget(cursorY, cursorYTarget, delta/2f);
+		cursorY = cursorYTarget;
 		
 		up = false;
 		down = false;
@@ -249,12 +257,31 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 			mySoundSystem.setVolume("BGM", data.ambientSound()/10f);
 		}
 		resetButtons();
+		cursorYTarget = data.screenHeight()*0.5f+selected*menuHeight + 7;
+		cursorY = cursorYTarget;
 	}
 
 	@Override
 	public void leave(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		
 	}
+	
+	public float approachTarget(float val, float target, float inc){
+
+		if(val<target){
+			val+=inc;
+			if(val>target)
+				val=target;
+		}
+		if(val>target){
+			val-=inc;
+			if(val<target)
+				val=target;
+		}
+
+		return val;
+	}
+
 	
 	public void setShouldRender(boolean shouldRender) {
 		this.shouldRender = shouldRender;

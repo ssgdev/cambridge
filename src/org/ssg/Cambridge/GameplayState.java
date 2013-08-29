@@ -48,7 +48,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 //	int timeLimit = 10000;//in ms
 	float timef;
 	int time;
-	int GAMEOVERCOUNTDOWN = 3000;
+	int GAMEOVERCOUNTDOWN = 2000;
 	int gameOverCountdown;
 	
 	public float SCREENWIDTH;
@@ -670,6 +670,19 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		//Draw Field
 		drawField(g);
 		
+		if(!data.actionCam()){
+			//fill in the UI boxes at top so there's not halfwhite/halfblack ugliness
+			g.resetTransform();
+			
+			g.setColor(Color.white);
+			g.fillRect(data.screenWidth()/2-data.screenWidth()/3, 25, data.screenWidth()/6, font.getHeight("0")+20);
+			g.fillRect(data.screenWidth()/2+data.screenWidth()/6, 25, data.screenWidth()/6, font.getHeight("0")+20);
+			g.fillRect(data.screenWidth()/2-data.screenWidth()/6, 15, data.screenWidth()/3, font.getHeight("0")+font_small.getHeight("0")+15);
+			
+			g.scale(scaleFactor,  scaleFactor);
+			g.translate(-viewX, -viewY);
+		}
+		
 		//Draw Players
 		for(Player p: players){
 			p.render( g, BALLSIZE, triangle, font_small);
@@ -705,9 +718,11 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		//g.fillRect(FIELDWIDTH-10, FIELDHEIGHT/2-GOALWIDTH/2, 15, GOALWIDTH);
 		
 		//Draw Header
-		drawHeader(g);
+		//drawHeader(g);
 		
 		g.resetTransform();
+		
+		drawUI(g);
 		
 		drawGameOver(g);
 		
@@ -716,52 +731,52 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	}
 	
 	public void drawHeader(Graphics g){
-		//Draw Text
-		g.setFont(font);
-		if(GOALTYPE == 1 || GOALTYPE == -1){//Squash or FourSquare
-			g.rotate(0,0,-90);
-			g.drawString("PLAY "+NAME, -FIELDHEIGHT/2 - font.getWidth("PLAY "+NAME)/2, FIELDWIDTH);
-			g.rotate(0,0,90);
-			g.drawString("FERNANDO TORANGE", 0, -font.getHeight("0")-10);
-			g.drawString("DIDIER DROGBLUE", 0 , FIELDHEIGHT);
-			
-			g.drawString(""+scores[1], FIELDWIDTH-font.getWidth(""+scores[1]) , -font.getHeight("0")-10);
-			g.drawString(""+scores[0], FIELDWIDTH-font.getWidth(""+scores[0]),  FIELDHEIGHT);
-		}else if(GOALTYPE==2){//Same as above but more spacing, for onesquare
-			g.rotate(0,0,-90);
-			g.drawString("PLAY "+NAME, -FIELDHEIGHT/2 - font.getWidth("PLAY "+NAME)/2, FIELDWIDTH+10);
-			g.rotate(0,0,90);
-			g.drawString("FERNANDO TORANGE", 0, -font.getHeight("0")-30);
-			g.drawString("DIDIER DROGBLUE", 0 , FIELDHEIGHT+12);
-			
-			g.drawString(""+scores[1], FIELDWIDTH-font.getWidth(""+scores[1]) , -font.getHeight("0")-30);
-			g.drawString(""+scores[0], FIELDWIDTH-font.getWidth(""+scores[0]),  FIELDHEIGHT+12);
-		}else{
-			//Draw game mode
-			g.drawString("PLAY "+NAME, FIELDWIDTH/2 - font.getWidth("PLAY "+NAME)/2, FIELDHEIGHT);
-			
-			//Draw Player Names. have these be randomized for now, maybe based on character select
-			g.drawString("TEAM 1", 0, -font.getHeight("0")-10);
-			g.drawString("TEAM 2", FIELDWIDTH - font.getWidth("TEAM 2"), -font.getHeight("0")-10);
-			
-			//Draw scores
-			g.drawString(""+scores[0], FIELDWIDTH/2-font.getWidth(""+scores[0])-20-100, -font.getHeight("0")-10);
-			g.drawString(""+scores[1], FIELDWIDTH/2+20+100,  -font.getHeight("0")-10);
-//			g.drawString(":", FIELDWIDTH/2-font.getWidth(":")/2, -font.getHeight("0")-14);
-			
-			//Draw Timer
-			if(data.timeLimit()>0){
-				g.drawString(""+(time/1000), FIELDWIDTH/2-font.getWidth(""+time/1000)/2, -font.getHeight("0")-32);
-				g.setFont(font_small);
-				g.setColor(Color.black);
-				g.drawString(String.format("%03d",(time-time/1000*1000)), FIELDWIDTH/2-font_small.getWidth(String.format("%03d",(time-time/1000*1000)))/2, -font_small.getHeight("0")-8);
-			}else{ 
-				g.drawString(""+0, FIELDWIDTH/2-font.getWidth(""+0)/2, -font.getHeight("0")-32);
-				g.setFont(font_small);
-				g.setColor(Color.black);
-				g.drawString(String.format("%03d",0), FIELDWIDTH/2-font_small.getWidth(String.format("%03d",0))/2, -font_small.getHeight("0")-8);
-			}
-		}
+//		//Draw Text
+//		g.setFont(font);
+//		if(GOALTYPE == 1 || GOALTYPE == -1){//Squash or FourSquare
+//			g.rotate(0,0,-90);
+//			g.drawString("PLAY "+NAME, -FIELDHEIGHT/2 - font.getWidth("PLAY "+NAME)/2, FIELDWIDTH);
+//			g.rotate(0,0,90);
+//			g.drawString("FERNANDO TORANGE", 0, -font.getHeight("0")-10);
+//			g.drawString("DIDIER DROGBLUE", 0 , FIELDHEIGHT);
+//			
+//			g.drawString(""+scores[1], FIELDWIDTH-font.getWidth(""+scores[1]) , -font.getHeight("0")-10);
+//			g.drawString(""+scores[0], FIELDWIDTH-font.getWidth(""+scores[0]),  FIELDHEIGHT);
+//		}else if(GOALTYPE==2){//Same as above but more spacing, for onesquare
+//			g.rotate(0,0,-90);
+//			g.drawString("PLAY "+NAME, -FIELDHEIGHT/2 - font.getWidth("PLAY "+NAME)/2, FIELDWIDTH+10);
+//			g.rotate(0,0,90);
+//			g.drawString("FERNANDO TORANGE", 0, -font.getHeight("0")-30);
+//			g.drawString("DIDIER DROGBLUE", 0 , FIELDHEIGHT+12);
+//			
+//			g.drawString(""+scores[1], FIELDWIDTH-font.getWidth(""+scores[1]) , -font.getHeight("0")-30);
+//			g.drawString(""+scores[0], FIELDWIDTH-font.getWidth(""+scores[0]),  FIELDHEIGHT+12);
+//		}else{
+//			//Draw game mode
+//			g.drawString("PLAY "+NAME, FIELDWIDTH/2 - font.getWidth("PLAY "+NAME)/2, FIELDHEIGHT);
+//			
+//			//Draw Player Names. have these be randomized for now, maybe based on character select
+//			g.drawString("TEAM 1", 0, -font.getHeight("0")-10);
+//			g.drawString("TEAM 2", FIELDWIDTH - font.getWidth("TEAM 2"), -font.getHeight("0")-10);
+//			
+////			//Draw scores
+////			g.drawString(""+scores[0], FIELDWIDTH/2-font.getWidth(""+scores[0])-20-100, -font.getHeight("0")-10);
+////			g.drawString(""+scores[1], FIELDWIDTH/2+20+100,  -font.getHeight("0")-10);
+//////			g.drawString(":", FIELDWIDTH/2-font.getWidth(":")/2, -font.getHeight("0")-14);
+////			
+////			//Draw Timer
+////			if(data.timeLimit()>0){
+////				g.drawString(""+(time/1000), FIELDWIDTH/2-font.getWidth(""+time/1000)/2, -font.getHeight("0")-32);
+////				g.setFont(font_small);
+////				g.setColor(Color.black);
+////				g.drawString(String.format("%03d",(time-time/1000*1000)), FIELDWIDTH/2-font_small.getWidth(String.format("%03d",(time-time/1000*1000)))/2, -font_small.getHeight("0")-8);
+////			}else{ 
+////				g.drawString(""+0, FIELDWIDTH/2-font.getWidth(""+0)/2, -font.getHeight("0")-32);
+////				g.setFont(font_small);
+////				g.setColor(Color.black);
+////				g.drawString(String.format("%03d",0), FIELDWIDTH/2-font_small.getWidth(String.format("%03d",0))/2, -font_small.getHeight("0")-8);
+////			}
+//		}
 	}
 	
 	public void drawField(Graphics g){
@@ -821,6 +836,53 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		}else if(NAME.equals("FOURSQUARE")){
 			g.drawLine(0, FIELDHEIGHT/2, FIELDWIDTH, FIELDHEIGHT/2);
 			g.drawLine(FIELDWIDTH/2, 0, FIELDWIDTH/2, FIELDHEIGHT);
+		}
+	}
+	
+	public void drawUI(Graphics g){
+
+		//Draw boxes
+		g.setLineWidth(2);
+		if(data.actionCam())
+			g.setColor(new Color(1,1,1,140));
+		else
+			g.setColor(new Color(255,255,255,90));
+		
+		g.fillRect(data.screenWidth()/2-data.screenWidth()/3, 25, data.screenWidth()/6, font.getHeight("0")+20);
+		g.fillRect(data.screenWidth()/2+data.screenWidth()/6, 25, data.screenWidth()/6, font.getHeight("0")+20);
+		g.fillRect(data.screenWidth()/2-data.screenWidth()/6, 15, data.screenWidth()/3, font.getHeight("0")+font_small.getHeight("0")+15);
+		
+		if(data.actionCam())
+			g.setColor(Color.white);
+		else
+			g.setColor(Color.black);
+		//Score boxes
+		g.drawRect(data.screenWidth()/2-data.screenWidth()/3, 25, data.screenWidth()/6, font.getHeight("0")+20);
+		g.drawRect(data.screenWidth()/2+data.screenWidth()/6, 25, data.screenWidth()/6, font.getHeight("0")+20);
+		
+		//Timer boxes
+		g.drawRect(data.screenWidth()/2-data.screenWidth()/6, 15, data.screenWidth()/3, font.getHeight("0")+font_small.getHeight("0")+15);
+		
+		//Draw scores
+		g.setFont(font_white);
+		if(data.actionCam())
+			g.setColor(Color.white);
+		else
+			g.setColor(Color.black);
+		
+		g.drawString(""+scores[0], data.screenWidth()/2-data.screenWidth()*3f/12f-font.getWidth(""+scores[0])/2, 28);
+		g.drawString(""+scores[1], data.screenWidth()/2+data.screenWidth()*3f/12f-font.getWidth(""+scores[1])/2, 28);
+//		g.drawString(":", FIELDWIDTH/2-font.getWidth(":")/2, -font.getHeight("0")-14);
+	
+		//Draw Timer
+		if(data.timeLimit()>0){
+			g.drawString(""+(time/1000), data.screenWidth()/2-font.getWidth(""+time/1000)/2, 10);
+			g.setFont(font_small);
+			g.drawString(String.format("%03d",(time-time/1000*1000)), data.screenWidth()/2-font_small.getWidth(String.format("%03d",(time-time/1000*1000)))/2, 10+font.getHeight("0")+5);
+		}else{ 
+			g.drawString("99", data.screenWidth()/2-font.getWidth("99")/2, 10);
+			g.setFont(font_small);
+			g.drawString(String.format("%03d",999), data.screenWidth()/2-font_small.getWidth(String.format("%03d",999))/2, 10+font.getHeight("0")+5);
 		}
 	}
 	
@@ -1222,7 +1284,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			tempY = SCREENHEIGHT/maxZoom;
 		}
 
-		if(ACTIONCAM == 1){
+		if(data.actionCam()){
 			tempX = (tempX*1.4f);
 			tempY = (tempY*1.4f);
 			

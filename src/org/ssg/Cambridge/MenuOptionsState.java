@@ -47,6 +47,8 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 	final static String RESDIR = "res/";
 	private AngelCodeFont font, font_white, font_small;
 	
+	private float cursorY, cursorYTarget;
+	
 	private Cambridge cambridge;
 	private AppGameContainer appGc;
 	
@@ -125,6 +127,8 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 		
 		g.setFont(font_small);
 		
+		g.setLineWidth(2);
+		
 		for (int i = 0; i < menuOptions.length; i++) {
 			g.drawString(menuOptions[i], data.screenWidth()/6, data.screenHeight()*0.4f+menuHeight*i);
 			switch(i) {
@@ -147,9 +151,9 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 					}
 					for (int j = 0; j < 10; j++) {
 						if (j < volume) {
-							g.fillRect(data.screenWidth()/5*3 + menuHeight/2*j, data.screenHeight()*0.4f+menuHeight*i, menuHeight/3, menuHeight/5*4);
+							g.fillRect(data.screenWidth()/5*3 + menuHeight/2*j, data.screenHeight()*0.4f+menuHeight*i+2, menuHeight/3, menuHeight/5*4);
 						} else {
-							g.drawRect(data.screenWidth()/5*3 + menuHeight/2*j, data.screenHeight()*0.4f+menuHeight*i, menuHeight/3, menuHeight/5*4);
+							g.drawRect(data.screenWidth()/5*3 + menuHeight/2*j, data.screenHeight()*0.4f+menuHeight*i+2, menuHeight/3, menuHeight/5*4);
 						}
 					}
 					break;
@@ -162,14 +166,22 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 		}
 		
 		if (focus) {
-			g.drawRect(data.screenWidth()/6 - 12, data.screenHeight()*0.4f+selected*menuHeight-2, font_small.getWidth(menuOptions[selected]) + 24, menuHeight+4);
+//			g.drawRect(data.screenWidth()/6 - 12, data.screenHeight()*0.4f+selected*menuHeight-2, font_small.getWidth(menuOptions[selected]) + 24, menuHeight+4);
+			g.setLineWidth(5);
+		}else{
+			g.setLineWidth(2);
 		}
-		g.drawRect(data.screenWidth()/6 - 10, data.screenHeight()*0.4f+selected*menuHeight, font_small.getWidth(menuOptions[selected]) + 20, menuHeight);
+		
+//		g.drawRect(data.screenWidth()/6 - 10, data.screenHeight()*0.4f+selected*menuHeight, font_small.getWidth(menuOptions[selected]) + 20, menuHeight);
+		g.drawRect(-10, cursorY, data.screenWidth()+20, menuHeight);
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta)
 			throws SlickException {
+		
+		cursorYTarget = data.screenHeight()*0.4f+selected*menuHeight;
+		cursorY = approachTarget(cursorY, cursorYTarget, delta/2f);
 		
 		//System.out.println(data.getResolution()[0] + "x" + data.getResolution()[1] + " " + data.resolutionIndex());
 		Input input = gc.getInput();
@@ -270,14 +282,16 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 		
 		if (input.isKeyPressed(Input.KEY_UP) || up) {
 			if (!focus) {
-				selected = --selected % menuOptions.length;
+				//selected = --selected % menuOptions.length;
+				if(selected > 0) selected--;
 				if (selected == -1) {
 					selected = menuOptions.length-1;
 				}
 			}
 		} else if (input.isKeyPressed(Input.KEY_DOWN) || down) {
 			if (!focus) {
-				selected = ++selected % menuOptions.length;
+				//selected = ++selected % menuOptions.length;
+				if(selected<menuOptions.length-1) selected++;
 			}
 		} else if (input.isKeyPressed(Input.KEY_LEFT) || left) {
 			if (focus) {
@@ -433,11 +447,29 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		resetButtons();
+		cursorYTarget = data.screenHeight()*0.4f;
+		cursorY = cursorYTarget;
 	}
 
 	@Override
 	public void leave(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		
+	}
+	
+	public float approachTarget(float val, float target, float inc){
+
+		if(val<target){
+			val+=inc;
+			if(val>target)
+				val=target;
+		}
+		if(val>target){
+			val-=inc;
+			if(val<target)
+				val=target;
+		}
+
+		return val;
 	}
 	
 	public void setShouldRender(boolean shouldRender) {

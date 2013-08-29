@@ -21,7 +21,7 @@ TODO:
 	!!!! In-game pause menu
 	DONE Draw -1 as "Unlimited" in game mode select
 	DONE Mode Select graphics
-	!!!! Mode Select Colors should be consistent with gameplay state
+	!!!! Reminder: Mode Select team colors should be consistent with gameplaystate
 	!!!! Should not be able to select both unlimited score and time limits
 	DONE Team select graphics 
 		???? Only go to team select if 3+ players (not 4square)
@@ -29,20 +29,21 @@ TODO:
 	!!!! Prevent crashes when changing the resolution in fullscreen (Maybe if they're fullscreeng, force native res?)
 	DONE Going to main menu should reset all menu options (no more skipping the char select)
 	DONE DPad in menus
-	!!!! Effects sounds
+	!!!! Effects sounds: Go, Back, move, change, nope
 	!!!! Main menu options is "push a to change the thing" but the mode select menu is just "hover and move left/right" Seems inconsistent
 DONE GameStart transition
+!!!! Something in case they delete the configs?
 DONE Make font_large for GAME OVER and the like
-!!!! Revamp gameplaystate ui
+DONE Revamp gameplaystate ui
 DONE Change Twins keyboard controls to switching nukes and double move default
 !!!! Implement game modes with menus
 	!!!! TENNIS (Spawn locations)
-	!!!! SQUASH
+	!!!! SQUASH (Spawn locations)
 	!!!! FOURSQUARE
 DONE Ball Possession wrong when Dash dashes a Back holding the ball
 DONE Ball possession wrong on back and neutron grab
 !!!! Bugs when neutron grabs a twotouch holding the ball
-!!!! Current keyboard setup still has ghosting?
+!!!! Current keyboard setup still has ghosting? Alt. Key layouts?
 !!!! Balance:
 	!!!! TwoTouch underpowered. Take out speed debuff on holding button? Harder Kicks?
 	DONE Neutron push needs faster
