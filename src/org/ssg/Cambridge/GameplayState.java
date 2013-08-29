@@ -652,7 +652,6 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			return;
 		
 		g.setAntiAlias(true);
-
 		g.scale(scaleFactor,  scaleFactor);
 		g.translate(-viewX, -viewY);
 
@@ -710,63 +709,9 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		g.resetTransform();
 		
-		//draw game over animation
-		if(gameOverCountdown < GAMEOVERCOUNTDOWN){//If the gameover countdown has started
-			g.setColor(new Color(0,0,0, 1f - (float)(gameOverCountdown-50)/(float)GAMEOVERCOUNTDOWN));
-			g.fillRect(0, 0, data.screenWidth(), data.screenHeight());
-			g.setFont(font_large);
-			g.setColor(Color.white);
-			g.drawString("¡MATCH OVER!", data.screenWidth()/2f-font_large.getWidth("¡MATCH OVER!")/2f, data.screenHeight()/2f - font_large.getHeight("0")/2 - 15);
-		}
+		drawGameOver(g);
 		
-		//Draw the game start animation
-		if(gameStartCountdown > GAMESTARTCOUNTDOWN*2f/3f){
-			g.setColor(Color.white);
-			tempf = (GAMESTARTCOUNTDOWN-gameStartCountdown)/(GAMESTARTCOUNTDOWN/3f)*(data.screenWidth()+200);
-			g.fillRect(tempf ,0,data.screenWidth(), data.screenHeight()/6f);
-			g.fillRect(-tempf ,data.screenHeight(),data.screenWidth(), -data.screenHeight()/6f);
-			g.fillRect(0,data.screenHeight()/6f, data.screenWidth(), data.screenHeight()*2f/3f);
-			g.setColor(Color.black);
-			g.setFont(font_large);
-			g.drawString("READY", data.screenWidth()/2f-font_large.getWidth("READY")/2f , data.screenHeight()/2f-font_large.getHeight("0")/2-15);
-		}else if(gameStartCountdown > GAMESTARTCOUNTDOWN/3f){
-			g.setColor(Color.white);
-			tempf = -(GAMESTARTCOUNTDOWN*2f/3f-gameStartCountdown)/(GAMESTARTCOUNTDOWN/3f)*(data.screenWidth()+200);
-			g.fillRect(tempf ,data.screenHeight()/6f,data.screenWidth(), data.screenHeight()/6f);
-			g.fillRect(-tempf ,data.screenHeight()*5f/6f,data.screenWidth(), -data.screenHeight()/6f);
-			g.fillRect(0,data.screenHeight()/3f, data.screenWidth(), data.screenHeight()/3f);
-			g.setColor(Color.black);
-			g.setFont(font_large);
-			g.drawString("SET", data.screenWidth()/2f-font_large.getWidth("SET")/2f , data.screenHeight()/2f-font_large.getHeight("0")/2-15);
-		}else if(gameStartCountdown > GAMESTARTCOUNTDOWN*3f/12f){
-			g.setColor(Color.white);
-			g.fillRect(0,data.screenHeight()/3f, data.screenWidth()/2f, data.screenHeight()/3f);
-			g.fillRect(data.screenWidth()/2f,data.screenHeight()/3f, data.screenWidth()/2f, data.screenHeight()/3f);
-			g.setColor(Color.black);
-			g.setFont(font_large);
-			g.drawString("¡PLAY", data.screenWidth()/2f-font_large.getWidth("¡PLAY BALL!")/2f , data.screenHeight()/2f-font_large.getHeight("0")/2-15);
-			g.drawString("BALL!", data.screenWidth()/2f-font_large.getWidth("¡PLAY BALL!")/2f + font_large.getWidth("¡PLAY0"), data.screenHeight()/2f-font_large.getHeight("0")/2-15);
-		}else if(gameStartCountdown > 0){
-			//Vert Move
-//			tempf = -(GAMESTARTCOUNTDOWN/3f-gameStartCountdown)/(GAMESTARTCOUNTDOWN/3f)*data.screenHeight()*2f/3f*2f;
-//			g.setColor(Color.white);
-//			g.fillRect(0,data.screenHeight()/3f+tempf, data.screenWidth()/2f, data.screenHeight()/3f);
-//			g.fillRect(data.screenWidth()/2f,data.screenHeight()/3f-tempf, data.screenWidth()/2f, data.screenHeight()/3f);
-//			g.setColor(Color.black);
-//			g.setFont(font_large);
-//			g.drawString("PLAY", data.screenWidth()/2f-font_large.getWidth("PLAY BALL!")/2f , data.screenHeight()/2f-font_large.getHeight("0")/2-15+tempf);
-//			g.drawString("BALL!", data.screenWidth()/2f-font_large.getWidth("PLAY BALL!")/2f + font_large.getWidth("PLAY0") , data.screenHeight()/2f-font_large.getHeight("0")/2-15-tempf);
-			//Horizontal split
-			//tempf = (GAMESTARTCOUNTDOWN/4f-gameStartCountdown)/(GAMESTARTCOUNTDOWN/4f)*(data.screenWidth());
-			tempf = 0;
-			g.setColor(new Color(255, 255, 255, 1f-(GAMESTARTCOUNTDOWN/4f-gameStartCountdown)/(GAMESTARTCOUNTDOWN/4f)));
-			g.fillRect(-tempf,data.screenHeight()/3f, data.screenWidth()/2f, data.screenHeight()/3f);
-			g.fillRect(data.screenWidth()/2f+tempf,data.screenHeight()/3f, data.screenWidth()/2f, data.screenHeight()/3f);
-			g.setColor(new Color(1,1,1,1f-(GAMESTARTCOUNTDOWN/4f-gameStartCountdown)/(GAMESTARTCOUNTDOWN/4f)));
-			g.setFont(font_large);
-			g.drawString("¡PLAY", data.screenWidth()/2f-font_large.getWidth("¡PLAY BALL!")/2f-tempf , data.screenHeight()/2f-font_large.getHeight("0")/2-15);
-			g.drawString("BALL!", data.screenWidth()/2f-font_large.getWidth("¡PLAY BALL!")/2f + font_large.getWidth("¡PLAY0") +tempf, data.screenHeight()/2f-font_large.getHeight("0")/2-15);
-		}
+		drawGameStart(g);
 		
 	}
 	
@@ -878,7 +823,58 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			g.drawLine(FIELDWIDTH/2, 0, FIELDWIDTH/2, FIELDHEIGHT);
 		}
 	}
+	
+	public void drawGameOver(Graphics g){
+		//draw game over animation
+		if(gameOverCountdown < GAMEOVERCOUNTDOWN){//If the gameover countdown has started
+			g.setColor(new Color(0,0,0, 1f - (float)(gameOverCountdown-50)/(float)GAMEOVERCOUNTDOWN));
+			g.fillRect(0, 0, data.screenWidth(), data.screenHeight());
+			g.setFont(font_large);
+			g.setColor(Color.white);
+			g.drawString("¡MATCH OVER!", data.screenWidth()/2f-font_large.getWidth("¡MATCH OVER!")/2f, data.screenHeight()/2f - font_large.getHeight("0")/2 - 15);
+		}
+	}
 
+	public void drawGameStart(Graphics g){
+		//Draw the game start animation
+		if(gameStartCountdown > GAMESTARTCOUNTDOWN*2f/3f){
+			g.setColor(Color.white);
+			tempf = (GAMESTARTCOUNTDOWN-gameStartCountdown)/(GAMESTARTCOUNTDOWN/3f)*(data.screenWidth()+200);
+			g.fillRect(tempf ,0,data.screenWidth(), data.screenHeight()/6f);
+			g.fillRect(-tempf ,data.screenHeight(),data.screenWidth(), -data.screenHeight()/6f);
+			g.fillRect(0,data.screenHeight()/6f, data.screenWidth(), data.screenHeight()*2f/3f);
+			g.setColor(Color.black);
+			g.setFont(font_large);
+			g.drawString("READY", data.screenWidth()/2f-font_large.getWidth("READY")/2f , data.screenHeight()/2f-font_large.getHeight("0")/2-15);
+		}else if(gameStartCountdown > GAMESTARTCOUNTDOWN/3f){
+			g.setColor(Color.white);
+			tempf = -(GAMESTARTCOUNTDOWN*2f/3f-gameStartCountdown)/(GAMESTARTCOUNTDOWN/3f)*(data.screenWidth()+200);
+			g.fillRect(tempf ,data.screenHeight()/6f,data.screenWidth(), data.screenHeight()/6f);
+			g.fillRect(-tempf ,data.screenHeight()*5f/6f,data.screenWidth(), -data.screenHeight()/6f);
+			g.fillRect(0,data.screenHeight()/3f, data.screenWidth(), data.screenHeight()/3f);
+			g.setColor(Color.black);
+			g.setFont(font_large);
+			g.drawString("SET", data.screenWidth()/2f-font_large.getWidth("SET")/2f , data.screenHeight()/2f-font_large.getHeight("0")/2-15);
+		}else if(gameStartCountdown > GAMESTARTCOUNTDOWN*3f/12f){
+			g.setColor(Color.white);
+			g.fillRect(0,data.screenHeight()/3f, data.screenWidth()/2f, data.screenHeight()/3f);
+			g.fillRect(data.screenWidth()/2f,data.screenHeight()/3f, data.screenWidth()/2f, data.screenHeight()/3f);
+			g.setColor(Color.black);
+			g.setFont(font_large);
+			g.drawString("¡PLAY", data.screenWidth()/2f-font_large.getWidth("¡PLAY BALL!")/2f , data.screenHeight()/2f-font_large.getHeight("0")/2-15);
+			g.drawString("BALL!", data.screenWidth()/2f-font_large.getWidth("¡PLAY BALL!")/2f + font_large.getWidth("¡PLAY0"), data.screenHeight()/2f-font_large.getHeight("0")/2-15);
+		}else if(gameStartCountdown > 0){
+			tempf = 0;
+			g.setColor(new Color(255, 255, 255, 1f-(GAMESTARTCOUNTDOWN/4f-gameStartCountdown)/(GAMESTARTCOUNTDOWN/4f)));
+			g.fillRect(-tempf,data.screenHeight()/3f, data.screenWidth()/2f, data.screenHeight()/3f);
+			g.fillRect(data.screenWidth()/2f+tempf,data.screenHeight()/3f, data.screenWidth()/2f, data.screenHeight()/3f);
+			g.setColor(new Color(1,1,1,1f-(GAMESTARTCOUNTDOWN/4f-gameStartCountdown)/(GAMESTARTCOUNTDOWN/4f)));
+			g.setFont(font_large);
+			g.drawString("¡PLAY", data.screenWidth()/2f-font_large.getWidth("¡PLAY BALL!")/2f-tempf , data.screenHeight()/2f-font_large.getHeight("0")/2-15);
+			g.drawString("BALL!", data.screenWidth()/2f-font_large.getWidth("¡PLAY BALL!")/2f + font_large.getWidth("¡PLAY0") +tempf, data.screenHeight()/2f-font_large.getHeight("0")/2-15);
+		}
+	}
+	
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		
@@ -915,10 +911,11 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			ball.setSlowOn(false);
 		}
 		
-		
-		timef -= deltaf;
-		if(timef<0){
-			timef=0;
+		if(gameStartCountdown <= GAMESTARTCOUNTDOWN/4f){
+			timef -= deltaf;
+			if(timef<0){
+				timef=0;
+			}
 		}
 		time = (int)timef;
 		

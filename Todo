@@ -20,10 +20,12 @@ TODO:
 		!!!! Going back to main menu after a game over starts with cursor on EXIT sometimes?
 	!!!! In-game pause menu
 	DONE Draw -1 as "Unlimited" in game mode select
-	!!!! Mode Select graphics
+	DONE Mode Select graphics
+	!!!! Mode Select Colors should be consistent with gameplay state
 	!!!! Should not be able to select both unlimited score and time limits
-	!!!! Team select graphics 
-	???? Only go to team select if 3+ players (not 4square)
+	DONE Team select graphics 
+		???? Only go to team select if 3+ players (not 4square)
+		???? Maybe we should let players select their square in foursquare
 	!!!! Prevent crashes when changing the resolution in fullscreen (Maybe if they're fullscreeng, force native res?)
 	DONE Going to main menu should reset all menu options (no more skipping the char select)
 	DONE DPad in menus

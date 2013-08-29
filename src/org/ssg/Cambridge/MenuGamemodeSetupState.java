@@ -42,12 +42,18 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 
 	final static String RESDIR = "res/";
 	private AngelCodeFont font, font_white, font_small;
-
+	//Image mapSoccer, mapHockey, mapTennis, mapSquash, mapFoursquare;
+	Image[] maps;
+	
+	
 	private Cambridge cambridge;
 	private AppGameContainer appGc;
 
 	private int selected;
-
+	
+	private float tempX;//Used for drawing the field
+	private float tempY;
+	private float tempf;
 	//Constructor
 	public MenuGamemodeSetupState(int i, boolean renderon) {
 		stateID = i;
@@ -75,6 +81,15 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 		font_white = new AngelCodeFont(data.RESDIR + "8bitoperator.fnt", new Image(data.RESDIR + "8bitoperator_0_white.png"));
 		font_small = new AngelCodeFont(data.RESDIR + "8bitoperator_small.fnt", new Image(data.RESDIR + "8bitoperator_small_0.png"));
 
+		maps = new Image[data.gameConfig().get("CONF").get("NUMGAMES", int.class)];
+		maps[0] = new Image(data.RESDIR+"map_soccer.png");
+		maps[1] = new Image(data.RESDIR+"map_hockey.png");
+		maps[2] = new Image(data.RESDIR+"map_tennis.png");
+		maps[3] = new Image(data.RESDIR+"map_squash.png");
+		maps[4] = new Image(data.RESDIR+"map_foursquare.png");
+		
+		((MenuTeamSetupState)(sbg.getState(data.MENUTEAMSETUPSTATE))).setMaps(maps);
+		
 		cambridge = (Cambridge) sbg;
 		appGc = (AppGameContainer) gc;
 
@@ -108,6 +123,8 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 
 		g.setFont(font_white);
 
+		drawField(g);
+		
 		g.drawString(
 				data.gameConfig().get(data.gameType()+"").get("NAME", String.class),
 				data.screenWidth()/2 - font_white.getWidth(data.gameConfig().get(data.gameType()+"").get("NAME", String.class))/2,
@@ -119,7 +136,7 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 		if (selected > 0) {
 			g.drawRect(
 					data.screenWidth() * 1/4 - 5,
-					data.screenHeight() * (6+selected)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2 - 5,
+					data.screenHeight() * (6.5f+selected)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2 - 5,
 					font_small.getWidth(menuOptions[selected-1]) + 10,
 					font_small.getLineHeight() + 10
 					);
@@ -129,32 +146,43 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 			g.drawString(
 					menuOptions[i],
 					data.screenWidth() * 1/4,
-					data.screenHeight() * (7+i)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2
+					data.screenHeight() * (7.5f+i)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2
 					);
 			switch(i) {
 			case 0:
 				g.drawString(
 						data.timeLimit() > 0 ? (data.timeLimit()/60 + ":" + String.format("%02d",data.timeLimit()%60)) : "Unlimited",
 						data.screenWidth()/2,
-						data.screenHeight() * (7+i)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2);
+						data.screenHeight() * (7.5f+i)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2);
 				break;
 			case 1:
 				g.drawString(
 						data.scoreLimit() > 0 ? data.scoreLimit()+"" : "Unlimited",
 						data.screenWidth()/2,
-						data.screenHeight() * (7+i)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2);
+						data.screenHeight() * (7.5f+i)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2);
 				break;
 			case 2:
-				g.drawString((data.actionCam() ? "Dynamic" : "Fixed"), data.screenWidth()/2, data.screenHeight() * (7+i)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2);
+				g.drawString((data.actionCam() ? "Dynamic" : "Fixed"), data.screenWidth()/2, data.screenHeight() * (7.5f+i)/12 + (data.screenHeight() * 1/12 - font_small.getLineHeight()) / 2);
 				break;
 			default:
 				break;
 			}
 		}
-
-
 	}
 
+	public void drawField(Graphics g){
+		tempX = maps[data.gameType()].getWidth();
+		tempY = maps[data.gameType()].getHeight();
+		
+		//Set scaling factor
+		tempf = Math.min(data.screenWidth()/tempX, data.screenHeight()/tempY);
+		
+		tempX *= tempf/2f;
+		tempY *= tempf/2f;
+		
+		g.drawImage(maps[data.gameType()].getScaledCopy((int)tempX, (int)tempY), data.screenWidth()/2-tempX/2, data.screenHeight()/3f-tempY/2);
+	}
+	
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta)
 			throws SlickException {
@@ -255,11 +283,12 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 			if (selected != 4) {
 				selected = 4;
 			} else {
-				if (data.gameType() == data.GAMEMODES-1) {
+				if (data.gameType() == data.GAMEMODES-1) {//Foursquare
 					((GameplayState)sbg.getState(data.GAMEPLAYSTATE)).setShouldRender(true);
 					setShouldRender(false);
 					sbg.enterState(data.GAMEPLAYSTATE);
 				} else {
+					((MenuTeamSetupState)sbg.getState(data.MENUTEAMSETUPSTATE)).setStart(data.gameType(), data.screenWidth()/2-tempX/2, data.screenHeight()/3f-tempY/2, tempX, tempY);
 					((MenuTeamSetupState)sbg.getState(data.MENUTEAMSETUPSTATE)).setShouldRender(true);
 					setShouldRender(false);
 					sbg.enterState(data.MENUTEAMSETUPSTATE);
