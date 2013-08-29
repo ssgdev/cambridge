@@ -21,6 +21,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import paulscode.sound.SoundSystem;
+import paulscode.sound.SoundSystemConfig;
 
 public class MenuGamemodeSetupState extends BasicGameState implements KeyListener {
 	private GlobalData data;
@@ -243,24 +244,30 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 		if (up) {
 			if (selected > 0) {
 				selected--;
+				mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			}
 		} else if (down) {
 			if (selected < 4) {
 				selected++;
+				mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			}
 		} else if (left) {
 			switch(selected) {
 			case 0:
 				data.setGameType((data.gameType() > 0) ? data.gameType()-1 : data.GAMEMODES-1);
+				mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				break;
 			case 1:
 				data.setTimeLimit(-1);
+				mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				break;
 			case 2:
 				data.setScoreLimit(-1);
+				mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				break;
 			case 3:
 				data.setActionCam(!data.actionCam());
+				mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				break;
 			case 4:
 				break;
@@ -271,15 +278,19 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 			switch(selected) {
 			case 0:
 				data.setGameType((data.gameType() < data.GAMEMODES-1) ? data.gameType()+1 : 0);
+				mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				break;
 			case 1:
 				data.setTimeLimit(1);
+				mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				break;
 			case 2:
 				data.setScoreLimit(1);
+				mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				break;
 			case 3:
 				data.setActionCam(!data.actionCam());
+				mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				break;
 			case 4:
 				break;
@@ -290,10 +301,12 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 //			for (CambridgePlayerAnchor a: anchors) {
 //				a.setCharacter(false);
 //			}
+			mySoundSystem.quickPlay( true, "MenuBack.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			((MenuPlayerSetupState)sbg.getState(data.MENUPLAYERSETUPSTATE)).setShouldRender(true);
 			setShouldRender(false);
 			sbg.enterState(data.MENUPLAYERSETUPSTATE);
 		} else if (enter) {
+			mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			if (selected != 4) {
 				selected = 4;
 			} else {

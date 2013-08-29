@@ -15,6 +15,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import paulscode.sound.SoundSystem;
+import paulscode.sound.SoundSystemConfig;
 
 public class MenuMainState extends BasicGameState implements KeyListener{
 	private GlobalData data;
@@ -221,12 +222,16 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 			selected = --selected % 3;
 			if (selected == -1)
 				selected = 2;
+			mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 		} else if (input.isKeyPressed(Input.KEY_S) || input.isKeyPressed(Input.KEY_DOWN) || down) {
 			selected = ++selected % 3;
+			mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 		} else if(input.isKeyPressed(Input.KEY_ESCAPE) || back){
+			mySoundSystem.quickPlay( true, "MenuBack.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			gc.exit();
 			mySoundSystem.cleanup();
 		} else if (input.isKeyPressed(Input.KEY_ENTER) || enter) {
+			mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			switch (selected) {
 				case 0:
 					((MenuPlayerSetupState)sbg.getState(data.MENUPLAYERSETUPSTATE)).setShouldRender(true);

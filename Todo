@@ -29,7 +29,7 @@ TODO:
 	!!!! Prevent crashes when changing the resolution in fullscreen (Maybe if they're fullscreeng, force native res?)
 	DONE Going to main menu should reset all menu options (no more skipping the char select)
 	DONE DPad in menus
-	!!!! Effects sounds: Go, Back, move, change, nope
+	DONE Effects sounds: Go, Back, move, change, nope
 	!!!! Main menu options is "push a to change the thing" but the mode select menu is just "hover and move left/right" Seems inconsistent
 DONE GameStart transition
 !!!! Something in case they delete the configs?

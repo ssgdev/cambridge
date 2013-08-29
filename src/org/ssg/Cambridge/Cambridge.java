@@ -112,6 +112,11 @@ public class Cambridge extends StateBasedGame {
 		mySoundSystem.loadSound("GoalScored.ogg");
 		mySoundSystem.loadSound("GoalOwnScored.ogg");
 
+		mySoundSystem.loadSound("MenuThud.ogg");
+		mySoundSystem.loadSound("MenuFail.ogg");
+		mySoundSystem.loadSound("MenuShift.ogg");
+		mySoundSystem.loadSound("MenuBack.ogg");
+		
 		mySoundSystem.loadSound("NeoSlowOut.ogg");
 		mySoundSystem.loadSound("NeoSlowIn.ogg");
 		mySoundSystem.loadSound("NeoRecharged.ogg");

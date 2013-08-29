@@ -20,6 +20,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import paulscode.sound.SoundSystem;
+import paulscode.sound.SoundSystemConfig;
 
 public class MenuOptionsState extends BasicGameState implements KeyListener{
 	private GlobalData data;
@@ -287,12 +288,15 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 				if (selected == -1) {
 					selected = menuOptions.length-1;
 				}
+				mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			}
 		} else if (input.isKeyPressed(Input.KEY_DOWN) || down) {
 			if (!focus) {
 				//selected = ++selected % menuOptions.length;
 				if(selected<menuOptions.length-1) selected++;
+				mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			}
+			mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 		} else if (input.isKeyPressed(Input.KEY_LEFT) || left) {
 			if (focus) {
 				switch(selected) {
@@ -321,6 +325,7 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 					default:
 						break;
 				}
+				mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			}
 		} else if (input.isKeyPressed(Input.KEY_RIGHT) || right) {
 			if (focus) {
@@ -350,6 +355,7 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 					default:
 						break;
 				}
+				mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			}
 		} else if(input.isKeyPressed(Input.KEY_ESCAPE) || back) {
 			if (focus) {
@@ -382,7 +388,9 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 					default:
 						break;
 				}
+				mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			} else {
+				mySoundSystem.quickPlay( true, "MenuBack.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				((MenuMainState)sbg.getState(data.MENUMAINSTATE)).setShouldRender(true);
 				setShouldRender(false);
 				sbg.enterState(data.MENUMAINSTATE);
@@ -439,6 +447,7 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 				tempHeight = display.get("SCREENHEIGHT", int.class);
 				tempWidth = display.get("SCREENWIDTH", int.class);
 			}
+			mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 		}
 		
 		input.clearKeyPressedRecord();

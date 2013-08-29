@@ -5,6 +5,7 @@ Added animation for going back from team select to game mode select
 Added new graphics for score and timer in gameplaystate
 Changed cursor to full screen. Have option to slide cursor instead of teleporting it, but feels sluggish at moment.
 Character portraits are cropped in 4:3 screen ratios, so they're less distorted
+Added menu sounds
 
 8.28.13
 Added Game Start animation

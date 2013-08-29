@@ -23,6 +23,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import paulscode.sound.SoundSystem;
+import paulscode.sound.SoundSystemConfig;
 
 public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 	private GlobalData data;
@@ -315,23 +316,30 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 				if (anchors[i].initiated()) {
 					if (!anchors[i].teamSelected()) {
 						if (anchors[i].left(gc, delta)) {
+							mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 							anchors[i].changeTeam(-1);
 						} else if (anchors[i].right(gc, delta)) {
+							mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 							anchors[i].changeTeam(1);
 						} else if (anchors[i].back(gc, delta)) {
+							mySoundSystem.quickPlay( true, "MenuBack.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 							targetMapY = originalMapY;
 							exiting = true;
 						} else if (anchors[i].select(gc, delta)) {
 							if (anchors[i].getTeam() != -1) {
+								mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 								if (teamCount[anchors[i].getTeam()] != existsNum-1) {
 									anchors[i].setTeam(true);
 								}
+							}else{
+								mySoundSystem.quickPlay( true, "MenuFail.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 							}
 							exiting = false;
 						}
 					} else {
 						if (anchors[i].back(gc, delta)) {
 							anchors[i].setTeam(false);
+							mySoundSystem.quickPlay( true, "MenuBack.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						}
 					}
 				}

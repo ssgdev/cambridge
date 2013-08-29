@@ -23,6 +23,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import paulscode.sound.SoundSystem;
+import paulscode.sound.SoundSystemConfig;
 
 public class MenuPlayerSetupState extends BasicGameState implements KeyListener {
 	private GlobalData data;
@@ -357,9 +358,11 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 				if (!keyboardOneTaken && input.isKeyPressed(Input.KEY_PERIOD)) {
 					anchors[i] = new CambridgePlayerAnchor(0, i, -1, 0, new CambridgeController());
 					keyboardOneTaken = true;
+					mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				} else if (!keyboardTwoTaken && input.isKeyPressed(Input.KEY_2)) {
 					anchors[i] = new CambridgePlayerAnchor(0, i, -1, 1, new CambridgeController());
 					keyboardTwoTaken = true;
+					mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				} else {
 					for (CambridgeController c : controllers) {
 						boolean used = false;
@@ -372,8 +375,10 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 							if (!used) {
 								if (c.getMenuSelect()) {
 									anchors[i] = new CambridgePlayerAnchor(0, i, -1, -1, c);
+									mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 								}
 								if (c.getMenuBack()) {
+									mySoundSystem.quickPlay( true, "MenuBack.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 									setShouldRender(false);
 									((MenuMainState)sbg.getState(data.MENUMAINSTATE)).setShouldRender(true);
 									sbg.enterState(data.MENUMAINSTATE);
@@ -392,15 +397,19 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 					if (!anchors[i].characterSelected()) {
 						if (anchors[i].down(gc, delta)) {
 							anchors[i].changeCharacter(3);
+							mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						}
 						if (anchors[i].up(gc, delta)) {
 							anchors[i].changeCharacter(-3);
+							mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						}
 						if (anchors[i].left(gc, delta)) {
 							anchors[i].changeCharacter(-1);
+							mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						} 
 						if (anchors[i].right(gc, delta)) {
 							anchors[i].changeCharacter(1);
+							mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						} 
 						if (anchors[i].back(gc, delta)) {
 							switch(anchors[i].getKeyboard()) {
@@ -414,16 +423,19 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 								break;
 							}
 							anchors[i] = new CambridgePlayerAnchor();
+							mySoundSystem.quickPlay( true, "MenuBack.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						} 
 						if (anchors[i].select(gc, delta)) {
 							if (anchors[i].getCharacter() == 8) {
 								anchors[i].changeCharacter((int)(Math.random() * 7) + 1);
 							}
 							anchors[i].setCharacter(true);
+							mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						}
 					} else {
 						if (anchors[i].back(gc, delta)) {
 							anchors[i].setCharacter(false);
+							mySoundSystem.quickPlay( true, "MenuBack.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						}
 					}
 				}
