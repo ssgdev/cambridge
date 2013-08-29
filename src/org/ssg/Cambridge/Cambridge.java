@@ -166,7 +166,7 @@ public class Cambridge extends StateBasedGame {
 //		app.setVSync(true);
 		//app.setTargetFrameRate(60);
 		app.setAlwaysRender(true);
-		//app.setShowFPS(true);
+		app.setShowFPS(false);
 		app.setTitle("Kick Kickerung");
 //		app.setSmoothDeltas(true);
 //		if (app.supportsMultiSample())

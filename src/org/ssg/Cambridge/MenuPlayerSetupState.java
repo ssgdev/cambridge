@@ -293,7 +293,11 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 					if(!(anchors[i].getCharacter() >=4 && anchors[i].getCharacter() <= 6))
 						g.drawImage(controls_key_no2ndpow.getScaledCopy((int)w, (int)h), corners[i][0]+(anchors[i].playerNum()%2==0? 3f*w:0f*w), corners[i][1]+h+(anchors[i].playerNum()>1?h:0)-5);
 				}
-				g.drawImage(portraits[anchors[i].getCharacter()].getScaledCopy((int)(3f*w), (int)(3f*h)),corners[i][0]+(anchors[i].playerNum()%2==0?0:w), corners[i][1]);
+				if(data.screenWidth()/data.screenWidth()<16f/9f){
+					g.drawImage(portraits[anchors[i].getCharacter()].getSubImage(0, 0, portraits[anchors[i].getCharacter()].getWidth()-65, portraits[anchors[i].getCharacter()].getHeight()).getScaledCopy((int)(3f*w), (int)(3f*h)),corners[i][0]+(anchors[i].playerNum()%2==0?0:w), corners[i][1]);
+				}else{
+					g.drawImage(portraits[anchors[i].getCharacter()].getScaledCopy((int)(3f*w), (int)(3f*h)),corners[i][0]+(anchors[i].playerNum()%2==0?0:w), corners[i][1]);
+				}
 				if (anchors[i].characterSelected()) {
 					g.setFont(font);
 					g.setColor(Color.white);
