@@ -43,6 +43,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	String NAME;
 	float gameStartCountdown;
 	float GAMESTARTCOUNTDOWN = 2400f;
+	int gameStartStage;//3 2 1 0 Used for playing the boop boop BEEP sound at the start
 	//-1 for unlimited
 //	int scoreLimit = 1;
 //	int timeLimit = 10000;//in ms
@@ -551,6 +552,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		tempTrailArr = new float[]{0,0,0,0};
 		
 		gameStartCountdown = GAMESTARTCOUNTDOWN;//4: Ready, 3: Set: 2: Go 1: Play Ball 0
+		gameStartStage = 3;
 		
 		scrollX = 2000;
 		scrollY = 2000;
@@ -987,6 +989,21 @@ public class GameplayState extends BasicGameState implements KeyListener {
 				gameStartCountdown = 0;
 		}
 		
+		if(gameStartStage == 3){
+			mySoundSystem.quickPlay( true, "BuzzLow.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			gameStartStage --;
+		}else if(gameStartStage == 2){
+			if(gameStartCountdown <= GAMESTARTCOUNTDOWN*2f/3f){
+				mySoundSystem.quickPlay( true, "BuzzLow.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+				gameStartStage --;
+			}
+		}else if(gameStartStage == 1){
+			if(gameStartCountdown <= GAMESTARTCOUNTDOWN/3f){
+				mySoundSystem.quickPlay( true, "BuzzHigh.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+				gameStartStage --;
+			}
+		}
+		
 		Input input = gc.getInput();
 		if(input.isKeyPressed(Input.KEY_U)){
 			reset(gc);
@@ -1323,6 +1340,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			mySoundSystem.pause("slow2");
 		mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 		gameStartCountdown = GAMESTARTCOUNTDOWN;
+		gameStartStage = 3;
 //		initFields(gc);
 		resetPositions();
 	}

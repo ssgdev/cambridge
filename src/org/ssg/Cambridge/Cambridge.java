@@ -84,6 +84,9 @@ public class Cambridge extends StateBasedGame {
 		mySoundSystem.loadSound("BallBounce.ogg");
 		mySoundSystem.loadSound("BallBounceSlow.ogg");
 
+		mySoundSystem.loadSound("BuzzLow.ogg");
+		mySoundSystem.loadSound("BuzzHigh.ogg");
+		
 		mySoundSystem.loadSound("DashCharging.ogg");
 		mySoundSystem.loadSound("DashChargingSlow.ogg");
 		mySoundSystem.loadSound("DashDash.ogg");
