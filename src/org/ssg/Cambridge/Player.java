@@ -586,7 +586,7 @@ public abstract class Player implements KeyListener {
 		return new float[]{lastKickBallPos[0], lastKickBallPos[1], lastKickPos[0], lastKickPos[1]};
 	}
 
-	//Empty, only overriden for Back and TwoTouch
+	//Empty, only overriden for Back, TwoTouch, and Neutron
 	public void setLockCoolDown(boolean b){
 		
 	}

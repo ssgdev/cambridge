@@ -39,7 +39,7 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 
 	private final float deadzone = 0.28f;
 	private int inputDelay;
-	private final int inputDelayConst = 10;
+	private final int inputDelayConst = 200;
 
 	private boolean shouldRender;
 

@@ -175,15 +175,17 @@ public class PlayerNeutron extends Player {
 			tempArr[1] = ball.getY()-pos[1];
 			prevDot = dot(ball.getVel(), tempArr);
 			//System.out.println(prevDot);
-			ball.setLocked(playerNum, true);
 			//ball.setLastKicker(teamNum);
 			parallelComponent(ball.getVel(), new float[]{ball.getX()-pos[0], ball.getY()-pos[1]}, tempArr);
 			if(sameDir(tempArr[0], pos[0]-ball.getX()) && sameDir(tempArr[1], pos[1]-ball.getY()) && ball.getVelMag()/tempf < ORBITVEL){
+				ball.clearLocked();
+				ball.setLocked(playerNum, true);
 				ball.speedUp(ORBITVEL, .01f, 0);
 				ball.setCurve(new float[]{-tempArr[0], -tempArr[1]}, .05f);
 			}else{
 				ball.setCurve(new float[]{-tempArr[0], -tempArr[1]}, 1f);
 			}
+
 			pullCoolDown = true;
 		}
 		
@@ -192,20 +194,20 @@ public class PlayerNeutron extends Player {
 				tempArr[0] = ball.getX()-pos[0];
 				tempArr[1] = ball.getY()-pos[1];
 				//System.out.println(Math.abs(dot(ball.getVel(), tempArr)));
-				if(!sameDir(prevDot, dot(ball.getVel(), tempArr))){//When it crosses 90 degrees, seize it into circular orbit
+				if(!sameDir(prevDot, dot(ball.getVel(), tempArr)) && ball.getVelMag()!=0){//When it crosses 90 degrees, seize it into circular orbit
+					ball.clearLocked();
+					ball.setLocked(playerNum, true);
+					ball.cancelAcc();
+					ball.setLastKicker(teamNum);
 					orbitAngle = (float)Math.atan2(tempArr[1], tempArr[0]);
 					orbitDir = (tempArr[0]*ball.getVelY()-tempArr[1]*ball.getVelX());//z component of the cross product, for orbit cw or ccw
 					if(orbitDir!=0)
 						orbitDir /= Math.abs(orbitDir);
 					orbitOmega = ball.getVelMag()/mag(tempArr)*orbitDir;
+					ball.setVel(ball.getVel(), 0);
 					orbitRadius = mag(tempArr);
 					orbiting = true;
 					orbitCounter = (float)Math.PI;
-					ball.clearLocked();
-					ball.setLocked(playerNum, true);
-					ball.setVel(ball.getVel(), 0);
-					ball.cancelAcc();
-					ball.setLastKicker(teamNum);
 					mySoundSystem.quickPlay( true, slowMo?"NeutronCatchSlow.ogg":"NeutronCatch.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				}
 			}else{
@@ -310,6 +312,11 @@ public class PlayerNeutron extends Player {
 	@Override
 	public void setPower() {
 
+	}
+	
+	@Override
+	public void setLockCoolDown(boolean b){
+		orbiting = false;
 	}
 	
 	//Parallel component of u on v, written to w

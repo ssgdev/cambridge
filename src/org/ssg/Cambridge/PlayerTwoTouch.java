@@ -247,11 +247,21 @@ public class PlayerTwoTouch extends Player{
 			
 		}
 		
-		predictionVDelta = delta;
-		predictionDelta = delta;
+//		predictionVDelta = delta;
+//		predictionDelta = delta;
+		
+		//For if the ball gets knocked out of your hands
+		if(dist(pos[0],pos[1],ball.getX(),ball.getY())>=KICKRANGE/2f+3f+velMag*delta+1f ){
+			ball.setLocked(playerNum, false);
+			lockCoolDown = false;
+			NORMALKICK = DEFAULTKICK;
+		}
+		
+		//System.out.println(ball.getVel()[0]+", "+ball.getVel()[1]+": "+ball.getVelMag());
 		
 		//Entering Lock
 		if(!lockCoolDown && power>0 && !ball.locked(playerNum) && dist(pos[0],pos[1],ball.getX(),ball.getY())<KICKRANGE/2f && !ball.scored()){
+			ball.clearLocked();
 			ball.setLocked(playerNum, true);
 //			ball.setCanBeKicked(playerNum, true);
 			ball.setLastKicker(teamNum);
@@ -271,7 +281,7 @@ public class PlayerTwoTouch extends Player{
 		
 		if(!ball.locked(playerNum)){
 			updatePos(delta);
-		}else{
+		}else if(power>0){
 			
 			angle = (float)Math.atan2(ball.getY()-pos[1], ball.getX()-pos[0]);
 //			System.out.println(angle/2/Math.PI*360);
@@ -307,8 +317,9 @@ public class PlayerTwoTouch extends Player{
 				
 //End rotation code
 			
-			pos[0] = ballPos[0]-(float)Math.cos(angle)*(KICKRANGE/2-1);
-			pos[1] = ballPos[1]-(float)Math.sin(angle)*(KICKRANGE/2-1);
+			pos[0] = ballPos[0]-(float)Math.cos(angle)*(KICKRANGE/2+2);
+			pos[1] = ballPos[1]-(float)Math.sin(angle)*(KICKRANGE/2+2);
+			ball.setVel(new float[]{(float)Math.cos(angle), (float)Math.sin(angle)}, 0);
 			
 			if(pos[0]<xyLimit[0]+KICKRANGE/2f){
 				tempf = pos[0];
@@ -346,13 +357,6 @@ public class PlayerTwoTouch extends Player{
 			
 		}
 		
-		//For if the ball gets knocked out of your hands
-		if(dist(pos[0],pos[1],ball.getX(),ball.getY())>=KICKRANGE/2f){
-			ball.setLocked(playerNum, false);
-			lockCoolDown = false;
-			NORMALKICK = DEFAULTKICK;
-		}
-		
 		updateCounters(delta);
 		
 		if(ball.locked(playerNum)){
@@ -384,6 +388,8 @@ public class PlayerTwoTouch extends Player{
 	public void powerKeyReleased(){
 		power = 0;
 		velMag = VELMAG;
+		if(ball.locked(playerNum))//teleport the ball in range for the flash kick
+			ball.setPos(pos[0]+(float)Math.cos(angle)*(KICKRANGE/2f-2f), pos[1]+(float)Math.sin(angle)*(KICKRANGE/2f-2f));
 	}
 	
 	@Override
@@ -422,7 +428,7 @@ public class PlayerTwoTouch extends Player{
 			return NORMALKICK;
 		}
 	}
-	
+
 	@Override
 	public float curveStrength(){
 		return 2f;

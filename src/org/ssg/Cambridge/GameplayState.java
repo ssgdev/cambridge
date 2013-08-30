@@ -504,7 +504,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 						"slow1",
 						slice,
 						ball,
-						new Ball(data.playerAnchors()[i].playerNum(), ballConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, goals, new float[]{FIELDWIDTH/2, FIELDHEIGHT/2}, GOALSIZE,  mySoundSystem)));
+						new Ball(1, ballConsts, new int[]{FIELDWIDTH, FIELDHEIGHT}, goals, new float[]{FIELDWIDTH/2, FIELDHEIGHT/2}, GOALSIZE,  mySoundSystem)));
 				break;
 			}
 		}
@@ -748,19 +748,19 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		//Draw Header
 		//drawHeader(g);
 		
-		//Debug ruler
-		g.setColor(Color.red);
-		for(int i=0;i<900; i+=50){
-			g.drawString(""+i, 100, i);
-		}
+//		Debug ruler
+//		g.setColor(Color.red);
+//		for(int i=0;i<900; i+=50){
+//			g.drawString(""+i, 100, i);
+//		}
 		
 		g.resetTransform();
 		
-		//Debug Ruler 2
-		g.setColor(Color.green);
-		for(int i=0;i<900; i+=50){
-			g.drawString(""+i, 100, i);
-		}
+//		Debug Ruler 2
+//		g.setColor(Color.green);
+//		for(int i=0;i<900; i+=50){
+//			g.drawString(""+i, 100, i);
+//		}
 		
 		drawUI(g);
 		
@@ -938,7 +938,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			g.fillRect(0, 0, data.screenWidth(), data.screenHeight());
 			g.setFont(font_large);
 			g.setColor(Color.white);
-			g.drawString("¡FINISH!", data.screenWidth()/2f-font_large.getWidth("¡MATCH OVER!")/2f, data.screenHeight()/2f - font_large.getHeight("0")/2 - 15);
+			g.drawString("¡FINISH!", data.screenWidth()/2f-font_large.getWidth("¡FINISH!")/2f, data.screenHeight()/2f - font_large.getHeight("0")/2 - 15);
 		}
 	}
 
@@ -1247,7 +1247,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 					//Use prevX to prevent going through the player
 					kickFloat[0] = (ball.getPrevX()-p.getX());
 					kickFloat[1] = (ball.getPrevY()-p.getY());
-
+System.out.println("KICK");
 					unit(kickFloat);
 //					tempf = 0;//Used to store the amount of player velocity added to the kick
 					if(sameDir(p.getVel()[0], kickFloat[0])){
@@ -1404,7 +1404,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			mySoundSystem.pause("slow1");
 		if(mySoundSystem.playing("slow2"))
 			mySoundSystem.pause("slow2");
-		mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+		//mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 		gameStartCountdown = GAMESTARTCOUNTDOWN;
 		gameStartStage = 3;
 //		initFields(gc);

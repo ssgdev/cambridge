@@ -215,6 +215,9 @@ public class Ball {
 				locked[i] = false;
 				((PlayerBack) players.get(i)).setLockCoolDown(true);
 //				((PlayerBack) players[i]).powerKeyReleased();
+			}else if((players.get(i) instanceof PlayerNeutron && locked[i])){
+				locked[i] = false;
+				((PlayerNeutron) players.get(i)).setLockCoolDown(true);
 			}else{
 				locked[i] = false;
 			}
