@@ -444,9 +444,9 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 
 		// Move onto next gamestate if all initiated players are ready
 		if (readyNum == existsNum && existsNum > 1) {
-			((MenuGamemodeSetupState)sbg.getState(data.MENUGAMEMODESETUPSTATE)).setShouldRender(true);
+			((MenuGameSetupState)sbg.getState(data.MENUGAMESETUPSTATE)).setShouldRender(true);
 			setShouldRender(false);
-			sbg.enterState(data.MENUGAMEMODESETUPSTATE);
+			sbg.enterState(data.MENUGAMESETUPSTATE);
 		}
 
 		input.clearKeyPressedRecord();

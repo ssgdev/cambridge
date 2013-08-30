@@ -28,6 +28,12 @@ public class GameOverState extends BasicGameState implements KeyListener {
 	SoundSystem mySoundSystem;
 	Font font, font_white, font_small;
 	
+	Confetti[] confetti;
+	boolean confettiSetup;
+	Color confettiColor;
+	
+	float tempf;
+	
 	public GameOverState(int id, boolean renderOn){
 		stateID = id;
 		shouldRender = renderOn;
@@ -51,11 +57,41 @@ public class GameOverState extends BasicGameState implements KeyListener {
 		
 		scores = new int[4];
 		numPlayers = 2;
+		
+		confetti = new Confetti[50];
+		confettiSetup = false;
 	}
 
-	public void enter(GameContainer gc, StateBasedGame sbg, int[] scores) throws SlickException {
-		mySoundSystem.pause("BGMGame");
+	@Override
+	public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		//mySoundSystem.pause("BGMGame");
+	
+		tempf = 0;
+		int maxDex = 0;
+		for(int i=0;i<scores.length;i++){
+			if(tempf<scores[i]){
+				tempf = scores[i];
+				maxDex = i;
+			}
+		}
 		
+		if(scores[maxDex]==0){
+			confettiColor = new Color(0,0,0,0);
+		}else if(maxDex == 0){
+			confettiColor = Color.cyan;
+		}else if(maxDex == 1){
+			confettiColor = Color.orange;
+		}
+		
+		//Setup confetti
+		for(int i=0;i<confetti.length;i++){
+			tempf = (float)Math.random();
+			confetti[i] = new Confetti((float)Math.random()*data.screenWidth(), data.screenHeight(), ((float)Math.random()-.5f)*20f, -500f*(float)Math.random(), confettiColor, (float)Math.random(), data);
+			if(i==confetti.length-1)
+				confettiSetup = true;
+		}
+		
+		//Sort the names array by the scores array, largest first
 		int first = 0;
 		for (int i = scores.length - 1; i > 0; i -- ) {
   		first = 0;   //initialize to subscript of first element
@@ -90,10 +126,17 @@ public class GameOverState extends BasicGameState implements KeyListener {
 			}
 		}
 		
+		for(Confetti c: confetti)
+			c.render(g);
+		
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
+		
+		for(Confetti c:confetti)
+			if(confettiSetup)
+				c.update(delta);
 		
 		Input input = gc.getInput();
 		if(input.isKeyPressed(Input.KEY_ENTER)){

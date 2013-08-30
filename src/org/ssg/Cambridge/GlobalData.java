@@ -25,9 +25,10 @@ public class GlobalData {
 	public final int MENUMAINSTATE = 11;
 	public final int MENUOPTIONSSTATE = 12;
 	public final int MENUPLAYERSETUPSTATE = 13;
-	public final int MENUGAMEMODESETUPSTATE = 14;
+	public final int MENUGAMESETUPSTATE = 14;
 	public final int MENUTEAMSETUPSTATE = 15;
-	public final int GAMEOVERSTATE = 16;
+	public final int MENUPAUSESTATE = 16;
+	public final int GAMEOVERSTATE = 17;
 	private int screenHeight;
 	private int screenWidth;
 	private boolean fullscreen;

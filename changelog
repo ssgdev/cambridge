@@ -1,5 +1,8 @@
 Changelog:
 
+8.30.13
+Added confetti effect to GameOverState
+
 8.29.13
 Added animation for going back from team select to game mode select
 Added new graphics for score and timer in gameplaystate
@@ -11,6 +14,7 @@ Added proper spawn locations for Tennis
 Can't select both unlimited time and unlimited score anymore
 The new score and timer bar for gameplaystate will fade out if a player moves under it (fixed cam only) 
 Bugfixes for TwoTouch and Neutron behaviour
+MenuPauseState shell added
 
 8.28.13
 Added Game Start animation

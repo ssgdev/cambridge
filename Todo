@@ -18,9 +18,12 @@ TODO:
 		!!!! Final whistle for the transition
 		!!!! GameOver colours/graphics
 		!!!! GameOver functionalities
-		!!!! Confetti
+		DONE Confetti
+		!!!! Scores and names and possibly order incorrect
+		!!!! Have double confetti in case of ties
 		!!!! Going back to main menu after a game over starts with cursor on EXIT sometimes?
 	!!!! In-game pause menu
+	!!!! In-game pause menu should be accessible by pressing start on controller
 	DONE Draw -1 as "Unlimited" in game mode select
 	DONE Mode Select graphics
 	!!!! Reminder: Mode Select team colors should be consistent with gameplaystate
@@ -35,6 +38,7 @@ TODO:
 	DONE Effects sounds: Go, Back, move, change, nope
 	!!!! Main menu options is "push a to change the thing" but the mode select menu is just "hover and move left/right" Seems inconsistent
 	!!!! Bug: If more than one controller is plugged in, the inputdelay is too fast.
+	!!!! Main Menu still uses WASD
 DONE GameStart transition
 !!!! Something in case they delete the configs?
 DONE Make font_large for GAME OVER and the like
@@ -58,6 +62,7 @@ DONE Bugs when neutron grabs a twotouch holding the ball
 	!!!! Balance Enforcer (more control) Less wall penalty?
 !!!! Soundtrack
 !!!! Somethings forgetting? Add as needed
+!!!! TODO: Test 4 Neos going in and out of slowmo at once
 DONE PlayerNeutron pulling the ball out of Back's lock will teleport back to Back when he releases grav pull
 	DONE SOLUTION: The "too far then unlock" statement was after the "set ball to this position" statement in Back, so it would never leave lock
 DONE PlayerNeutron can grav pull throw the ball+circle of twotouch after the gameover DONE The predictor and circle are drawn to the ball's position, and the ball keeps updating after gameover.

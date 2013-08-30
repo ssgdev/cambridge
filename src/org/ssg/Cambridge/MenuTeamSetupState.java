@@ -31,7 +31,7 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 	private Ini ini;
 	private int stateID;
 	SoundSystem mySoundSystem;
-	Ini.Section display, sound, gameplay;
+	Ini.Section display, sound, gameplay;//Seems unused
 
 	CambridgeController[] controllers;
 	CambridgePlayerAnchor[] anchors;
@@ -217,6 +217,7 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 		
 		g.drawImage(maps[gameMode].getScaledCopy((int)mapWidth, (int)mapHeight), mapX, mapY, Color.gray);
 		
+		//Draw the player icons
 		for(int i=0; i<anchors.length; i++){
 			if(anchors[i].initiated()){
 				//Circle sizes (diameters)
@@ -263,6 +264,7 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 		
 		mapX = data.screenWidth()/2f-mapWidth/2f;
 		
+		//Set the position, color, and alpha of the player icons
 		for (int i = 0; i < anchors.length; i++) {
 			if (anchors[i].initiated()) {
 				if(anchors[i].teamSelected()){
@@ -348,8 +350,8 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 
 		if(exiting && mapY == originalMapY){
 				setShouldRender(false);
-			((MenuGamemodeSetupState)sbg.getState(data.MENUGAMEMODESETUPSTATE)).setShouldRender(true);
-			sbg.enterState(data.MENUGAMEMODESETUPSTATE);
+			((MenuGameSetupState)sbg.getState(data.MENUGAMESETUPSTATE)).setShouldRender(true);
+			sbg.enterState(data.MENUGAMESETUPSTATE);
 		}
 		
 		// Move onto next gamestate if all initiated players are ready

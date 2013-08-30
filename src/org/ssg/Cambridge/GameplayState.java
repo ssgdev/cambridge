@@ -1110,8 +1110,9 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			if(maxZoom>.6)
 				maxZoom-=.2f;
 		}else if(input.isKeyPressed(Input.KEY_ESCAPE)){
-			gc.exit();
-			mySoundSystem.cleanup();
+			setShouldRender(false);
+			((MenuPauseState)sbg.getState(data.MENUPAUSESTATE)).setShouldRender(true);
+			sbg.enterState(data.MENUPAUSESTATE);
 		}
 		
 		scrollX+=2f*deltaf*scrollXDir;
@@ -1247,7 +1248,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 					//Use prevX to prevent going through the player
 					kickFloat[0] = (ball.getPrevX()-p.getX());
 					kickFloat[1] = (ball.getPrevY()-p.getY());
-System.out.println("KICK");
+
 					unit(kickFloat);
 //					tempf = 0;//Used to store the amount of player velocity added to the kick
 					if(sameDir(p.getVel()[0], kickFloat[0])){

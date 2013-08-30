@@ -51,9 +51,10 @@ public class Cambridge extends StateBasedGame {
 		this.addState(new GameplayState(data.GAMEPLAYSTATE, false));
 		this.addState(new MenuOptionsState(data.MENUOPTIONSSTATE, false));
 		this.addState(new MenuPlayerSetupState(data.MENUPLAYERSETUPSTATE, false));
-		this.addState(new MenuGamemodeSetupState(data.MENUGAMEMODESETUPSTATE, true));
-		this.addState(new MenuTeamSetupState(data.MENUTEAMSETUPSTATE, true));
-		this.addState(new GameOverState(data.GAMEOVERSTATE, true));
+		this.addState(new MenuGameSetupState(data.MENUGAMESETUPSTATE, false));
+		this.addState(new MenuTeamSetupState(data.MENUTEAMSETUPSTATE, false));
+		this.addState(new MenuPauseState(data.MENUPAUSESTATE, false));
+		this.addState(new GameOverState(data.GAMEOVERSTATE, false));
 	}
 	
 	public GlobalData getData() {

@@ -23,7 +23,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
 
-public class MenuGamemodeSetupState extends BasicGameState implements KeyListener {
+public class MenuGameSetupState extends BasicGameState implements KeyListener {
 	private GlobalData data;
 	private String[] menuOptions;
 	private Ini ini;
@@ -59,7 +59,7 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 	private float cursorY, cursorYTarget;
 	
 	//Constructor
-	public MenuGamemodeSetupState(int i, boolean renderon) {
+	public MenuGameSetupState(int i, boolean renderon) {
 		stateID = i;
 		shouldRender = renderon;
 	}
@@ -91,7 +91,7 @@ public class MenuGamemodeSetupState extends BasicGameState implements KeyListene
 		maps[2] = new Image(data.RESDIR+"map_tennis.png");
 		maps[3] = new Image(data.RESDIR+"map_squash.png");
 		maps[4] = new Image(data.RESDIR+"map_foursquare.png");
-		
+		//Give the maps to Team Select
 		((MenuTeamSetupState)(sbg.getState(data.MENUTEAMSETUPSTATE))).setMaps(maps);
 		
 		cambridge = (Cambridge) sbg;
