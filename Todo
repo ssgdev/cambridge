@@ -20,8 +20,8 @@ TODO:
 		!!!! GameOver functionalities
 		DONE Confetti
 		!!!! Scores and names and possibly order incorrect
-		!!!! Have double confetti in case of ties
 		!!!! Going back to main menu after a game over starts with cursor on EXIT sometimes?
+		!!!! Should draw color and players next to winning team
 	!!!! In-game pause menu
 	!!!! In-game pause menu should be accessible by pressing start on controller
 	DONE Draw -1 as "Unlimited" in game mode select
@@ -43,6 +43,7 @@ DONE GameStart transition
 !!!! Something in case they delete the configs?
 DONE Make font_large for GAME OVER and the like
 DONE Revamp gameplaystate ui
+DONE Ball spawn location should be by goal scored on, not lastKicked DONE Now it's random
 DONE Change Twins keyboard controls to switching nukes and double move default
 !!!! Implement game modes with menus
 	DONE TENNIS (Spawn locations)

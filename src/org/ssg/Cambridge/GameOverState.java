@@ -22,7 +22,7 @@ public class GameOverState extends BasicGameState implements KeyListener {
 	
 	int[] scores;
 	int numPlayers;
-	String[] names = {"P1","P2","P3","P4"};
+	String[] names = {"Team 1","Team 2","Team 3","Team 4"};
 	
 	GlobalData data;
 	SoundSystem mySoundSystem;
@@ -68,15 +68,21 @@ public class GameOverState extends BasicGameState implements KeyListener {
 	
 		tempf = 0;
 		int maxDex = 0;
+		int numMaxes = 0;
 		for(int i=0;i<scores.length;i++){
 			if(tempf<scores[i]){
 				tempf = scores[i];
 				maxDex = i;
+				numMaxes = 1;
+			}else if(tempf == scores[i]){
+				numMaxes++;
 			}
 		}
 		
 		if(scores[maxDex]==0){
 			confettiColor = new Color(0,0,0,0);
+		}else if(numMaxes>1){
+			confettiColor = Color.white;
 		}else if(maxDex == 0){
 			confettiColor = Color.cyan;
 		}else if(maxDex == 1){
@@ -102,11 +108,14 @@ public class GameOverState extends BasicGameState implements KeyListener {
   			int temp = scores[ first ];   //swap smallest found with element in position i.
   			scores[ first ] = scores[ i ];
   			scores[ i ] = temp; 
-		
-		String tempStr = names[first];
-		names[first] = names[i];
-		names[i] = tempStr;
+			
+			String tempStr = names[first];
+			names[first] = names[i];
+			names[i] = tempStr;
 		}
+		
+		//System.out.println(scores[0]+", "+scores[1]+", "+scores[2]+" "+scores[3]);
+		
 	}
 	
 	@Override
@@ -117,12 +126,14 @@ public class GameOverState extends BasicGameState implements KeyListener {
 		g.setFont(font_white);
 		g.drawString("Final Score", data.screenWidth()/2-font.getWidth("FINAL SCORE")/2, 20);
 		
-		for(int i=0; i<numPlayers; i++){
-			String str = names[i]+": "+scores[i];
-			g.drawString(str, data.screenWidth()/2-font.getWidth(str)/2, 120+(font.getHeight("0")+5)*i);
-			if(scores[i]==scores[0] && scores[0] != 0){
-				g.drawString("WINNER!", data.screenWidth()/2-font.getWidth("WINNER!")-200, 120+(font.getHeight("0")+5)*i);
-				g.drawString("WINNER!", data.screenWidth()/2+200, 120+(font.getHeight("0")+5)*i);
+		for(int i=0; i<scores.length; i++){
+			if(scores[i]>=0){
+				String str = names[i]+": "+scores[i];
+				g.drawString(str, data.screenWidth()/2-font.getWidth(str)/2, 120+(font.getHeight("0")+5)*i);
+				if(scores[i]==scores[0] && scores[0] != 0){
+					g.drawString("WINNER!", data.screenWidth()/2-font.getWidth("WINNER!")-200, 120+(font.getHeight("0")+5)*i);
+					g.drawString("WINNER!", data.screenWidth()/2+200, 120+(font.getHeight("0")+5)*i);
+				}
 			}
 		}
 		
@@ -154,7 +165,7 @@ public class GameOverState extends BasicGameState implements KeyListener {
 			if(i<s.length)
 				scores[i]=s[i];
 			else
-				scores[i]=0;
+				scores[i]=-1;
 		}
 		numPlayers = s.length;
 	}

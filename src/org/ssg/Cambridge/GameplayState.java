@@ -1191,7 +1191,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			
 			if(scored){
 				if(NAME.equals(TENNIS)){//Put in at side from player baseline, as a kind of serve.
-					if(ball.getLastKicker()==0){
+					if(Math.random()>.5f){
 						targetX = FIELDWIDTH-150;
 						targetY = FIELDHEIGHT;
 						resetVelocity[0] = 0;
@@ -1202,10 +1202,9 @@ public class GameplayState extends BasicGameState implements KeyListener {
 						resetVelocity[0] = 0;
 						resetVelocity[1] = 1f;
 					}
-					
 				}else if(NAME.equals(SOCCER) || NAME.equals(HOCKEY)){//If two goals, put in from sides at center
 					targetX = FIELDWIDTH/2;
-					if(ball.getLastKicker()==0){
+					if(Math.random()>.5f){
 						targetY=0;
 						resetVelocity[0] = 0;
 						resetVelocity[1] = 1f;
