@@ -4,14 +4,15 @@ TODO:
 	!!!! Grey out and don't let users select resolution options in full screen
 	!!!! Huge resolutions break main and options menu, need responsive layouts
 	!!!! If you're in resolution options and press escape, then go back into the resolution list, you will pick up from where you were before
-			in the resolution list 
+			in the resolution list. ex. Start at 640x480 press right it's 840x500 (resolutions for illustration purposes only) keep pressing until 1280x720. Press escape,
+			now the thing is back to 640x480. But if I press enter and press right, now it's 1366x768.
 	DONE Play to certain time or certain score
 	DONE Character+Controller Select
 		DONE Some kind of bug is there in character select, if someone backs out something something they can't sign back in
 		DONE Graphics
 		DONE Should have a one more "press any key to advance" after all players ready up. Automatically going to next menu is jarring
-		!!!! The menu will not go back when B is pressed if any player is signed in? Also keyboards can't back out of char select?
-		!!!! Bug: sometimes you sign in as the wrong anchor. I'll press A on a controller with no one signed in and it'll put me P4.
+		!!!! The menu should not go back when B is pressed on a controller if any player is signed in? Also keyboards can't back out of char select?
+		!!!! Bug: sometimes you sign in as the wrong anchor. I'll press A on a controller with no one signed in and it'll put me in P3 or P4.
 					Something not getting reset? Or not getting initialized? It happens when you first start up the game sometimes.
 	!!!! intro screen
 	DONE help/controls screen (Part of char select)
@@ -19,7 +20,7 @@ TODO:
 		DONE GameOver fade to black
 		!!!! Final whistle for the transition
 		DONE GameOver colours/graphics
-		!!!! GameOver menu bits
+		!!!! GameOver menu bits: Rematch, character select, exit to main menu. (We should only quit game from main menu.)
 		DONE Confetti
 		DONE Scores and names and possibly order incorrect DONE Hadn't set non-scores to -1, was messing up sort
 		DONE Going back to main menu after a game over starts with cursor on EXIT sometimes? DONE Put a selected=0 in enter
@@ -54,7 +55,7 @@ DONE Change Twins keyboard controls to switching nukes and double move default
 	DONE SQUASH (Spawn locations) DONE BUT SQUASH IS TERRIBLE
 	!!!! FOURSQUARE
 !!!! Ball Possession/Goal color switching doesn't work for some powers in Squash
-!!!! Ball possesion issue with Back, also check Twotouch and neutron in many situations
+!!!! Ball possession issue with Back, also check Twotouch and neutron in many situations
 DONE Ball Possession wrong when Dash dashes a Back holding the ball
 DONE Ball possession wrong on back and neutron grab
 DONE Bugs when neutron grabs a twotouch holding the ball
@@ -62,12 +63,13 @@ DONE Bugs when neutron grabs a twotouch holding the ball
 	DONE The sound bug was the TwoTouch's predictor ball making sounds, which it shouldn't have. BallID of fake balls is 1
 !!!! Current keyboard setup still has ghosting? Alt. Key layouts?
 !!!! Balance:
-	!!!! TwoTouch underpowered. Take out speed debuff on holding button? Harder Kicks?
+	!!!! TwoTouch underpowered. Take out speed debuff on holding button? Harder Kicks? Full time predict?
 	DONE Neutron push needs faster
 	!!!! Balance Dash: Length of trail "catch"
 	!!!! Balance Enforcer (more control) Less wall penalty?
 !!!! Soundtrack
 !!!! Somethings forgetting? Add as needed
+!!!! More game modes? Squash is a failure. Crazy King? Betrayer Ball?
 !!!! TODO: Test 4 Neos going in and out of slowmo at once
 DONE PlayerNeutron pulling the ball out of Back's lock will teleport back to Back when he releases grav pull
 	DONE SOLUTION: The "too far then unlock" statement was after the "set ball to this position" statement in Back, so it would never leave lock
@@ -92,7 +94,7 @@ DONE Experiment with non fixed delta (This might be the thing I forgot?)
 	DONE Things that don't work
 		DONE Back and slowing down DONE
 		DONE Enforcer and turn reduction DONE
-		!!!! Neutron grabs too fast
+		DONE Neutron grabs too fast
 		DONE Twins nuke switching animation too fast DONE
 		DONE Back and TwoTouch rotation DONE
 DONE Soccer needs to be slower paced, right now kicks are really powerful
