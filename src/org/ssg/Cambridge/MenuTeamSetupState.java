@@ -269,7 +269,9 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 			if (anchors[i].initiated()) {
 				if(anchors[i].teamSelected()){
 					pAlphaTargets[i] = 1f;
-					pThetas[i]+=delta/20f;
+					pThetas[i]+=(float)delta/240f;
+					if(pThetas[i]>=(float)Math.PI*2f)
+						pThetas[i] -= (float)Math.PI*2f;
 				}else{
 					pAlphaTargets[i] = 0f;
 				}
@@ -444,15 +446,15 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 			g.translate(-x, -y);
 			break;
 		case 6://Twin
-			tempf = 8;
-			g.rotate(x, y, pThetas[anchorNum]*10f/(float)Math.PI);
+			tempf = mapHeight/50f;
+			g.rotate(x, y, pThetas[anchorNum]*90f/(float)Math.PI);
 			g.translate(x-tempf,y-tempf);
 			g.draw(polys[6].transform(Transform.createRotateTransform(pThetas[anchorNum])));
 			g.translate(-x+tempf,-y+tempf);
 			g.translate(x+tempf, y+tempf);
 			g.draw(polys[6].transform(Transform.createRotateTransform(pThetas[anchorNum])));
 			g.translate(-x-tempf, -y-tempf);
-			g.rotate(x, y, -pThetas[anchorNum]*10f/(float)Math.PI);
+			g.rotate(x, y, -pThetas[anchorNum]*90f/(float)Math.PI);
 			break;
 		case 7://TwoTouch
 			g.translate(x,y);

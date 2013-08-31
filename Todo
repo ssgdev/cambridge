@@ -3,6 +3,8 @@ TODO:
 !!!! Menus and stuff
 	!!!! Grey out and don't let users select resolution options in full screen
 	!!!! Huge resolutions break main and options menu, need responsive layouts
+	!!!! If you're in resolution options and press escape, then go back into the resolution list, you will pick up from where you were before
+			in the resolution list 
 	DONE Play to certain time or certain score
 	DONE Character+Controller Select
 		DONE Some kind of bug is there in character select, if someone backs out something something they can't sign back in
@@ -21,7 +23,7 @@ TODO:
 		DONE Confetti
 		!!!! Scores and names and possibly order incorrect
 		!!!! Going back to main menu after a game over starts with cursor on EXIT sometimes?
-		!!!! Should draw color and players next to winning team
+		DONE Should draw color and players next to winning team DONE Drawn next to every team actually. Needs testing when 4P comes out.
 	!!!! In-game pause menu
 	!!!! In-game pause menu should be accessible by pressing start on controller
 	DONE Draw -1 as "Unlimited" in game mode select
@@ -38,6 +40,7 @@ TODO:
 	DONE Effects sounds: Go, Back, move, change, nope
 	!!!! Main menu options is "push a to change the thing" but the mode select menu is just "hover and move left/right" Seems inconsistent
 	!!!! Bug: If more than one controller is plugged in, the inputdelay is too fast.
+	!!!! Bug: Sometimes on keyboard at least, one set of keys has a long inputdelay and the other has a short inputdelay
 	!!!! Main Menu still uses WASD
 DONE GameStart transition
 !!!! Something in case they delete the configs?
@@ -50,6 +53,7 @@ DONE Change Twins keyboard controls to switching nukes and double move default
 	DONE SQUASH (Spawn locations) DONE BUT SQUASH IS TERRIBLE
 	!!!! FOURSQUARE
 !!!! Ball Possession/Goal color switching doesn't work for some powers in Squash
+!!!! Ball possesion issue with Back, check Twotouch and neutron in many situations
 DONE Ball Possession wrong when Dash dashes a Back holding the ball
 DONE Ball possession wrong on back and neutron grab
 DONE Bugs when neutron grabs a twotouch holding the ball

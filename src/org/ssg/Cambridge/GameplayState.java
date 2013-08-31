@@ -82,6 +82,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	boolean started;//Has the game started/the intro animation ended
 	
 	private float[][] team1Positions, team2Positions, playerStartPositions;
+	private int[][] playerCharacters;//Passed to gameoverstate to draw what players are on each team
 	
 	AngelCodeFont font, font_white, font_small, font_large;
 	Image triangle, hemicircleL, hemicircleR, slice, slice_tri, slice_wide, slice_twin;
@@ -297,22 +298,31 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		playerStartPositions = new float[4][2];
 		
-		int team1Counter = 0, team2Counter = 0, playerCounter = 0;
+		int[] teamCounter = {0,0};
+		int playerCounter = 0;
 		
 		// Setting start positions for each player
-		// NEED TO MAKE THIS WORK FOR TENNIS AND SQUASH
 		for (CambridgePlayerAnchor a : data.playerAnchors()) {
 			if (a.initiated()) {
 				if (a.getTeam() == 0) { //0 is team 1
-					playerStartPositions[playerCounter] = team1Positions[team1Counter]; 
-					team1Counter++;
+					playerStartPositions[playerCounter] = team1Positions[teamCounter[0]]; 
+					teamCounter[0]++;
 				} else if (a.getTeam() == 1) { //1 is team 2
-					playerStartPositions[playerCounter] = team2Positions[team2Counter];
-					team2Counter++;
+					playerStartPositions[playerCounter] = team2Positions[teamCounter[1]];
+					teamCounter[1]++;
 				}
 				playerCounter++;
 			}
 		}
+		
+		playerCharacters = new int[4][];
+		playerCharacters[0] = new int[teamCounter[0]];
+		playerCharacters[1] = new int[teamCounter[1]];
+		playerCharacters[2] = new int[0];
+		playerCharacters[3] = new int[0];
+		
+		teamCounter[0] = 0;
+		teamCounter[1] = 0;
 		
 		// Setting player colors
 		// NEED TO COME BACK TO THIS FOR FOURSQUARE
@@ -326,6 +336,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		for (int i = 0; i < data.playerAnchors().length; i++) {
 			if (data.playerAnchors()[i].getTeam() != -1) {
 				playerColors[i] = teamColors[data.playerAnchors()[i].getTeam()];
+				playerCharacters[data.playerAnchors()[i].getTeam()][teamCounter[data.playerAnchors()[i].getTeam()]] = data.playerAnchors()[i].getCharacter();
+				teamCounter[data.playerAnchors()[i].getTeam()]++;
 			} else {
 				playerColors[i] = Color.white;
 			}
@@ -1013,6 +1025,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 //			System.out.println("SCOREEND");
 			setShouldRender(false);
 			((GameOverState)sbg.getState(data.GAMEOVERSTATE)).setScores(scores);
+			((GameOverState)sbg.getState(data.GAMEOVERSTATE)).setColors(teamColors);
+			((GameOverState)sbg.getState(data.GAMEOVERSTATE)).setCharacters(playerCharacters);
 			((GameOverState)sbg.getState(data.GAMEOVERSTATE)).setShouldRender(true);
 			sbg.enterState(data.GAMEOVERSTATE);
 		}

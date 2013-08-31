@@ -42,7 +42,7 @@ public class Confetti {
 	}
 	
 	public void update(float delta){
-		if(pos[1]<data.screenHeight()+50){
+		if(pos[1]<data.screenHeight()+55){
 			pos[0]+=delta*vel[0];
 			pos[1]+=delta*vel[1];
 			vel[1]+=delta*(grav);

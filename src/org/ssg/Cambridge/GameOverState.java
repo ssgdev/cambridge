@@ -9,6 +9,8 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Polygon;
+import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -23,6 +25,11 @@ public class GameOverState extends BasicGameState implements KeyListener {
 	int[] scores;
 	int numPlayers;
 	String[] names = {"Team 1","Team 2","Team 3","Team 4"};
+	Color[] teamColors;
+	int[][] playerCharacters;
+	Polygon[] polys;
+	float pTheta;
+	float maxCircleSize;
 	
 	GlobalData data;
 	SoundSystem mySoundSystem;
@@ -33,6 +40,8 @@ public class GameOverState extends BasicGameState implements KeyListener {
 	Color confettiColor;
 	
 	float tempf;
+	int[] tempArr;
+	Color tempCol;
 	
 	public GameOverState(int id, boolean renderOn){
 		stateID = id;
@@ -60,42 +69,66 @@ public class GameOverState extends BasicGameState implements KeyListener {
 		
 		confetti = new Confetti[50];
 		confettiSetup = false;
+		
+		polys = new Polygon[8];
 	}
 
+	public void initPlayerPolys(){
+		//Back
+		tempf = data.screenHeight()*.7f/50f*.8f;
+		polys[0] = new Polygon(new float[]{
+				tempf*2, tempf*2,
+				tempf*2, -tempf*2,
+				tempf, -tempf*2,
+				tempf, -tempf*3,
+				-tempf, -tempf*3,
+				-tempf, -tempf*2,
+				-tempf*2, -tempf*2,
+				-tempf*2, tempf*2,
+				-tempf, tempf*2,
+				-tempf, tempf*3,
+				tempf, tempf*3,
+				tempf, tempf*2});
+		//Dash
+		tempf = data.screenHeight()*.7f/10f*.9f*.8f;
+		polys[1] = new Polygon(new float[]{-tempf*2/3,0,-tempf/3, -tempf/2, tempf*2/3, 0, -tempf/3, tempf/2});
+		//Enforcer
+		polys[2] = new Polygon();//not used
+		//Neo
+		tempf = data.screenHeight()*.7f/10f/2f*.6f;
+		polys[3] = new Polygon(new float[]{
+				tempf, tempf,
+				-tempf, -tempf,
+				tempf, -tempf,
+				-tempf, tempf,
+				tempf, tempf,
+				tempf, -tempf,
+				-tempf, -tempf,
+				-tempf, tempf});
+		//Neutron
+		polys[4] = new Polygon();//not used
+		//Tricky
+		tempf = data.screenHeight()*.7f/10f/2f*.6f;
+		polys[5] = 	new Polygon(new float[]{
+				tempf, tempf,
+				tempf, -tempf,
+				-tempf, -tempf,
+				-tempf, tempf});
+		//Twin
+		tempf = data.screenHeight()*.7f/10f/7f;
+		polys[6] = new Polygon(new float[]{
+				tempf, tempf,
+				tempf, -tempf,
+				-tempf, -tempf,
+				-tempf, tempf});
+		//TwoTouch
+		tempf = data.screenHeight()*.7f/10f*.7f;
+		polys[7] = new Polygon(new float[]{0,0,-tempf/3, -tempf/2, tempf*2/3, 0, -tempf/3, tempf/2});
+	}
+	
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		//mySoundSystem.pause("BGMGame");
-	
-		tempf = 0;
-		int maxDex = 0;
-		int numMaxes = 0;
-		for(int i=0;i<scores.length;i++){
-			if(tempf<scores[i]){
-				tempf = scores[i];
-				maxDex = i;
-				numMaxes = 1;
-			}else if(tempf == scores[i]){
-				numMaxes++;
-			}
-		}
-		
-		if(scores[maxDex]==0){
-			confettiColor = new Color(0,0,0,0);
-		}else if(numMaxes>1){
-			confettiColor = Color.white;
-		}else if(maxDex == 0){
-			confettiColor = Color.cyan;
-		}else if(maxDex == 1){
-			confettiColor = Color.orange;
-		}
-		
-		//Setup confetti
-		for(int i=0;i<confetti.length;i++){
-			tempf = (float)Math.random();
-			confetti[i] = new Confetti((float)Math.random()*data.screenWidth(), data.screenHeight(), ((float)Math.random()-.5f)*20f, -500f*(float)Math.random(), confettiColor, (float)Math.random(), data);
-			if(i==confetti.length-1)
-				confettiSetup = true;
-		}
 		
 		//Sort the names array by the scores array, largest first
 		int first = 0;
@@ -112,42 +145,150 @@ public class GameOverState extends BasicGameState implements KeyListener {
 			String tempStr = names[first];
 			names[first] = names[i];
 			names[i] = tempStr;
+			
+			tempCol = teamColors[first];
+			teamColors[first] = teamColors[i];
+			teamColors[i] = tempCol;
+			
+			tempArr = playerCharacters[first];
+			playerCharacters[first] = playerCharacters[i];
+			playerCharacters[i] = tempArr;
+		}
+		
+		//Setup confetti		
+		if(scores[0] == scores[1]){//If there's a draw
+			confettiColor = new Color(0,0,0,0);//no confetti
+		}else if(scores[0]>0){
+			confettiColor = teamColors[0];
+			//System.out.println(teamColors[0].getRed()+","+teamColors[0].getGreen()+","+teamColors[0].getBlue()+","+teamColors[0].getAlpha());
+		}
+		
+		for(int i=0;i<confetti.length;i++){
+			confetti[i] = new Confetti((float)Math.random()*data.screenWidth(), data.screenHeight()+50, ((float)Math.random()-.5f)*20f, -500f*(float)Math.random(), confettiColor, (float)Math.random(), data);
+			if(i==confetti.length-1)
+				confettiSetup = true;
 		}
 		
 		//System.out.println(scores[0]+", "+scores[1]+", "+scores[2]+" "+scores[3]);
-		
+		initPlayerPolys();
+		maxCircleSize = data.screenHeight()/8f;//player circle diameters
 	}
 	
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		g.setColor(Color.black);
-		g.fillRect(0, 0, data.screenWidth(), data.screenHeight());
+		g.setAntiAlias(true);
+		g.setLineWidth(2f);
+		g.setBackground(Color.black);
+		
 		g.setColor(Color.white);
 		g.setFont(font_white);
 		g.drawString("Final Score", data.screenWidth()/2-font.getWidth("FINAL SCORE")/2, 20);
 		
 		for(int i=0; i<scores.length; i++){
 			if(scores[i]>=0){
+				g.setColor(teamColors[i]);
 				String str = names[i]+": "+scores[i];
-				g.drawString(str, data.screenWidth()/2-font.getWidth(str)/2, 120+(font.getHeight("0")+5)*i);
+				for(int j=0; j<playerCharacters[i].length;j++){
+					g.setLineWidth(2);
+					drawPlayer(g, data.screenWidth()/2-font.getWidth(str)/2f-(maxCircleSize+15)*((float)j+1f), 150+(Math.max(font.getHeight("0"),maxCircleSize)+15)*(float)i+font.getHeight("0")/2f, playerCharacters[i][j]);
+					g.setLineWidth(5);
+					g.drawOval( data.screenWidth()/2-font.getWidth(str)/2f-(maxCircleSize+15)*((float)j+1f)-maxCircleSize/2f, 150+(Math.max(font.getHeight("0"),maxCircleSize)+15)*(float)i+font.getHeight("0")/2f-maxCircleSize/2f, maxCircleSize, maxCircleSize);
+				}
+				g.drawString(str, data.screenWidth()/2-font.getWidth(str)/2f, 140+(Math.max(font.getHeight("0"),maxCircleSize)+15)*i);
 				if(scores[i]==scores[0] && scores[0] != 0){
-					g.drawString("WINNER!", data.screenWidth()/2-font.getWidth("WINNER!")-200, 120+(font.getHeight("0")+5)*i);
-					g.drawString("WINNER!", data.screenWidth()/2+200, 120+(font.getHeight("0")+5)*i);
+					g.drawString("WINNER!", data.screenWidth()/2f + font.getWidth(str)/2+45, 140+(Math.max(font.getHeight("0"), maxCircleSize)+15)*i);
 				}
 			}
 		}
-		
-		for(Confetti c: confetti)
+
+		for(Confetti c: confetti){
 			c.render(g);
+		}
 		
 	}
 
+	public void drawPlayer(Graphics g, float x, float y, int charNum){
+		switch(charNum){
+		case 0://Back
+			g.translate(x, y);
+			g.draw(polys[0].transform(Transform.createRotateTransform((float)Math.PI/2f+pTheta)));
+			g.translate(-x, -y);
+			break;
+		case 1://Dash
+			g.translate(x,y);
+			g.draw(polys[1].transform(Transform.createRotateTransform(pTheta)));
+			g.translate(-x,-y);
+			break;
+		case 2://Enforcer
+			tempf = data.screenHeight()*.7f/10f/2*.7f;
+			g.setLineWidth(8);
+			g.rotate(x, y, pTheta*360f/2f/(float)Math.PI);
+			g.drawLine(x-tempf, y, x-tempf/2-3, y);
+			g.drawLine(x+tempf/2+3, y, x+tempf, y);
+			g.drawLine(x, y-tempf, x, y-tempf/2-3);
+			g.drawLine(x, y+tempf/2+3, x, y+tempf);
+			g.setLineWidth(2);
+			g.drawRect(x-tempf/2, y-tempf/2, tempf, tempf);
+			g.rotate(x, y, -pTheta*360f/2f/(float)Math.PI);
+			break;
+		case 3://Neo
+			g.translate(x,y);
+			g.draw(polys[3].transform(Transform.createRotateTransform(pTheta)));
+			g.translate(-x,-y);
+			break;
+		case 4://Neutron
+			tempf = data.screenHeight()*.7f/10f*.8f;
+			g.rotate(x, y, pTheta*360f/2f/(float)Math.PI);
+			g.drawOval(x-tempf/2, y-tempf/2,  tempf,  tempf);
+			g.setLineWidth(1f);
+			for(int i=0; i<6; i++){
+				g.drawLine(x+(float)Math.cos(i*Math.PI/3)*tempf/2, y+(float)Math.sin(i*Math.PI/3)*tempf/2,
+						x+(float)Math.cos(i*Math.PI/3+Math.PI*.6f)*tempf/2, y+(float)Math.sin(i*Math.PI/3+Math.PI*.6f)*tempf/2);
+			}
+			g.rotate(x, y, -pTheta*360f/2f/(float)Math.PI);
+			break;
+		case 5://Tricky
+			g.setLineWidth(2);
+			g.translate(x, y);
+			g.draw(polys[5].transform(Transform.createRotateTransform(pTheta)));
+			g.translate(-x, -y);
+			break;
+		case 6://Twin
+			tempf = data.screenHeight()*.7f/50f;
+			g.rotate(x, y, pTheta*90f/(float)Math.PI);
+			g.translate(x-tempf,y-tempf);
+			g.draw(polys[6].transform(Transform.createRotateTransform(pTheta)));
+			g.translate(-x+tempf,-y+tempf);
+			g.translate(x+tempf, y+tempf);
+			g.draw(polys[6].transform(Transform.createRotateTransform(pTheta)));
+			g.translate(-x-tempf, -y-tempf);
+			g.rotate(x, y, -pTheta*90f/(float)Math.PI);
+			break;
+		case 7://TwoTouch
+			g.translate(x,y);
+			g.draw(polys[7].transform(Transform.createRotateTransform(pTheta)));
+			g.translate(-x,-y);
+			break;
+		case 8://Unused
+			g.setFont(font_white);
+			g.drawString("?", x-font.getWidth("?")/2, y-font.getHeight("?")/2-12f);
+//			g.drawRect(x,y,font.getWidth("?"), font.getHeight("?"));
+			break;
+		default:
+			break;
+		}
+	}
+	
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		
 		for(Confetti c:confetti)
 			if(confettiSetup)
 				c.update(delta);
+		
+		pTheta+=(float)delta/240f;
+		if(pTheta>(float)Math.PI*2f)
+			pTheta-=(float)Math.PI*2f;
 		
 		Input input = gc.getInput();
 		if(input.isKeyPressed(Input.KEY_ENTER)){
@@ -168,6 +309,14 @@ public class GameOverState extends BasicGameState implements KeyListener {
 				scores[i]=-1;
 		}
 		numPlayers = s.length;
+	}
+	
+	public void setColors(Color[] c){
+		teamColors = c;
+	}
+	
+	public void setCharacters(int[][] playerChars){
+		playerCharacters = playerChars;
 	}
 	
 	public void setShouldRender(boolean b) {
