@@ -3,6 +3,7 @@ Changelog:
 8.30.13
 Added confetti effect to GameOverState
 GameOverState now draws the players on each team, and also has them in the correct colour
+Player and Team select menus now require an additional button press after everyone's readied up
 
 8.29.13
 Added animation for going back from team select to game mode select

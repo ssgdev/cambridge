@@ -436,18 +436,24 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 						if (anchors[i].back(gc, delta)) {
 							anchors[i].setCharacter(false);
 							mySoundSystem.quickPlay( true, "MenuBack.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+						}else if(anchors[i].select(gc, delta)){
+							if(readyNum==existsNum && existsNum>1){
+								((MenuGameSetupState)sbg.getState(data.MENUGAMESETUPSTATE)).setShouldRender(true);
+								setShouldRender(false);
+								sbg.enterState(data.MENUGAMESETUPSTATE);
+							}
 						}
 					}
 				}
 			}
 		}
 
-		// Move onto next gamestate if all initiated players are ready
-		if (readyNum == existsNum && existsNum > 1) {
-			((MenuGameSetupState)sbg.getState(data.MENUGAMESETUPSTATE)).setShouldRender(true);
-			setShouldRender(false);
-			sbg.enterState(data.MENUGAMESETUPSTATE);
-		}
+//		// Move onto next gamestate if all initiated players are ready
+//		if (readyNum == existsNum && existsNum > 1) {
+//			((MenuGameSetupState)sbg.getState(data.MENUGAMESETUPSTATE)).setShouldRender(true);
+//			setShouldRender(false);
+//			sbg.enterState(data.MENUGAMESETUPSTATE);
+//		}
 
 		input.clearKeyPressedRecord();
 	}

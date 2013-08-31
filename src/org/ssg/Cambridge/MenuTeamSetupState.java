@@ -41,6 +41,8 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 	private int inputDelay;
 	private final int inputDelayConst = 200;
 
+	boolean readiedUp;
+	
 	private boolean shouldRender;
 
 	final static String RESDIR = "res/";
@@ -191,6 +193,8 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 				pThetas[i] = 0;
 			}
 		}
+		
+		readiedUp = false;
 	}
 
 	@Override
@@ -248,7 +252,13 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 			}
 		}
 		
-
+		if(readiedUp){
+			g.setColor(Color.white);
+			g.setFont(font_white);
+			g.drawString("START GAME", data.screenWidth()/2-font.getWidth("START GAME")/2f, data.screenHeight()-font.getHeight("0")-30);
+			g.setLineWidth(2);
+			g.drawRect(-10, data.screenHeight()-font.getHeight("0")-28, data.screenWidth()+20, font.getLineHeight());
+		}
 
 	}
 
@@ -344,24 +354,37 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 						if (anchors[i].back(gc, delta)) {
 							anchors[i].setTeam(false);
 							mySoundSystem.quickPlay( true, "MenuBack.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+						}else if(anchors[i].select(gc, delta)){
+							if (readyNum == existsNum && existsNum > 1) {
+								((GameplayState)sbg.getState(data.GAMEPLAYSTATE)).setShouldRender(true);
+								setShouldRender(false);
+								sbg.enterState(data.GAMEPLAYSTATE);
+							}
 						}
 					}
 				}
 			}
 		}
-
+		
 		if(exiting && mapY == originalMapY){
 				setShouldRender(false);
 			((MenuGameSetupState)sbg.getState(data.MENUGAMESETUPSTATE)).setShouldRender(true);
 			sbg.enterState(data.MENUGAMESETUPSTATE);
 		}
 		
-		// Move onto next gamestate if all initiated players are ready
-		if (readyNum == existsNum && existsNum > 1) {
-			((GameplayState)sbg.getState(data.GAMEPLAYSTATE)).setShouldRender(true);
-			setShouldRender(false);
-			sbg.enterState(data.GAMEPLAYSTATE);
+		//used for drawing the "Start Game" prompt
+		if(readyNum == existsNum && existsNum > 1){
+			readiedUp = true;
+		}else{
+			readiedUp = false;
 		}
+		
+//		// Move onto next gamestate if all initiated players are ready
+//		if (readyNum == existsNum && existsNum > 1) {
+//			((GameplayState)sbg.getState(data.GAMEPLAYSTATE)).setShouldRender(true);
+//			setShouldRender(false);
+//			sbg.enterState(data.GAMEPLAYSTATE);
+//		}
 
 		input.clearKeyPressedRecord();
 	}

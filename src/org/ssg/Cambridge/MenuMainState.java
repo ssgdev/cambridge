@@ -262,6 +262,7 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 			mySoundSystem.setVolume("BGM", data.ambientSound()/10f);
 		}
 		resetButtons();
+		selected = 0;
 		cursorYTarget = data.screenHeight()*0.5f+selected*menuHeight + 7;
 		cursorY = cursorYTarget;
 	}
