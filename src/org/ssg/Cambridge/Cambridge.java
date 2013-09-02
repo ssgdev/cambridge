@@ -75,6 +75,8 @@ public class Cambridge extends StateBasedGame {
 	}
 
 	public void initSounds() throws SlickException{
+		mySoundSystem.loadSound("Applause.ogg");
+		
 		mySoundSystem.loadSound("BackLock.ogg");
 		mySoundSystem.loadSound("BackLockSlow.ogg");
 		mySoundSystem.loadSound("BackActivate.ogg");

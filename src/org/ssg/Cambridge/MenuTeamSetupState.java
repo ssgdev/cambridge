@@ -356,6 +356,7 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 							mySoundSystem.quickPlay( true, "MenuBack.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						}else if(anchors[i].select(gc, delta)){
 							if (readyNum == existsNum && existsNum > 1) {
+								mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 								((GameplayState)sbg.getState(data.GAMEPLAYSTATE)).setShouldRender(true);
 								setShouldRender(false);
 								sbg.enterState(data.GAMEPLAYSTATE);

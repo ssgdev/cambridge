@@ -15,6 +15,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import paulscode.sound.SoundSystem;
+import paulscode.sound.SoundSystemConfig;
 
 public class GameOverState extends BasicGameState implements KeyListener {
 
@@ -159,6 +160,7 @@ public class GameOverState extends BasicGameState implements KeyListener {
 		if(scores[0] == scores[1]){//If there's a draw
 			confettiColor = new Color(0,0,0,0);//no confetti
 		}else if(scores[0]>0){
+			mySoundSystem.quickPlay( true, "Applause.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			confettiColor = teamColors[0];
 			//System.out.println(teamColors[0].getRed()+","+teamColors[0].getGreen()+","+teamColors[0].getBlue()+","+teamColors[0].getAlpha());
 		}

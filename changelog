@@ -1,5 +1,8 @@
 Changelog:
 
+9.2.13
+Added a few additional sound effects
+
 8.30.13
 Added confetti effect to GameOverState
 GameOverState now draws the players on each team, and also has them in the correct colour
