@@ -287,7 +287,6 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 
 		return val;
 	}
-
 	
 	public void setShouldRender(boolean shouldRender) {
 		this.shouldRender = shouldRender;
