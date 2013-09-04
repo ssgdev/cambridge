@@ -3,7 +3,7 @@ TODO:
 !!!! Menus and stuff
 	!!!! Grey out and don't let users select resolution options in full screen
 	!!!! Huge resolutions break main and options menu, need responsive layouts
-	!!!! If you're in resolution options and press escape, then go back into the resolution list, you will pick up from where you were before
+	DONE If you're in resolution options and press escape, then go back into the resolution list, you will pick up from where you were before
 			in the resolution list. ex. Start at 640x480 press right it's 840x500 (resolutions for illustration purposes only) keep pressing until 1280x720. Press escape,
 			now the thing is back to 640x480. But if I press enter and press right, now it's 1366x768.
 	DONE Play to certain time or certain score

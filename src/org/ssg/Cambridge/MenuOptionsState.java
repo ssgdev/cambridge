@@ -159,7 +159,7 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 					}
 					break;
 				case 5:
-					g.drawString((data.playerIdDisplay() ? "On" : "off"), data.screenWidth()/5*3, data.screenHeight()*0.4f+menuHeight*i);
+					g.drawString((data.playerIdDisplay() ? "On" : "Off"), data.screenWidth()/5*3, data.screenHeight()*0.4f+menuHeight*i);
 					break;
 				default:
 					break;
@@ -368,6 +368,16 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 						}
 						tempWidth = display.get("SCREENWIDTH", int.class);
 						tempHeight = display.get("SCREENHEIGHT", int.class);
+						boolean resolutionFlag = false;
+						for (int i = 0; i < data.resolutions(); i++) {
+							if (!resolutionFlag && tempWidth == data.getResolution(i)[0] && tempHeight == data.getResolution(i)[1]) {
+								data.setResolutionIndex(i);
+								resolutionFlag = true;
+							}
+						}
+						if (!resolutionFlag) {
+							data.setResolutionIndex(-1);
+						}
 						break;
 					case 1:
 						data.setFullscreen(display.get("FULLSCREEN", boolean.class));

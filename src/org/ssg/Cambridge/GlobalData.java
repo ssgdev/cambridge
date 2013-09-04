@@ -272,6 +272,10 @@ public class GlobalData {
 		return resolutionList[resolutionIndex];
 	}
 	
+	public int[] getResolution(int i) {
+		return resolutionList[i];
+	}
+
 	public int resolutionIndex() {
 		return resolutionIndex;
 	}
