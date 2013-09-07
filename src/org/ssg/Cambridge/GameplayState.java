@@ -81,7 +81,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	
 	boolean started;//Has the game started/the intro animation ended
 	
-	private float[][] team1Positions, team2Positions, playerStartPositions;
+	private float[][][] teamPositions;
+	private float[][] playerStartPositions;
 	private int[][] playerCharacters;//Passed to gameoverstate to draw what players are on each team
 	
 	AngelCodeFont font, font_white, font_small, font_large;
@@ -238,12 +239,20 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		camHeight = FIELDHEIGHT;
 		
 		if(maxZoom == 0){
-			if(GOALTYPE == 0){
-				maxZoom = 2;
-			}else{
-				maxZoom = 1;
-			}
+			maxZoom = 2;
+//			if(GOALTYPE == 0 || GOALTYPE == 7){
+//				maxZoom = 2;
+//			}else{
+//				maxZoom = 1;
+//			}
 		}
+		
+		teamColors = new Color[] {
+				Color.cyan,
+				Color.orange,
+				Color.magenta,
+				Color.green
+		};
 		
 		int randomNum = (int)(Math.random()*2);
 		initGoals(randomNum);
@@ -262,34 +271,47 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		//Add case for 4Square
 		if(NAME.equals(TENNIS)){
-			team1Positions = new float[][] {
+			teamPositions = new float[2][][];
+			teamPositions[0] = new float[][] {
 					{ 80, FIELDHEIGHT/2 },
 					{ 80, FIELDHEIGHT/2 - 150 },
 					{ 80, FIELDHEIGHT/2 + 150 },
 			};
-			team2Positions = new float[][] {
+			teamPositions[1] = new float[][] {
 					{ FIELDWIDTH-80, FIELDHEIGHT/2 },
 					{ FIELDWIDTH-80, FIELDHEIGHT/2 - 150 },
 					{ FIELDWIDTH-80, FIELDHEIGHT/2 + 150 },
 			};
-		}else if(NAME.equals(SQUASH)){
-			team1Positions = new float[][] {
-					{ FIELDWIDTH/2-250, FIELDHEIGHT*3/4 },
-					{ FIELDWIDTH/2-250, FIELDHEIGHT*3/4 + 120 },
-					{ FIELDWIDTH/2-250, FIELDHEIGHT*3/4 + 240 },
+		}else if(NAME.equals("FOURSQUARE") || NAME.equals("GOLDENGOAL")){
+			teamPositions = new float[4][][];
+			teamPositions[0] = new float[][] {
+					{ FIELDWIDTH/4, FIELDHEIGHT/2},
+					{ FIELDWIDTH/4, FIELDHEIGHT/2 -150},
+					{ FIELDWIDTH/4, FIELDHEIGHT/2 +150},
 			};
-			team2Positions = new float[][] {
-					{ FIELDWIDTH/2+250, FIELDHEIGHT*3/4 },
-					{ FIELDWIDTH/2+250, FIELDHEIGHT*3/4 + 120 },
-					{ FIELDWIDTH/2+250, FIELDHEIGHT*3/4 + 240 },
+			teamPositions[1] = new float[][]{
+					{ FIELDWIDTH*3/4, FIELDHEIGHT/2},
+					{ FIELDWIDTH*3/4, FIELDHEIGHT/2-150},
+					{ FIELDWIDTH*3/4, FIELDHEIGHT/2+150},
+			};
+			teamPositions[2] = new float[][]{
+					{ FIELDWIDTH/2, FIELDHEIGHT/4},
+					{ FIELDWIDTH/2-150, FIELDHEIGHT/4},
+					{ FIELDWIDTH/2+150, FIELDHEIGHT/4},
+			};
+			teamPositions[3] =  new float[][]{
+					{ FIELDWIDTH/2, FIELDHEIGHT*3/4},
+					{ FIELDWIDTH/2-150, FIELDHEIGHT*3/4 },
+					{ FIELDWIDTH/2+150, FIELDHEIGHT*3/4 },
 			};
 		}else{
-			team1Positions = new float[][] {
+			teamPositions = new float[2][][];
+			teamPositions[0] = new float[][] {
 					{ FIELDWIDTH/2-250, FIELDHEIGHT/2 },
 					{ FIELDWIDTH/2-250, FIELDHEIGHT/2 - 100 },
 					{ FIELDWIDTH/2-250, FIELDHEIGHT/2 + 100 },
 			};
-			team2Positions = new float[][] {
+			teamPositions[1] = new float[][] {
 					{ FIELDWIDTH/2+250, FIELDHEIGHT/2 },
 					{ FIELDWIDTH/2+250, FIELDHEIGHT/2 - 100 },
 					{ FIELDWIDTH/2+250, FIELDHEIGHT/2 + 100 },
@@ -298,19 +320,21 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		playerStartPositions = new float[4][2];
 		
-		int[] teamCounter = {0,0};
+		int[] teamCounter = {0,0,0,0};
 		int playerCounter = 0;
 		
 		// Setting start positions for each player
 		for (CambridgePlayerAnchor a : data.playerAnchors()) {
 			if (a.initiated()) {
-				if (a.getTeam() == 0) { //0 is team 1
-					playerStartPositions[playerCounter] = team1Positions[teamCounter[0]]; 
-					teamCounter[0]++;
-				} else if (a.getTeam() == 1) { //1 is team 2
-					playerStartPositions[playerCounter] = team2Positions[teamCounter[1]];
-					teamCounter[1]++;
-				}
+//				if (a.getTeam() == 0) { //0 is team 1
+//					playerStartPositions[playerCounter] = team1Positions[teamCounter[0]]; 
+//					teamCounter[0]++;
+//				} else if (a.getTeam() == 1) { //1 is team 2
+//					playerStartPositions[playerCounter] = team2Positions[teamCounter[1]];
+//					teamCounter[1]++;
+//				}
+				playerStartPositions[playerCounter] = teamPositions[a.getTeam()][teamCounter[a.getTeam()]];
+				teamCounter[a.getTeam()]++;
 				playerCounter++;
 			}
 		}
@@ -318,20 +342,14 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		playerCharacters = new int[4][];
 		playerCharacters[0] = new int[teamCounter[0]];
 		playerCharacters[1] = new int[teamCounter[1]];
-		playerCharacters[2] = new int[0];
-		playerCharacters[3] = new int[0];
+		playerCharacters[2] = new int[teamCounter[2]];
+		playerCharacters[3] = new int[teamCounter[3]];
 		
-		teamCounter[0] = 0;
-		teamCounter[1] = 0;
+		for(int i=0;i<teamCounter.length;i++)
+			teamCounter[i] = 0;
 		
 		// Setting player colors
 		// NEED TO COME BACK TO THIS FOR FOURSQUARE
-		teamColors = new Color[] {
-			Color.cyan,
-			Color.orange,
-			new Color(223, 0, 255),
-			Color.green
-		};
 		Color[] playerColors = new Color[4];
 		for (int i = 0; i < data.playerAnchors().length; i++) {
 			if (data.playerAnchors()[i].getTeam() != -1) {
@@ -584,7 +602,11 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		kickFloat = new float[]{0f,0f};
 		spinFloat = new float[]{0f,0f};
-		scores = new int[]{0,0};
+
+		scores = new int[]{-1,-1,-1,-1};
+		for(CambridgePlayerAnchor a: data.playerAnchors())
+			if(a.initiated())
+				scores[a.getTeam()] = 0;
 		
 		tempTrailArr = new float[]{0,0,0,0};
 		
@@ -610,24 +632,27 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	public void initGoals(int randomNum){
 		if(GOALTYPE == 0){//Left and Right goals
 			goals = new Goal[2];
-			goals[0] = new Goal(0,FIELDHEIGHT/2-GOALSIZE/2, -25, GOALSIZE, -1 , 0, 0);
-			goals[1] = new Goal(FIELDWIDTH, FIELDHEIGHT/2-GOALSIZE/2, 25, GOALSIZE, 1, 0, 1);
+			goals[0] = new Goal(0,FIELDHEIGHT/2-GOALSIZE/2, -25, GOALSIZE, -1 , 0, 0, teamColors[0]);
+			goals[1] = new Goal(FIELDWIDTH, FIELDHEIGHT/2-GOALSIZE/2, 25, GOALSIZE, 1, 0, 1, teamColors[1]);
 		}else if(GOALTYPE == -1){//One sided goals. Squash
 			goals = new Goal[1];
-			goals[0] = new Goal(0, 0, -25, FIELDHEIGHT, -1, 0, randomNum);
+			goals[0] = new Goal(0, 0, -25, FIELDHEIGHT, -1, 0, randomNum, teamColors[randomNum]);
 		}else if(GOALTYPE == 1){//Horizontal Squash Goals
 			goals = new Goal[1];
-			goals[0] = new Goal(0, FIELDHEIGHT, FIELDWIDTH, -25, 0, 1, randomNum);
+			goals[0] = new Goal(0, FIELDHEIGHT, FIELDWIDTH, -25, 0, 1, randomNum, teamColors[randomNum]);
 		}else if(GOALTYPE == 2){//FOURSQUARE STYLE GOALS
 			goals = new Goal[4];//= new Goal[8]
-			goals[0] = new Goal(0,0,FIELDWIDTH/2,-25,0,-1,0);
-			goals[1] = new Goal(0,0,-25,FIELDHEIGHT/2,-1,0,0);
-			goals[2] = new Goal(FIELDWIDTH/2,0,FIELDWIDTH/2,-25,0,-1,1);
-			goals[3] = new Goal(FIELDWIDTH,0,25,FIELDHEIGHT/2,1,0,1);
+			goals[0] = new Goal(0,0,FIELDWIDTH/2,-25,0,-1,0, teamColors[0]);
+			goals[1] = new Goal(0,0,-25,FIELDHEIGHT/2,-1,0,0, teamColors[0]);
+			goals[2] = new Goal(FIELDWIDTH/2,0,FIELDWIDTH/2,-25,0,-1,1, teamColors[1]);
+			goals[3] = new Goal(FIELDWIDTH,0,25,FIELDHEIGHT/2,1,0,1, teamColors[1]);
 /**			goals[4] = new Goal(FIELDWIDTH,FIELDHEIGHT/2,25,FIELDHEIGHT/2,1,0,2);
 			goals[5] = new Goal(FIELDWIDTH/2,FIELDHEIGHT,FIELDWIDTH/2,25,0,1,2);
 			goals[6] = new Goal(0,FIELDHEIGHT/2,-25,FIELDHEIGHT/2,-1,0,3);
 			goals[7] = new Goal(0,FIELDHEIGHT,FIELDWIDTH/2,25,0,1,3); */
+		}else if(GOALTYPE == 7){//crazyking/goldengoal style goals
+			goals = new Goal[1];
+			goals[0] =  new Goal(FIELDWIDTH/2-GOALSIZE/2, FIELDHEIGHT, GOALSIZE, 25, 0, 1, 0, Color.white);
 		}
 	}
 	
@@ -665,8 +690,14 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			p.resetPos();
 		}
 
-		scores[0] = 0;
-		scores[1] = 0;
+		scores[0] = -1;
+		scores[1] = -1;
+		scores[2] = -1;
+		scores[3] = -1;
+		
+		for(CambridgePlayerAnchor a: data.playerAnchors())
+			if(a.initiated())
+				scores[a.getTeam()] = 0;
 		
 		timef = (float)data.timeLimit()*1000f;
 		time = (int)timef;
@@ -715,10 +746,17 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			g.resetTransform();
 			
 			g.setColor(Color.white.scaleCopy(scoreBarAlpha));
-			g.fillRect(data.screenWidth()/2-data.screenWidth()/3, 25, data.screenWidth()/6, font.getHeight("0")+20);
-			g.fillRect(data.screenWidth()/2+data.screenWidth()/6, 25, data.screenWidth()/6, font.getHeight("0")+20);
-			g.fillRect(data.screenWidth()/2-data.screenWidth()/6, 15, data.screenWidth()/3, font.getHeight("0")+font_small.getHeight("0")+15);
 			
+			g.fillRect(data.screenWidth()/2-data.screenWidth()/6, 15, data.screenWidth()/3, font.getHeight("0")+font_small.getHeight("0")+15);
+			if(NAME.equals("FOURSQUARE") || NAME.equals("GOLDENGOAL")){
+				g.fillRect(data.screenWidth()/2-data.screenWidth()/6-data.screenWidth()/7, 25, data.screenWidth()/7, font.getHeight("0")+20);
+				g.fillRect(data.screenWidth()/2+data.screenWidth()/6, 25, data.screenWidth()/7, font.getHeight("0")+20);
+				g.fillRect(data.screenWidth()/2-data.screenWidth()/6-data.screenWidth()*2/7, 25, data.screenWidth()/7, font.getHeight("0")+20);
+				g.fillRect(data.screenWidth()/2+data.screenWidth()/6+data.screenWidth()/7, 25, data.screenWidth()/7, font.getHeight("0")+20);
+			}else{
+				g.fillRect(data.screenWidth()/2-data.screenWidth()/3, 25, data.screenWidth()/6, font.getHeight("0")+20);
+				g.fillRect(data.screenWidth()/2+data.screenWidth()/6, 25, data.screenWidth()/6, font.getHeight("0")+20);
+			}
 			g.scale(scaleFactor,  scaleFactor);
 			g.translate(-viewX, -viewY);
 		}
@@ -743,6 +781,10 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		if(gameOverCountdown >= GAMEOVERCOUNTDOWN)
 			g.drawImage(goalScroll, scrollX, scrollY);
 		
+		//Draw the arrow pointing to the goal
+		if(!scored && data.actionCam() && NAME.equals("GOLDENGOAL"))
+			drawArrow(g);
+		
 		//draw bars
 		g.setColor(Color.white);
 		g.fillRect(-1000, -1000, FIELDWIDTH+2000, 1000);
@@ -752,10 +794,12 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		//Draw goals
 		for(Goal goal: goals){
-			g.setColor((teamColors[goal.getTeam()]).darker());
+			g.setColor(goal.getColor().darker());
 			g.fillRect(goal.getX(), goal.getMinY(), goal.getWidth(), goal.getHeight());
 		}
 		//g.fillRect(FIELDWIDTH-10, FIELDHEIGHT/2-GOALWIDTH/2, 15, GOALWIDTH);
+		
+
 		
 		//Draw Header
 		//drawHeader(g);
@@ -890,6 +934,15 @@ public class GameplayState extends BasicGameState implements KeyListener {
 //			g.drawLine(0, FIELDHEIGHT/2, FIELDWIDTH/2-100, FIELDHEIGHT/2);
 //			g.drawRect(FIELDWIDTH/2-100, 0, -200, 200);
 //			g.drawRect(FIELDWIDTH/2-100,FIELDHEIGHT,-200,-200);
+		}else if(NAME.equals("GOLDENGOAL")){
+			g.drawLine(0, 0, FIELDWIDTH, FIELDHEIGHT);
+			g.drawLine(0, FIELDHEIGHT, FIELDWIDTH, 0);
+			g.setColor(Color.black);
+//			g.fillRect(FIELDWIDTH/2-200, FIELDHEIGHT/2-200, 400, 400);
+			g.fillOval(FIELDWIDTH/2 - 350, FIELDHEIGHT/2 - 350, 700, 700);
+			g.setColor(Color.white);
+			g.drawRect(FIELDWIDTH/2-150, FIELDHEIGHT/2-150, 300, 300);
+			g.drawOval(FIELDWIDTH/2 - 350, FIELDHEIGHT/2 - 350, 700, 700);
 		}else if(NAME.equals("FOURSQUARE")){
 			g.drawLine(0, FIELDHEIGHT/2, FIELDWIDTH, FIELDHEIGHT/2);
 			g.drawLine(FIELDWIDTH/2, 0, FIELDWIDTH/2, FIELDHEIGHT);
@@ -905,32 +958,62 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		else
 			g.setColor(new Color(255,255,255,90));
 		
-		g.fillRect(data.screenWidth()/2-data.screenWidth()/3, 25, data.screenWidth()/6, font.getHeight("0")+20);
-		g.fillRect(data.screenWidth()/2+data.screenWidth()/6, 25, data.screenWidth()/6, font.getHeight("0")+20);
 		g.fillRect(data.screenWidth()/2-data.screenWidth()/6, 15, data.screenWidth()/3, font.getHeight("0")+font_small.getHeight("0")+15);
+		if(NAME.equals("FOURSQUARE") || NAME.equals("GOLDENGOAL")){
+			g.fillRect(data.screenWidth()/2-data.screenWidth()/6-data.screenWidth()/7, 25, data.screenWidth()/7, font.getHeight("0")+20);
+			g.fillRect(data.screenWidth()/2+data.screenWidth()/6, 25, data.screenWidth()/7, font.getHeight("0")+20);
+			g.fillRect(data.screenWidth()/2-data.screenWidth()/6-data.screenWidth()*2/7, 25, data.screenWidth()/7, font.getHeight("0")+20);
+			g.fillRect(data.screenWidth()/2+data.screenWidth()/6+data.screenWidth()/7, 25, data.screenWidth()/7, font.getHeight("0")+20);
+		}else{
+			g.fillRect(data.screenWidth()/2-data.screenWidth()/3, 25, data.screenWidth()/6, font.getHeight("0")+20);
+			g.fillRect(data.screenWidth()/2+data.screenWidth()/6, 25, data.screenWidth()/6, font.getHeight("0")+20);
+		}
 		
 		if(data.actionCam())
 			g.setColor(Color.white);
 		else
 			g.setColor(Color.black);
 		//Score boxes
-		g.drawRect(data.screenWidth()/2-data.screenWidth()/3, 25, data.screenWidth()/6, font.getHeight("0")+20);
-		g.drawRect(data.screenWidth()/2+data.screenWidth()/6, 25, data.screenWidth()/6, font.getHeight("0")+20);
+		if(NAME.equals("FOURSQUARE") || NAME.equals("GOLDENGOAL")){
+			g.drawRect(data.screenWidth()/2-data.screenWidth()/6-data.screenWidth()/7, 25, data.screenWidth()/7, font.getHeight("0")+20);
+			g.drawRect(data.screenWidth()/2+data.screenWidth()/6, 25, data.screenWidth()/7, font.getHeight("0")+20);
+			g.drawRect(data.screenWidth()/2-data.screenWidth()/6-data.screenWidth()*2/7, 25, data.screenWidth()/7, font.getHeight("0")+20);
+			g.drawRect(data.screenWidth()/2+data.screenWidth()/6+data.screenWidth()/7, 25, data.screenWidth()/7, font.getHeight("0")+20);
+		}else{
+			g.drawRect(data.screenWidth()/2-data.screenWidth()/3, 25, data.screenWidth()/6, font.getHeight("0")+20);
+			g.drawRect(data.screenWidth()/2+data.screenWidth()/6, 25, data.screenWidth()/6, font.getHeight("0")+20);
+
+		}
 		
 		//Timer boxes
 		g.drawRect(data.screenWidth()/2-data.screenWidth()/6, 15, data.screenWidth()/3, font.getHeight("0")+font_small.getHeight("0")+15);
 		
 		//Draw scores
-		g.setFont(font_white);
+		g.setFont(font_white);		
+		if(NAME.equals("FOURSQUARE") || NAME.equals("GOLDENGOAL")){
+			if(scores[0]>=0){
+				g.setColor(data.actionCam() ? teamColors[0] : teamColors[0].darker(.4f));
+				g.drawString(""+scores[0], data.screenWidth()/2-data.screenWidth()/6-data.screenWidth()*3/14-font.getWidth(""+scores[0])/2, 28);
+			}if(scores[1]>=0){
+				g.setColor(data.actionCam() ? teamColors[1] : teamColors[1].darker(.4f));
+				g.drawString(""+scores[1], data.screenWidth()/2-data.screenWidth()/6-data.screenWidth()/14-font.getWidth(""+scores[1])/2, 28);
+			}if(scores[2]>=0){
+				g.setColor(data.actionCam() ? teamColors[2] : teamColors[2].darker(.4f));
+				g.drawString(""+scores[2], data.screenWidth()/2+data.screenWidth()/6+data.screenWidth()/14-font.getWidth(""+scores[2])/2, 28);
+			}if(scores[3]>=0){
+				g.setColor(data.actionCam() ? teamColors[3] : teamColors[3].darker(.4f));
+				g.drawString(""+scores[3], data.screenWidth()/2+data.screenWidth()/6+data.screenWidth()*3/14-font.getWidth(""+scores[3])/2, 28);
+			}
+		}else{
+			g.drawString(""+scores[0], data.screenWidth()/2-data.screenWidth()*3f/12f-font.getWidth(""+scores[0])/2, 28);
+			g.drawString(""+scores[1], data.screenWidth()/2+data.screenWidth()*3f/12f-font.getWidth(""+scores[1])/2, 28);
+	//		g.drawString(":", FIELDWIDTH/2-font.getWidth(":")/2, -font.getHeight("0")-14);
+		}
+		
 		if(data.actionCam())
 			g.setColor(Color.white);
 		else
 			g.setColor(Color.black);
-		
-		g.drawString(""+scores[0], data.screenWidth()/2-data.screenWidth()*3f/12f-font.getWidth(""+scores[0])/2, 28);
-		g.drawString(""+scores[1], data.screenWidth()/2+data.screenWidth()*3f/12f-font.getWidth(""+scores[1])/2, 28);
-//		g.drawString(":", FIELDWIDTH/2-font.getWidth(":")/2, -font.getHeight("0")-14);
-	
 		//Draw Timer
 		if(data.timeLimit()>0){
 			g.drawString(""+(time/1000), data.screenWidth()/2-font.getWidth(""+time/1000)/2, 10);
@@ -941,6 +1024,14 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			g.setFont(font_small);
 			g.drawString(String.format("%03d",999), data.screenWidth()/2-font_small.getWidth(String.format("%03d",999))/2, 10+font.getHeight("0")+5);
 		}
+	}
+	
+	public void drawArrow(Graphics g){
+		tempf = (float)Math.atan2(goals[0].getMinY()/2+goals[0].getMaxY()/2-ball.getY(), goals[0].getMinX()/2+goals[0].getMaxX()/2-ball.getX())*180f/(float)Math.PI;
+		g.rotate(ball.getX(), ball.getY(), tempf);
+		g.setColor(Color.darkGray);
+		g.drawImage(slice_tri, ball.getX()-slice_tri.getWidth()/2, ball.getY()-slice_tri.getHeight()/2, new Color(1,1,1,.4f));
+		g.rotate(ball.getX(), ball.getY(), -tempf);
 	}
 	
 	public void drawGameOver(Graphics g){
@@ -1007,6 +1098,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		}
 		if((ball.getY()-viewY)*scaleFactor<(font.getHeight("0")+font_small.getHeight("0")+31))
 			b = false;
+		if(goals[0].getMinY()<10)
+			b = false;
 		return b;
 	}
 	
@@ -1017,7 +1110,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 //		System.out.println(time);
 
-		if((data.timeLimit() > 0 && time == 0) || (data.scoreLimit() > 0 && (scores[0] >= data.scoreLimit() || scores[1] >= data.scoreLimit()))){
+		if((data.timeLimit() > 0 && time == 0) || (data.scoreLimit() > 0 && (scores[0] >= data.scoreLimit() || scores[1] >= data.scoreLimit()|| scores[2] >= data.scoreLimit()|| scores[3] >= data.scoreLimit()))){
 			gameOverCountdown -= delta;
 		}
 		
@@ -1141,16 +1234,17 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		//Put ball back in play
 		if(scored && gameOverCountdown >= GAMEOVERCOUNTDOWN){
-			if(Math.abs(ball.getX()-targetX)<15f){
+			if(Math.abs(ball.getX()-targetX)<15f && Math.abs(ball.getY()-targetY)<15f){
 				temp = true;
 				for(Player p: players){if(dist(p) < p.getKickRange()/2){temp = false;}}
 				if(temp){
 					ball.setVel(resetVelocity, .5f);
-					ball.setPos(targetX, ball.getY());
+					ball.setPos(ball.getX(), ball.getY());
 					ball.setScored(false);
 					ball.setSoundCoolDown(50);
 					scored = false;
 					mySoundSystem.quickPlay( true, slowMo? "BallLaunchSlow.ogg": "BallLaunch.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+					//System.out.println("BALL IN PLAY");
 				}else{
 					ball.setVel(resetVelocity, 0);
 				}
@@ -1160,11 +1254,11 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		//Scoring a goal
 		if((ball.getX()<=0 || ball.getX()>=FIELDWIDTH || ball.getY()<=0 || ball.getY()>=FIELDHEIGHT) && !scored){
 			//Will put ball in from top if score on left and bottom if score on right
-			
 			for(Goal goal: goals){
 				//For vertical goal
 				if(ball.getY()>goal.getMinY() && ball.getY()<goal.getMaxY() && sameDir(ball.getVelX(), goal.getXDir())){
-					if(ball.getLastKicker()==goal.getTeam()){//Own Goal
+//					//System.out.println("VERT GOAL");
+					if(ownGoal(goal)){//Own Goal
 						mySoundSystem.quickPlay( true, "GoalOwnScored.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						goalScroll = goalScroll2;
 						for (int i = 0; i < scores.length; i++) {
@@ -1186,14 +1280,20 @@ public class GameplayState extends BasicGameState implements KeyListener {
 				}
 				//For horizontal goals
 				if(ball.getX()>goal.getMinX() && ball.getX()<goal.getMaxX() && sameDir(ball.getVelY(), goal.getYDir())){
-					if(ball.getLastKicker()==goal.getTeam()){//Own Goal
+//					//System.out.println("HORZ GOAL");
+					if(ownGoal(goal)){//Own Goal
 						mySoundSystem.quickPlay( true, "GoalOwnScored.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						goalScroll = goalScroll2v;
+						for (int i = 0; i < scores.length; i++) {
+							if (i != ball.getLastKicker()) {
+								scores[i]++;
+							}
+						}
 					}else{
 						mySoundSystem.quickPlay( true, "GoalScored.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						goalScroll = goalScroll1v;
+						scores[ball.getLastKicker()]++;
 					}
-					scores[ball.getLastKicker()]++;
 					scored = true;
 					scrollX = goal.getMinX()+goal.getWidth()/2-goalScroll.getWidth()/2;
 					scrollY = goal.getMinY()+((goal.getYDir() < 0 ? goalScroll.getHeight() + 100 : 100)*(goal.getYDir()));
@@ -1237,6 +1337,48 @@ public class GameplayState extends BasicGameState implements KeyListener {
 					targetY = FIELDHEIGHT/2;
 					resetVelocity[0]=0;
 					resetVelocity[1]=0;
+				}else if(NAME.equals("GOLDENGOAL")){
+//					if(goals[0].getXDir()==-1){
+//						targetX = 0;
+//						targetY = (goals[0].getMinY()+goals[0].getMaxY())/2f;
+//					}else if(goals[0].getXDir()==1){
+//						targetX = FIELDWIDTH;
+//						targetY = (goals[0].getMinY()+goals[0].getMaxY())/2f;						
+//					}else if(goals[0].getYDir()==-1){
+//						targetX = (goals[0].getMinX()+goals[0].getMaxX())/2f;
+//						targetY = 0;
+//					}else if(goals[0].getYDir()==1){
+//						targetX = (goals[0].getMinX()+goals[0].getMaxX())/2f;
+//						targetY = FIELDHEIGHT;	
+//					}
+//					resetVelocity[0] = -goals[0].getXDir();
+//					resetVelocity[1] = -goals[0].getYDir();
+					targetX = FIELDWIDTH/2;
+					targetY = FIELDHEIGHT/2;
+					resetVelocity[0] = 0;
+					resetVelocity[1] = 0;
+					
+					if(Math.random()>.5){//vert goal
+						tempf = (float)Math.random();
+						tempArr[0] = Math.max(GOALSIZE, FIELDHEIGHT*(float)Math.random()*.6f);
+						goals[0].reinit(
+								tempf>.5f? 0: FIELDWIDTH,
+								(int)((FIELDHEIGHT-tempArr[0])*Math.random()),
+								tempf>.5f? -25: 25,
+								(int)tempArr[0],
+								tempf>.5f?-1:1, 0,
+								0, new Color((int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255)));
+					}else{//horz goal
+						tempf = (float)Math.random();
+						tempArr[0] = Math.max(GOALSIZE, FIELDWIDTH*(float)Math.random()*.6f);
+						goals[0].reinit(
+								(int)((FIELDWIDTH-tempArr[0])*Math.random()),
+								tempf>.5? 0: FIELDHEIGHT,
+								(int)tempArr[0],
+								tempf>.5f? -25:25,
+								0, tempf>.5f?-1:1,
+								0, new Color((int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255)));
+					}
 				}
 				ball.setVel(new float[]{(targetX-ball.getX()),(targetY-ball.getY())}, 1f);
 				ball.setCurve(new float[]{0f,0f}, 0f);
@@ -1310,18 +1452,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 					ball.cancelAcc();//Cancels any speeding up or slowing down. Does not affect curve
 					ball.setReadyForGust(false);
 					ball.setLastKicker(p.getTeamNum());
-					ball.clearLocked();
-					
-					if(GOALTYPE == 1 || GOALTYPE == -1){//Squash
-						for(Goal goal: goals)
-							goal.changeSides();
-					}
-					if(GOALTYPE == 2){//If OneSquare
-						for(Goal goal: goals){
-							goal.setTeamNum(ball.getLastKicker());
-							goal.changeSides();//Hacky ass way to set goal to opposite side as whoever kicked
-						}
-					}
+					ball.clearLocked();					
 				}
 //				 else{
 //					if(dist(p) > p.getKickRange()/2)
@@ -1410,7 +1541,6 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		camWidth = tempX;
 		camHeight = tempY;
-		
 	}
 	
 	public void reset(GameContainer gc) throws SlickException{
@@ -1425,6 +1555,14 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		resetPositions();
 	}
 
+	public boolean ownGoal(Goal goal){
+		if(GOALTYPE == 7){
+			return false;//no own goals in crazyking
+		}else{
+			return ball.getLastKicker() == goal.getTeam();
+		}
+	}
+	
 	public float dist(Player p){//dist to ball
 		return (float)Math.sqrt((p.getX()-ball.getX())*(p.getX()-ball.getX()) + (p.getY()-ball.getY())*(p.getY()-ball.getY()));
 	}

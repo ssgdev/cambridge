@@ -59,8 +59,8 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 	float[] pAlphas;
 	float[] pAlphaTargets;
 	Color[] pColorTargets;
-	float[] pCoords;
-	float[] pCoordTargets;
+	float[][] pCoords;
+	float[][] pCoordTargets;
 	float[] pThetas;
 	
 	private Cambridge cambridge;
@@ -98,8 +98,8 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 		
 		pAlphas = new float[4];
 		pAlphaTargets = new float[4];
-		pCoords = new float[4];
-		pCoordTargets = new float[4];
+		pCoords = new float[4][2];
+		pCoordTargets = new float[4][2];
 		pColorTargets = new Color[4];
 		pThetas = new float[4];
 		
@@ -164,36 +164,57 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 	}
 	
 	public void setPlayerGraphics(){
-		for (int i = 0; i < anchors.length; i++) {
-			if (anchors[i].initiated()) {
-				if(anchors[i].getTeam()==-1){
-					pCoords[i] = data.screenWidth()/2;
-					pCoordTargets[i] = data.screenWidth()/2;
-					pColorTargets[i] = Color.gray;
-				}else if(anchors[i].getTeam()==0){
-					pCoords[i] = data.screenWidth()/2 - (int)mapWidth/5;
-					pCoordTargets[i] = data.screenWidth()/2 - (int)mapWidth/5;
-					pColorTargets[i] = Color.cyan;
-				}else if(anchors[i].getTeam()==1){
-					pCoords[i] = data.screenWidth()/2 + (int)mapWidth/5;
-					pCoordTargets[i] = data.screenWidth()/2 + (int)mapWidth/5;
-					pColorTargets[i] = Color.orange;
+		if(gameMode<=2){
+			for (int i = 0; i < anchors.length; i++) {
+				if (anchors[i].initiated()) {
+					if(anchors[i].getTeam()==-1){
+						pCoords[i][0] = data.screenWidth()/2;
+						pCoords[i][1] = (data.screenHeight()/2f-mapHeight/2f)+mapHeight/5f + mapHeight/10f*2*i;
+						pCoordTargets[i][0] = data.screenWidth()/2;
+						pCoordTargets[i][1] = pCoords[i][1];
+						pColorTargets[i] = Color.gray;
+					}else if(anchors[i].getTeam()==0){
+						pCoords[i][0] = data.screenWidth()/2 - (int)mapWidth/5;
+						pCoords[i][1] = (data.screenHeight()/2f-mapHeight/2f)+mapHeight/5f + mapHeight/10f*2*i;
+						pCoordTargets[i][0] = data.screenWidth()/2 - (int)mapWidth/5;
+						pCoordTargets[i][1] = pCoords[i][1];
+						pColorTargets[i] = Color.cyan;
+					}else if(anchors[i].getTeam()==1){
+						pCoords[i][0] = data.screenWidth()/2 + (int)mapWidth/5;
+						pCoords[i][1] = (data.screenHeight()/2f-mapHeight/2f)+mapHeight/5f + mapHeight/10f*2*i;
+						pCoordTargets[i][0] = data.screenWidth()/2 + (int)mapWidth/5;
+						pCoordTargets[i][1] = pCoords[i][1];
+						pColorTargets[i] = Color.orange;
+					}
 				}
 			}
+		}else{
+			pCoordTargets[0][0] = data.screenWidth()/2 - mapHeight/12f;
+			pCoordTargets[0][1] = data.screenHeight()/2 - mapHeight/13f;
+			pCoordTargets[1][0] = data.screenWidth()/2 + mapHeight/12f;
+			pCoordTargets[1][1] = data.screenHeight()/2 - mapHeight/13f;
+			pCoordTargets[2][0] = data.screenWidth()/2 - mapHeight/12f;
+			pCoordTargets[2][1] = data.screenHeight()/2 +mapHeight/13f;
+			pCoordTargets[3][0] = data.screenWidth()/2 +mapHeight/12f;
+			pCoordTargets[3][1] = data.screenHeight()/2 +mapHeight/13f;
+			
+			for(int i=0;i<4;i++)
+				for(int j=0;j<2;j++)
+					pCoords[i][j] = pCoordTargets[i][j];
 		}
 	}
 	
 	public void reset() {
 		for (int i=0;i<anchors.length; i++) {
 			if (anchors[i].initiated()) {
-				if(anchors[i].teamSelected())
-					anchors[i].setTeam(false);
+				anchors[i].setTeam(false);
+				anchors[i].setTeam(-1);
 				pAlphas[i] = 0f;
 				pAlphaTargets[i] = 0f;
 				pThetas[i] = 0;
 			}
 		}
-		
+		setPlayerGraphics();
 		readiedUp = false;
 	}
 
@@ -237,18 +258,26 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 						(int)((float)pColorTargets[i].getGreen()*pAlphas[i]+255f*(1f-pAlphas[i])),
 						(int)((float)pColorTargets[i].getBlue()*pAlphas[i]+255f*(1f-pAlphas[i]))));
 				g.setLineWidth(2);
-				drawPlayer(g, pCoords[i], mapY+mapHeight/5f + mapHeight/10f*2*i, anchors[i].getCharacter(), i);
+				drawPlayer(g, pCoords[i][0], pCoords[i][1], anchors[i].getCharacter(), i);
 				g.setFont(font_small);
-				if(anchors[i].getTeam()==-1){
-					g.drawString("P"+(anchors[i].playerNum()+1), pCoords[i]-font_small.getWidth("P0")/2 , mapY+mapHeight/5f + mapHeight/10f*2*i-charSize/2-font_small.getHeight("0")/2-8);
-				}else if(anchors[i].getTeam()==0){
-					g.drawString("P"+(anchors[i].playerNum()+1), pCoords[i]-font_small.getWidth("P0") - charSize/2 -10, mapY+mapHeight/5f + mapHeight/10f*2*i-font_small.getHeight("0")/2-5);
-				}else{//==1
-					g.drawString("P"+(anchors[i].playerNum()+1), pCoords[i] + charSize/2 +10, mapY+mapHeight/5f + mapHeight/10f*2*i-font_small.getHeight("0")/2-5);
+				if(gameMode<3){
+					if(anchors[i].getTeam()==-1){
+						g.drawString("P"+(anchors[i].playerNum()+1), pCoords[i][0]-font_small.getWidth("P0")/2 ,pCoords[i][1]-charSize/2-font_small.getHeight("0")/2-8);
+					}else if(anchors[i].getTeam()==0){
+						g.drawString("P"+(anchors[i].playerNum()+1), pCoords[i][0]-font_small.getWidth("P0") - charSize/2 -10, pCoords[i][1]-font_small.getHeight("0")/2-5);
+					}else{//==1
+						g.drawString("P"+(anchors[i].playerNum()+1), pCoords[i][0] + charSize/2 +10, pCoords[i][1]-font_small.getHeight("0")/2-5);
+					}
+				}else{
+					if(i==0 ||i == 2){
+						g.drawString("P"+(anchors[i].playerNum()+1), pCoords[i][0]-font_small.getWidth("P0") - charSize/2 -10, pCoords[i][1]-font_small.getHeight("0")/2-5);
+					}else if(i==1 || i == 3){
+						g.drawString("P"+(anchors[i].playerNum()+1), pCoords[i][0] + charSize/2 +10, pCoords[i][1]-font_small.getHeight("0")/2-5);
+					}
 				}
-				g.setColor(new Color(g.getColor().getRed(), g.getColor().getGreen(), g.getColor().getBlue(), pAlphas[i]));
+				g.setColor(new Color(g.getColor().getRed(), g.getColor().getGreen(), g.getColor().getBlue(), (int)(pAlphas[i]*255f)));
 				g.setLineWidth(4);
-				g.drawOval(pCoords[i]-charSize/2, mapY+mapHeight/5f+mapHeight/10f*2*i-charSize/2, charSize, charSize);
+				g.drawOval(pCoords[i][0]-charSize/2, pCoords[i][1]-charSize/2, charSize, charSize);
 			}
 		}
 		
@@ -287,19 +316,26 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 				}
 				
 				if (anchors[i].getTeam() == -1) {
-					pCoordTargets[i] = data.screenWidth()/2;
+					//pCoordTargets[i][0] = data.screenWidth()/2;
 					pColorTargets[i] = Color.gray;
 				} else if (anchors[i].getTeam() == 0) {
-					pCoordTargets[i] = data.screenWidth()/2 - (int)mapWidth/5;
+					//pCoordTargets[i][0] = data.screenWidth()/2 - (int)mapWidth/5;
 					pColorTargets[i] = Color.cyan;
-				} else {
-					pCoordTargets[i] = data.screenWidth()/2 + (int)mapWidth/5;
+				} else if(anchors[i].getTeam()==1){
+					//pCoordTargets[i][0] = data.screenWidth()/2 + (int)mapWidth/5;
 					pColorTargets[i] = Color.orange;
+				}else if(anchors[i].getTeam()==2){
+					//pCoordTargets[i][1] = data.screenHeight()/2 - (int)mapHeight/5;
+					pColorTargets[i] = Color.magenta;
+				}else if(anchors[i].getTeam()==3){
+					//pCoordTargets[i][1] = data.screenHeight()/2 + (int)mapHeight/5;
+					pColorTargets[i] = Color.green;
 				}
 //				g.drawString(anchors[i].playerNum()+"", x - font_white.getWidth(anchors[i].playerNum()+""), data.screenHeight() * 1/3 + i*50);
 				
-				pCoords[i] = approachTarget(pCoords[i], pCoordTargets[i], delta/2f);
-				pAlphas[i] = approachTarget(pAlphas[i], pAlphaTargets[i], delta/240f);				
+				pCoords[i][0] = approachTarget(pCoords[i][0], pCoordTargets[i][0], delta/2f);
+				pCoords[i][1] = approachTarget(pCoords[i][1], pCoordTargets[i][1], delta/2f);
+				pAlphas[i] = approachTarget(pAlphas[i], pAlphaTargets[i], delta/240f);			
 			}
 		}
 		
@@ -311,17 +347,21 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 
 		int readyNum = 0;
 		int existsNum = 0;
-		int[] teamCount = new int[] {0, 0};
+		int[] teamCount = new int[] {0, 0,0,0};
 		for (int i = 0; i < anchors.length; i++) {
 			if (anchors[i].teamSelected())
 				readyNum++;
 			if (anchors[i].initiated())
 				existsNum++;
-			if (anchors[i].getTeam() == 1 && anchors[i].teamSelected())
-				teamCount[1]++;
-			else if (anchors[i].getTeam() == 0 && anchors[i].teamSelected()) {
-				teamCount[0]++;
-			}
+			for(int j=0;j<4;j++)
+				if(anchors[i].getTeam() == j && anchors[i].teamSelected())
+					teamCount[j]++;
+			
+//			if (anchors[i].getTeam() == 1 && anchors[i].teamSelected())
+//				teamCount[1]++;
+//			else if (anchors[i].getTeam() == 0 && anchors[i].teamSelected()) {
+//				teamCount[0]++;
+//			}
 		}
 		
 		// Read input from activated anchors
@@ -331,19 +371,39 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 					if (!anchors[i].teamSelected()) {
 						if (anchors[i].left(gc, delta)) {
 							mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+							if(anchors[i].getTeam()==-1 || anchors[i].getTeam() == 1)
+								 pCoordTargets[i][0] -= gameMode < 3 ? (int)mapWidth/5 : (int)mapHeight/2.5;
 							anchors[i].changeTeam(-1);
 						} else if (anchors[i].right(gc, delta)) {
 							mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+							if(anchors[i].getTeam()==-1 || anchors[i].getTeam() == 0)
+								 pCoordTargets[i][0] += gameMode < 3 ? (int)mapWidth/5 : (int)mapHeight/2.5;
 							anchors[i].changeTeam(1);
-						} else if (anchors[i].back(gc, delta)) {
+						} else if(anchors[i].up(gc, delta)){
+							if(gameMode>2){//CHANGE TO MATCH ACTUAL GAME MODE COUNT
+								mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+								if(anchors[i].getTeam()==-1 || anchors[i].getTeam() == 3)
+									 pCoordTargets[i][1] -= gameMode < 3 ? (int)mapWidth/5 : (int)mapHeight/3.1;
+								anchors[i].changeTeam(-2);
+							}
+						} else if(anchors[i].down(gc, delta)){
+							if(gameMode>2){//
+								mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+								if(anchors[i].getTeam()==-1 || anchors[i].getTeam() == 2)
+									 pCoordTargets[i][1] += gameMode < 3 ? (int)mapWidth/5 : (int)mapHeight/3.1;
+								anchors[i].changeTeam(2);
+							}
+						}else if (anchors[i].back(gc, delta)) {
 							mySoundSystem.quickPlay( true, "MenuBack.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 							targetMapY = originalMapY;
 							exiting = true;
 						} else if (anchors[i].select(gc, delta)) {
 							if (anchors[i].getTeam() != -1) {
-								mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 								if (teamCount[anchors[i].getTeam()] != existsNum-1) {
 									anchors[i].setTeam(true);
+									mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+								}else{
+									mySoundSystem.quickPlay( true, "MenuFail.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 								}
 							}else{
 								mySoundSystem.quickPlay( true, "MenuFail.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
@@ -393,7 +453,6 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		initPlayerPolys();
-		setPlayerGraphics();
 		reset();
 	}
 

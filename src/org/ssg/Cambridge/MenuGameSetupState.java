@@ -89,7 +89,7 @@ public class MenuGameSetupState extends BasicGameState implements KeyListener {
 		maps[0] = new Image(data.RESDIR+"map_soccer.png");
 		maps[1] = new Image(data.RESDIR+"map_hockey.png");
 		maps[2] = new Image(data.RESDIR+"map_tennis.png");
-		maps[3] = new Image(data.RESDIR+"map_squash.png");
+		maps[3] = new Image(data.RESDIR+"map_goldengoal.png");
 		maps[4] = new Image(data.RESDIR+"map_foursquare.png");
 		//Give the maps to Team Select
 		((MenuTeamSetupState)(sbg.getState(data.MENUTEAMSETUPSTATE))).setMaps(maps);

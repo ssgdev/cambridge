@@ -1,5 +1,9 @@
 Changelog:
 
+9.7.13
+Added 4P functionality to gameplaystate and menuteamsetup
+Added Crazy King mode (officially called Golden Goal, might change)
+
 9.3.13
 Fixed resolution options menu bug
 

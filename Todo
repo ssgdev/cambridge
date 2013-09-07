@@ -35,6 +35,8 @@ TODO:
 	DONE Team select graphics 
 		???? Only go to team select if 3+ players (not 4square)
 		???? Maybe we should let players select their square in foursquare
+		DONE Add failure sound for when you try to ready up in a team which you are allowed to ready up in
+		DONE Backing out of a team select in a 4square/goldengoal should reset the player teams selected
 	!!!! Prevent crashes when changing the resolution in fullscreen (Maybe if they're fullscreeng, force native res?)
 	DONE Going to main menu should reset all menu options (no more skipping the char select)
 	DONE DPad in menus
@@ -44,15 +46,18 @@ TODO:
 	!!!! Bug: Sometimes on keyboard at least, one set of keys has a long inputdelay and the other has a short inputdelay
 	!!!! Main Menu still uses WASD
 	!!!! Some kind of graphics.clear method to use when transitioning states?
+	!!!! Should go back to menu music when entering main menu
 DONE GameStart transition
 !!!! Something in case they delete the configs?
 DONE Make font_large for GAME OVER and the like
 DONE Revamp gameplaystate ui
+DONE Gameplaystate UI for 4P
 DONE Ball spawn location should be by goal scored on, not lastKicked DONE Now it's random
 DONE Change Twins keyboard controls to switching nukes and double move default
 !!!! Implement game modes with menus
 	DONE TENNIS (Spawn locations)
 	DONE SQUASH (Spawn locations) DONE BUT SQUASH IS TERRIBLE
+	DONE GOLDENGOAL (aka Crazy King)
 	!!!! FOURSQUARE
 !!!! Ball Possession/Goal color switching doesn't work for some powers in Squash
 !!!! Ball possession issue with Back, also check Twotouch and neutron in many situations
@@ -69,7 +74,12 @@ DONE Bugs when neutron grabs a twotouch holding the ball
 	!!!! Balance Enforcer (more control) Less wall penalty?
 !!!! Soundtrack
 !!!! Somethings forgetting? Add as needed
-!!!! More game modes? Squash is a failure. Crazy King? Betrayer Ball?
+!!!! More game modes? Squash is a failure.
+	DONE Crazy King?
+		DONE Needs arrow to point to goal in actioncam
+			!!!! Needs non-playerholder arrow, also make it darker?
+		!!!! Needs better goal graphics
+	!!!! Betrayer Ball?
 !!!! TODO: Test 4 Neos going in and out of slowmo at once
 DONE PlayerNeutron pulling the ball out of Back's lock will teleport back to Back when he releases grav pull
 	DONE SOLUTION: The "too far then unlock" statement was after the "set ball to this position" statement in Back, so it would never leave lock

@@ -81,19 +81,39 @@ public class CambridgePlayerAnchor {
 	}
 	
 	public void changeTeam(int n) {
-		if (n < 0) {
-			if (playerTeam == -1) {
-				playerTeam = 0;
-			} else if (playerTeam == 1) {
-				playerTeam = -1;
+		if(n == 1 || n == -1){
+			if (n < 0) {
+				if (playerTeam == -1) {
+					playerTeam = 0;
+				} else if (playerTeam == 1) {
+					playerTeam = -1;
+				}
+			} else {
+				if (playerTeam == -1) {
+					playerTeam = 1;
+				} else if (playerTeam == 0) {
+					playerTeam = -1;
+				}
 			}
-		} else {
-			if (playerTeam == -1) {
-				playerTeam = 1;
-			} else if (playerTeam == 0) {
-				playerTeam = -1;
+		}else if(n==2 || n==-2){
+			if (n < 0) {
+				if (playerTeam == -1) {
+					playerTeam = 2;
+				} else if (playerTeam == 3) {
+					playerTeam = -1;
+				}
+			} else {
+				if (playerTeam == -1) {
+					playerTeam = 3;
+				} else if (playerTeam == 2) {
+					playerTeam = -1;
+				}
 			}
 		}
+	}
+	
+	public void setTeam(int n){
+		playerTeam = n;
 	}
 	
 	public boolean initiated() {
