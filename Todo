@@ -26,15 +26,13 @@ TODO:
 		DONE Going back to main menu after a game over starts with cursor on EXIT sometimes? DONE Put a selected=0 in enter
 		DONE Should draw color and players next to winning team DONE Drawn next to every team actually. Needs testing when 4P comes out.
 	!!!! In-game pause menu
-	!!!! In-game pause menu should be accessible by pressing start on controller
+		!!!! In-game pause menu should be accessible by pressing start on controller
 	DONE Draw -1 as "Unlimited" in game mode select
 	DONE Mode Select graphics
 	!!!! Reminder: Mode Select team colors should be consistent with gameplaystate
 	!!!! Add a fade to white after teams are selected
 	DONE Should not be able to select both unlimited score and time limits
 	DONE Team select graphics 
-		???? Only go to team select if 3+ players (not 4square)
-		???? Maybe we should let players select their square in foursquare
 		DONE Add failure sound for when you try to ready up in a team which you are allowed to ready up in
 		DONE Backing out of a team select in a 4square/goldengoal should reset the player teams selected
 	!!!! Prevent crashes when changing the resolution in fullscreen (Maybe if they're fullscreeng, force native res?)
@@ -78,9 +76,11 @@ DONE Bugs when neutron grabs a twotouch holding the ball
 	DONE Crazy King?
 		DONE Needs arrow to point to goal in actioncam
 			!!!! Needs non-playerholder arrow, also make it darker?
-		!!!! Needs better goal graphics
+		!!!! Still needs better goal graphics
 	!!!! Betrayer Ball?
 !!!! TODO: Test 4 Neos going in and out of slowmo at once
+!!!! Sometimes ball still gets lost after scoring
+!!!! Non-players are getting scores in 4p game modes sometimes
 DONE PlayerNeutron pulling the ball out of Back's lock will teleport back to Back when he releases grav pull
 	DONE SOLUTION: The "too far then unlock" statement was after the "set ball to this position" statement in Back, so it would never leave lock
 DONE PlayerNeutron can grav pull throw the ball+circle of twotouch after the gameover DONE The predictor and circle are drawn to the ball's position, and the ball keeps updating after gameover.

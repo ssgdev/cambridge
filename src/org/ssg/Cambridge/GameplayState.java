@@ -603,7 +603,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		kickFloat = new float[]{0f,0f};
 		spinFloat = new float[]{0f,0f};
 
-		scores = new int[]{-1,-1,-1,-1};
+		scores = new int[]{-999,-999,-999,-999};
 		for(CambridgePlayerAnchor a: data.playerAnchors())
 			if(a.initiated())
 				scores[a.getTeam()] = 0;
@@ -690,10 +690,10 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			p.resetPos();
 		}
 
-		scores[0] = -1;
-		scores[1] = -1;
-		scores[2] = -1;
-		scores[3] = -1;
+		scores[0] = -999;
+		scores[1] = -999;
+		scores[2] = -999;
+		scores[3] = -999;
 		
 		for(CambridgePlayerAnchor a: data.playerAnchors())
 			if(a.initiated())
@@ -780,10 +780,6 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		//draw goal scroll
 		if(gameOverCountdown >= GAMEOVERCOUNTDOWN)
 			g.drawImage(goalScroll, scrollX, scrollY);
-		
-		//Draw the arrow pointing to the goal
-		if(!scored && data.actionCam() && NAME.equals("GOLDENGOAL"))
-			drawArrow(g);
 		
 		//draw bars
 		g.setColor(Color.white);
@@ -943,6 +939,12 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			g.setColor(Color.white);
 			g.drawRect(FIELDWIDTH/2-150, FIELDHEIGHT/2-150, 300, 300);
 			g.drawOval(FIELDWIDTH/2 - 350, FIELDHEIGHT/2 - 350, 700, 700);
+			
+			//draw the goal box
+			tempArr[0] = goals[0].getMinX()/2+goals[0].getMaxX()/2;
+			tempArr[1] = goals[0].getMinY()/2+goals[0].getMaxY()/2;
+			g.drawRect(tempArr[0]-goals[0].getWidth()/2-50, tempArr[1]-goals[0].getHeight()/2-50,goals[0].getWidth()+100, goals[0].getHeight()+100);
+			g.drawOval(tempArr[0]-goals[0].getWidth()/2-150, tempArr[1]-goals[0].getHeight()/2-150, goals[0].getWidth()+300, goals[0].getHeight()+300);
 		}else if(NAME.equals("FOURSQUARE")){
 			g.drawLine(0, FIELDHEIGHT/2, FIELDWIDTH, FIELDHEIGHT/2);
 			g.drawLine(FIELDWIDTH/2, 0, FIELDWIDTH/2, FIELDHEIGHT);
@@ -1024,14 +1026,6 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			g.setFont(font_small);
 			g.drawString(String.format("%03d",999), data.screenWidth()/2-font_small.getWidth(String.format("%03d",999))/2, 10+font.getHeight("0")+5);
 		}
-	}
-	
-	public void drawArrow(Graphics g){
-		tempf = (float)Math.atan2(goals[0].getMinY()/2+goals[0].getMaxY()/2-ball.getY(), goals[0].getMinX()/2+goals[0].getMaxX()/2-ball.getX())*180f/(float)Math.PI;
-		g.rotate(ball.getX(), ball.getY(), tempf);
-		g.setColor(Color.darkGray);
-		g.drawImage(slice_tri, ball.getX()-slice_tri.getWidth()/2, ball.getY()-slice_tri.getHeight()/2, new Color(1,1,1,.4f));
-		g.rotate(ball.getX(), ball.getY(), -tempf);
 	}
 	
 	public void drawGameOver(Graphics g){
@@ -1367,7 +1361,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 								tempf>.5f? -25: 25,
 								(int)tempArr[0],
 								tempf>.5f?-1:1, 0,
-								0, new Color((int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255)));
+								0, Color.gray);
 					}else{//horz goal
 						tempf = (float)Math.random();
 						tempArr[0] = Math.max(GOALSIZE, FIELDWIDTH*(float)Math.random()*.6f);
@@ -1377,7 +1371,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 								(int)tempArr[0],
 								tempf>.5f? -25:25,
 								0, tempf>.5f?-1:1,
-								0, new Color((int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255)));
+								0, Color.gray);
 					}
 				}
 				ball.setVel(new float[]{(targetX-ball.getX()),(targetY-ball.getY())}, 1f);
