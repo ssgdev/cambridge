@@ -75,7 +75,7 @@ DONE Bugs when neutron grabs a twotouch holding the ball
 !!!! More game modes? Squash is a failure.
 	DONE Crazy King?
 		DONE Needs arrow to point to goal in actioncam
-			!!!! Needs non-playerholder arrow, also make it darker?
+			DONE Needs non-playerholder arrow, also make it darker?
 		!!!! Still needs better goal graphics
 	!!!! Betrayer Ball?
 !!!! TODO: Test 4 Neos going in and out of slowmo at once

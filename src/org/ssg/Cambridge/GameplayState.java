@@ -88,6 +88,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	AngelCodeFont font, font_white, font_small, font_large;
 	Image triangle, hemicircleL, hemicircleR, slice, slice_tri, slice_wide, slice_twin;
 	Image goalScroll1, goalScroll2, goalScroll1v, goalScroll2v, goalScroll;
+	Image goldgoal_arrow;
+	float arrowTheta, arrowThetaTarget;
 	int scrollX;//For the "GOAL" scroll
 	int scrollY;
 	int scrollXDir, scrollYDir;
@@ -165,6 +167,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		goalScroll1v = new Image(RESDIR + "goal_v.png");
 		goalScroll2v = new Image(RESDIR + "goal_own_v.png");
 		goalScroll = goalScroll1;
+		goldgoal_arrow = new Image(RESDIR + "goldgoal_arrow.png");
 		
 		teamColors = new Color[] {
 				Color.white,
@@ -253,6 +256,9 @@ public class GameplayState extends BasicGameState implements KeyListener {
 				Color.magenta,
 				Color.green
 		};
+		
+		arrowTheta = 0;
+		arrowThetaTarget = 0;
 		
 		int randomNum = (int)(Math.random()*2);
 		initGoals(randomNum);
@@ -653,6 +659,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		}else if(GOALTYPE == 7){//crazyking/goldengoal style goals
 			goals = new Goal[1];
 			goals[0] =  new Goal(FIELDWIDTH/2-GOALSIZE/2, FIELDHEIGHT, GOALSIZE, 25, 0, 1, 0, Color.white);
+			arrowTheta = (float)Math.atan2(goals[0].getMinY()/2f+goals[0].getMaxY()/2f-FIELDHEIGHT/2f, goals[0].getMinX()/2f+goals[0].getMaxX()/2f-FIELDWIDTH/2f)*180f/(float)Math.PI;
+			arrowThetaTarget = arrowTheta;
 		}
 	}
 	
@@ -937,14 +945,11 @@ public class GameplayState extends BasicGameState implements KeyListener {
 //			g.fillRect(FIELDWIDTH/2-200, FIELDHEIGHT/2-200, 400, 400);
 			g.fillOval(FIELDWIDTH/2 - 350, FIELDHEIGHT/2 - 350, 700, 700);
 			g.setColor(Color.white);
-			g.drawRect(FIELDWIDTH/2-150, FIELDHEIGHT/2-150, 300, 300);
+			//g.drawRect(FIELDWIDTH/2-150, FIELDHEIGHT/2-150, 300, 300);
 			g.drawOval(FIELDWIDTH/2 - 350, FIELDHEIGHT/2 - 350, 700, 700);
-			
-			//draw the goal box
-			tempArr[0] = goals[0].getMinX()/2+goals[0].getMaxX()/2;
-			tempArr[1] = goals[0].getMinY()/2+goals[0].getMaxY()/2;
-			g.drawRect(tempArr[0]-goals[0].getWidth()/2-50, tempArr[1]-goals[0].getHeight()/2-50,goals[0].getWidth()+100, goals[0].getHeight()+100);
-			g.drawOval(tempArr[0]-goals[0].getWidth()/2-150, tempArr[1]-goals[0].getHeight()/2-150, goals[0].getWidth()+300, goals[0].getHeight()+300);
+			g.rotate(FIELDWIDTH/2, FIELDHEIGHT/2, arrowTheta);
+			g.drawImage(goldgoal_arrow.getScaledCopy((int)(FIELDHEIGHT/2f), (int)(FIELDHEIGHT/2f)), FIELDWIDTH/2f-FIELDHEIGHT/4f, FIELDHEIGHT/2f-FIELDHEIGHT/4f, new Color(60,60,60,100));
+			g.rotate(FIELDWIDTH/2, FIELDHEIGHT/2, -arrowTheta);
 		}else if(NAME.equals("FOURSQUARE")){
 			g.drawLine(0, FIELDHEIGHT/2, FIELDWIDTH, FIELDHEIGHT/2);
 			g.drawLine(FIELDWIDTH/2, 0, FIELDWIDTH/2, FIELDHEIGHT);
@@ -1224,6 +1229,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		if(scrollY>FIELDHEIGHT+500 || scrollY<0-goalScroll.getHeight()-500)
 			scrollYDir=0;
 		
+		arrowTheta = approachTarget(arrowTheta, arrowThetaTarget, delta/2f);
+		
 		ball.update(deltaf);
 		
 		//Put ball back in play
@@ -1374,6 +1381,9 @@ public class GameplayState extends BasicGameState implements KeyListener {
 								0, Color.gray);
 					}
 				}
+				
+				arrowThetaTarget = (float)Math.atan2(goals[0].getMinY()/2f+goals[0].getMaxY()/2f-FIELDHEIGHT/2f, goals[0].getMinX()/2f+goals[0].getMaxX()/2f-FIELDWIDTH/2f)*180f/(float)Math.PI;
+				
 				ball.setVel(new float[]{(targetX-ball.getX()),(targetY-ball.getY())}, 1f);
 				ball.setCurve(new float[]{0f,0f}, 0f);
 				ball.cancelAcc();
