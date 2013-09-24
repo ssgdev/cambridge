@@ -13,7 +13,7 @@ public class PlayerTwoTouch extends Player{
 
 	float DEFAULTKICK;
 	float EXTRAKICK;
-	float[] ballPos;
+	float[] ballPos, prevBallPos;
 	Ball ball;
 	
 	//flag used for knocking the ball out of the locked zone, true when player can't lock ball
@@ -58,6 +58,7 @@ public class PlayerTwoTouch extends Player{
 		
 		ball = b;
 		ballPos = new float[2];
+		prevBallPos = new float[2];
 		
 		predictor = pb;
 		
@@ -117,8 +118,8 @@ public class PlayerTwoTouch extends Player{
 	public void drawBallPrediction(Graphics g){
 		predictor.setPos(ballPos[0], ballPos[1]);
 		
-		predictionKickFloat[0] = (ball.getPrevX()-getX());
-		predictionKickFloat[1] = (ball.getPrevY()-getY());
+		predictionKickFloat[0] = (prevBallPos[0]-getX());
+		predictionKickFloat[1] = (prevBallPos[1]-getY());
 
 		unit(predictionKickFloat);
 		if(sameDir(getVel()[0], predictionKickFloat[0])){
@@ -278,6 +279,8 @@ public class PlayerTwoTouch extends Player{
 		
 		ballPos[0] = ball.getX();
 		ballPos[1] = ball.getY();
+		prevBallPos[0] = ball.getPrevX();
+		prevBallPos[1] = ball.getPrevY();
 		
 		if(!ball.locked(playerNum)){
 			updatePos(delta);

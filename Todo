@@ -30,7 +30,6 @@ TODO:
 	DONE Draw -1 as "Unlimited" in game mode select
 	DONE Mode Select graphics
 	!!!! Reminder: Mode Select team colors should be consistent with gameplaystate
-	!!!! Add a fade to white after teams are selected
 	DONE Should not be able to select both unlimited score and time limits
 	DONE Team select graphics 
 		DONE Add failure sound for when you try to ready up in a team which you are allowed to ready up in
@@ -56,7 +55,9 @@ DONE Change Twins keyboard controls to switching nukes and double move default
 	DONE TENNIS (Spawn locations)
 	DONE SQUASH (Spawn locations) DONE BUT SQUASH IS TERRIBLE
 	DONE GOLDENGOAL (aka Crazy King)
-	!!!! FOURSQUARE
+	DONE FOURSQUARE
+		!!!! Needs better map
+		???? Add check so it's only for 4P FFA
 !!!! Ball Possession/Goal color switching doesn't work for some powers in Squash
 !!!! Ball possession issue with Back, also check Twotouch and neutron in many situations
 DONE Ball Possession wrong when Dash dashes a Back holding the ball
@@ -79,12 +80,12 @@ DONE Bugs when neutron grabs a twotouch holding the ball
 		!!!! Still needs better goal graphics
 	!!!! Betrayer Ball?
 !!!! TODO: Test 4 Neos going in and out of slowmo at once
-!!!! Sometimes ball still gets lost after scoring
+DONE MAYBE Sometimes ball still gets lost after scoring (Possibly respawning in wall? Teleport to spawn location when put back in play)
 !!!! Non-players are getting scores in 4p game modes sometimes
 DONE PlayerNeutron pulling the ball out of Back's lock will teleport back to Back when he releases grav pull
 	DONE SOLUTION: The "too far then unlock" statement was after the "set ball to this position" statement in Back, so it would never leave lock
 DONE PlayerNeutron can grav pull throw the ball+circle of twotouch after the gameover DONE The predictor and circle are drawn to the ball's position, and the ball keeps updating after gameover.
-	!!!! The ball predictor follows the ball though
+	DONE The ball predictor follows the ball though NOT A PROBLEM ANYMORE
 DONE PlayerBack trying to grab the ball from Neutron during the pull-orbit is futile
 	DONE SOLUTION: PlayerBack has a clearLocked() when he grabs the ball
 DONE PlayerNeutron circle glow only when orbit entered

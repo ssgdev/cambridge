@@ -275,7 +275,6 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			team2lim = new int[]{FIELDWIDTH/2, FIELDWIDTH, 0, FIELDHEIGHT};
 		}
 		
-		//Add case for 4Square
 		if(NAME.equals(TENNIS)){
 			teamPositions = new float[2][][];
 			teamPositions[0] = new float[][] {
@@ -288,7 +287,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 					{ FIELDWIDTH-80, FIELDHEIGHT/2 - 150 },
 					{ FIELDWIDTH-80, FIELDHEIGHT/2 + 150 },
 			};
-		}else if(NAME.equals("FOURSQUARE") || NAME.equals("GOLDENGOAL")){
+		}else if(NAME.equals("GOLDENGOAL")){
 			teamPositions = new float[4][][];
 			teamPositions[0] = new float[][] {
 					{ FIELDWIDTH/4, FIELDHEIGHT/2},
@@ -309,6 +308,28 @@ public class GameplayState extends BasicGameState implements KeyListener {
 					{ FIELDWIDTH/2, FIELDHEIGHT*3/4},
 					{ FIELDWIDTH/2-150, FIELDHEIGHT*3/4 },
 					{ FIELDWIDTH/2+150, FIELDHEIGHT*3/4 },
+			};
+		}else if (NAME.equals("FOURSQUARE")){
+			teamPositions = new float[4][][];
+			teamPositions[0] = new float[][] {
+					{ FIELDWIDTH/6, FIELDHEIGHT/6},
+					{ FIELDWIDTH/6 + 150, FIELDHEIGHT/6},
+					{ FIELDWIDTH/6, FIELDHEIGHT/6 +150},
+			};
+			teamPositions[1] = new float[][]{
+					{ FIELDWIDTH*5/6, FIELDHEIGHT*5/6},
+					{ FIELDWIDTH*5/6-150, FIELDHEIGHT*5/6},
+					{ FIELDWIDTH*5/6, FIELDHEIGHT*5/6-150},
+			};
+			teamPositions[2] = new float[][]{
+					{ FIELDWIDTH*5/6, FIELDHEIGHT/6},
+					{ FIELDWIDTH*5/6, FIELDHEIGHT/6+150},
+					{ FIELDWIDTH*5/6-150, FIELDHEIGHT/6},
+			};
+			teamPositions[3] =  new float[][]{
+					{ FIELDWIDTH/6, FIELDHEIGHT*5/6},
+					{ FIELDWIDTH/6, FIELDHEIGHT*5/6-150},
+					{ FIELDWIDTH/6+150, FIELDHEIGHT*5/6},
 			};
 		}else{
 			teamPositions = new float[2][][];
@@ -647,15 +668,19 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			goals = new Goal[1];
 			goals[0] = new Goal(0, FIELDHEIGHT, FIELDWIDTH, -25, 0, 1, randomNum, teamColors[randomNum]);
 		}else if(GOALTYPE == 2){//FOURSQUARE STYLE GOALS
-			goals = new Goal[4];//= new Goal[8]
+			goals = new Goal[8];
 			goals[0] = new Goal(0,0,FIELDWIDTH/2,-25,0,-1,0, teamColors[0]);
 			goals[1] = new Goal(0,0,-25,FIELDHEIGHT/2,-1,0,0, teamColors[0]);
-			goals[2] = new Goal(FIELDWIDTH/2,0,FIELDWIDTH/2,-25,0,-1,1, teamColors[1]);
-			goals[3] = new Goal(FIELDWIDTH,0,25,FIELDHEIGHT/2,1,0,1, teamColors[1]);
-/**			goals[4] = new Goal(FIELDWIDTH,FIELDHEIGHT/2,25,FIELDHEIGHT/2,1,0,2);
-			goals[5] = new Goal(FIELDWIDTH/2,FIELDHEIGHT,FIELDWIDTH/2,25,0,1,2);
-			goals[6] = new Goal(0,FIELDHEIGHT/2,-25,FIELDHEIGHT/2,-1,0,3);
-			goals[7] = new Goal(0,FIELDHEIGHT,FIELDWIDTH/2,25,0,1,3); */
+			
+			goals[2] = new Goal(FIELDWIDTH/2,0,FIELDWIDTH/2,-25,0,-1,2, teamColors[2]);
+			goals[3] = new Goal(FIELDWIDTH,0,25,FIELDHEIGHT/2,1,0,2, teamColors[2]);
+			
+			goals[4] = new Goal(FIELDWIDTH,FIELDHEIGHT/2,25,FIELDHEIGHT/2,1,0,1, teamColors[1]);
+			goals[5] = new Goal(FIELDWIDTH/2,FIELDHEIGHT,FIELDWIDTH/2,25,0,1,1, teamColors[1]);
+			
+			goals[6] = new Goal(0,FIELDHEIGHT/2,-25,FIELDHEIGHT/2,-1,0,3, teamColors[3]);
+			goals[7] = new Goal(0,FIELDHEIGHT,FIELDWIDTH/2,25,0,1,3, teamColors[3]);
+			
 		}else if(GOALTYPE == 7){//crazyking/goldengoal style goals
 			goals = new Goal[1];
 			goals[0] =  new Goal(FIELDWIDTH/2-GOALSIZE/2, FIELDHEIGHT, GOALSIZE, 25, 0, 1, 0, Color.white);
@@ -953,6 +978,10 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		}else if(NAME.equals("FOURSQUARE")){
 			g.drawLine(0, FIELDHEIGHT/2, FIELDWIDTH, FIELDHEIGHT/2);
 			g.drawLine(FIELDWIDTH/2, 0, FIELDWIDTH/2, FIELDHEIGHT);
+			g.setColor(Color.black);
+			g.fillOval(FIELDWIDTH/2-100, FIELDHEIGHT/2-100, 200, 200);
+			g.setColor(Color.white);
+			g.drawOval(FIELDWIDTH/2-100, FIELDHEIGHT/2-100, 200, 200);
 		}
 	}
 	
@@ -1240,7 +1269,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 				for(Player p: players){if(dist(p) < p.getKickRange()/2){temp = false;}}
 				if(temp){
 					ball.setVel(resetVelocity, .5f);
-					ball.setPos(ball.getX(), ball.getY());
+					ball.setPos(targetX, targetY);
 					ball.setScored(false);
 					ball.setSoundCoolDown(50);
 					scored = false;
@@ -1388,7 +1417,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 				ball.setCurve(new float[]{0f,0f}, 0f);
 				ball.cancelAcc();
 				ball.setReadyForGust(false);
-				ball.setAssistTwin(-1,-1);
+				//ball.setAssistTwin(-1,-1);
 				//Scoring a goal pulls out of slowmo
 				for(Player p: players){
 					if(p.isSlowMoPower())

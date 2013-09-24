@@ -133,7 +133,7 @@ public class MenuGameSetupState extends BasicGameState implements KeyListener {
 		g.drawRect(-10, cursorY, data.screenWidth()+20, font_small.getLineHeight() + 10f);
 		
 		drawField(g);
-		
+
 		g.drawString(
 				data.gameConfig().get(data.gameType()+"").get("NAME", String.class),
 				data.screenWidth()/2 - font_white.getWidth(data.gameConfig().get(data.gameType()+"").get("NAME", String.class))/2,
@@ -311,16 +311,10 @@ public class MenuGameSetupState extends BasicGameState implements KeyListener {
 				mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			} else {
 				if(!(data.scoreLimit()<0&&data.timeLimit()<0)){//cant be unlimited time and score both
-					if (data.gameType() == data.GAMEMODES-1) {//Foursquare
-						((GameplayState)sbg.getState(data.GAMEPLAYSTATE)).setShouldRender(true);
-						setShouldRender(false);
-						sbg.enterState(data.GAMEPLAYSTATE);
-					} else {
-						((MenuTeamSetupState)sbg.getState(data.MENUTEAMSETUPSTATE)).setStart(data.gameType(), data.screenWidth()/2-tempX/2, data.screenHeight()/3f-tempY/2, tempX, tempY);
-						((MenuTeamSetupState)sbg.getState(data.MENUTEAMSETUPSTATE)).setShouldRender(true);
-						setShouldRender(false);
-						sbg.enterState(data.MENUTEAMSETUPSTATE);
-					}
+					((MenuTeamSetupState)sbg.getState(data.MENUTEAMSETUPSTATE)).setStart(data.gameType(), data.screenWidth()/2-tempX/2, data.screenHeight()/3f-tempY/2, tempX, tempY);
+					((MenuTeamSetupState)sbg.getState(data.MENUTEAMSETUPSTATE)).setShouldRender(true);
+					setShouldRender(false);
+					sbg.enterState(data.MENUTEAMSETUPSTATE);
 					mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				}else{
 					mySoundSystem.quickPlay( true, "MenuFail.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );

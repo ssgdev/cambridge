@@ -1,6 +1,11 @@
 Changelog:
 
-7.14.14
+9.23.14
+Ball now teleports to spawn location when put back in play, hopefully preventing situations where the ball never respawns
+The text is aligned in gameoverstate
+Foursquare implemented
+
+9.14.14
 Crazy King graphical effects updated
 
 9.7.13

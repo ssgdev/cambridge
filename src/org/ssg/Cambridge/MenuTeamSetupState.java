@@ -269,7 +269,7 @@ public class MenuTeamSetupState extends BasicGameState implements KeyListener {
 						g.drawString("P"+(anchors[i].playerNum()+1), pCoords[i][0] + charSize/2 +10, pCoords[i][1]-font_small.getHeight("0")/2-5);
 					}
 				}else{
-					if(anchors[i].getTeam() != -1 && pCoords[i][0]==pCoordTargets[i][0] && pCoords[i][1]==pCoords[i][1]){
+					if(anchors[i].getTeam() != -1 && pCoords[i][0]==pCoordTargets[i][0] && pCoords[i][1]==pCoordTargets[i][1]){
 						if(i==0 ||i == 2){
 							g.drawString("P"+(anchors[i].playerNum()+1), pCoords[i][0]-font_small.getWidth("P0") - charSize/2 -10, pCoords[i][1]-font_small.getHeight("0")/2-5);
 						}else if(i==1 || i == 3){
