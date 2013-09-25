@@ -659,31 +659,31 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	public void initGoals(int randomNum){
 		if(GOALTYPE == 0){//Left and Right goals
 			goals = new Goal[2];
-			goals[0] = new Goal(0,FIELDHEIGHT/2-GOALSIZE/2, -25, GOALSIZE, -1 , 0, 0, teamColors[0]);
-			goals[1] = new Goal(FIELDWIDTH, FIELDHEIGHT/2-GOALSIZE/2, 25, GOALSIZE, 1, 0, 1, teamColors[1]);
+			goals[0] = new Goal(-4,FIELDHEIGHT/2-GOALSIZE/2, -25, GOALSIZE, -1 , 0, 0, teamColors[0].darker());
+			goals[1] = new Goal(FIELDWIDTH+5, FIELDHEIGHT/2-GOALSIZE/2, 25, GOALSIZE, 1, 0, 1, teamColors[1].darker());
 		}else if(GOALTYPE == -1){//One sided goals. Squash
 			goals = new Goal[1];
-			goals[0] = new Goal(0, 0, -25, FIELDHEIGHT, -1, 0, randomNum, teamColors[randomNum]);
+			goals[0] = new Goal(0, 0, -25, FIELDHEIGHT, -1, 0, randomNum, teamColors[randomNum].darker());
 		}else if(GOALTYPE == 1){//Horizontal Squash Goals
 			goals = new Goal[1];
-			goals[0] = new Goal(0, FIELDHEIGHT, FIELDWIDTH, -25, 0, 1, randomNum, teamColors[randomNum]);
+			goals[0] = new Goal(0, FIELDHEIGHT, FIELDWIDTH, -25, 0, 1, randomNum, teamColors[randomNum].darker());
 		}else if(GOALTYPE == 2){//FOURSQUARE STYLE GOALS
 			goals = new Goal[8];
-			goals[0] = new Goal(0,0,FIELDWIDTH/2,-25,0,-1,0, teamColors[0]);
-			goals[1] = new Goal(0,0,-25,FIELDHEIGHT/2,-1,0,0, teamColors[0]);
+			goals[0] = new Goal(0,-4,FIELDWIDTH/2,-25,0,-1,0, teamColors[0].darker());
+			goals[1] = new Goal(-4,0,-25,FIELDHEIGHT/2,-1,0,0, teamColors[0].darker());
 			
-			goals[2] = new Goal(FIELDWIDTH/2,0,FIELDWIDTH/2,-25,0,-1,2, teamColors[2]);
-			goals[3] = new Goal(FIELDWIDTH,0,25,FIELDHEIGHT/2,1,0,2, teamColors[2]);
+			goals[2] = new Goal(FIELDWIDTH/2,-4,FIELDWIDTH/2,-25,0,-1,2, teamColors[2].darker());
+			goals[3] = new Goal(FIELDWIDTH+5,0,25,FIELDHEIGHT/2,1,0,2, teamColors[2].darker());
 			
-			goals[4] = new Goal(FIELDWIDTH,FIELDHEIGHT/2,25,FIELDHEIGHT/2,1,0,1, teamColors[1]);
-			goals[5] = new Goal(FIELDWIDTH/2,FIELDHEIGHT,FIELDWIDTH/2,25,0,1,1, teamColors[1]);
+			goals[4] = new Goal(FIELDWIDTH+5,FIELDHEIGHT/2,25,FIELDHEIGHT/2,1,0,1, teamColors[1].darker());
+			goals[5] = new Goal(FIELDWIDTH/2,FIELDHEIGHT+5,FIELDWIDTH/2,25,0,1,1, teamColors[1].darker());
 			
-			goals[6] = new Goal(0,FIELDHEIGHT/2,-25,FIELDHEIGHT/2,-1,0,3, teamColors[3]);
-			goals[7] = new Goal(0,FIELDHEIGHT,FIELDWIDTH/2,25,0,1,3, teamColors[3]);
+			goals[6] = new Goal(-4,FIELDHEIGHT/2,-25,FIELDHEIGHT/2,-1,0,3, teamColors[3].darker());
+			goals[7] = new Goal(0,FIELDHEIGHT+5,FIELDWIDTH/2,25,0,1,3, teamColors[3].darker());
 			
 		}else if(GOALTYPE == 7){//crazyking/goldengoal style goals
 			goals = new Goal[1];
-			goals[0] =  new Goal(FIELDWIDTH/2-GOALSIZE/2, FIELDHEIGHT, GOALSIZE, 25, 0, 1, 0, Color.white);
+			goals[0] =  new Goal(FIELDWIDTH/2-GOALSIZE/2, FIELDHEIGHT+5, GOALSIZE, 25, 0, 1, 0, Color.yellow.darker(.3f));
 			arrowTheta = (float)Math.atan2(goals[0].getMinY()/2f+goals[0].getMaxY()/2f-FIELDHEIGHT/2f, goals[0].getMinX()/2f+goals[0].getMaxX()/2f-FIELDWIDTH/2f)*180f/(float)Math.PI;
 			arrowThetaTarget = arrowTheta;
 		}
@@ -823,7 +823,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		//Draw goals
 		for(Goal goal: goals){
-			g.setColor(goal.getColor().darker());
+			g.setColor(goal.getColor());
 			g.fillRect(goal.getX(), goal.getMinY(), goal.getWidth(), goal.getHeight());
 		}
 		//g.fillRect(FIELDWIDTH-10, FIELDHEIGHT/2-GOALWIDTH/2, 15, GOALWIDTH);
@@ -1392,22 +1392,22 @@ public class GameplayState extends BasicGameState implements KeyListener {
 						tempf = (float)Math.random();
 						tempArr[0] = Math.max(GOALSIZE, FIELDHEIGHT*(float)Math.random()*.6f);
 						goals[0].reinit(
-								tempf>.5f? 0: FIELDWIDTH,
+								tempf>.5f? -4: FIELDWIDTH+5,
 								(int)((FIELDHEIGHT-tempArr[0])*Math.random()),
 								tempf>.5f? -25: 25,
 								(int)tempArr[0],
 								tempf>.5f?-1:1, 0,
-								0, Color.gray);
+								0, goals[0].getColor());
 					}else{//horz goal
 						tempf = (float)Math.random();
 						tempArr[0] = Math.max(GOALSIZE, FIELDWIDTH*(float)Math.random()*.6f);
 						goals[0].reinit(
 								(int)((FIELDWIDTH-tempArr[0])*Math.random()),
-								tempf>.5? 0: FIELDHEIGHT,
+								tempf>.5? -4: FIELDHEIGHT+5,
 								(int)tempArr[0],
 								tempf>.5f? -25:25,
 								0, tempf>.5f?-1:1,
-								0, Color.gray);
+								0, goals[0].getColor());
 					}
 				}
 				

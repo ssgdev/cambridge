@@ -1,5 +1,8 @@
 Changelog:
 
+9.24.13
+Goals and game mode select graphics tweaks
+
 9.23.14
 Ball now teleports to spawn location when put back in play, hopefully preventing situations where the ball never respawns
 The text is aligned in gameoverstate
