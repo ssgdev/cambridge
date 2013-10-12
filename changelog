@@ -1,5 +1,8 @@
 Changelog:
 
+10.12.13
+Removed inputDelay from MenuGameSetupState, was redundant and buggy.
+
 9.24.13
 Goals and game mode select graphics tweaks
 

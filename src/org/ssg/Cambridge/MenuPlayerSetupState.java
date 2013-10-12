@@ -38,8 +38,8 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 	CambridgePlayerAnchor[] anchors;
 
 	private final float deadzone = 0.28f;
-	private int inputDelay;
-	private final int inputDelayConst = 200;
+//	private int inputDelay;
+//	private final int inputDelayConst = 200;
 
 	private boolean shouldRender;
 
@@ -92,7 +92,7 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 		keyboardOneTaken = false;
 		keyboardTwoTaken = false;
 
-		inputDelay = 0;
+//		inputDelay = 0;
 
 		font = new AngelCodeFont(data.RESDIR + "8bitoperator.fnt", new Image(data.RESDIR + "8bitoperator_0.png"));
 		font_white = new AngelCodeFont(data.RESDIR + "8bitoperator.fnt", new Image(data.RESDIR + "8bitoperator_0_white.png"));

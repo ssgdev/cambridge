@@ -39,8 +39,8 @@ TODO:
 	DONE DPad in menus
 	DONE Effects sounds: Go, Back, move, change, nope
 	!!!! Main menu options is "push a to change the thing" but the mode select menu is just "hover and move left/right" Seems inconsistent
-	!!!! Bug: If more than one controller is plugged in, the inputdelay is too fast.
-	!!!! Bug: Sometimes on keyboard at least, one set of keys has a long inputdelay and the other has a short inputdelay
+	FIXED Bug: If more than one controller is plugged in, the inputdelay is too fast.
+	FIXED Bug: Sometimes on keyboard at least, one set of keys has a long inputdelay and the other has a short inputdelay
 	!!!! Main Menu still uses WASD
 	!!!! Some kind of graphics.clear method to use when transitioning states?
 	!!!! Should go back to menu music when entering main menu

@@ -36,8 +36,8 @@ public class MenuGameSetupState extends BasicGameState implements KeyListener {
 
 	private boolean down, up, left, right, back, enter;
 	private final float deadzone = 0.28f;
-	private int inputDelay;
-	private final int inputDelayConst = 200;
+//	private int inputDelay;
+//	private final int inputDelayConst = 200;
 
 	private boolean shouldRender;
 
@@ -79,7 +79,7 @@ public class MenuGameSetupState extends BasicGameState implements KeyListener {
 		right = false;
 		enter = false;
 		back = false;
-		inputDelay = 0;
+//		inputDelay = 0;
 
 		font = new AngelCodeFont(data.RESDIR + "8bitoperator.fnt", new Image(data.RESDIR + "8bitoperator_0.png"));
 		font_white = new AngelCodeFont(data.RESDIR + "8bitoperator.fnt", new Image(data.RESDIR + "8bitoperator_0_white.png"));
@@ -215,30 +215,22 @@ public class MenuGameSetupState extends BasicGameState implements KeyListener {
 		right = false;
 		back = false;
 		enter = false;
-		if (inputDelay <= 0) {
-			for (CambridgePlayerAnchor a : anchors) {
-				if (a.initiated()) {
-					if (up || down || left || right || enter || back) {
-						inputDelay = inputDelayConst;
-					} else {
-						if (a.down(gc, delta)) {
-							down = true;
-						} else if (a.up(gc, delta)) {
-							up = true;
-						} else if (a.left(gc, delta)) {
-							left = true;
-						} else if (a.right(gc, delta)) {
-							right = true;
-						} else if (a.select(gc, delta)) {
-							enter = true;
-						} else if (a.back(gc, delta)) {
-							back = true;
-						}
-					}
-				}
+		for (CambridgePlayerAnchor a : anchors) {
+			if (a.initiated()) {
+				if (a.down(gc, delta)) {
+					down = true;
+				} else if (a.up(gc, delta)) {
+					up = true;
+				} else if (a.left(gc, delta)) {
+					left = true;
+				} else if (a.right(gc, delta)) {
+					right = true;
+				} else if (a.select(gc, delta)) {
+					enter = true;
+				} else if (a.back(gc, delta)) {
+					back = true;
+				}		
 			}
-		} else {
-			inputDelay-=delta;
 		}
 
 		if (up) {
