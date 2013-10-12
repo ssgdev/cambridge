@@ -257,10 +257,8 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 	
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
-		if (!mySoundSystem.playing("BGM")) {
-			mySoundSystem.backgroundMusic("BGM", "BGMHotline.ogg" , true);
-			mySoundSystem.setVolume("BGM", data.ambientSound()/10f);
-		}
+		mySoundSystem.backgroundMusic("BGM", "BGMHotline.ogg" , true);
+		mySoundSystem.setVolume("BGM", data.ambientSound()/10f);
 		resetButtons();
 		selected = 0;
 		cursorYTarget = data.screenHeight()*0.5f+selected*menuHeight + 7;

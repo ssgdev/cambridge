@@ -40,6 +40,9 @@ public class GameOverState extends BasicGameState implements KeyListener {
 	boolean confettiSetup;
 	Color confettiColor;
 	
+	float bgmFadeTimer;
+	float BGMFADETIME = 4000;
+	
 	float tempf;
 	int[] tempArr;
 	Color tempCol;
@@ -67,6 +70,8 @@ public class GameOverState extends BasicGameState implements KeyListener {
 		
 		scores = new int[4];
 		numPlayers = 2;
+		
+		bgmFadeTimer = BGMFADETIME;
 		
 		confetti = new Confetti[50];
 		confettiSetup = false;
@@ -130,6 +135,7 @@ public class GameOverState extends BasicGameState implements KeyListener {
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		//mySoundSystem.pause("BGMGame");
+		bgmFadeTimer = BGMFADETIME;
 		
 		//Sort the names array by the scores array, largest first
 		int first = 0;
@@ -204,6 +210,8 @@ public class GameOverState extends BasicGameState implements KeyListener {
 			}
 		}
 
+		
+		
 		for(Confetti c: confetti){
 			c.render(g);
 		}
@@ -284,6 +292,10 @@ public class GameOverState extends BasicGameState implements KeyListener {
 	
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
+		
+		//Fade out the bgm
+		mySoundSystem.setVolume("BGM", (data.ambientSound()/10f)*(bgmFadeTimer/BGMFADETIME));
+		bgmFadeTimer -= (float)delta;
 		
 		for(Confetti c:confetti)
 			if(confettiSetup)

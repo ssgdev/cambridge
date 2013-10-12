@@ -51,6 +51,9 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	int time;
 	int GAMEOVERCOUNTDOWN = 2000;
 	int gameOverCountdown;
+	int gameOverStage;//unused currently, might want a final horn
+	
+	Image tempImage;
 	
 	public float SCREENWIDTH;
 	public float SCREENHEIGHT;
@@ -168,6 +171,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		goalScroll2v = new Image(RESDIR + "goal_own_v.png");
 		goalScroll = goalScroll1;
 		goldgoal_arrow = new Image(RESDIR + "goldgoal_arrow.png");
+
+		tempImage = new Image(data.screenWidth(), data.screenHeight());//for copying the screen into and passing to the pause menu
 		
 		teamColors = new Color[] {
 				Color.white,
@@ -636,10 +641,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 				scores[a.getTeam()] = 0;
 		
 		tempTrailArr = new float[]{0,0,0,0};
-		
-		gameStartCountdown = GAMESTARTCOUNTDOWN;//4: Ready, 3: Set: 2: Go 1: Play Ball 0
-		gameStartStage = 3;
-		
+				
 		scrollX = 2000;
 		scrollY = 2000;
 		scrollXDir = 0;
@@ -691,6 +693,9 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	
 	public void resetPositions(){
 		
+		mySoundSystem.backgroundMusic("BGM", "BGMMenu.ogg" , true);
+		mySoundSystem.setVolume("BGM", data.ambientSound()/10f);
+		
 		int randomNum = (int)(Math.random()*2);
 //
 //		float[] p1Start = {FIELDWIDTH/2-250, FIELDHEIGHT/2};
@@ -734,15 +739,19 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		timef = (float)data.timeLimit()*1000f;
 		time = (int)timef;
+		
+		gameStartCountdown = GAMESTARTCOUNTDOWN;//4: Ready, 3: Set: 2: Go 1: Play Ball 0
+		gameStartStage = 3;
+		
 		gameOverCountdown = GAMEOVERCOUNTDOWN;
+		gameOverStage = 3;
 		
 	}
 	
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
-		mySoundSystem.backgroundMusic("BGM", "BGMMenu.ogg" , true);
-		mySoundSystem.setVolume("BGM", data.ambientSound()/10f);
-		initFields(gc);
+
+		//initFields(gc);
 	}
 
 	@Override
@@ -1244,8 +1253,14 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		}else if( input.isKeyPressed(Input.KEY_O)){
 			if(maxZoom>.6)
 				maxZoom-=.2f;
-		}else if(input.isKeyPressed(Input.KEY_ESCAPE)){
+		}else if( input.isKeyPressed(Input.KEY_ESCAPE) ){
+			mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			setShouldRender(false);
+			((GameOverState)sbg.getState(data.GAMEOVERSTATE)).setScores(scores);//For if you force game over from the pause menu
+			((GameOverState)sbg.getState(data.GAMEOVERSTATE)).setColors(teamColors);
+			((GameOverState)sbg.getState(data.GAMEOVERSTATE)).setCharacters(playerCharacters);
+			gc.getGraphics().copyArea(tempImage, 0, 0);
+			((MenuPauseState)sbg.getState(data.MENUPAUSESTATE)).setImage(tempImage);
 			((MenuPauseState)sbg.getState(data.MENUPAUSESTATE)).setShouldRender(true);
 			sbg.enterState(data.MENUPAUSESTATE);
 		}

@@ -343,5 +343,14 @@ public class CambridgePlayerAnchor {
 			}
 		}
 	}
+	
+	public boolean start(GameContainer gc, int delta){
+		if(controller.exists() && controller.poll()) {
+			return controller.getStart();
+		}else{
+			Input input = gc.getInput();
+			return input.isKeyPressed(Input.KEY_ESCAPE);
+		}
+	}
 
 }

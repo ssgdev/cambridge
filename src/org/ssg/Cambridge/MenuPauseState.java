@@ -23,15 +23,17 @@ public class MenuPauseState extends BasicGameState {
 	private int stateID;
 	private boolean shouldRender;
 	
-	private boolean down, up, left, right, back, enter;
-	private int inputDelay;
-	private final int inputDelayConst = 200;
+	private Image bgImg;
 	
+	private boolean down, up, left, right, back, enter;
+//	private int inputDelay;
+//	private final int inputDelayConst = 200;
+
 	private int selected;
 	private float cursorY, cursorYTarget;
 	
 	Font font, font_white, font_small;
-	String[] menuOptions;
+	private String[] menuOptions;
 	
 	public MenuPauseState(int n, boolean renderon){
 		stateID = n;
@@ -54,7 +56,7 @@ public class MenuPauseState extends BasicGameState {
 		right = false;
 		enter = false;
 		back = false;
-		inputDelay = 0;
+//		inputDelay = 0;
 		
 		cursorY = 0;
 		cursorYTarget = 0;
@@ -65,8 +67,8 @@ public class MenuPauseState extends BasicGameState {
 		
 		menuOptions = new String[] {
 				"Resume",
-				"Change Character",
-				"Exit",
+				"Change Characters",
+				"End Game",
 		};
 		
 		anchors = data.playerAnchors();
@@ -76,6 +78,8 @@ public class MenuPauseState extends BasicGameState {
 
 	public void reset() {
 		selected = 0;
+		cursorYTarget = data.screenHeight()*.3f + (font.getLineHeight()*1.2f)*(float)selected;
+		cursorY = cursorYTarget;
 //		cursorY = data.screenHeight()/3f-font_small.getLineHeight()/2f-5;
 //		cursorYTarget = cursorY;
 	}
@@ -85,6 +89,25 @@ public class MenuPauseState extends BasicGameState {
 			throws SlickException {
 		if(!shouldRender)
 			return;
+		
+		g.setLineWidth(2);
+		g.drawImage(bgImg, 0,0, Color.darkGray);
+		
+		g.setColor(Color.black);
+		g.fillRect(-10, cursorY-10, data.screenWidth()+20, font.getLineHeight()+20);
+
+		g.setColor(Color.white);
+		g.drawRect(-10, cursorY-10, data.screenWidth()+20, font.getLineHeight()+20);
+
+		g.setFont(font_white);
+		
+		for (int i = 0; i < menuOptions.length; i++) {
+			g.drawString(
+					menuOptions[i],
+					data.screenWidth() / 2f - font.getWidth(menuOptions[1]) / 2f,
+					data.screenHeight()*.3f + (font.getLineHeight()*1.2f)*(float)i
+					);
+		}
 	
 	}
 
@@ -92,13 +115,89 @@ public class MenuPauseState extends BasicGameState {
 	public void update(GameContainer gc, StateBasedGame sbg, int delta)
 			throws SlickException {
 
+		Input input = gc.getInput();
+		
+		//Should replace with something per playerAnchor
+		if(input.isKeyPressed(Input.KEY_ESCAPE) ){
+			mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			setShouldRender(false);
+			((GameplayState)sbg.getState(data.GAMEPLAYSTATE)).setShouldRender(true);
+			sbg.enterState(data.GAMEPLAYSTATE);
+		}
+		
+		cursorYTarget = data.screenHeight()*.3f + (font.getLineHeight()*1.2f)*(float)selected;
+		cursorY = approachTarget(cursorY, cursorYTarget, delta);
+		
+		up = false;
+		down = false;
+		left = false;
+		right = false;
+		back = false;
+		enter = false;
+		for (CambridgePlayerAnchor a : anchors) {
+			if (a.initiated()) {
+				if (a.down(gc, delta)) {
+					down = true;
+				} else if (a.up(gc, delta)) {
+					up = true;
+				} else if (a.left(gc, delta)) {
+					left = true;
+				} else if (a.right(gc, delta)) {
+					right = true;
+				} else if (a.select(gc, delta)) {
+					enter = true;
+				} else if (a.back(gc, delta)) {
+					back = true;
+				}		
+			}
+		}
+
+		if (up) {
+			if (selected > 0) {
+				selected--;
+				mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			}
+		} else if (down) {
+			if (selected < 2) {
+				selected++;
+				mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			}
+		} else if(back) {
+
+		} else if (enter) {
+			mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			switch(selected){
+			case 0://resume
+				setShouldRender(false);
+				((GameplayState)sbg.getState(data.GAMEPLAYSTATE)).setShouldRender(true);
+				sbg.enterState(data.GAMEPLAYSTATE);
+				break;
+			case 1://change characters
+				setShouldRender(false);
+				((MenuPlayerSetupState)sbg.getState(data.MENUPLAYERSETUPSTATE)).setShouldRender(true);
+				sbg.enterState(data.MENUPLAYERSETUPSTATE);
+				break;
+			case 2://end game
+				setShouldRender(false);
+				((GameOverState)sbg.getState(data.GAMEOVERSTATE)).setShouldRender(true);
+				sbg.enterState(data.GAMEOVERSTATE);
+				break;
+			default:
+			
+			}
+		}
+		
+		input.clearKeyPressedRecord();
 	}
 	
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg){
 		reset();
 	}
-
+	
+	public void setImage(Image i){
+		bgImg = i;
+	}
 	
 	public float approachTarget(float val, float target, float inc){
 
