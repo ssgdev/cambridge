@@ -1,12 +1,16 @@
 Changelog:
 
+12.25.13
+Cleared inputbuffer upon entering MenuPauseState
+Can press start to enter MenuPauseState
+
 10.12.13
 Removed inputDelay from MenuGameSetupState, was redundant and buggy.
 initFields() in GameplayState is not called from enter(), to allow resuming after a pause.
 	It's now called by MenuTeamSetupState before entering GameplayState.
 Pause menu can now be exited from by pressing ESCAPE
 Pause menu is mostly functional
-Fixed some background music bugs
+Fixed some background music bugs, also GameOverState fades out bgm upon entry
 
 9.24.13
 Goals and game mode select graphics tweaks

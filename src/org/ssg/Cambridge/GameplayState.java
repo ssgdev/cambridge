@@ -1215,6 +1215,11 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		}
 		 
 		Input input = gc.getInput();
+		
+		boolean startPressed = false;
+		if(c1.exists() && c1.getStart() || c2.exists()&&c2.getStart() || c3.exists()&&c3.getStart() || c4.exists()&&c4.getStart())
+			startPressed = true;
+		
 		if(input.isKeyPressed(Input.KEY_U)){
 			reset(gc);
 		}else if(input.isKeyPressed(Input.KEY_I)){
@@ -1253,7 +1258,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		}else if( input.isKeyPressed(Input.KEY_O)){
 			if(maxZoom>.6)
 				maxZoom-=.2f;
-		}else if( input.isKeyPressed(Input.KEY_ESCAPE) ){
+		}else if( input.isKeyPressed(Input.KEY_ESCAPE) || startPressed){
 			mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			setShouldRender(false);
 			((GameOverState)sbg.getState(data.GAMEOVERSTATE)).setScores(scores);//For if you force game over from the pause menu
@@ -1262,6 +1267,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			gc.getGraphics().copyArea(tempImage, 0, 0);
 			((MenuPauseState)sbg.getState(data.MENUPAUSESTATE)).setImage(tempImage);
 			((MenuPauseState)sbg.getState(data.MENUPAUSESTATE)).setShouldRender(true);
+			input.clearKeyPressedRecord();
 			sbg.enterState(data.MENUPAUSESTATE);
 		}
 		
