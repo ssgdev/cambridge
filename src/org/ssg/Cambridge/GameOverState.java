@@ -46,6 +46,7 @@ public class GameOverState extends BasicGameState implements KeyListener {
 	float tempf;
 	int[] tempArr;
 	Color tempCol;
+	Image tempImage;
 	
 	public GameOverState(int id, boolean renderOn){
 		stateID = id;
@@ -77,6 +78,8 @@ public class GameOverState extends BasicGameState implements KeyListener {
 		confettiSetup = false;
 		
 		polys = new Polygon[8];
+		
+		tempImage = new Image(data.screenWidth(), data.screenHeight());
 	}
 
 	public void initPlayerPolys(){
@@ -221,6 +224,7 @@ public class GameOverState extends BasicGameState implements KeyListener {
 	}
 
 	public void drawPlayer(Graphics g, float x, float y, int charNum){
+		float tempf = 0f;
 		switch(charNum){
 		case 0://Back
 			g.translate(x, y);
@@ -308,13 +312,14 @@ public class GameOverState extends BasicGameState implements KeyListener {
 			pTheta-=(float)Math.PI*2f;
 		
 		Input input = gc.getInput();
-		if(input.isKeyPressed(Input.KEY_ENTER)){
+		if(input.isKeyPressed(Input.KEY_ENTER) || input.isKeyPressed(Input.KEY_2) || input.isKeyPressed(Input.KEY_PERIOD) || input.isKeyPressed(Input.KEY_ESCAPE)){
+			mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			setShouldRender(false);
-			((MenuMainState)sbg.getState(data.MENUMAINSTATE)).setShouldRender(true);
-			sbg.enterState(data.MENUMAINSTATE);
-		}else if(input.isKeyPressed(Input.KEY_ESCAPE)){
-			gc.exit();
-			mySoundSystem.cleanup();
+			((MenuGameOverState)sbg.getState(data.MENUGAMEOVERSTATE)).setShouldRender(true);
+			gc.getGraphics().copyArea(tempImage, 0, 0);
+			((MenuGameOverState)sbg.getState(data.MENUGAMEOVERSTATE)).setImage(tempImage);
+			input.clearKeyPressedRecord();
+			sbg.enterState(data.MENUGAMEOVERSTATE);
 		}
 	}
 
