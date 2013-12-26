@@ -61,7 +61,7 @@ DONE Change Twins keyboard controls to switching nukes and double move default
 		!!!! Moving goal?
 	DONE FOURSQUARE
 		DONE Needs better map
-		!!!! Shouldn't be able to score on non-present players
+		DONE Shouldn't be able to score on non-present players
 		???? Add check so it's only for 4P FFA
 !!!! Ball Possession/Goal color switching doesn't work for some powers in Squash
 !!!! Ball possession issue with Back, also check Twotouch and neutron in many situations

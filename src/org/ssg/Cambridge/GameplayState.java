@@ -87,6 +87,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	private float[][][] teamPositions;
 	private float[][] playerStartPositions;
 	private int[][] playerCharacters;//Passed to gameoverstate to draw what players are on each team
+	private int[] teamCounter;
 	
 	AngelCodeFont font, font_white, font_small, font_large;
 	Image triangle, hemicircleL, hemicircleR, slice, slice_tri, slice_wide, slice_twin;
@@ -352,7 +353,9 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		playerStartPositions = new float[4][2];
 		
-		int[] teamCounter = {0,0,0,0};
+		for(int i=0;i<teamCounter.length;i++)
+			teamCounter[i] = 0;
+		
 		int playerCounter = 0;
 		
 		// Setting start positions for each player
@@ -670,19 +673,42 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			goals = new Goal[1];
 			goals[0] = new Goal(0, FIELDHEIGHT, FIELDWIDTH, -25, 0, 1, randomNum, teamColors[randomNum].darker());
 		}else if(GOALTYPE == 2){//FOURSQUARE STYLE GOALS
-			goals = new Goal[8];
-			goals[0] = new Goal(0,-4,FIELDWIDTH/2,-25,0,-1,0, teamColors[0].darker());
-			goals[1] = new Goal(-4,0,-25,FIELDHEIGHT/2,-1,0,0, teamColors[0].darker());
+			teamCounter = new int[4];
+			for(int i=0;i<teamCounter.length;i++)
+				teamCounter[i] = 0;
 			
-			goals[2] = new Goal(FIELDWIDTH/2,-4,FIELDWIDTH/2,-25,0,-1,2, teamColors[2].darker());
-			goals[3] = new Goal(FIELDWIDTH+5,0,25,FIELDHEIGHT/2,1,0,2, teamColors[2].darker());
+			for (CambridgePlayerAnchor a : data.playerAnchors())
+				if (a.initiated())
+					teamCounter[a.getTeam()]++;
 			
-			goals[4] = new Goal(FIELDWIDTH+5,FIELDHEIGHT/2,25,FIELDHEIGHT/2,1,0,1, teamColors[1].darker());
-			goals[5] = new Goal(FIELDWIDTH/2,FIELDHEIGHT+5,FIELDWIDTH/2,25,0,1,1, teamColors[1].darker());
+			int numTeams = 0;
+			for(int i=0; i<teamCounter.length; i++)
+				if(teamCounter[i]>0)
+					numTeams++;
 			
-			goals[6] = new Goal(-4,FIELDHEIGHT/2,-25,FIELDHEIGHT/2,-1,0,3, teamColors[3].darker());
-			goals[7] = new Goal(0,FIELDHEIGHT+5,FIELDWIDTH/2,25,0,1,3, teamColors[3].darker());
+			goals = new Goal[numTeams*2];
+			int goalDex = 0;
 			
+			if(teamCounter[0] > 0){
+				goals[goalDex] = new Goal(0,-4,FIELDWIDTH/2,-25,0,-1,0, teamColors[0].darker());
+				goals[goalDex+1] = new Goal(-4,0,-25,FIELDHEIGHT/2,-1,0,0, teamColors[0].darker());
+				goalDex+=2;
+			}
+			if(teamCounter[2] > 0){
+				goals[goalDex] = new Goal(FIELDWIDTH/2,-4,FIELDWIDTH/2,-25,0,-1,2, teamColors[2].darker());
+				goals[goalDex+1] = new Goal(FIELDWIDTH+5,0,25,FIELDHEIGHT/2,1,0,2, teamColors[2].darker());
+				goalDex+=2;
+			}
+			if(teamCounter[1] > 0){
+				goals[goalDex] = new Goal(FIELDWIDTH+5,FIELDHEIGHT/2,25,FIELDHEIGHT/2,1,0,1, teamColors[1].darker());
+				goals[goalDex+1] = new Goal(FIELDWIDTH/2,FIELDHEIGHT+5,FIELDWIDTH/2,25,0,1,1, teamColors[1].darker());
+				goalDex+=2;
+			}
+			if(teamCounter[3] > 0){
+				goals[goalDex] = new Goal(-4,FIELDHEIGHT/2,-25,FIELDHEIGHT/2,-1,0,3, teamColors[3].darker());
+				goals[goalDex+1] = new Goal(0,FIELDHEIGHT+5,FIELDWIDTH/2,25,0,1,3, teamColors[3].darker());
+				goalDex+=2;
+			}
 		}else if(GOALTYPE == 7){//crazyking/goldengoal style goals
 			goals = new Goal[1];
 			goals[0] =  new Goal(FIELDWIDTH/2-GOALSIZE/2, FIELDHEIGHT+5, GOALSIZE, 25, 0, 1, 0, Color.yellow.darker(.3f));

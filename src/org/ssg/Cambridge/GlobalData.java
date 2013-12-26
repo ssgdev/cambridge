@@ -245,6 +245,14 @@ public class GlobalData {
 		return anchors[n];
 	}
 
+	public int numAnchors(){
+		int ans = 0;
+		for(int i=0; i<anchors.length; i++)
+			if(anchors[i].initiated())
+				ans++;
+		return ans;
+	}
+	
 	public int screenHeight() {
 		return screenHeight;
 	}
