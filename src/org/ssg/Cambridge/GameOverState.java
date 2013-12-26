@@ -48,6 +48,9 @@ public class GameOverState extends BasicGameState implements KeyListener {
 	Color tempCol;
 	Image tempImage;
 	
+	CambridgePlayerAnchor[] anchors;
+	boolean start, select;
+	
 	public GameOverState(int id, boolean renderOn){
 		stateID = id;
 		shouldRender = renderOn;
@@ -58,7 +61,9 @@ public class GameOverState extends BasicGameState implements KeyListener {
 		
 		data = ((Cambridge) sbg).getData();
 		mySoundSystem = data.mySoundSystem();
-		
+		anchors = data.playerAnchors();
+		start = false;
+		select = false;
 		try {
 			font = new AngelCodeFont(data.RESDIR + "8bitoperator.fnt", new Image(data.RESDIR + "8bitoperator_0.png"));
 			font_white = new AngelCodeFont(data.RESDIR + "8bitoperator.fnt", new Image(data.RESDIR + "8bitoperator_0_white.png"));
@@ -311,8 +316,22 @@ public class GameOverState extends BasicGameState implements KeyListener {
 		if(pTheta>(float)Math.PI*2f)
 			pTheta-=(float)Math.PI*2f;
 		
+		start = false;
+		select = false;
+		for (CambridgePlayerAnchor a : anchors) {
+			if (a.initiated()) {
+				if (a.start(gc, delta)) {
+					start = true;
+				} else if (a.select(gc, delta)) {
+					select = true;
+				} 
+			}
+		}
+		
 		Input input = gc.getInput();
-		if(input.isKeyPressed(Input.KEY_ENTER) || input.isKeyPressed(Input.KEY_2) || input.isKeyPressed(Input.KEY_PERIOD) || input.isKeyPressed(Input.KEY_ESCAPE)){
+		
+		if(input.isKeyPressed(Input.KEY_ENTER) || input.isKeyPressed(Input.KEY_2) || input.isKeyPressed(Input.KEY_PERIOD) || input.isKeyPressed(Input.KEY_ESCAPE)
+				|| start || select){
 			mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			setShouldRender(false);
 			((MenuGameOverState)sbg.getState(data.MENUGAMEOVERSTATE)).setShouldRender(true);

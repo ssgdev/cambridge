@@ -8,7 +8,7 @@ public class CambridgeController {
 	private Controller c;
 	private Component lStickX, lStickY, rStickX, rStickY, action, action2, menuSelect, menuBack, start, select, dpad;
 	private boolean exist;
-	private boolean selectFlag, backFlag;
+	private boolean selectFlag, backFlag, startFlag;
 	
 	public CambridgeController() {
 		c = null;
@@ -26,6 +26,7 @@ public class CambridgeController {
 		exist = false;
 		selectFlag = true;
 		backFlag = true;
+		startFlag = true;
 	}
 	
 	public CambridgeController(Controller controller) {
@@ -44,6 +45,7 @@ public class CambridgeController {
 		exist = c.poll();
 		selectFlag = true;
 		backFlag = true;
+		startFlag = true;
 	}
 	
 	public float getLeftStickX() {
@@ -105,7 +107,20 @@ public class CambridgeController {
 	}
 	
 	public boolean getStart() {
-		return start.getPollData() == 1;
+		if (startFlag) {
+			if (start.getPollData() != 1) {
+				startFlag = false;
+			}
+			return false;
+		} else {
+			if (start.getPollData() == 1) {
+				startFlag = true;
+				return true;
+			} else {
+				return false;
+			}
+		}
+		//return start.getPollData() == 1;
 	}
 	
 	public boolean getSelect() {

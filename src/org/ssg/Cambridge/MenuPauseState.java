@@ -25,7 +25,7 @@ public class MenuPauseState extends BasicGameState {
 	
 	private Image bgImg;
 	
-	private boolean down, up, left, right, back, enter;
+	private boolean down, up, left, right, back, enter, start;
 //	private int inputDelay;
 //	private final int inputDelayConst = 200;
 
@@ -56,6 +56,7 @@ public class MenuPauseState extends BasicGameState {
 		right = false;
 		enter = false;
 		back = false;
+		start = false;
 //		inputDelay = 0;
 		
 		cursorY = 0;
@@ -134,6 +135,7 @@ public class MenuPauseState extends BasicGameState {
 		right = false;
 		back = false;
 		enter = false;
+		start = false;
 		for (CambridgePlayerAnchor a : anchors) {
 			if (a.initiated()) {
 				if (a.down(gc, delta)) {
@@ -148,7 +150,9 @@ public class MenuPauseState extends BasicGameState {
 					enter = true;
 				} else if (a.back(gc, delta)) {
 					back = true;
-				}		
+				} else if (a.start(gc,  delta)) {
+					start = true;
+				}
 			}
 		}
 
@@ -162,8 +166,6 @@ public class MenuPauseState extends BasicGameState {
 				selected++;
 				mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			}
-		} else if(back) {
-
 		} else if (enter) {
 			mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			switch(selected){
@@ -185,6 +187,11 @@ public class MenuPauseState extends BasicGameState {
 			default:
 			
 			}
+		} else if(back || start){
+			mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			setShouldRender(false);
+			((GameplayState)sbg.getState(data.GAMEPLAYSTATE)).setShouldRender(true);
+			sbg.enterState(data.GAMEPLAYSTATE);
 		}
 		
 		input.clearKeyPressedRecord();

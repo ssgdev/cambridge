@@ -14,7 +14,7 @@ TODO:
 		!!!! The menu should not go back when B is pressed on a controller if any player is signed in? Also keyboards can't back out of char select?
 		!!!! Bug: sometimes you sign in as the wrong anchor. I'll press A on a controller with no one signed in and it'll put me in P3 or P4.
 					Something not getting reset? Or not getting initialized? It happens when you first start up the game sometimes.
-	!!!! intro screen
+	!!!! intro screen/main menu art
 	DONE help/controls screen (Part of char select)
 	!!!! game over screen – winners, score, time etc, menu options
 		DONE GameOver fade to black
@@ -42,6 +42,7 @@ TODO:
 	!!!! Main menu options is "push a to change the thing" but the mode select menu is just "hover and move left/right" Seems inconsistent
 	FIXED Bug: If more than one controller is plugged in, the inputdelay is too fast.
 	FIXED Bug: Sometimes on keyboard at least, one set of keys has a long inputdelay and the other has a short inputdelay
+	!!!! Bug: If P1 drops out during character select and you start a game with P2 and P3, the spawns are wrong
 	!!!! Main Menu still uses WASD
 	!!!! Some kind of graphics.clear method to use when transitioning states?
 	DONE Music should transition properly from gamestate to gamestate: unpausing restarts music in gameplaystate. Should go back to menu music in menus
@@ -57,6 +58,7 @@ DONE Change Twins keyboard controls to switching nukes and double move default
 	DONE TENNIS (Spawn locations)
 	DONE SQUASH (Spawn locations) DONE BUT SQUASH IS TERRIBLE
 	DONE GOLDENGOAL (aka Crazy King)
+		!!!! Moving goal?
 	DONE FOURSQUARE
 		DONE Needs better map
 		!!!! Shouldn't be able to score on non-present players
