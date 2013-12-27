@@ -198,7 +198,7 @@ public class GameOverState extends BasicGameState implements KeyListener {
 		
 		g.setColor(Color.white);
 		g.setFont(font_white);
-		g.drawString("Final Score", data.screenWidth()/2-font.getWidth("FINAL SCORE")/2, 20);
+		g.drawString("Final Score", data.screenWidth()/2-font.getWidth("FINAL SCORE")/2, 40);
 		
 		for(int i=0; i<scores.length; i++){
 			if(scores[i]>=0){
@@ -208,16 +208,16 @@ public class GameOverState extends BasicGameState implements KeyListener {
 				tempf = font.getWidth(str)+(scores[i]<100? font.getWidth("0"):0)+(scores[i]<10? font.getWidth("0"):0);
 				for(int j=0; j<playerCharacters[i].length;j++){
 					g.setLineWidth(2);
-					drawPlayer(g, data.screenWidth()/2-tempf/2f-(maxCircleSize+15)*((float)j+1f), 150+(Math.max(font.getHeight("0"),maxCircleSize)+15)*(float)i+font.getHeight("0")/2f, playerCharacters[i][j]);
+					drawPlayer(g, data.screenWidth()/2-tempf/2f-(maxCircleSize+15)*((float)j+1f), 190+(Math.max(font.getHeight("0"),maxCircleSize)+35)*(float)i+font.getHeight("0")/2f, playerCharacters[i][j]);
 					
 					g.setLineWidth(5);
-					g.drawOval( data.screenWidth()/2-tempf/2f-(maxCircleSize+15)*((float)j+1f)-maxCircleSize/2f, 150+(Math.max(font.getHeight("0"),maxCircleSize)+15)*(float)i+font.getHeight("0")/2f-maxCircleSize/2f, maxCircleSize, maxCircleSize);
+					g.drawOval( data.screenWidth()/2-tempf/2f-(maxCircleSize+15)*((float)j+1f)-maxCircleSize/2f, 190+(Math.max(font.getHeight("0"),maxCircleSize)+35)*(float)i+font.getHeight("0")/2f-maxCircleSize/2f, maxCircleSize, maxCircleSize);
 				}
 				
-				g.drawString(str, data.screenWidth()/2-tempf/2f, 140+(Math.max(font.getHeight("0"),maxCircleSize)+15)*i);
+				g.drawString(str, data.screenWidth()/2-tempf/2f, 180+(Math.max(font.getHeight("0"),maxCircleSize)+35)*i);
 				
 				if(scores[i]==scores[0] && scores[0] != 0){
-					g.drawString("WINNER!", data.screenWidth()/2f + tempf/2+45, 140+(Math.max(font.getHeight("0"), maxCircleSize)+15)*i);
+					g.drawString("WINNER!", data.screenWidth()/2f + tempf/2+45, 180+(Math.max(font.getHeight("0"), maxCircleSize)+35)*i);
 				}
 			}
 		}

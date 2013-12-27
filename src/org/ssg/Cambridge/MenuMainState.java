@@ -35,12 +35,14 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 	private int inputDelay;
 	private final int inputDelayConst = 200;
 	
+	Image bg_img;
+	
 	private boolean shouldRender;
 	
 	private float cursorY, cursorYTarget;
 	
 	final static String RESDIR = "res/";
-	private AngelCodeFont font, font_white, font_small;
+	private AngelCodeFont font, font_white;
 	
 	//Constructor
 	public MenuMainState(int i, boolean renderon) {
@@ -69,12 +71,14 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 		try {
 			font = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0.png"));
 			font_white = new AngelCodeFont(RESDIR + "8bitoperator.fnt", new Image(RESDIR + "8bitoperator_0_white.png"));
-			font_small = new AngelCodeFont(RESDIR + "8bitoperator_small.fnt", new Image(RESDIR + "8bitoperator_small_0.png"));
+			//font_small = new AngelCodeFont(RESDIR + "8bitoperator_small.fnt", new Image(RESDIR + "8bitoperator_small_0.png"));
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Fonts not loaded properly. Uh oh. Spaghettio.");
 			e.printStackTrace();
 		}
+		
+		bg_img = new Image(RESDIR + "mainbg_1080p.png");
 		
 		selected = 0;
 		
@@ -96,15 +100,28 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 		if (!shouldRender)
 			return;
 		
+		g.drawImage(bg_img.getScaledCopy(data.screenWidth(), data.screenHeight()), 0, 0);
+		
 		g.setAntiAlias(true);
 		
 		g.setLineWidth(2f);
 		
 		g.setBackground(Color.black);
 		
+		//Vertical bar
+		g.setColor(Color.black);
+		g.fillRect(data.screenWidth()/6-20, 0, font.getWidth(menuOptions[0])+40, data.screenHeight());
 		g.setColor(Color.white);
+		g.drawRect(data.screenWidth()/6-20, 0, font.getWidth(menuOptions[0])+40, data.screenHeight());
+		
+		//horizontal bar
+		g.setColor(Color.black);
+		g.fillRect(-10, cursorY, data.screenWidth()+20, 70);
+		g.setColor(Color.white);
+		g.drawRect(-10, cursorY, data.screenWidth()+20, 70);
+		
 		g.setFont(font_white);
-		//g.drawString("MAIN MENU", data.screenWidth()/6, data.screenHeight()*0.1f);
+		g.setColor(Color.white);
 		
 		g.drawString(menuOptions[0], data.screenWidth()/6, data.screenHeight()*0.5f);
 		g.drawString(menuOptions[1], data.screenWidth()/6, data.screenHeight()*0.5f+menuHeight);
@@ -112,7 +129,7 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 		
 		//draw cursor
 //		g.drawRect(data.screenWidth()/6 - 10, data.screenHeight()*0.5f+selected*menuHeight + 7, font_white.getWidth(menuOptions[selected]) + 20, 70);
-		g.drawRect(-10, cursorY, data.screenWidth()+20, 70);
+
 	}
 
 	@Override

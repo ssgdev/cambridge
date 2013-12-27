@@ -29,7 +29,7 @@ public class Cambridge extends StateBasedGame {
 	private GlobalData data;
 
 	public Cambridge() throws SlickException{
-		super("Kick Kickerung");
+		super("Laser Diamond Championship");
 		
 		data = new GlobalData();
 

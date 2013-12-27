@@ -14,14 +14,14 @@ TODO:
 		!!!! The menu should not go back when B is pressed on a controller if any player is signed in? Also keyboards can't back out of char select?
 		!!!! Bug: sometimes you sign in as the wrong anchor. I'll press A on a controller with no one signed in and it'll put me in P3 or P4.
 					Something not getting reset? Or not getting initialized? It happens when you first start up the game sometimes.
-	!!!! intro screen/main menu art
+	DONE intro screen/main menu art
 	DONE help/controls screen (Part of char select)
 	!!!! game over screen – winners, score, time etc, menu options
 		DONE GameOver fade to black
 		???? Final whistle for the transition
 		DONE GameOver colours/graphics
-		!!!! Graphical Revamp
-		!!!! GameOver menu bits: Rematch, character select, exit to main menu. (We should only quit game from main menu.)
+		!!!! Graphical Revamp. Bars
+		DONE GameOver menu bits: Rematch, character select, exit to main menu. (We should only quit game from main menu.)
 		DONE Confetti
 		DONE Scores and names and possibly order incorrect DONE Hadn't set non-scores to -1, was messing up sort
 		DONE Going back to main menu after a game over starts with cursor on EXIT sometimes? DONE Put a selected=0 in enter
@@ -42,11 +42,11 @@ TODO:
 	!!!! Main menu options is "push a to change the thing" but the mode select menu is just "hover and move left/right" Seems inconsistent
 	FIXED Bug: If more than one controller is plugged in, the inputdelay is too fast.
 	FIXED Bug: Sometimes on keyboard at least, one set of keys has a long inputdelay and the other has a short inputdelay
-	!!!! Bug: If P1 drops out during character select and you start a game with P2 and P3, the spawns are wrong
+	!!!! Bug: If P1 drops out during character select and you start a game with P2 and P3, the spawns are wrong. Also 4square some spawns are wrong (purple?)
 	!!!! Main Menu still uses WASD
 	!!!! Some kind of graphics.clear method to use when transitioning states?
 	DONE Music should transition properly from gamestate to gamestate: unpausing restarts music in gameplaystate. Should go back to menu music in menus
-	DONE ???? Fix inputbuffer bug
+	DONE Fix inputbuffer bug when pressing start to get pause menu
 DONE GameStart transition
 !!!! Something in case they delete the configs?
 DONE Make font_large for GAME OVER and the like
@@ -58,12 +58,10 @@ DONE Change Twins keyboard controls to switching nukes and double move default
 	DONE TENNIS (Spawn locations)
 	DONE SQUASH (Spawn locations) DONE BUT SQUASH IS TERRIBLE
 	DONE GOLDENGOAL (aka Crazy King)
-		!!!! Moving goal?
 	DONE FOURSQUARE
 		DONE Needs better map
 		DONE Shouldn't be able to score on non-present players
 		???? Add check so it's only for 4P FFA
-!!!! Ball Possession/Goal color switching doesn't work for some powers in Squash
 !!!! Ball possession issue with Back, also check Twotouch and neutron in many situations
 DONE Ball Possession wrong when Dash dashes a Back holding the ball
 DONE Ball possession wrong on back and neutron grab
@@ -83,6 +81,7 @@ DONE Bugs when neutron grabs a twotouch holding the ball
 		DONE Needs arrow to point to goal in actioncam
 			DONE Needs non-playerholder arrow, also make it darker?
 		!!!! Still needs better goal graphics
+		!!!! Moving goal?
 	!!!! Betrayer Ball?
 !!!! TODO: Test 4 Neos going in and out of slowmo at once
 DONE MAYBE Sometimes ball still gets lost after scoring (Possibly respawning in wall? Teleport to spawn location when put back in play)

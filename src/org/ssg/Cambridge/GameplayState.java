@@ -87,7 +87,6 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	private float[][][] teamPositions;
 	private float[][] playerStartPositions;
 	private int[][] playerCharacters;//Passed to gameoverstate to draw what players are on each team
-	private int[] teamCounter;
 	
 	AngelCodeFont font, font_white, font_small, font_large;
 	Image triangle, hemicircleL, hemicircleR, slice, slice_tri, slice_wide, slice_twin;
@@ -353,6 +352,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		playerStartPositions = new float[4][2];
 		
+		int[] teamCounter = new int[4];
 		for(int i=0;i<teamCounter.length;i++)
 			teamCounter[i] = 0;
 		
@@ -673,7 +673,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			goals = new Goal[1];
 			goals[0] = new Goal(0, FIELDHEIGHT, FIELDWIDTH, -25, 0, 1, randomNum, teamColors[randomNum].darker());
 		}else if(GOALTYPE == 2){//FOURSQUARE STYLE GOALS
-			teamCounter = new int[4];
+			int[] teamCounter = new int[4];
 			for(int i=0;i<teamCounter.length;i++)
 				teamCounter[i] = 0;
 			
