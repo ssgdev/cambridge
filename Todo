@@ -20,7 +20,7 @@ TODO:
 		DONE GameOver fade to black
 		???? Final whistle for the transition
 		DONE GameOver colours/graphics
-		!!!! Graphical Revamp. Bars
+		DONE Graphical Revamp. Bars
 		DONE GameOver menu bits: Rematch, character select, exit to main menu. (We should only quit game from main menu.)
 		DONE Confetti
 		DONE Scores and names and possibly order incorrect DONE Hadn't set non-scores to -1, was messing up sort

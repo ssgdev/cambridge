@@ -24,6 +24,7 @@ public class GameOverState extends BasicGameState implements KeyListener {
 	public int stateID;
 	
 	int[] scores;
+	float[] scoreRatios;
 	int numPlayers;
 	String[] names = {"Team 1","Team 2","Team 3","Team 4"};
 	Color[] teamColors;
@@ -75,6 +76,7 @@ public class GameOverState extends BasicGameState implements KeyListener {
 		}
 		
 		scores = new int[4];
+		scoreRatios = new float[4];
 		numPlayers = 2;
 		
 		bgmFadeTimer = BGMFADETIME;
@@ -170,6 +172,22 @@ public class GameOverState extends BasicGameState implements KeyListener {
 			playerCharacters[i] = tempArr;
 		}
 		
+		//Calculate score ratios after scores are sorted
+		scoreRatios[0]=1f;
+		for(int i=1; i<scoreRatios.length; i++){
+			if(scores[0]==0){//no scores
+				scoreRatios[1] = 1f;
+				scoreRatios[2] = 1f;
+				scoreRatios[3] = 1f;
+			}else{
+				if(scores[i]>0){
+					scoreRatios[i] = (float)scores[i]/(float)scores[0];
+				}else{
+					scoreRatios[i] = 0f;
+				}
+			}
+		}
+		
 		//Setup confetti		
 		if(scores[0] == scores[1]){//If there's a draw
 			confettiColor = new Color(0,0,0,0);//no confetti
@@ -214,7 +232,8 @@ public class GameOverState extends BasicGameState implements KeyListener {
 					g.drawOval( data.screenWidth()/2-tempf/2f-(maxCircleSize+15)*((float)j+1f)-maxCircleSize/2f, 190+(Math.max(font.getHeight("0"),maxCircleSize)+35)*(float)i+font.getHeight("0")/2f-maxCircleSize/2f, maxCircleSize, maxCircleSize);
 				}
 				
-				g.drawString(str, data.screenWidth()/2-tempf/2f, 180+(Math.max(font.getHeight("0"),maxCircleSize)+35)*i);
+				g.drawString(str, data.screenWidth()/2-tempf/2f+data.screenWidth()*.4f*scoreRatios[i]+20, 180+(Math.max(font.getHeight("0"),maxCircleSize)+35)*i);
+				g.fillRect(data.screenWidth()/2-tempf/2f, 190+(Math.max(font.getHeight("0"),maxCircleSize)+35)*(float)i+font.getHeight("0")/2f-maxCircleSize/2f, data.screenWidth()*.4f*scoreRatios[i], maxCircleSize);
 				
 				if(scores[i]==scores[0] && scores[0] != 0){
 					g.drawString("WINNER!", data.screenWidth()/2f + tempf/2+45, 180+(Math.max(font.getHeight("0"), maxCircleSize)+35)*i);
@@ -344,10 +363,11 @@ public class GameOverState extends BasicGameState implements KeyListener {
 
 	public void setScores(int[] s){
 		for(int i=0;i<scores.length;i++){
-			if(i<s.length)
+			if(i<s.length){
 				scores[i]=s[i];
-			else
+			}else{
 				scores[i]=-1;
+			}
 		}
 		numPlayers = s.length;
 	}
