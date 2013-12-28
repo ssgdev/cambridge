@@ -131,10 +131,20 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 		g.setLineWidth(2);
 		
 		for (int i = 0; i < menuOptions.length; i++) {
+			if (i == 0 && data.fullscreen()) {
+				g.setColor(Color.gray);
+			}
 			g.drawString(menuOptions[i], data.screenWidth()/6, data.screenHeight()*0.4f+menuHeight*i);
+			g.setColor(Color.white);
 			switch(i) {
 				case 0:
-					g.drawString(tempWidth+"x"+tempHeight, data.screenWidth()/5*3, data.screenHeight()*0.4f+menuHeight*i);
+					if (data.fullscreen()) {
+						g.setColor(Color.gray);
+						g.drawString(gc.getScreenWidth()+"x"+gc.getScreenHeight(), data.screenWidth()/5*3, data.screenHeight()*0.4f+menuHeight*i);
+						g.setColor(Color.white);
+					} else {
+						g.drawString(tempWidth+"x"+tempHeight, data.screenWidth()/5*3, data.screenHeight()*0.4f+menuHeight*i);
+					}
 					break;
 				case 1:
 					g.drawString((data.fullscreen() ? "On" : "Off"), data.screenWidth()/5*3, data.screenHeight()*0.4f+menuHeight*i);
@@ -283,16 +293,11 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 		
 		if (input.isKeyPressed(Input.KEY_UP) || up) {
 			if (!focus) {
-				//selected = --selected % menuOptions.length;
 				if(selected > 0) selected--;
-				if (selected == -1) {
-					selected = menuOptions.length-1;
-				}
 				mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			}
 		} else if (input.isKeyPressed(Input.KEY_DOWN) || down) {
 			if (!focus) {
-				//selected = ++selected % menuOptions.length;
 				if(selected<menuOptions.length-1) selected++;
 				mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			}
@@ -453,9 +458,11 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 					e.printStackTrace();
 				}
 			} else {
-				focus = true;
-				tempHeight = display.get("SCREENHEIGHT", int.class);
-				tempWidth = display.get("SCREENWIDTH", int.class);
+				if (!data.fullscreen() || selected > 0) { //disable selecting resolution option when in fullscreen
+					focus = true;
+					tempHeight = display.get("SCREENHEIGHT", int.class);
+					tempWidth = display.get("SCREENWIDTH", int.class);
+				}
 			}
 			mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 		}

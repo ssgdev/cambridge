@@ -103,7 +103,6 @@ public class GlobalData {
 		};
 		
 		this.resolutionList = new int[][] {
-				{ 640, 480 },
 				{ 800, 600 },
 				{ 960, 720 },
 				{ 1024, 768 },
