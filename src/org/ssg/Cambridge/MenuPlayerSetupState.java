@@ -378,10 +378,12 @@ public class MenuPlayerSetupState extends BasicGameState implements KeyListener 
 									mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 								}
 								if (c.getMenuBack()) {
-									mySoundSystem.quickPlay( true, "MenuBack.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
-									setShouldRender(false);
-									((MenuMainState)sbg.getState(data.MENUMAINSTATE)).setShouldRender(true);
-									sbg.enterState(data.MENUMAINSTATE);
+									if (existsNum <= 0) {
+										mySoundSystem.quickPlay( true, "MenuBack.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+										setShouldRender(false);
+										((MenuMainState)sbg.getState(data.MENUMAINSTATE)).setShouldRender(true);
+										sbg.enterState(data.MENUMAINSTATE);
+									}
 								}
 							}
 						}

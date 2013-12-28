@@ -11,7 +11,7 @@ TODO:
 		DONE Some kind of bug is there in character select, if someone backs out something something they can't sign back in
 		DONE Graphics
 		DONE Should have a one more "press any key to advance" after all players ready up. Automatically going to next menu is jarring
-		!!!! The menu should not go back when B is pressed on a controller if any player is signed in? Also keyboards can't back out of char select?
+		DONE The menu should not go back when B is pressed on a controller if any player is signed in?
 		!!!! Bug: sometimes you sign in as the wrong anchor. I'll press A on a controller with no one signed in and it'll put me in P3 or P4.
 					Something not getting reset? Or not getting initialized? It happens when you first start up the game sometimes.
 	DONE intro screen/main menu art

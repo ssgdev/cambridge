@@ -25,7 +25,6 @@ import paulscode.sound.SoundSystemConfig;
 public class MenuOptionsState extends BasicGameState implements KeyListener{
 	private GlobalData data;
 	private String[] menuOptions;
-	private Ini ini;
 	private int stateID;
 	SoundSystem mySoundSystem;
 	Ini.Section display, sound, gameplay;
@@ -50,7 +49,6 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 	
 	private float cursorY, cursorYTarget;
 	
-	private Cambridge cambridge;
 	private AppGameContainer appGc;
 	
 	//Constructor
@@ -98,7 +96,6 @@ public class MenuOptionsState extends BasicGameState implements KeyListener{
 		
 		selected = 0;
 		
-		cambridge = (Cambridge) sbg;
 		appGc = (AppGameContainer) gc;
 	}
 	

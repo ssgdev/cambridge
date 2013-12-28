@@ -831,7 +831,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		
 		//Draw Players
 		for(Player p: players){
-			p.render( g, BALLSIZE, triangle, font_small);
+			p.render( g, BALLSIZE, triangle, font_small, data.playerIdDisplay());
 		}
 		
 //		g.drawLine(p1.getX(), p1.getY(), p1.getX()+spinFloat[0]*100, p1.getY()+spinFloat[1]*100);

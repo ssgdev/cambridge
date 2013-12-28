@@ -319,7 +319,7 @@ public abstract class Player implements KeyListener {
 	/////////////////////////////////////////////////////////
 	
 	//If players have custom effects they can override individual methods
-	public void render(Graphics g, float BALLSIZE, Image triangle, AngelCodeFont font_small){
+	public void render(Graphics g, float BALLSIZE, Image triangle, AngelCodeFont font_small, boolean drawId){
 				
 		drawSlice(g);//Draws the arc sector which describes the direction of the right stick
 		
@@ -333,7 +333,9 @@ public abstract class Player implements KeyListener {
 		
 		drawPowerCircle(g);
 		
-		drawNameTag(g, triangle, font_small);		
+		if (drawId) {
+			drawNameTag(g, triangle, font_small);	
+		}
 	}
 	
 	public void drawKickTrail(Graphics g){

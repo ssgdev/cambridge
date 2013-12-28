@@ -17,7 +17,7 @@ import org.newdawn.slick.SlickException;
 import paulscode.sound.SoundSystem;
 
 public class GlobalData {
-	final static String RESDIR = "res/";
+	public final String RESDIR = "res/";
 	public final String userconfigdir = "user_config.cfg";
 	public final String gameconfigdir = "config.cfg";
 	public final int GAMEMODES = 5;

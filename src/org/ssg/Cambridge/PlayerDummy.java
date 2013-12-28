@@ -32,7 +32,7 @@ public class PlayerDummy extends Player{
 	}
 	
 	@Override
-	public void render(Graphics g, float BALLSIZE, Image triangle, AngelCodeFont font_small){
+	public void render(Graphics g, float BALLSIZE, Image triangle, AngelCodeFont font_small, boolean drawId){
 		
 	}
 	
