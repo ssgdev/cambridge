@@ -1250,8 +1250,12 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		Input input = gc.getInput();
 		
 		boolean startPressed = false;
-		if(c1.exists() && c1.getStart() || c2.exists()&&c2.getStart() || c3.exists()&&c3.getStart() || c4.exists()&&c4.getStart())
-			startPressed = true;
+//		if(c1.exists() && c1.getStart() || c2.exists()&&c2.getStart() || c3.exists()&&c3.getStart() || c4.exists()&&c4.getStart())
+		for (CambridgePlayerAnchor a: data.playerAnchors()) {
+			if (a.start(gc, delta)) {
+				startPressed = true;
+			}
+		}
 		
 		if(input.isKeyPressed(Input.KEY_U)){
 			reset(gc);
@@ -1502,7 +1506,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 //						tempf += p.getKick()[1]*p.getKick()[1];
 					}
 					unit(kickFloat);
-					tempf = Math.abs(dot(p.getVel(), kickFloat)); 
+					tempf = Math.abs(dot(p.getVel(), kickFloat));
 					ball.setVel(new float[]{kickFloat[0], kickFloat[1]}, p.isPower()? p.POWERVELMAG*p.kickStrength() : .2f+p.getVelMag()*tempf*p.kickStrength() );
 
 					spinFloat = normal(p.getCurve(), kickFloat);
