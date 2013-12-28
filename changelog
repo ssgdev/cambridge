@@ -8,6 +8,7 @@ TwoTouch slows down everything when he gets the ball
 Removed 640x480 resolution support
 Greyed out resolution option in fullscreen mode
 Implemented displayID option
+Fixed multiple controllers messing up input delays in Main Menu and Options Menu
 
 12.26.13
 Made graphical improvements to gameover screen and mainmenu

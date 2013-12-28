@@ -237,9 +237,9 @@ public class GameOverState extends BasicGameState implements KeyListener {
 				g.drawString(str, data.screenWidth()/2-tempf/2f+data.screenWidth()*.4f*scoreRatios[i]+20, 180+(Math.max(font.getHeight("0"),maxCircleSize)+35)*i);
 				g.fillRect(data.screenWidth()/2-tempf/2f, 190+(Math.max(font.getHeight("0"),maxCircleSize)+35)*(float)i+font.getHeight("0")/2f-maxCircleSize/2f, data.screenWidth()*.4f*scoreRatios[i], maxCircleSize);
 				
-				if(scores[i]==scores[0] && scores[0] != 0){
-					g.drawString("WINNER!", data.screenWidth()/2f + tempf/2+45, 180+(Math.max(font.getHeight("0"), maxCircleSize)+35)*i);
-				}
+//				if(scores[i]==scores[0] && scores[0] != 0){
+//					g.drawString("WINNER!", data.screenWidth()/2f + tempf/2+45, 180+(Math.max(font.getHeight("0"), maxCircleSize)+35)*i);
+//				}
 			}
 		}
 

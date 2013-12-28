@@ -31,8 +31,8 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 	
 	private final float deadzone = 0.28f;
 	private boolean down, up, left, right, enter, back;
-	private boolean selectFlag, backFlag, leftFlag, rightFlag, upFlag, downFlag;
-	private int inputDelay;
+	private boolean[] selectFlag, backFlag, leftFlag, rightFlag, upFlag, downFlag;
+	private int[] inputDelay;
 	private final int inputDelayConst = 200;
 	
 	Image bg_img;
@@ -65,7 +65,14 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 		right = false;
 		enter = false;
 		back = false;
-		inputDelay = 0;
+		
+		selectFlag = new boolean[4];
+		backFlag = new boolean[4];
+		leftFlag = new boolean[4];
+		rightFlag = new boolean[4];
+		upFlag = new boolean[4];
+		downFlag = new boolean[4];
+		inputDelay = new int[4];
 		resetButtons();
 		
 		try {
@@ -86,12 +93,15 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 	}
 	
 	public void resetButtons() {
-		selectFlag = true;
-		backFlag = true;
-		leftFlag = true;
-		rightFlag = true;
-		upFlag = true;
-		downFlag = true;
+		for(int i=0; i<4; i++){
+			selectFlag[i] = false;
+			backFlag[i] = false;
+			leftFlag[i] = false;
+			rightFlag[i] = false;
+			upFlag[i] = false;
+			downFlag[i] = false;
+			inputDelay[i] = inputDelayConst;
+		}
 	}
 
 	@Override
@@ -147,88 +157,88 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 		right = false;
 		back = false;
 		enter = false;
-		for (CambridgeController c: controllers) {
-			if (c.exists() && c.poll()) {
+		for (int i=0; i<controllers.length; i++) {
+			if (controllers[i].exists() && controllers[i].poll()) {
 				
 				// Analog stick checking
-				if (inputDelay <= 0) {
-					if (c.getLeftStickY() > deadzone) {
+				if (inputDelay[i] <= 0) {
+					if (controllers[i].getLeftStickY() > deadzone) {
 						down = true;
-					} else if (c.getLeftStickY() < -deadzone) {
+					} else if (controllers[i].getLeftStickY() < -deadzone) {
 						up = true;
 					}
-					if (c.getLeftStickX() > deadzone) {
+					if (controllers[i].getLeftStickX() > deadzone) {
 						right = true;
-					} else if (c.getLeftStickX() < -deadzone) {
+					} else if (controllers[i].getLeftStickX() < -deadzone) {
 						left = true;
 					}
 					if (up || down || left || right) {
-						inputDelay = inputDelayConst;
+						inputDelay[i] = inputDelayConst;
 					}
 				} else {
-					inputDelay-=delta;
+					inputDelay[i]-=delta;
 				}
 				
 				// D-Pad input checking
-				if (downFlag) {
-					if (c.getDPad() != data.DPAD_DOWN) {
-						downFlag = false;
+				if (downFlag[i]) {
+					if (controllers[i].getDPad() != data.DPAD_DOWN) {
+						downFlag[i] = false;
 					}
 				} else {
-					if (c.getDPad() == data.DPAD_DOWN) {
-						downFlag = true;
+					if (controllers[i].getDPad() == data.DPAD_DOWN) {
+						downFlag[i] = true;
 						down = true;
 					}
 				}
-				if (upFlag) {
-					if (c.getDPad() != data.DPAD_UP) {
-						upFlag = false;
+				if (upFlag[i]) {
+					if (controllers[i].getDPad() != data.DPAD_UP) {
+						upFlag[i] = false;
 					}
 				} else {
-					if (c.getDPad() == data.DPAD_UP) {
-						upFlag = true;
+					if (controllers[i].getDPad() == data.DPAD_UP) {
+						upFlag[i] = true;
 						up = true;
 					}
 				}
-				if (leftFlag) {
-					if (c.getDPad() != data.DPAD_LEFT) {
-						leftFlag = false;
+				if (leftFlag[i]) {
+					if (controllers[i].getDPad() != data.DPAD_LEFT) {
+						leftFlag[i] = false;
 					}
 				} else {
-					if (c.getDPad() == data.DPAD_LEFT) {
-						leftFlag = true;
+					if (controllers[i].getDPad() == data.DPAD_LEFT) {
+						leftFlag[i] = true;
 						left = true;
 					}
 				}
-				if (rightFlag) {
-					if (c.getDPad() != data.DPAD_RIGHT) {
-						rightFlag = false;
+				if (rightFlag[i]) {
+					if (controllers[i].getDPad() != data.DPAD_RIGHT) {
+						rightFlag[i] = false;
 					}
 				} else {
-					if (c.getDPad() == data.DPAD_RIGHT) {
-						rightFlag = true;
+					if (controllers[i].getDPad() == data.DPAD_RIGHT) {
+						rightFlag[i] = true;
 						right = true;
 					}
 				}
 				
 				// A and B button checking
-				if (backFlag) {
-					if (!c.getMenuBack()) {
-						backFlag = false;
+				if (backFlag[i]) {
+					if (!controllers[i].getMenuBack()) {
+						backFlag[i] = false;
 					}
 				} else {
-					if (c.getMenuBack()) {
-						backFlag = true;
+					if (controllers[i].getMenuBack()) {
+						backFlag[i] = true;
 						back = true;
 					}
 				}
-				if (selectFlag) {
-					if (!c.getMenuSelect()) {
-						selectFlag = false;
+				if (selectFlag[i]) {
+					if (!controllers[i].getMenuSelect()) {
+						selectFlag[i] = false;
 					}
 				} else {
-					if (c.getMenuSelect()) {
-						selectFlag = true;
+					if (controllers[i].getMenuSelect()) {
+						selectFlag[i] = true;
 						enter = true;
 					}
 				}
