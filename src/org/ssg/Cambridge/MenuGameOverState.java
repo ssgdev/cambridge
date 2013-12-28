@@ -117,15 +117,7 @@ public class MenuGameOverState extends BasicGameState {
 			throws SlickException {
 
 		Input input = gc.getInput();
-		
-		//Should replace with something per playerAnchor
-		if(input.isKeyPressed(Input.KEY_ESCAPE) ){
-			mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
-			setShouldRender(false);
-			((GameplayState)sbg.getState(data.GAMEPLAYSTATE)).setShouldRender(true);
-			sbg.enterState(data.GAMEPLAYSTATE);
-		}
-		
+
 		cursorYTarget = data.screenHeight()*.3f + (font.getLineHeight()*1.2f)*(float)selected;
 		cursorY = approachTarget(cursorY, cursorYTarget, delta);
 		
