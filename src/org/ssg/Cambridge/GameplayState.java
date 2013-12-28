@@ -1198,7 +1198,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			}
 		}
 		
-		System.out.println(slowMoFactor);
+		//System.out.println(slowMoFactor);
 		
 		if(slowMoFactor>1f){
 			deltaf=deltaf/slowMoFactor;
