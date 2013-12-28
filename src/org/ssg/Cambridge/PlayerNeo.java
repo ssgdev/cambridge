@@ -60,9 +60,9 @@ public class PlayerNeo extends Player {
 				mySoundSystem.quickPlay( true, "NeoSlowOut.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 				if(mySoundSystem.playing(slowName))
 					mySoundSystem.pause(slowName);
-				for(Player player: players){
-					player.setSlowMo(false);
-				}
+//				for(Player player: players){
+//					player.setSlowMo(false);
+//				}
 			}
 		}
 
@@ -87,9 +87,9 @@ public class PlayerNeo extends Player {
 			playedPowerDing = false;
 			mySoundSystem.quickPlay( true, "NeoSlowIn.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			mySoundSystem.play(slowName);
-			for(Player p: players){
-				p.setSlowMo(true);
-			}
+//			for(Player p: players){
+//				p.setSlowMo(true);
+//			}
 		}
 	}
 	
@@ -104,14 +104,18 @@ public class PlayerNeo extends Player {
 		velMag = VELMAG;
 		if(mySoundSystem.playing(slowName))
 			mySoundSystem.pause(slowName);
-		for(Player player: players){
-			player.setSlowMo(false);
-		}
+//		for(Player player: players){
+//			player.setSlowMo(false);
+//		}
 	}
 
 	@Override
-	public boolean isSlowMoPower(){
-		return isPower() && true;
+	public float slowMoFactor(){
+		if(isPower()){
+			return 4f;
+		}else{
+			return 1f;
+		}
 	}
 	
 	@Override

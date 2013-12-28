@@ -42,11 +42,11 @@ TODO:
 	!!!! Main menu options is "push a to change the thing" but the mode select menu is just "hover and move left/right" Seems inconsistent
 	FIXED Bug: If more than one controller is plugged in, the inputdelay is too fast.
 	FIXED Bug: Sometimes on keyboard at least, one set of keys has a long inputdelay and the other has a short inputdelay
-	!!!! Bug: If P1 drops out during character select and you start a game with P2 and P3, the spawns are wrong. Also 4square some spawns are wrong (purple?)
+	FIXED Bug: If P1 drops out during character select and you start a game with P2 and P3, the spawns are wrong. Also 4square some spawns are wrong (purple?)
 	!!!! Main Menu still uses WASD
 	!!!! Some kind of graphics.clear method to use when transitioning states?
 	DONE Music should transition properly from gamestate to gamestate: unpausing restarts music in gameplaystate. Should go back to menu music in menus
-	DONE Fix inputbuffer bug when pressing start to get pause menu
+	!!!! Fix inputbuffer bug when pressing start to get pause menu
 DONE GameStart transition
 !!!! Something in case they delete the configs?
 DONE Make font_large for GAME OVER and the like
@@ -70,7 +70,8 @@ DONE Bugs when neutron grabs a twotouch holding the ball
 	DONE The sound bug was the TwoTouch's predictor ball making sounds, which it shouldn't have. BallID of fake balls is 1
 !!!! Current keyboard setup still has ghosting? Alt. Key layouts?
 !!!! Balance:
-	!!!! TwoTouch underpowered. Take out speed debuff on holding button? Harder Kicks? Full time predict?
+	DONE TwoTouch underpowered. Slow-mo on lock like a reflex boost
+		!!!! Sound effects for the new power
 	DONE Neutron push needs faster
 	!!!! Balance Dash: Length of trail "catch"
 	!!!! Balance Enforcer (more control) Less wall penalty?

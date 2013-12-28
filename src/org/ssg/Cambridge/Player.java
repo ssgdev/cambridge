@@ -455,6 +455,7 @@ public abstract class Player implements KeyListener {
 	public void resetPos() {
 		pos[0] = startingPos[0];
 		pos[1] = startingPos[1];
+		lastKickAlpha = 0f;
 	}
 	
 	public void shiftX(float f){
@@ -557,8 +558,8 @@ public abstract class Player implements KeyListener {
 		return false;
 	}
 
-	public boolean isSlowMoPower(){
-		return false;
+	public float slowMoFactor(){
+		return 1f;
 	}
 	
 	public float getPower(){

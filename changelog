@@ -1,5 +1,14 @@
 Changelog:
 
+12.28.13
+Fixed inputbuffer not being cleared at game over
+Fixed playerdummies and kick trails being drawn at rematch
+Fixed arrays being passed to gameoverstate by reference instead of copied
+TwoTouch slows down everything when he gets the ball
+
+12.26.13
+Made graphical improvements to gameover screen and mainmenu
+
 12.25.13
 Cleared inputbuffer upon entering MenuPauseState
 Can press start to enter MenuPauseState

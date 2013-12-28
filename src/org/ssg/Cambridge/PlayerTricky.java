@@ -138,8 +138,6 @@ public class PlayerTricky extends Player{
 		g.setColor(getColorActual(fakeAlpha));
 		g.setFont(font_small);
 		g.drawString("P"+(playerNum+1), fakePos[0]-font_small.getWidth("P"+(playerNum+1))/2, fakePos[1]-font_small.getHeight("P")-KICKRANGE/2-30);
-		
-		
 	}
 	
 	//These colors are overridden to fade away if active camo is on
@@ -355,6 +353,13 @@ public class PlayerTricky extends Player{
 		fakePos[1] = pos[1];
 	}
 
+	@Override
+	public void resetPos(){
+		super.resetPos();
+		fakeAlpha = 0f;
+		fakeballAlpha = 0f;
+	}
+	
 	@Override
 	public float[] getCurve(){
 		return new float[]{0f,0f};

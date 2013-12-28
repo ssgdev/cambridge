@@ -476,4 +476,13 @@ public class PlayerTwoTouch extends Player{
 		//TwoTouch doesn't have the last kick alpha
 	}
 
+	@Override
+	public float slowMoFactor(){
+		if(ball.locked(playerNum)){
+			return 6f;
+		}else{
+			return 1f;
+		}
+	}
+	
 }

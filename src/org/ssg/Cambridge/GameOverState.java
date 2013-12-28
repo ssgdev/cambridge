@@ -78,6 +78,8 @@ public class GameOverState extends BasicGameState implements KeyListener {
 		scores = new int[4];
 		scoreRatios = new float[4];
 		numPlayers = 2;
+		playerCharacters = new int[4][];
+		teamColors = new Color[4];
 		
 		bgmFadeTimer = BGMFADETIME;
 		
@@ -373,11 +375,13 @@ public class GameOverState extends BasicGameState implements KeyListener {
 	}
 	
 	public void setColors(Color[] c){
-		teamColors = c;
+		for(int i=0; i<c.length; i++)
+			teamColors[i] = c[i];
 	}
 	
 	public void setCharacters(int[][] playerChars){
-		playerCharacters = playerChars;
+		for(int i=0; i<playerChars.length; i++)
+			playerCharacters[i] = playerChars[i];
 	}
 	
 	public void setShouldRender(boolean b) {

@@ -102,7 +102,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 	Player p1, p2;
 	ArrayList<Player> players;
 	
-	boolean slowMo;
+	float slowMoFactor;
 	
 	float[] kickFloat;//Unit vector to set ball velocity after kicking
 	float[] spinFloat;//vector used to store orthogonal projection of player's v on kickFloat
@@ -370,8 +370,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 //				}
 				playerStartPositions[playerCounter] = teamPositions[a.getTeam()][teamCounter[a.getTeam()]];
 				teamCounter[a.getTeam()]++;
-				playerCounter++;
 			}
+			playerCounter++;
 		}
 		
 		playerCharacters = new int[4][];
@@ -653,7 +653,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		targetX = FIELDWIDTH/2;
 		targetY = 0;
 		
-		slowMo = false;
+		slowMoFactor = 1f;
 //		gc.getGraphics().setAntiAlias(true);
 		
 		tempArr = new float[2];
@@ -1184,24 +1184,31 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			((GameOverState)sbg.getState(data.GAMEOVERSTATE)).setColors(teamColors);
 			((GameOverState)sbg.getState(data.GAMEOVERSTATE)).setCharacters(playerCharacters);
 			((GameOverState)sbg.getState(data.GAMEOVERSTATE)).setShouldRender(true);
+			gc.getInput().clearKeyPressedRecord();
 			sbg.enterState(data.GAMEOVERSTATE);
 		}
 
 		deltaf = (float)delta;
 		
-		slowMo = false;
+		slowMoFactor = 1f;
 		for(Player p: players){
-			if(p.isSlowMoPower()){
-				slowMo = true;
+			if(p.slowMoFactor()>slowMoFactor){
+				slowMoFactor = p.slowMoFactor();
 				break;
 			}
 		}
 		
-		if(slowMo){
-			deltaf=deltaf/4f;
+		System.out.println(slowMoFactor);
+		
+		if(slowMoFactor>1f){
+			deltaf=deltaf/slowMoFactor;
 			ball.setSlowOn(true);
+			for(Player p : players)
+				p.setSlowMo(true);
 		}else{
 			ball.setSlowOn(false);
+			for(Player p: players)
+				p.setSlowMo(false);
 		}
 		
 		if(gameStartCountdown <= GAMESTARTCOUNTDOWN/4f){
@@ -1320,7 +1327,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 					ball.setScored(false);
 					ball.setSoundCoolDown(50);
 					scored = false;
-					mySoundSystem.quickPlay( true, slowMo? "BallLaunchSlow.ogg": "BallLaunch.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+					mySoundSystem.quickPlay( true, slowMoFactor>1f? "BallLaunchSlow.ogg": "BallLaunch.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 					//System.out.println("BALL IN PLAY");
 				}else{
 					ball.setVel(resetVelocity, 0);
@@ -1467,7 +1474,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 				//ball.setAssistTwin(-1,-1);
 				//Scoring a goal pulls out of slowmo
 				for(Player p: players){
-					if(p.isSlowMoPower())
+					if(p.slowMoFactor()>1f)
 						p.setPower();
 				}
 				ball.setScored(true);//just long enough for it to reach reset
@@ -1509,23 +1516,23 @@ public class GameplayState extends BasicGameState implements KeyListener {
 					
 					//So PlayerNeo doesn't play the slow version of the power kick when kicking out of own slowmo
 					//Pretty hacky though
-					if(slowMo){
+					if(slowMoFactor>1f){
 						tempf = 0;
 						for(Player joueur: players){
-							if(joueur instanceof PlayerNeo && joueur.isPower()){
+							if(joueur.slowMoFactor()>1f){
 								tempf++;
 							}
 						}
-						if(tempf == 1 && p instanceof PlayerNeo)//If you made the slowmo and only you and now you're kicking
-							slowMo = false;
+						if(tempf == 1 && p.slowMoFactor()>1f)//If you made the slowmo and only you and now you're kicking
+							slowMoFactor = 1f;
 					}
 					
 					if(p.flashKick()){//If you want the kick flash and sound effect
-						mySoundSystem.quickPlay( true, slowMo?"PowerKickSlow.ogg":"PowerKick.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+						mySoundSystem.quickPlay( true, slowMoFactor>1f?"PowerKickSlow.ogg":"PowerKick.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 						p.setLastKick(ball.getPrevX(), ball.getPrevY(), ball.getPrevX()+kickFloat[0], ball.getPrevY()+kickFloat[1], 1f);//player stores coordinates of itself and ball at last kicking event;
 						p.setPower();
 					}else{
-						mySoundSystem.quickPlay( true, slowMo?"KickBumpSlow.ogg":"KickBump.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+						mySoundSystem.quickPlay( true, slowMoFactor>1f?"KickBumpSlow.ogg":"KickBump.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 					}
 					
 					p.setKicking(ball);//really this does resetKicking()
