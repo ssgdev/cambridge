@@ -1,6 +1,7 @@
 TODO:
 
 !!!! Menus and stuff
+	DONE Pressing escape during the menu after gameover resumes the game?
 	DONE Grey out and don't let users select resolution options in full screen
 	DONE(?) Huge resolutions break main and options menu, need responsive layouts
 	DONE If you're in resolution options and press escape, then go back into the resolution list, you will pick up from where you were before
@@ -46,7 +47,7 @@ TODO:
 	!!!! Main Menu still uses WASD
 	!!!! Some kind of graphics.clear method to use when transitioning states?
 	DONE Music should transition properly from gamestate to gamestate: unpausing restarts music in gameplaystate. Should go back to menu music in menus
-	!!!! Fix inputbuffer bug when pressing start to get pause menu
+	DONE Fix bug when pressing start to get pause menu initially
 DONE GameStart transition
 !!!! Something in case they delete the configs?
 DONE Make font_large for GAME OVER and the like
