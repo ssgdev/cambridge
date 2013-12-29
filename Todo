@@ -48,6 +48,10 @@ TODO:
 	!!!! Some kind of graphics.clear method to use when transitioning states?
 	DONE Music should transition properly from gamestate to gamestate: unpausing restarts music in gameplaystate. Should go back to menu music in menus
 	DONE Fix bug when pressing start to get pause menu initially
+!!!! TwoTouch gets stuck in power/in all when releasing power button close to wall...something like that
+!!!! TwoTouch aiming feels really wonky sometimes
+!!!! Tennis gameover zooms out strangely
+!!!! Tricky fakeball is too slow (in Tennis...?)
 DONE GameStart transition
 !!!! Something in case they delete the configs?
 DONE Make font_large for GAME OVER and the like

@@ -253,10 +253,6 @@ public class MenuMainState extends BasicGameState implements KeyListener{
 		} else if (input.isKeyPressed(Input.KEY_S) || input.isKeyPressed(Input.KEY_DOWN) || down) {
 			selected = ++selected % 3;
 			mySoundSystem.quickPlay( true, "MenuShift.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
-		} else if(input.isKeyPressed(Input.KEY_ESCAPE) || back){
-			mySoundSystem.quickPlay( true, "MenuBack.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
-			gc.exit();
-			mySoundSystem.cleanup();
 		} else if (input.isKeyPressed(Input.KEY_ENTER) || enter) {
 			mySoundSystem.quickPlay( true, "MenuThud.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 			switch (selected) {
