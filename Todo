@@ -36,7 +36,7 @@ TODO:
 	DONE Team select graphics 
 		DONE Add failure sound for when you try to ready up in a team which you are allowed to ready up in
 		DONE Backing out of a team select in a 4square/goldengoal should reset the player teams selected
-	!!!! Prevent crashes when changing the resolution in fullscreen (Maybe if they're fullscreening, force native res?)
+	DONE Prevent crashes when changing the resolution in fullscreen (Maybe if they're fullscreening, force native res?)
 	DONE Going to main menu should reset all menu options (no more skipping the char select)
 	DONE DPad in menus
 	DONE Effects sounds: Go, Back, move, change, nope
