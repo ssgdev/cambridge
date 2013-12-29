@@ -311,7 +311,7 @@ public class PlayerTwoTouch extends Player{
 					if(rotateDir > 0){
 						angle+=tempf;
 					}else if(rotateDir < 0){
-							angle-=tempf;
+						angle-=tempf;
 					}
 				}else{
 					angle = angleTarget;
@@ -368,7 +368,7 @@ public class PlayerTwoTouch extends Player{
 			theta+= omega*delta/15f;
 			if(theta>(float)Math.PI*2f) theta-=(float)Math.PI*2f;
 		}
-		
+		System.out.println(isKicking());
 	}
 	
 	@Override
@@ -391,8 +391,10 @@ public class PlayerTwoTouch extends Player{
 	public void powerKeyReleased(){
 		power = 0;
 		velMag = VELMAG;
-		if(ball.locked(playerNum))//teleport the ball in range for the flash kick
-			ball.setPos(pos[0]+(float)Math.cos(angle)*(KICKRANGE/2f-2f), pos[1]+(float)Math.sin(angle)*(KICKRANGE/2f-2f));
+		if(ball.locked(playerNum)){//teleport the ball in range for the flash kick
+			ball.setPos(pos[0]+(float)Math.cos(angle)*(KICKRANGE/2f-3f), pos[1]+(float)Math.sin(angle)*(KICKRANGE/2f-3f));
+			kickingCoolDown = 0;
+		}
 	}
 	
 	@Override
@@ -434,7 +436,7 @@ public class PlayerTwoTouch extends Player{
 
 	@Override
 	public float curveStrength(){
-		return 2f;
+		return 3f;
 	}
 	
 	@Override
