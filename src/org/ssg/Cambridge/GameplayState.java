@@ -1549,7 +1549,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 //					if(dist(p) > p.getKickRange()/2)
 //						ball.setCanBeKicked(p.getPlayerNum(), true);
 //				}
-			}else if(!p.isKicking() && !scored && !(p instanceof PlayerTwoTouch && p.isPower()) && !(p instanceof PlayerBack && p.isPower())){
+			}else if(!p.isKicking() && !scored && !(p instanceof PlayerTwoTouch && ball.locked(p.getPlayerNum())) && !(p instanceof PlayerBack && p.isPower())){
 				if(dist(p)<p.getKickRange()/2){//Nudge it out of the way
 					//Don't use prevX, to prevent weird sliding
 					kickFloat[0] = (ball.getX()-p.getX());

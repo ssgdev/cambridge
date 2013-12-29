@@ -368,7 +368,6 @@ public class PlayerTwoTouch extends Player{
 			theta+= omega*delta/15f;
 			if(theta>(float)Math.PI*2f) theta-=(float)Math.PI*2f;
 		}
-		System.out.println(isKicking());
 	}
 	
 	@Override
