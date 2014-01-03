@@ -1321,11 +1321,11 @@ public class GameplayState extends BasicGameState implements KeyListener {
 		ball.update(deltaf);
 		
 		//Put ball back in play
-		if(scored && gameOverCountdown >= GAMEOVERCOUNTDOWN){
+		if(scored){
 			if(Math.abs(ball.getX()-targetX)<15f && Math.abs(ball.getY()-targetY)<15f){
 				temp = true;
 				for(Player p: players){if(dist(p) < p.getKickRange()/2){temp = false;}}
-				if(temp){
+				if(temp && gameOverCountdown >= GAMEOVERCOUNTDOWN){
 					ball.setVel(resetVelocity, .5f);
 					ball.setPos(targetX, targetY);
 					ball.setScored(false);

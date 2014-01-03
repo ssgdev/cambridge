@@ -1,5 +1,8 @@
 Changelog:
 
+1.3.14
+Fixed ball being sent off into infinity during the game over transitions
+
 12.28.13
 Fixed inputbuffer not being cleared at game over
 Fixed playerdummies and kick trails being drawn at rematch

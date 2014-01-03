@@ -50,7 +50,7 @@ TODO:
 	DONE Fix bug when pressing start to get pause menu initially
 DONE TwoTouch gets stuck in power/in all when releasing power button close to wall...something like that
 !!!! TwoTouch aiming feels really wonky sometimes
-!!!! Tennis gameover zooms out strangely
+DONE Tennis gameover zooms out strangely
 DONE GameStart transition
 !!!! Something in case they delete the configs?
 DONE Make font_large for GAME OVER and the like
