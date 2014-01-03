@@ -183,17 +183,17 @@ public class PlayerTwoTouch extends Player{
 				
 				//Rotate around with left and right
 				if(left&&!right){
-					tempf = tempArr[0]+delta/240f;
+					tempf = tempArr[0]+delta/120f;
 					vel[0] = (float)Math.cos(tempf);
 					vel[1] = (float)Math.sin(tempf);
-					tempf = tempArr[1]+delta/240f;
+					tempf = tempArr[1]+delta/120f;
 					curve[0] = (float)Math.cos(tempf);
 					curve[1] = (float)Math.sin(tempf);
 				}else if(!left && right){
-					tempf = tempArr[0]-delta/240f;
+					tempf = tempArr[0]-delta/120f;
 					vel[0] = (float)Math.cos(tempf);
 					vel[1] = (float)Math.sin(tempf);
-					tempf = tempArr[1]-delta/240f;
+					tempf = tempArr[1]-delta/120f;
 					curve[0] = (float)Math.cos(tempf);
 					curve[1] = (float)Math.sin(tempf);
 				}
@@ -205,11 +205,11 @@ public class PlayerTwoTouch extends Player{
 							tempArr[0]+=(float)Math.PI*2f;
 						if(tempArr[1]<0)
 							tempArr[1]+=(float)Math.PI*2f;
-						tempf = tempArr[1]+delta/240f;
+						tempf = tempArr[1]+delta/120f;
 						if(tempf>tempArr[0]+(float)Math.PI/2f)
 							tempf = tempArr[0]+(float)Math.PI/2f;
 					}else{
-						tempf = tempArr[1]-delta/240f;
+						tempf = tempArr[1]-delta/120f;
 						if(tempf < tempArr[0]-(float)Math.PI/2f)
 							tempf = tempArr[0]-(float)Math.PI/2f;
 					}
@@ -221,11 +221,11 @@ public class PlayerTwoTouch extends Player{
 							tempArr[0]+=(float)Math.PI*2f;
 						if(tempArr[1]<0)
 							tempArr[1]+=(float)Math.PI*2f;
-						tempf = tempArr[1]-delta/240f;
+						tempf = tempArr[1]-delta/120f;
 						if(tempf<tempArr[0]-(float)Math.PI/2f)
 							tempf = tempArr[0]-(float)Math.PI/2f;
 					}else{
-						tempf = tempArr[1]+delta/240f;
+						tempf = tempArr[1]+delta/120f;
 						if(tempf> tempArr[0]+(float)Math.PI/2f)
 							tempf = tempArr[0]+(float)Math.PI/2f;
 					}
@@ -259,9 +259,10 @@ public class PlayerTwoTouch extends Player{
 		}
 		
 		//System.out.println(ball.getVel()[0]+", "+ball.getVel()[1]+": "+ball.getVelMag());
+		//System.out.println(dist(pos[0],pos[1],ball.getX(),ball.getY()) + ": "+ KICKRANGE/2f);
 		
 		//Entering Lock
-		if(!lockCoolDown && power>0 && !ball.locked(playerNum) && dist(pos[0],pos[1],ball.getX(),ball.getY())<KICKRANGE/2f && !ball.scored()){
+		if(!lockCoolDown && power>0 && !ball.locked(playerNum) && dist(pos[0],pos[1],ball.getX(),ball.getY())<=KICKRANGE/2f && !ball.scored()){
 			ball.clearLocked();
 			ball.setLocked(playerNum, true);
 //			ball.setCanBeKicked(playerNum, true);
@@ -275,6 +276,11 @@ public class PlayerTwoTouch extends Player{
 			angleTarget = (float)Math.atan2(tempArr[1], tempArr[0]);
 			NORMALKICK = EXTRAKICK;
 			mySoundSystem.quickPlay( true, slowMo?"TwoTouchLockOnSlow.ogg":"TwoTouchLockOn.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
+			if(!c.exists()){//If you're playing on keyboard, set the curve to be straight initially
+				tempf = (float)Math.atan2(tempArr[1], tempArr[0]);
+				curve[0] = (float)Math.cos(tempf);
+				curve[1] = (float)Math.sin(tempf);
+			}
 		}
 		
 		ballPos[0] = ball.getX();
@@ -435,7 +441,7 @@ public class PlayerTwoTouch extends Player{
 
 	@Override
 	public float curveStrength(){
-		return 3f;
+		return 2f;
 	}
 	
 	@Override

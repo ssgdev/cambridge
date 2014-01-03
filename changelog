@@ -2,6 +2,7 @@ Changelog:
 
 1.3.14
 Fixed ball being sent off into infinity during the game over transitions
+Fixed minor TwoTouch control and lock issues
 
 12.28.13
 Fixed inputbuffer not being cleared at game over
