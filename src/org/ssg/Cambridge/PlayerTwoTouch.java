@@ -486,7 +486,7 @@ public class PlayerTwoTouch extends Player{
 	@Override
 	public float slowMoFactor(){
 		if(ball.locked(playerNum)){
-			return 6f;
+			return 5f;
 		}else{
 			return 1f;
 		}

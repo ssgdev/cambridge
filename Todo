@@ -18,6 +18,7 @@ TODO:
 	DONE intro screen/main menu art
 	DONE help/controls screen (Part of char select)
 	!!!! game over screen – winners, score, time etc, menu options
+		!!!! Scaling bad on large resolution
 		DONE GameOver fade to black
 		???? Final whistle for the transition
 		DONE GameOver colours/graphics
@@ -66,6 +67,9 @@ DONE Change Twins keyboard controls to switching nukes and double move default
 		DONE Needs better map
 		DONE Shouldn't be able to score on non-present players
 		???? Add check so it's only for 4P FFA
+!!!! Enforcer if you hold down two keys while in charge you freeze and maintain charge
+!!!! Back spins +360 on Enoch's computer
+!!!! Twins can't knock ball out of TwoTouch and Back hands - Sometimes
 !!!! Ball possession issue with Back, also check Twotouch and neutron in many situations
 DONE Ball Possession wrong when Dash dashes a Back holding the ball
 DONE Ball possession wrong on back and neutron grab
@@ -76,8 +80,10 @@ DONE Bugs when neutron grabs a twotouch holding the ball
 !!!! Balance:
 	DONE TwoTouch underpowered. Slow-mo on lock like a reflex boost
 		!!!! Sound effects for the new power
+		!!!! Get slight tug on ball on power activate
 	DONE Neutron push needs faster
-	!!!! Balance Dash: Length of trail "catch"
+	!!!! Back needs easier to knock ball out
+	!!!! Balance Dash: Length of trail "catch" longer
 	!!!! Balance Enforcer (more control) Less wall penalty?
 !!!! Soundtrack
 !!!! Somethings forgetting? Add as needed
@@ -91,6 +97,10 @@ DONE Bugs when neutron grabs a twotouch holding the ball
 !!!! TODO: Test 4 Neos going in and out of slowmo at once
 DONE MAYBE Sometimes ball still gets lost after scoring (Possibly respawning in wall? Teleport to spawn location when put back in play)
 !!!! Non-players are getting scores in 4p game modes sometimes
+DONE Tennis spawns ball wrong at start of match.
+!!!! Test Doubles Tennis
+!!!! Dash loses ball sometimes
+!!!! Rematch doesn't reset player variables
 DONE PlayerNeutron pulling the ball out of Back's lock will teleport back to Back when he releases grav pull
 	DONE SOLUTION: The "too far then unlock" statement was after the "set ball to this position" statement in Back, so it would never leave lock
 DONE PlayerNeutron can grav pull throw the ball+circle of twotouch after the gameover DONE The predictor and circle are drawn to the ball's position, and the ball keeps updating after gameover.

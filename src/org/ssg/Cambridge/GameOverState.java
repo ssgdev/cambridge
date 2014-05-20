@@ -228,14 +228,14 @@ public class GameOverState extends BasicGameState implements KeyListener {
 				tempf = font.getWidth(str)+(scores[i]<100? font.getWidth("0"):0)+(scores[i]<10? font.getWidth("0"):0);
 				for(int j=0; j<playerCharacters[i].length;j++){
 					g.setLineWidth(2);
-					drawPlayer(g, data.screenWidth()/2-tempf/2f-(maxCircleSize+15)*((float)j+1f), 190+(Math.max(font.getHeight("0"),maxCircleSize)+35)*(float)i+font.getHeight("0")/2f, playerCharacters[i][j]);
+					drawPlayer(g, data.screenWidth()/2-tempf/2f-(maxCircleSize+15)*((float)j+1f), data.screenHeight()/4.7f+(Math.max(font.getHeight("0"),maxCircleSize)+35)*(float)i+font.getHeight("0")/2f, playerCharacters[i][j]);
 					
 					g.setLineWidth(5);
-					g.drawOval( data.screenWidth()/2-tempf/2f-(maxCircleSize+15)*((float)j+1f)-maxCircleSize/2f, 190+(Math.max(font.getHeight("0"),maxCircleSize)+35)*(float)i+font.getHeight("0")/2f-maxCircleSize/2f, maxCircleSize, maxCircleSize);
+					g.drawOval( data.screenWidth()/2-tempf/2f-(maxCircleSize+15)*((float)j+1f)-maxCircleSize/2f, data.screenHeight()/4.7f+(Math.max(font.getHeight("0"),maxCircleSize)+35)*(float)i+font.getHeight("0")/2f-maxCircleSize/2f, maxCircleSize, maxCircleSize);
 				}
 				
-				g.drawString(str, data.screenWidth()/2-tempf/2f+data.screenWidth()*.4f*scoreRatios[i]+20, 180+(Math.max(font.getHeight("0"),maxCircleSize)+35)*i);
-				g.fillRect(data.screenWidth()/2-tempf/2f, 190+(Math.max(font.getHeight("0"),maxCircleSize)+35)*(float)i+font.getHeight("0")/2f-maxCircleSize/2f, data.screenWidth()*.4f*scoreRatios[i], maxCircleSize);
+				g.drawString(str, data.screenWidth()/2-tempf/2f+data.screenWidth()*.4f*scoreRatios[i]+20, (data.screenHeight()/4.7f-10f)+(Math.max(font.getHeight("0"),maxCircleSize)+35)*i);
+				g.fillRect(data.screenWidth()/2-tempf/2f, data.screenHeight()/4.7f+(Math.max(font.getHeight("0"),maxCircleSize)+35)*(float)i+font.getHeight("0")/2f-maxCircleSize/2f, data.screenWidth()*.4f*scoreRatios[i], maxCircleSize);
 				
 //				if(scores[i]==scores[0] && scores[0] != 0){
 //					g.drawString("WINNER!", data.screenWidth()/2f + tempf/2+45, 180+(Math.max(font.getHeight("0"), maxCircleSize)+35)*i);

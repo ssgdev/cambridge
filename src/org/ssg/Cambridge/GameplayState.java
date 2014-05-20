@@ -1393,7 +1393,7 @@ public class GameplayState extends BasicGameState implements KeyListener {
 			
 			if(scored){
 				if(NAME.equals(TENNIS)){//Put in at side from player baseline, as a kind of serve.
-					if(Math.random()>.5f){
+					if(ball.getLastKicker()==0){
 						targetX = FIELDWIDTH-150;
 						targetY = FIELDHEIGHT;
 						resetVelocity[0] = 0;
@@ -1563,6 +1563,8 @@ public class GameplayState extends BasicGameState implements KeyListener {
 				}
 			}
 		}
+		
+		//System.out.println(ball.locked(0) + " " + ball.locked(1));
 		
 		//Camera code
 		tempX = ball.getX();
