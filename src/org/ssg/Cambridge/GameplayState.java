@@ -1538,12 +1538,13 @@ public class GameplayState extends BasicGameState implements KeyListener {
 					}else{
 						mySoundSystem.quickPlay( true, slowMoFactor>1f?"KickBumpSlow.ogg":"KickBump.ogg", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0.0f );
 					}
-					
+					System.out.println("KICKED-PRE "+ "0: "+ball.locked(0) + " 1: "+ball.locked(1)+ " 2: "+ball.locked(2));
 					p.setKicking(ball);//really this does resetKicking()
 					ball.cancelAcc();//Cancels any speeding up or slowing down. Does not affect curve
 					ball.setReadyForGust(false);
 					ball.setLastKicker(p.getTeamNum());
-					ball.clearLocked();					
+					ball.clearLocked();
+					System.out.println("KICKED-POST "+ "0: "+ball.locked(0) + " 1: "+ball.locked(1) + "2: "+ball.locked(2));
 				}
 //				 else{
 //					if(dist(p) > p.getKickRange()/2)

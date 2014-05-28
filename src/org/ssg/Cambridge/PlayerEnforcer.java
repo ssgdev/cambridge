@@ -152,7 +152,7 @@ public class PlayerEnforcer extends Player{
 				launchVel[1] = vel[1];
 			}
 		}else if(coolingDown || wallCoolingDown){
-			velMag = approachTarget(velMag,targetVelmag, delta/800f);
+			velMag = approachTarget(velMag,targetVelmag, delta/600f);
 			vel[0] = launchVel[0];
 			vel[1] = launchVel[1];
 			if(velMag == targetVelmag){

@@ -69,7 +69,7 @@ DONE Change Twins keyboard controls to switching nukes and double move default
 		???? Add check so it's only for 4P FFA
 !!!! Enforcer if you hold down two keys while in charge you freeze and maintain charge
 !!!! Back spins +360 on Enoch's computer
-!!!! Twins can't knock ball out of TwoTouch and Back hands - Sometimes
+DONE Twins can't knock ball out of TwoTouch and Back hands - When the grabbing character is player 2
 !!!! Ball possession issue with Back, also check Twotouch and neutron in many situations
 DONE Ball Possession wrong when Dash dashes a Back holding the ball
 DONE Ball possession wrong on back and neutron grab
@@ -82,9 +82,9 @@ DONE Bugs when neutron grabs a twotouch holding the ball
 		!!!! Sound effects for the new power
 		!!!! Get slight tug on ball on power activate
 	DONE Neutron push needs faster
-	!!!! Back needs easier to knock ball out
+	DONE Back needs easier to knock ball out (made him slower when turning)
 	!!!! Balance Dash: Length of trail "catch" longer
-	!!!! Balance Enforcer (more control) Less wall penalty?
+	DONE Balance Enforcer (more control) Less wall penalty?
 !!!! Soundtrack
 !!!! Somethings forgetting? Add as needed
 !!!! More game modes? Squash is a failure.

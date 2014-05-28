@@ -75,7 +75,7 @@ public class Ball {
 		speedingUp = false;
 		slowingDown = false;
 		gustReady = false;
-		locked = new boolean[8];
+		locked = new boolean[4];
 		
 		assistTwin = new int[2];
 		assistTwin[0] = -1;
@@ -206,21 +206,8 @@ public class Ball {
 	
 	public void clearLocked(){
 		for(int i=0;i<players.size();i++){
-			if(players.get(i) instanceof PlayerTwoTouch && locked[i]) {
-				locked[i] = false;
-				((PlayerTwoTouch) players.get(i)).setLockCoolDown(true);
-				//setCanBeKicked(players[i].getPlayerNum(), true);
-//				((PlayerTwoTouch) players[i]).powerKeyReleased();
-			}else if(players.get(i) instanceof PlayerBack && locked[i]){
-				locked[i] = false;
-				((PlayerBack) players.get(i)).setLockCoolDown(true);
-//				((PlayerBack) players[i]).powerKeyReleased();
-			}else if((players.get(i) instanceof PlayerNeutron && locked[i])){
-				locked[i] = false;
-				((PlayerNeutron) players.get(i)).setLockCoolDown(true);
-			}else{
-				locked[i] = false;
-			}
+			locked[i] = false;
+			players.get(i).setLockCoolDown(true);
 		}
 	}
 	

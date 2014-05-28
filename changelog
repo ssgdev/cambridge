@@ -1,5 +1,14 @@
 Changelog:
 
+5.28.14
+Fixed Twins not being able to knock ball out of Back/TwoTouch's hands
+	Was using locked[i] instead of locked[players.get(i).getPlayerNum()] in ball.clearLocked() method.
+	playerNums are the actual players, whereas i iterates over all the 'bodies' on the field. (Some characters have 2 bodies).
+
+5.23.14
+Enforcer wall-bounce cooldown reduced
+Back made much slower when turning (Needs testing)
+
 3.17.14
 Fixed Tennis ball being put back into play in the middle. Now properly gives serve to whoever didn't touch it last.
 

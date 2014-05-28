@@ -36,7 +36,6 @@ public class PlayerBack extends Player {
 	
 	public PlayerBack(int n, int tN, float[] consts, int[] f, int[] c, CambridgeController c1, float[] p, int[] xyL, Color se, SoundSystem ss, String sn, Image slc, Image slc_w, Ball b) {
 		super(n, tN, consts, f, c, c1, p, xyL, se, ss, sn, slc);
-		
 		tempf = PLAYERSIZE/5f;
 		poly = new Polygon(new float[]{
 				tempf*2, tempf*2,
@@ -156,6 +155,7 @@ public class PlayerBack extends Player {
 		
 		//Entering Lock
 		if(!lockCoolDown && power>0 && !ball.locked(playerNum) && dist(pos[0],pos[1],ball.getX(),ball.getY())<KICKRANGE/2f && !ball.scored()){
+			System.out.println("ENTERING LOCK");
 			ball.clearLocked();
 			ball.cancelAcc();
 			ball.setLocked(playerNum, true);
@@ -201,7 +201,7 @@ public class PlayerBack extends Player {
 				rotateDir = (int)tempf;
 			}
 			
-			tempf = delta/60f;//The step interval
+			tempf = delta/120f;//The step interval
 			if(angle != angleTarget){
 				if(angleDist(angle, angleTarget)>.1f){//If it's actual turning and not a microscopic slip of the finger
 					if(rotateDir > 0){
@@ -214,7 +214,7 @@ public class PlayerBack extends Player {
 					if(velMag < 0)
 						velMag = 0;
 				}else{
-					velMag -= angleDist(angle, angleTarget)*delta/80f;			
+					velMag -= angleDist(angle, angleTarget)*delta/10f;			
 					if(velMag < 0)
 						velMag = 0;
 					angle = angleTarget;
