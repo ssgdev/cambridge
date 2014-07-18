@@ -274,7 +274,7 @@ public class Ball {
 			soundCoolDown = 0;
 
 		vDelta = delta;
-
+		
 		while(vDelta>0){
 
 			tempX = pos[0]+(velMag*vel[0]*vDelta);
@@ -313,10 +313,17 @@ public class Ball {
 				curveMag=0f;
 				cancelAcc();
 				//setAssistTwin(-1,-1);
-				velMag-=BOUNCEDAMP;
+				if(inCorner() && velMag < .5f){
+					velMag = .5f;
+				}else{
+					velMag-=BOUNCEDAMP;
+				}
+
 				if(velMag<.1f){
 					velMag = .1f;
 				}
+				
+				System.out.println(velMag);
 				
 			}	
 		}
@@ -361,6 +368,23 @@ public class Ball {
 		theta+=velMag*delta;
 	}
 
+	//Whether the ball is in the corner
+	public boolean inCorner(){
+		float dist;
+		float cornerX = 0;
+		float cornerY = 0;
+		if(pos[0] > field[0]/2)
+			cornerX = field[0];
+		if(pos[1] > field[1]/2)
+			cornerY = field[1];
+		float tempX = pos[0] - cornerX;
+		float tempY = pos[1] - cornerY;
+		dist = (float)Math.sqrt(tempX*tempX + tempY*tempY);
+		if(dist > 200.0f)
+			return false;
+		return true;
+	}
+	
 	public boolean betweenGoals(float x, float y, float[] velocity){
 		for(Goal g: goals){
 			if(y>(float)g.getMinY() && y<(float)g.getMaxY() && sameDir(velocity[0], g.getXDir()))

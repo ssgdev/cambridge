@@ -404,7 +404,7 @@ public class PlayerDash extends Player{
 			
 			shortDashCoolDown = SHORTDASHCOOLDOWN;
 			
-			if(mag(ballOrth)<KICKRANGE/2f && mag(ballParallel)<dashDist+KICKRANGE/2f && sameDir(vel,ballParallel)){
+			if(!ball.scored() && mag(ballOrth)<KICKRANGE/2f && mag(ballParallel)<dashDist+KICKRANGE/2f && sameDir(vel,ballParallel)){
 				unit(ballParallel);
 				ball.setPos(pos[0]+ballParallel[0]*KICKRANGE/2f+4f, pos[1]+ballParallel[1]*KICKRANGE/2f+4f);//Teleport ball to front
 				

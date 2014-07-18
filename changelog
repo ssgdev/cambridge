@@ -1,5 +1,9 @@
 Changelog:
 
+7.18.14
+Possibly fixed bug involving ball going out of bounds when Dash short-dash-kicks it at the moment of scoring
+Ball bounces harder when in corner.
+
 5.28.14
 Fixed Twins not being able to knock ball out of Back/TwoTouch's hands
 	Was using locked[i] instead of locked[players.get(i).getPlayerNum()] in ball.clearLocked() method.
